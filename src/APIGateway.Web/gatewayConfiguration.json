@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5001"
+    "BaseUrl": "http://localhost:80"
   },
   "Routes": [
     {
@@ -15,8 +15,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "organizations.api",
-          "Port": 8080
+          "Host": "magjob20-organizations.api-1",
+          "Port": 80
         }
       ]
     }

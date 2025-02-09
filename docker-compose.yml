@@ -1,93 +1,78 @@
 services:
+  # Główny Load Balancer
+  haproxy:
+    image: haproxy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - client.web
+      - apigateway.web
+
+  # Frontend (2 instancje)
+  client.web:
+    image: ${DOCKER_REGISTRY-}clientweb
+    build:
+      context: ./src/Client.Web
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 2
+
+  # API Gateway (z wbudowanym load balancerem)
   apigateway.web:
     image: ${DOCKER_REGISTRY-}apigatewayweb
-    container_name: apigateway.web
     build:
       context: .
       dockerfile: src/APIGateway.Web/Dockerfile
-    ports:
-      - "5000:8080"
-      - "5001:8081"
-    depends_on:
-      - organizations.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT:-Development}
 
+  # Mikrousługi (2 instancje)
   organizations.api:
     image: ${DOCKER_REGISTRY-}organizationsapi
-    container_name: organizations.api
     build:
       context: .
       dockerfile: src/Organizations.API/Dockerfile
     environment:
-      - ConnectionStrings__OrganizationConnection=Host=magjob.database;Database=magjob;Username=postgres;Password=postgres;
-    depends_on:
-      magjob.database:
-        condition: service_healthy
+      - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT:-Development}
+      - ConnectionStrings__OrganizationConnection=${DB_CONNECTION_STRING}
+    deploy:
+      replicas: 2
 
-  magjob.database:
-    image: postgres:latest
-    container_name: magjob.database
-    environment:
-      POSTGRES_DB: magjob
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+  # Keycloak (Identity Server)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    command: start-dev --import-realm
     ports:
-      - "5433:5432"
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=keycloak-db
+      - KC_DB_USERNAME=${KEYCLOAK_DB_USER}
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    depends_on:
+      - keycloak-db
+
+  keycloak-db:
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+    volumes:
+      - ${APPDATA}/MagJob2.0/db/keycloak:/var/lib/postgresql/data
+
+  # PostgreSQL (baza danych)
+  magjob.database:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  magjob.web:
-    image: ${DOCKER_REGISTRY-}magjobweb
-    container_name: magjob.web
-    build:
-      context: ./src/Client.Web/
-      dockerfile: Dockerfile
-    ports:
-      - "8080:4200"
-    depends_on:
-      - apigateway.web
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
-    command: start-dev --import-realm
-    environment:
-      KC_HEALTH_ENABLED: true
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    volumes:
-      - ${APPDATA}/MagJob2.0/db/keycloak:/opt/keycloak/data
-      - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-    ports:
-      - "18080:8080"
-
-  pgadmin.web:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin.web
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - ${APPDATA}/MagJob2.0/data/pgadmin:/var/lib/pgadmin
-
-  prometheus:
-    image: keepitup2023/magjob-prometheus:0.0.1
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    depends_on:
-      - magjob.web
-
-  grafana:
-    image: keepitup2023/magjob-grafana:0.0.1
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus

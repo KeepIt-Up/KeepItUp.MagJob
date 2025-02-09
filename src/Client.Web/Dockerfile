@@ -1,13 +1,30 @@
-FROM node:20.17.0-alpine
+# Etap budowania
+FROM node:20.9 AS build
 
-WORKDIR /usr/src/app
+# Ustawienie katalogu roboczego
+WORKDIR /app
 
-COPY . /usr/src/app
+# Kopiowanie pliku package.json i package-lock.json (jeśli istnieje)
+COPY package*.json ./
 
-RUN npm install -g @angular/cli
-
+# Instalacja zależności
 RUN npm install
 
-ENV ASPNETCORE_HTTPS_PORT 5001
+# Kopiowanie całej aplikacji Angular
+COPY . .
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--proxy-config", "proxy.conf.docker.json"]
+# Budowanie aplikacji w trybie development
+RUN npm run build:dev
+
+# Etap serwowania
+FROM nginx:alpine
+
+# Kopiowanie zbudowanej aplikacji do nginx
+COPY --from=build /app/dist/client.web/browser/ /usr/share/nginx/html/
+
+# Kopiowanie konfiguracji nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
