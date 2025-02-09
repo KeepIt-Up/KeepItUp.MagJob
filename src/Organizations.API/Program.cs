@@ -1,4 +1,6 @@
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Organizations.Application;
 using Organizations.Application.Common.Interfaces;
 using Organizations.Infrastructure.Services;
@@ -34,6 +36,13 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddCorsPolicies(builder.Configuration);
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(
+        builder.Configuration.GetConnectionString("OrganizationConnection") ??
+            throw new Exception("Connection string 'OrganizationConnection' not found."),
+        name: "postgresql",
+        tags: new[] { "db", "sql", "postgresql" });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -50,5 +59,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

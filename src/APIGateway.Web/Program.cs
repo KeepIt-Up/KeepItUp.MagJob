@@ -1,3 +1,4 @@
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -30,6 +31,9 @@ builder.Services.AddCors(options =>
         });
 });
 
+// Add health checks
+builder.Services.AddHealthChecks();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -41,6 +45,12 @@ app.UseAuthentication();
 app.MapControllers();
 
 app.UseCors("localhost");
+
+// Add health check endpoint
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 await app.UseOcelot();
 
