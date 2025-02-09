@@ -10,14 +10,22 @@ services:
       - client.web
       - apigateway.web
 
-  # Frontend (2 instancje)
+  # Frontend
   client.web:
     image: ${DOCKER_REGISTRY-}clientweb
     build:
       context: ./src/Client.Web
       dockerfile: Dockerfile
     deploy:
-      replicas: 2
+      replicas: ${REPLICAS:-2}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:80" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - apigateway.web
 
   # API Gateway (z wbudowanym load balancerem)
   apigateway.web:
@@ -27,8 +35,10 @@ services:
       dockerfile: src/APIGateway.Web/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT:-Development}
+    depends_on:
+      - organizations.api
 
-  # Mikrousługi (2 instancje)
+  # Mikrousługi
   organizations.api:
     image: ${DOCKER_REGISTRY-}organizationsapi
     build:
@@ -38,7 +48,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT:-Development}
       - ConnectionStrings__OrganizationConnection=${DB_CONNECTION_STRING}
     deploy:
-      replicas: 2
+      replicas: ${REPLICAS:-2}
+    depends_on:
+      magjob.database:
+        condition: service_healthy
 
   # Keycloak (Identity Server)
   keycloak:
@@ -55,8 +68,15 @@ services:
       - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
     volumes:
       - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ready" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     depends_on:
-      - keycloak-db
+      keycloak-db:
+        condition: service_healthy
 
   keycloak-db:
     image: postgres:17.2
@@ -66,6 +86,12 @@ services:
       POSTGRES_DB: ${KEYCLOAK_DB_NAME}
     volumes:
       - ${APPDATA}/MagJob2.0/db/keycloak:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USER} -d ${KEYCLOAK_DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # PostgreSQL (baza danych)
   magjob.database:
@@ -76,3 +102,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
