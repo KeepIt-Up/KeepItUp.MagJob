@@ -16,8 +16,6 @@ services:
     build:
       context: ./src/Client.Web
       dockerfile: Dockerfile
-    deploy:
-      replicas: ${REPLICAS:-2}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:80" ]
       interval: 30s
@@ -47,8 +45,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT:-Development}
       - ConnectionStrings__OrganizationConnection=${DB_CONNECTION_STRING}
-    deploy:
-      replicas: ${REPLICAS:-2}
     depends_on:
       magjob.database:
         condition: service_healthy
@@ -58,7 +54,7 @@ services:
     image: quay.io/keycloak/keycloak:26.1
     command: start-dev --import-realm
     ports:
-      - "8080:8080"
+      - "18080:8080"
     environment:
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
