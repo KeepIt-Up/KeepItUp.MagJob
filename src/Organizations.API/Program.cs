@@ -49,9 +49,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    app.UseCors("default");
 }
+
+app.UseCors("default");
 
 app.ApplyMigrationsAndSeedData(app.Environment);
 

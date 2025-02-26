@@ -76,7 +76,6 @@ internal static class ServiceCollectionExtensions
     /// <param name="services">The services collection.</param>
     /// <param name="configuration">The configuration.</param>
     /// <returns>The services collection.</returns>
-    /// <exception cref="Exception">Thrown when the cors policies are not set in the configuration.</exception>
     public static IServiceCollection AddCorsPolicies(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddCors(options =>
@@ -84,11 +83,10 @@ internal static class ServiceCollectionExtensions
             options.AddPolicy("default",
                 corsBuilder =>
                 {
-                    var allowedOrigins = configuration["Cors:AllowedOrigins"];
-                    var allowedMethods = configuration["Cors"];
-                    corsBuilder.WithOrigins(configuration["Cors:AllowedOrigins"] ?? throw new Exception("Cors:AllowedOrigins is not set"))
-                               .WithMethods(configuration["Cors:AllowedMethods"] ?? throw new Exception("Cors:AllowedMethods is not set"))
-                               .WithHeaders(configuration["Cors:AllowedHeaders"] ?? throw new Exception("Cors:AllowedHeaders is not set"));
+                    corsBuilder.WithOrigins("http://localhost", "https://localhost")
+                               .AllowAnyMethod()
+                               .AllowAnyHeader()
+                               .AllowCredentials();
                 });
         });
 

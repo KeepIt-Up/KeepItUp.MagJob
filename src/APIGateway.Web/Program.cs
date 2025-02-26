@@ -18,15 +18,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = builder.Configuration["Authentication:ValidIssuer"],
     };
 });
+
 // Cors configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("localhost",
         builder =>
         {
-            builder.AllowAnyOrigin()
+            builder.WithOrigins("http://localhost", "https://localhost")
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowAnyHeader()
+                   .AllowCredentials();
         });
 });
 
@@ -34,13 +36,19 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("localhost");
+}
+else
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCors("localhost");
 
 await app.UseOcelot();
 

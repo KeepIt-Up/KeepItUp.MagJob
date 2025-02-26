@@ -4,14 +4,14 @@
   },
   "Routes": [
     {
-      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamPathTemplate": "/api/{everything}",
       "UpstreamHttpMethod": [
         "POST",
         "PUT",
         "GET",
         "DELETE"
       ],
-      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
