@@ -22,10 +22,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 // Cors configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("localhost",
+    options.AddPolicy("CorsPolicy",
         builder =>
         {
-            builder.WithOrigins("http://localhost", "https://localhost")
+            builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost", "https://localhost")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
@@ -38,7 +38,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("localhost");
+    app.UseCors("CorsPolicy");
 }
 else
 {
