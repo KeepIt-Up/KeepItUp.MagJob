@@ -6,7 +6,7 @@ export const environment = {
     issuer: '',
     tokenEndpoint: '',
     redirectUri: window.location.origin,
-    clientId: 'client.w eb',
+    clientId: 'client.web',
     responseType: 'code',
     scope: 'openid profile',
   } as AuthConfig
