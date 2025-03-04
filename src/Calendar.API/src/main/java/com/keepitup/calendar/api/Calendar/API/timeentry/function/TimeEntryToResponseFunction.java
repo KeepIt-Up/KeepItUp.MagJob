@@ -1,21 +1,20 @@
 package com.keepitup.calendar.api.Calendar.API.timeentry.function;
 
-import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.GetTimeEntryTemplateResponse;
-import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
+import com.keepitup.calendar.api.Calendar.API.timeentry.dto.GetTimeEntryResponse;
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
 @Component
-public class TimeEntryToResponseFunction implements Function<TimeEntryTemplate, GetTimeEntryTemplateResponse> {
+public class TimeEntryToResponseFunction implements Function<TimeEntry, GetTimeEntryResponse> {
 
     @Override
-    public GetTimeEntryTemplateResponse apply(TimeEntryTemplate timeEntryTemplate) {
-        return GetTimeEntryTemplateResponse.builder()
-                .startTime(timeEntryTemplate.getStartTime())
-                .endTime(timeEntryTemplate.getEndTime())
-                .startDayOffset(timeEntryTemplate.getStartDayOffset())
-                .endDayOffset(timeEntryTemplate.getEndDayOffset())
+    public GetTimeEntryResponse apply(TimeEntry timeEntry) {
+        return GetTimeEntryResponse.builder()
+                .startDateTime(timeEntry.getStartDateTime())
+                .endDateTime(timeEntry.getEndDateTime())
+                .id(timeEntry.getId())
                 .build();
     }
 }
