@@ -1,7 +1,10 @@
-package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.controller.api;
+package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.controller.api;
 
 import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
-import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.*;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.GetAvailabilityTemplateResponse;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.GetAvailabilityTemplatesResponse;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.PatchAvailabilityTemplateRequest;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.PostAvailabilityTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Tag(name="TimeEntrys Controller")
-public interface TimeEntryTemplateController {
+@Tag(name="AvailabilityTemplate Controller")
+public interface AvailabilityTemplateController {
     PageConfig pageConfig = new PageConfig();
 
-    @Operation(summary = "Get all Time Entry")
-    @PostMapping("api/gettimeentrytemplates")
+    @Operation(summary = "Get all AvailabilityTemplates")
+    @PostMapping("api/getavailabilitytemplates")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplatesResponse getTimeEntryTemplates(
+    GetAvailabilityTemplatesResponse getAvailabilityTemplates(
             @Parameter(
                     name = "page number",
                     description = "Page number to retrieve"
@@ -46,74 +49,75 @@ public interface TimeEntryTemplateController {
             String sortField
     );
 
-    @Operation(summary = "Get TimeEntrys")
-    @GetMapping("api/timeentrytemplates/{id}")
+    @Operation(summary = "Get AvailabilityTemplates")
+    @GetMapping("api/availabilitytemplates/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplateResponse getTimeEntryTemplate(
+    GetAvailabilityTemplateResponse getAvailabilityTemplate(
             @Parameter(
                     name = "id",
-                    description = "TimeEntrys id value",
+                    description = "AvailabilityTemplates id value",
                     required = true
             )
             @PathVariable("id")
             UUID id
     );
 
-    @Operation(summary = "Create TimeEntrys")
-    @PostMapping("api/timeentrytemplates")
+    @Operation(summary = "Create AvailabilityTemplates")
+    @PostMapping("api/availabilitytemplates")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    GetTimeEntryTemplateResponse createTimeEntryTemplates(
+    GetAvailabilityTemplateResponse createAvailabilityTemplates(
             @Parameter(
-                    name = "PostTimeEntryTemplatesRequest",
-                    description = "PostTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PostTimeEntryTemplateRequest.class),
+                    name = "PostAvailabilityTemplatesRequest",
+                    description = "PostAvailabilityTemplatesRequest DTO",
+                    schema = @Schema(implementation = PostAvailabilityTemplateRequest.class),
                     required = true
             )
             @RequestBody
-            PostTimeEntryTemplateRequest postTimeEntryTemplateRequest
+            PostAvailabilityTemplateRequest postAvailabilityTemplateRequest
     );
 
-    @Operation(summary = "Update TimeEntrys")
-    @PatchMapping("api/timeentrytemplates/{id}")
+    @Operation(summary = "Update AvailabilityTemplates")
+    @PatchMapping("api/availabilitytemplates/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplateResponse updateTimeEntryTemplate(
+    GetAvailabilityTemplateResponse updateAvailabilityTemplate(
             @Parameter(
                     name = "id",
-                    description = "TimeEntrys id value",
+                    description = "AvailabilityTemplates id value",
                     required = true
             )
             @PathVariable("id")
             UUID id,
             @Parameter(
-                    name = "PatchTimeEntrysRequest",
-                    description = "PatchTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PatchTimeEntryTemplateRequest.class),
+                    name = "PatchAvailabilityTemplatesRequest",
+                    description = "PatchAvailabilityTemplatesRequest DTO",
+                    schema = @Schema(implementation = PatchAvailabilityTemplateRequest.class),
                     required = true
             )
             @RequestBody
-            PatchTimeEntryTemplateRequest patchTimeEntryTemplateRequest
+            PatchAvailabilityTemplateRequest patchAvailabilityTemplateRequest
     );
 
-    @Operation(summary = "Delete TimeEntrys")
-    @DeleteMapping("/api/timeentrytemplates/{id}")
+
+    @Operation(summary = "Delete AvailabilityTemplates")
+    @DeleteMapping("/api/availabilitytemplates/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteTimeEntryTemplate(
+    void deleteAvailabilityTemplate(
             @Parameter(
                     name = "id",
-                    description = "TimeEntrys id value",
+                    description = "AvailabilityTemplates id value",
                     required = true
             )
             @PathVariable("id")
             UUID id
     );
 
-    @Operation(summary = "Get TimeEntryTemplates by User")
-    @PostMapping("api/timeentrytemplates/{userId}")
+    @Operation(summary = "Get AvailabilityTemplates by User")
+    @PostMapping("api/availabilitytemplates/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    GetTimeEntryTemplatesResponse getTimeEntryTemplatesByUser(
+    GetAvailabilityTemplatesResponse getAvailabilityTemplatesByUser(
             @Parameter(
                     name = "page number",
                     description = "Page number to retrieve"
@@ -128,7 +132,7 @@ public interface TimeEntryTemplateController {
             int size,
             @Parameter(
                     name = "userId",
-                    description = "TimeEntrys userId value",
+                    description = "AvailabilityTemplates userId value",
                     required = true
             )
             @PathVariable("userId")

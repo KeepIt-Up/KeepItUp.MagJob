@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigInteger;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.UUID;
+
 @Getter
 @Setter
 @Builder
@@ -14,16 +17,15 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode
 @Schema(description = "GetTimeEntryResponse DTO")
 public class GetTimeEntryTemplateResponse {
+    @Schema(description = "PostTimeEntryTemplateRequest startTime value")
+    private LocalTime startTime;
 
-    @Schema(description = "Organization id value")
-    private BigInteger id;
+    @Schema(description = "PostTimeEntryTemplateRequest endTime value")
+    private LocalTime endTime;
 
-    @Schema(description = "Organization date of creation value")
-    private ZonedDateTime dateOfCreation;
+    @Schema(description = "PostTimeEntryTemplateRequest startDayOffset value")
+    private Integer startDayOffset;
 
-    @Schema(description = "Organization name value")
-    private String name;
-
-    @Schema(description = "Organization profile banner")
-    private byte[] banner;
+    @Schema(description = "PostTimeEntryTemplateRequest endDayOffset value")
+    private Integer endDayOffset;
 }

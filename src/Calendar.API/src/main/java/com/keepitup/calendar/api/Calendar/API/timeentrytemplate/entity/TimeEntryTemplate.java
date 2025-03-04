@@ -1,5 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity;
 
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,9 +22,8 @@ import java.util.UUID;
 @Table(name = "time_entry_templates")
 public class TimeEntryTemplate {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
-    @SequenceGenerator(name = "memberSequenceGenerator")
-    private BigInteger id;
+    @Column(length = 254, unique = true, nullable = false, updatable = false)
+    private UUID id;
 
     @NotNull
     @Column(name = "startTime", nullable = false)
@@ -41,4 +41,7 @@ public class TimeEntryTemplate {
     @Column(name = "endDayOffset", nullable = false)
     private Integer endDayOffset;
 
+    @ManyToOne
+    @JoinColumn(name = "availability_template_id")
+    private AvailabilityTemplate availabilityTemplate;
 }

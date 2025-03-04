@@ -1,10 +1,13 @@
 package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity;
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.UUID;
 
 
 @Getter
@@ -17,11 +20,10 @@ import java.math.BigInteger;
 @Table(name = "availability_templates")
 @Entity
 public class AvailabilityTemplate {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
     @SequenceGenerator(name = "memberSequenceGenerator")
-    private BigInteger id;
+    private UUID id;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -39,5 +41,6 @@ public class AvailabilityTemplate {
     @Column(name = "numberOfDays", nullable = false)
     private Integer numberOfDays;
 
-    // Getters and setters
+    @OneToMany(mappedBy = "AvailabilityTemplate")
+    private List<TimeEntryTemplate> timeEntryTemplates;
 }

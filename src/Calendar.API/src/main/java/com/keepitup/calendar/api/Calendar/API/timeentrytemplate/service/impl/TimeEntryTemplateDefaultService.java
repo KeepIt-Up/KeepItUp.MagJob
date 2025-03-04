@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,18 +39,8 @@ public class TimeEntryTemplateDefaultService implements TimeEntryTemplateService
     }
 
     @Override
-    public Optional<TimeEntryTemplate> find(BigInteger id) {
+    public Optional<TimeEntryTemplate> find(UUID id) {
         return timeEntryTemplateRepository.findById(id);
-    }
-
-    @Override
-    public Optional<TimeEntryTemplate> findByName(String name) {
-        return timeEntryTemplateRepository.findByName(name);
-    }
-
-    @Override
-    public Page<TimeEntryTemplate> findAllByDateOfCreation(ZonedDateTime dateOfCreation, Pageable pageable) {
-        return timeEntryTemplateRepository.findAllByDateOfCreation(dateOfCreation, pageable);
     }
 
     @Override
@@ -60,7 +49,7 @@ public class TimeEntryTemplateDefaultService implements TimeEntryTemplateService
     }
 
     @Override
-    public void delete(BigInteger id) {
+    public void delete(UUID id) {
         timeEntryTemplateRepository.findById(id).ifPresent(timeEntryTemplateRepository::delete);
     }
 

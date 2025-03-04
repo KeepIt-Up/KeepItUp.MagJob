@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface TimeEntryTemplateRepository extends JpaRepository<TimeEntryTemplate, BigInteger> {
-    Optional<TimeEntryTemplate> findByName(String name);
-
-    Page<TimeEntryTemplate> findAllByDateOfCreation(ZonedDateTime dateOfCreation, Pageable pageable);
+    Optional<TimeEntryTemplate> findById(UUID uuid);
 }

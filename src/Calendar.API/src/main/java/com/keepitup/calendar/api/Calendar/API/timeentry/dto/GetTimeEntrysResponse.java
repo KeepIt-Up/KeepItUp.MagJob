@@ -1,9 +1,8 @@
-package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto;
+package com.keepitup.calendar.api.Calendar.API.timeentry.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-@Schema(description = "GetTimeEntryTemplatesResponse DTO")
-public class GetTimeEntryTemplatesResponse {
+@Schema(description = "GetTimeEntryResponse DTO")
+public class GetTimeEntrysResponse {
 
     @Getter
     @Setter
@@ -24,14 +23,14 @@ public class GetTimeEntryTemplatesResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @ToString
     @EqualsAndHashCode
-    public static class TimeEntryTemplate {
-        @Schema(description = "TimeEntryTemplate id value")
+    public static class TimeEntry {
+        @Schema(description = "TimeEntry id value")
         private UUID id;
     }
 
-    @Singular("timeEntryTemplate")
-    @Schema(description = "TimeEntryTemplate list")
-    private List<TimeEntryTemplate> timeEntryTemplateList;
+    @Singular("timeEntry")
+    @Schema(description = "TimeEntry list")
+    private List<TimeEntry> timeEntryList;
 
     @Schema(description = "Number of all objects")
     private Integer count;

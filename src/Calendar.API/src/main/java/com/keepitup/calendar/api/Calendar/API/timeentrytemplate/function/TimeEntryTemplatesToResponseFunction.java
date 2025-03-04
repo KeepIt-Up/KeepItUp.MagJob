@@ -13,7 +13,7 @@ public class TimeEntryTemplatesToResponseFunction implements BiFunction<Page<Tim
     @Override
     public GetTimeEntryTemplatesResponse apply(Page<TimeEntryTemplate> entities, Integer count) {
         return GetTimeEntryTemplatesResponse.builder()
-                .organizations(entities.stream()
+                .timeEntryTemplateList(entities.stream()
                         .map(organization -> GetTimeEntryTemplatesResponse.TimeEntryTemplate.builder()
                                 .build())
                         .toList())

@@ -11,6 +11,11 @@ public class RequestToTimeEntryTemplateFunction implements Function<PostTimeEntr
     @Override
     public TimeEntryTemplate apply(PostTimeEntryTemplateRequest request) {
         return TimeEntryTemplate.builder()
+                .id(request.getId())
+                .startDayOffset(request.getStartDayOffset())
+                .endDayOffset(request.getEndDayOffset())
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
                 .build();
     }
 }

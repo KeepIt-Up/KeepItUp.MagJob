@@ -48,7 +48,7 @@ public class TimeEntryTemplateDefaultController implements TimeEntryTemplateCont
     }
 
     @Override
-    public GetTimeEntryTemplatesResponse getTimeEntrys(int page, int size, boolean ascending, String sortField) {
+    public GetTimeEntryTemplatesResponse getTimeEntryTemplates(int page, int size, boolean ascending, String sortField) {
         Sort sort = ascending ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         Integer count = service.findAll().size();
@@ -57,23 +57,24 @@ public class TimeEntryTemplateDefaultController implements TimeEntryTemplateCont
 
 
     @Override
-    public GetTimeEntryTemplateResponse createTimeEntrys(PostTimeEntryTemplateRequest postTimeEntryTemplateRequest) {
-        return null;
+    public GetTimeEntryTemplateResponse createTimeEntryTemplates(PostTimeEntryTemplateRequest postTimeEntryTemplateRequest) {
+        UUID id = UUID.randomUUID();
+        postTimeEntryTemplateRequest.setId(id);
+        service.create(requestToTimeEntry.apply(postTimeEntryTemplateRequest));
+        return service.find(id)
+                .map(timeEntryToResponse)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
     }
 
     @Override
-    public GetTimeEntryTemplateResponse getTimeEntry(BigInteger id) {
-        TimeEntryTemplate timeEntry = service.find(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-
+    public GetTimeEntryTemplateResponse getTimeEntryTemplate(UUID id) {
         return service.find(id)
                 .map(timeEntryToResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public void deleteTimeEntryTemplate(BigInteger id) {
+    public void deleteTimeEntryTemplate(UUID id) {
         Optional<TimeEntryTemplate> timeEntryTemplate = service.find(id);
 
         if (timeEntryTemplate.isEmpty()) {
@@ -106,7 +107,7 @@ public class TimeEntryTemplateDefaultController implements TimeEntryTemplateCont
     }
 
     @Override
-    public GetTimeEntryTemplateResponse updateTimeEntryTemplate(BigInteger id, PatchTimeEntryTemplateRequest patchTimeEntryTemplateRequest) {
+    public GetTimeEntryTemplateResponse updateTimeEntryTemplate(UUID id, PatchTimeEntryTemplateRequest patchTimeEntryTemplateRequest) {
         Optional<TimeEntryTemplate> timeEntry = service.find(id);
 
         if (timeEntry.isEmpty()) {
@@ -114,6 +115,6 @@ public class TimeEntryTemplateDefaultController implements TimeEntryTemplateCont
         }
 
         service.update(updateTimeEntryWithRequest.apply(timeEntry.get(), patchTimeEntryTemplateRequest));
-        return getTimeEntry(id);
+        return getTimeEntryTemplate(id);
     }
 }

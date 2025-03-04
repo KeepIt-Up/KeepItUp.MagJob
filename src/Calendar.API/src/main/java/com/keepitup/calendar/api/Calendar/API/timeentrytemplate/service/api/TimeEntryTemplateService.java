@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,15 +17,11 @@ public interface TimeEntryTemplateService {
 
     Page<TimeEntryTemplate> findAll(Pageable pageable);
 
-    Optional<TimeEntryTemplate> find(BigInteger id);
+    Optional<TimeEntryTemplate> find(UUID id);
 
-    Optional<TimeEntryTemplate> findByName(String name);
+    void create(TimeEntryTemplate timeEntryTemplate);
 
-    Page<TimeEntryTemplate> findAllByDateOfCreation(ZonedDateTime dateOfCreation, Pageable pageable);
+    void delete(UUID id);
 
-    void create(TimeEntryTemplate organization);
-
-    void delete(BigInteger id);
-
-    void update(TimeEntryTemplate organization);
+    void update(TimeEntryTemplate timeEntryTemplate);
 }

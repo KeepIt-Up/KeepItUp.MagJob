@@ -1,4 +1,4 @@
-package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.function;
+package com.keepitup.calendar.api.Calendar.API.timeentry.function;
 
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.GetTimeEntryTemplateResponse;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class TimeEntryTemplateToResponseFunction implements Function<TimeEntryTemplate, GetTimeEntryTemplateResponse> {
+public class TimeEntryToResponseFunction implements Function<TimeEntryTemplate, GetTimeEntryTemplateResponse> {
 
     @Override
     public GetTimeEntryTemplateResponse apply(TimeEntryTemplate timeEntryTemplate) {

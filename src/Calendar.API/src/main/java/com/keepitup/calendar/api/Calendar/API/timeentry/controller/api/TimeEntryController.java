@@ -1,7 +1,10 @@
-package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.controller.api;
+package com.keepitup.calendar.api.Calendar.API.timeentry.controller.api;
 
 import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
-import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.*;
+import com.keepitup.calendar.api.Calendar.API.timeentry.dto.GetTimeEntryResponse;
+import com.keepitup.calendar.api.Calendar.API.timeentry.dto.GetTimeEntrysResponse;
+import com.keepitup.calendar.api.Calendar.API.timeentry.dto.PatchTimeEntryRequest;
+import com.keepitup.calendar.api.Calendar.API.timeentry.dto.PostTimeEntryRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @Tag(name="TimeEntrys Controller")
-public interface TimeEntryTemplateController {
+public interface TimeEntryController {
     PageConfig pageConfig = new PageConfig();
 
-    @Operation(summary = "Get all Time Entry")
-    @PostMapping("api/gettimeentrytemplates")
+    @Operation(summary = "Get all Time Entrys")
+    @PostMapping("api/gettimeentrys")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplatesResponse getTimeEntryTemplates(
+    GetTimeEntrysResponse getTimeEntrys(
             @Parameter(
                     name = "page number",
                     description = "Page number to retrieve"
@@ -47,10 +50,10 @@ public interface TimeEntryTemplateController {
     );
 
     @Operation(summary = "Get TimeEntrys")
-    @GetMapping("api/timeentrytemplates/{id}")
+    @GetMapping("api/timeentrys/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplateResponse getTimeEntryTemplate(
+    GetTimeEntryResponse getTimeEntry(
             @Parameter(
                     name = "id",
                     description = "TimeEntrys id value",
@@ -61,25 +64,25 @@ public interface TimeEntryTemplateController {
     );
 
     @Operation(summary = "Create TimeEntrys")
-    @PostMapping("api/timeentrytemplates")
+    @PostMapping("api/timeentrys")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    GetTimeEntryTemplateResponse createTimeEntryTemplates(
+    GetTimeEntryResponse createTimeEntrys(
             @Parameter(
-                    name = "PostTimeEntryTemplatesRequest",
+                    name = "PostTimeEntrysRequest",
                     description = "PostTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PostTimeEntryTemplateRequest.class),
+                    schema = @Schema(implementation = PostTimeEntryRequest.class),
                     required = true
             )
             @RequestBody
-            PostTimeEntryTemplateRequest postTimeEntryTemplateRequest
+            PostTimeEntryRequest postTimeEntryRequest
     );
 
     @Operation(summary = "Update TimeEntrys")
-    @PatchMapping("api/timeentrytemplates/{id}")
+    @PatchMapping("api/timeentrys/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    GetTimeEntryTemplateResponse updateTimeEntryTemplate(
+    GetTimeEntryResponse updateTimeEntry(
             @Parameter(
                     name = "id",
                     description = "TimeEntrys id value",
@@ -90,17 +93,17 @@ public interface TimeEntryTemplateController {
             @Parameter(
                     name = "PatchTimeEntrysRequest",
                     description = "PatchTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PatchTimeEntryTemplateRequest.class),
+                    schema = @Schema(implementation = PatchTimeEntryRequest.class),
                     required = true
             )
             @RequestBody
-            PatchTimeEntryTemplateRequest patchTimeEntryTemplateRequest
+            PatchTimeEntryRequest patchTimeEntryRequest
     );
 
     @Operation(summary = "Delete TimeEntrys")
-    @DeleteMapping("/api/timeentrytemplates/{id}")
+    @DeleteMapping("/api/timeentrys/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteTimeEntryTemplate(
+    void deleteTimeEntry(
             @Parameter(
                     name = "id",
                     description = "TimeEntrys id value",
@@ -110,10 +113,10 @@ public interface TimeEntryTemplateController {
             UUID id
     );
 
-    @Operation(summary = "Get TimeEntryTemplates by User")
-    @PostMapping("api/timeentrytemplates/{userId}")
+    @Operation(summary = "Get TimeEntrys by User")
+    @PostMapping("api/timeentrys/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    GetTimeEntryTemplatesResponse getTimeEntryTemplatesByUser(
+    GetTimeEntrysResponse getTimeEntrysByUser(
             @Parameter(
                     name = "page number",
                     description = "Page number to retrieve"
