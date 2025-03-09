@@ -19,34 +19,30 @@ Pipeline CI/CD dla projektu MagJob jest zorganizowany wokół monorepo, które z
 ├── .github/
 │   └── workflows/           # Definicje workflow GitHub Actions
 ├── src/
-│   ├── APIGateway/          # Mikroserwis API Gateway
-│   │   ├── APIGateway.Web/  # Aplikacja API Gateway
-│   │   └── APIGateway.Tests/# Testy dla API Gateway
+│   ├── KeepItUp.MagJob.Gateway/          # Mikroserwis Gateway
+│   │   ├── KeepItUp.MagJob.Gateway.Web/  # Aplikacja Gateway
+│   │   └── KeepItUp.MagJob.Gateway.Tests/# Testy dla Gateway
 │   │
-│   ├── Client/              # Aplikacja frontendowa
-│   │   ├── Client.Web/      # Kod źródłowy aplikacji frontendowej
-│   │   └── Client.Tests/    # Testy dla aplikacji frontendowej
+│   ├── KeepItUp.MagJob.Client/              # Aplikacja frontendowa
+│   │   └── KeepItUp.MagJob.Client.Web/      # Kod źródłowy aplikacji frontendowej
 │   │
-│   ├── Organizations/       # Mikroserwis zarządzania organizacjami i użytkownikami
-│   │   ├── Organizations.API/         # API mikroserwisu
-│   │   ├── Organizations.Domain/      # Warstwa domeny
-│   │   ├── Organizations.Infrastructure/ # Warstwa infrastruktury
-│   │   ├── Organizations.Application/ # Warstwa aplikacji
-│   │   └── Organizations.Tests/       # Testy dla mikroserwisu
+│   ├── KeepItUp.MagJob.Identity/src       # Mikroserwis zarządzania organizacjami i użytkownikami
+│   │   ├── KeepItUp.MagJob.Identity.Web/         # API mikroserwisu
+│   │   ├── KeepItUp.MagJob.Identity.UseCases/      # Warstwa domeny
+│   │   ├── KeepItUp.MagJob.Identity.Infrastructure/ # Warstwa infrastruktury
+│   │   ├── KeepItUp.MagJob.Identity.Core/ # Warstwa aplikacji
 │   │
-│   ├── Schedules/           # Mikroserwis zarządzania dyspozycyjnością i grafikami
-│   │   ├── Schedules.API/   # API mikroserwisu
-│   │   ├── Schedules.Domain/# Warstwa domeny
-│   │   ├── Schedules.Infrastructure/ # Warstwa infrastruktury
-│   │   ├── Schedules.Application/ # Warstwa aplikacji
-│   │   └── Schedules.Tests/ # Testy dla mikroserwisu
+│   ├── KeepItUp.MagJob.Schedules/           # Mikroserwis zarządzania dyspozycyjnością i grafikami
+│   │   ├── KeepItUp.MagJob.Schedules.Web/   # API mikroserwisu
+│   │   ├── KeepItUp.MagJob.Schedules.UseCases/ # Warstwa use cases
+│   │   ├── KeepItUp.MagJob.Schedules.Infrastructure/ # Warstwa infrastruktury
+│   │   ├── KeepItUp.MagJob.Schedules.Core/ # Warstwa core
 │   │
-│   ├── WorkEvidence/        # Mikroserwis ewidencji czasu pracy
-│   │   ├── WorkEvidence.API/# API mikroserwisu
-│   │   ├── WorkEvidence.Domain/ # Warstwa domeny
-│   │   ├── WorkEvidence.Infrastructure/ # Warstwa infrastruktury
-│   │   ├── WorkEvidence.Application/ # Warstwa aplikacji
-│   │   └── WorkEvidence.Tests/ # Testy dla mikroserwisu
+│   ├── KeepItUp.MagJob.WorkEvidence/        # Mikroserwis ewidencji czasu pracy
+│   │   ├── KeepItUp.MagJob.WorkEvidence.Web/# API mikroserwisu
+│   │   ├── KeepItUp.MagJob.WorkEvidence.UseCases/ # Warstwa use cases
+│   │   ├── KeepItUp.MagJob.WorkEvidence.Infrastructure/ # Warstwa infrastruktury
+│   │   ├── KeepItUp.MagJob.WorkEvidence.Core/ # Warstwa core
 │   │
 │   └── Keycloak/            # Konfiguracja Keycloak
 │
