@@ -68,6 +68,10 @@ Ten dokument opisuje standardy kodowania dla projektu MagJob, które powinny by�
   ```csharp
   public interface IUserRepository
   ```
+- **Przestrzenie nazw**: PascalCase, zgodne z hierarchią katalogów
+  ```csharp
+  namespace KeepItUp.MagJob.Identity.Application.Services
+  ```
 
 ### Organizacja Kodu
 
@@ -92,7 +96,7 @@ Ten dokument opisuje standardy kodowania dla projektu MagJob, które powinny by�
 using System;
 using System.Threading.Tasks;
 
-namespace MagJob.Organizations.Application.Services
+namespace KeepItUp.MagJob.Identity.Application.Services
 {
     public class UserService : IUserService
     {
@@ -308,7 +312,7 @@ export class UserListComponent implements OnInit {
   ```
 - **Schematy**: snake_case
   ```sql
-  CREATE SCHEMA users
+  CREATE SCHEMA identity
   ```
 
 ### Dobre Praktyki
@@ -323,7 +327,7 @@ export class UserListComponent implements OnInit {
 ### Przykład
 
 ```sql
-CREATE TABLE users.organizations (
+CREATE TABLE identity.organizations (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -331,10 +335,10 @@ CREATE TABLE users.organizations (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     owner_id UUID NOT NULL,
-    CONSTRAINT organizations_owner_id_fk FOREIGN KEY (owner_id) REFERENCES users.users(id)
+    CONSTRAINT organizations_owner_id_fk FOREIGN KEY (owner_id) REFERENCES identity.users(id)
 );
 
-CREATE INDEX organizations_name_idx ON users.organizations(name);
+CREATE INDEX organizations_name_idx ON identity.organizations(name);
 ```
 
 ## Proces Code Review

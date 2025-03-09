@@ -93,11 +93,15 @@ jobs:
           java-version: '17'
       
       # Budowanie i testowanie .NET
-      - name: Build .NET
-        run: dotnet build src/Organizations/Organizations.API/Organizations.API.csproj
+      - name: Build .NET Projects
+        run: |
+          dotnet build src/APIGateway/APIGateway.Web/APIGateway.Web.csproj
+          dotnet build src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web/KeepItUp.MagJob.Identity.Web.csproj
       
-      - name: Test .NET
-        run: dotnet test src/Organizations/Organizations.Tests/Organizations.Tests.csproj
+      - name: Test .NET Projects
+        run: |
+          dotnet test src/APIGateway/APIGateway.Tests/APIGateway.Tests.csproj
+          dotnet test src/KeepItUp.MagJob.Identity/tests/KeepItUp.MagJob.Identity.Tests/KeepItUp.MagJob.Identity.Tests.csproj
       
       # Budowanie i testowanie Angular
       - name: Install Angular dependencies
@@ -167,17 +171,15 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       # Budowanie i publikowanie obrazów Docker
-      - name: Build and Push Docker Images
+      - name: Build and push Docker images
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
           tags: |
-            magjob/api-gateway:${{ github.sha }}
             magjob/client-web:${{ github.sha }}
-            magjob/organizations-api:${{ github.sha }}
-            magjob/schedules-api:${{ github.sha }}
-            magjob/workevidence-api:${{ github.sha }}
+            magjob/api-gateway:${{ github.sha }}
+            magjob/identity-api:${{ github.sha }}
       
       # Wdrażanie do Azure
       - name: Deploy to Azure
@@ -187,9 +189,7 @@ jobs:
           images: |
             magjob/api-gateway:${{ github.sha }}
             magjob/client-web:${{ github.sha }}
-            magjob/organizations-api:${{ github.sha }}
-            magjob/schedules-api:${{ github.sha }}
-            magjob/workevidence-api:${{ github.sha }}
+            magjob/identity-api:${{ github.sha }}
       
       # Powiadomienie o wdrożeniu
       - name: Notify Deployment
@@ -225,29 +225,24 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       # Budowanie i publikowanie obrazów Docker
-      - name: Build and Push Docker Images
+      - name: Build and push Docker images
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
           tags: |
-            magjob/api-gateway:${{ github.sha }}
             magjob/client-web:${{ github.sha }}
-            magjob/organizations-api:${{ github.sha }}
-            magjob/schedules-api:${{ github.sha }}
-            magjob/workevidence-api:${{ github.sha }}
+            magjob/api-gateway:${{ github.sha }}
+            magjob/identity-api:${{ github.sha }}
       
       # Wdrażanie do Azure
-      - name: Deploy to Azure
-        uses: azure/webapps-deploy@v2
+      - name: Deploy to Azure Kubernetes Service
+        uses: azure/k8s-deploy@v1
         with:
-          app-name: 'magjob-prod'
-          images: |
-            magjob/api-gateway:${{ github.sha }}
-            magjob/client-web:${{ github.sha }}
-            magjob/organizations-api:${{ github.sha }}
-            magjob/schedules-api:${{ github.sha }}
-            magjob/workevidence-api:${{ github.sha }}
+          manifests: |
+            kubernetes/client-web-deployment.yaml
+            kubernetes/api-gateway-deployment.yaml
+            kubernetes/identity-api-deployment.yaml
       
       # Powiadomienie o wdrożeniu
       - name: Notify Deployment
@@ -321,3 +316,12 @@ Sekrety i zmienne środowiskowe są zarządzane w następujący sposób:
 1. **GitHub Secrets**: Przechowywanie sekretów używanych w pipeline CI/CD
 2. **Azure Key Vault**: Przechowywanie sekretów używanych przez aplikację
 3. **Zmienne środowiskowe**: Konfiguracja specyficzna dla środowiska przekazywana do kontenerów Docker 
+
+## Aktualizacje w pliku
+
+- **Update Kubernetes manifests**:
+  - Zastąpione odwołania do "Organizations.API" przez "identity-api"
+  - Zastąpione odwołania do "organizations-api" przez "identity-api"
+- **Update Docker Compose**:
+  - Zastąpione odwołania do "Organizations.API" przez "identity-api"
+  - Zastąpione odwołania do "organizations-api" przez "identity-api"

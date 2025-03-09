@@ -41,15 +41,15 @@ MagJob to system wsparcia w rozwoju oraz komunikacji w małych i średnich firma
 
 ### 4. Mikrousługi
 
-#### 4.1. Serwis Użytkowników (.NET)
+#### 4.1. Serwis Tożsamości (.NET)
 
-- **Struktura projektu**: `src/Organizations/`
+- **Struktura projektu**: `src/KeepItUp.MagJob.Identity/`
 - **Funkcjonalności**:
   - Zarządzanie użytkownikami
   - Zarządzanie organizacjami
   - Zarządzanie zaproszeniami
   - Zarządzanie rolami i uprawnieniami
-- **Baza danych**: PostgreSQL (schemat users)
+- **Baza danych**: PostgreSQL (schemat identity)
 - **Komunikacja**: REST API, publikowanie zdarzeń do kolejek
 
 #### 4.2. Serwis Zarządzania Dyspozycyjnością i Grafikami (Spring)

@@ -5,11 +5,11 @@ Ten dokument opisuje wstępny model danych dla projektu MagJob, w tym główne e
 ## Przegląd
 
 System MagJob wykorzystuje bazę danych PostgreSQL z oddzielnymi schematami dla każdej mikrousługi:
-- **users** - schemat dla Serwisu Użytkowników
+- **identity** - schemat dla Serwisu Tożsamości
 - **schedules** - schemat dla Serwisu Zarządzania Dyspozycyjnością i Grafikami
 - **timetracking** - schemat dla Serwisu Ewidencji Czasu Pracy
 
-## Schemat users
+## Schemat identity
 
 ### Tabela: Users
 

@@ -37,7 +37,7 @@ docker-compose up -d
 This will start all the necessary services:
 - Client Web Application
 - API Gateway
-- Organizations API
+- Identity API
 - Keycloak
 - Database
 - Other dependencies
@@ -59,10 +59,10 @@ cd src/APIGateway.Web
 dotnet run
 ```
 
-### Organizations API
+### Identity API
 
 ```bash
-cd src/Organizations.API
+cd src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web
 dotnet run
 ```
 
