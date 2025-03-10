@@ -1,10 +1,9 @@
 package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.controller.api;
 
+import com.keepitup.calendar.api.Calendar.API.Graphic.dto.GetGraphicResponse;
+import com.keepitup.calendar.api.Calendar.API.Graphic.dto.PostGraphicRequest;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.*;
 import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
-import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.GetAvailabilityTemplateResponse;
-import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.GetAvailabilityTemplatesResponse;
-import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.PatchAvailabilityTemplateRequest;
-import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.PostAvailabilityTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Tag(name="AvailabilityTemplate Controller")
@@ -137,5 +139,26 @@ public interface AvailabilityTemplateController {
             )
             @PathVariable("userId")
             UUID userId
+    );
+
+    @Operation(summary = "Create graphic")
+    @PostMapping("api/createGraphicFromAvailabilityTemplate")
+    @ResponseStatus(HttpStatus.OK)
+    GetGraphicResponse createAndPopulateGraphic(
+        @Parameter(
+                name = "ScheduleTemplate Id",
+                description = "Id of the ScheduleTemplate the Graphic is created from"
+        )
+        UUID availabityTemplateId,
+        @Parameter(
+            name = "startDate",
+            description = "startDate of the Graphic"
+        )
+        LocalDate startDate,
+        @Parameter(
+                name = "Name",
+                description = "Name of the graphic"
+        )
+        PostGraphicRequest name
     );
 }

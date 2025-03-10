@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.entity;
 
 import com.fasterxml.jackson.core.JsonToken;
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,4 +31,7 @@ public class Graphic {
 
     @OneToMany
     private List<TimeEntryMember> timeEntryMembers;
+
+    @OneToMany
+    private List<TimeEntry> timeEntries;
 }

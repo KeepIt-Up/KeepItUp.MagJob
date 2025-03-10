@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.dto;
 
 
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,4 +31,7 @@ public class PatchGraphicRequest {
 
     @Schema(description = "GetGraphicRequest TimeEntryMembers value")
     private List<TimeEntryMember> timeEntryMembers;
+
+    @Schema(description = "GetGraphicRequest TimeEntries value")
+    private List<TimeEntry> timeEntries;
 }

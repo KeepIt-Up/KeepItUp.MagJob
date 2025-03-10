@@ -28,6 +28,7 @@ public class TimeEntryTemplateDefaultService implements TimeEntryTemplateService
         return Optional.empty();
     }
 
+
     @Override
     public List<TimeEntryTemplate> findAll() {
         return timeEntryTemplateRepository.findAll();
@@ -56,5 +57,10 @@ public class TimeEntryTemplateDefaultService implements TimeEntryTemplateService
     @Override
     public void update(TimeEntryTemplate timeEntryTemplate) {
         timeEntryTemplateRepository.save(timeEntryTemplate);
+    }
+
+    @Override
+    public Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplateId(UUID availabityTemplateId) {
+        return timeEntryTemplateRepository.findByAvailabilityTemplateId(availabityTemplateId);
     }
 }

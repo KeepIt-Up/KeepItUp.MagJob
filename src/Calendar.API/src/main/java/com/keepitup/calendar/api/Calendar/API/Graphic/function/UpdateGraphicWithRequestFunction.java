@@ -15,6 +15,7 @@ public class UpdateGraphicWithRequestFunction implements BiFunction<Graphic, Pat
                 .name(graphic.getName())
                 .managerId(graphic.getManagerId())
                 .timeEntryMembers(graphic.getTimeEntryMembers())
+                .timeEntries(graphic.getTimeEntries())
                 .build();
     }
 }

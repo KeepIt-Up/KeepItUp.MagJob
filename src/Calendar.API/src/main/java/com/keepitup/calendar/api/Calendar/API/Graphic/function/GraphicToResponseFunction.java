@@ -15,6 +15,7 @@ public class GraphicToResponseFunction implements Function<Graphic, GetGraphicRe
                 .name(graphic.getName())
                 .managerId(graphic.getManagerId())
                 .timeEntryMembers(graphic.getTimeEntryMembers())
+                .timeEntries(graphic.getTimeEntries())
                 .build();
     }
 }

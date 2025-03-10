@@ -24,4 +24,6 @@ public interface TimeEntryTemplateService {
     void delete(UUID id);
 
     void update(TimeEntryTemplate timeEntryTemplate);
+
+    Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplateId(UUID availabityTemplateId);
 }
