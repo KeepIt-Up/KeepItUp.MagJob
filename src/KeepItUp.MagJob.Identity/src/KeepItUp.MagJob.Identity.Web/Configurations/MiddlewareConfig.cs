@@ -18,6 +18,8 @@ public static class MiddlewareConfig
       app.UseHsts();
     }
 
+    app.UseAuthentication();
+
     app.UseFastEndpoints()
         .UseSwaggerGen(); // Includes AddFileServer and static files middleware
 
@@ -36,8 +38,9 @@ public static class MiddlewareConfig
     try
     {
       var context = services.GetRequiredService<AppDbContext>();
-      //          context.Database.Migrate();
+
       context.Database.EnsureCreated();
+
       await SeedData.InitializeAsync(context);
     }
     catch (Exception ex)

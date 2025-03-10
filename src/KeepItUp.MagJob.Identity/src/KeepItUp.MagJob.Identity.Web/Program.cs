@@ -23,6 +23,8 @@ builder.Services.AddFastEndpoints()
                   o.ShortSchemaNames = true;
                 });
 
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
+
 
 var app = builder.Build();
 

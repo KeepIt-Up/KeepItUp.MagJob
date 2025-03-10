@@ -6,7 +6,7 @@ namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 /// <summary>
 /// Reprezentuje organizację w systemie.
 /// </summary>
-public class Organization : BaseEntity
+public class Organization : BaseEntity, IAggregateRoot
 {
   /// <summary>
   /// Nazwa organizacji.

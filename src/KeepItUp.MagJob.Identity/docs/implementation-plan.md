@@ -283,25 +283,26 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Integracja z Keycloak
 
-- [ ] `KeycloakClient`
-  - [ ] Metody do komunikacji z Keycloak API
-  - [ ] Obsługa tokenów
-  - [ ] Zarządzanie użytkownikami
+- [x] `KeycloakClient`
+  - [x] Metody do komunikacji z Keycloak API
+  - [x] Obsługa tokenów
+  - [x] Zarządzanie użytkownikami
 
-- [ ] `KeycloakOptions`
-  - [ ] Konfiguracja połączenia z Keycloak
+- [x] `KeycloakOptions`
+  - [x] Konfiguracja połączenia z Keycloak
 
-- [ ] `KeycloakSyncService`
-  - [ ] Synchronizacja ról i uprawnień
-  - [ ] Synchronizacja użytkowników
+- [x] `KeycloakSyncService`
+  - [x] Synchronizacja ról i uprawnień
+  - [x] Synchronizacja użytkowników
+  - [x] Optymalizacja pobierania danych (eager loading)
 
-- [ ] `KeycloakEventListener`
-  - [ ] Nasłuchiwanie zdarzeń z Keycloak
-  - [ ] Obsługa rejestracji użytkowników
-  - [ ] Obsługa logowania użytkowników
+- [x] `KeycloakEventListener`
+  - [x] Nasłuchiwanie zdarzeń z Keycloak
+  - [x] Obsługa rejestracji użytkowników
+  - [x] Obsługa logowania użytkowników
 
-- [ ] `KeycloakAttributeMapper`
-  - [ ] Mapowanie ról i uprawnień do atrybutów w tokenach JWT
+- [x] `KeycloakAttributeMapper`
+  - [x] Mapowanie ról i uprawnień do atrybutów w tokenach JWT
 
 ### Audyt
 
@@ -350,14 +351,15 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Konfiguracja
 
-- [ ] `Program.cs`
-  - [ ] Konfiguracja FastEndpoints
-  - [ ] Konfiguracja uwierzytelniania JWT
-  - [ ] Konfiguracja Keycloak
-  - [ ] Konfiguracja Swagger
+- [x] `Program.cs`
+  - [x] Konfiguracja FastEndpoints
+  - [x] Konfiguracja uwierzytelniania JWT
+  - [x] Konfiguracja Keycloak
+  - [x] Konfiguracja Swagger
 
-- [ ] Middleware
-  - [ ] `ErrorHandlingMiddleware`
+- [x] Middleware
+  - [x] `ErrorHandlingMiddleware` (z FastEndpoints)
+  - [x] Konfiguracja uwierzytelniania i autoryzacji
   - [ ] `AuditMiddleware`
 
 ## Testy
@@ -410,9 +412,11 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Etap 2: Integracja z Keycloak
 
-- [ ] Implementacja klienta Keycloak
-- [ ] Konfiguracja uwierzytelniania JWT
-- [ ] Implementacja synchronizacji danych
+- [x] Implementacja klienta Keycloak
+- [x] Konfiguracja uwierzytelniania JWT
+- [x] Implementacja synchronizacji danych
+- [x] Optymalizacja zapytań do bazy danych
+- [x] Obsługa błędów i logowania
 
 ### Etap 3: Przypadki Użycia i Endpointy
 
@@ -437,8 +441,8 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 | Etap | Rozpoczęcie | Zakończenie | Status | Uwagi |
 |------|-------------|-------------|--------|-------|
-| Etap 1 | 09.03.2025 | | W trakcie | Zaimplementowano modele domeny. Wykorzystano Ardalis.SharedKernel dla klas bazowych. Zmodyfikowano klasę Member, aby mogła posiadać wiele ról. Zaimplementowano hybrydowe podejście do aktualizacji pól CreatedAt i UpdatedAt. Przekształcono UserProfile w prawdziwy Value Object. Zaimplementowano obsługę zdarzeń domenowych. Zastąpiono dedykowane repozytoria wzorcem Specification. Utworzono konfiguracje encji. Rozwiązano problem z niespójnością typów danych dla identyfikatorów (int vs Guid). Skonfigurowano bazę danych PostgreSQL. Pozostało utworzenie migracji. |
-| Etap 2 | | | Nie rozpoczęto | |
+| Etap 1 | 09.03.2025 | 09.03.2025 | Zakończony | Zaimplementowano modele domeny. Wykorzystano Ardalis.SharedKernel dla klas bazowych. Zmodyfikowano klasę Member, aby mogła posiadać wiele ról. Zaimplementowano hybrydowe podejście do aktualizacji pól CreatedAt i UpdatedAt. Przekształcono UserProfile w prawdziwy Value Object. Zaimplementowano obsługę zdarzeń domenowych. Zastąpiono dedykowane repozytoria wzorcem Specification. Utworzono konfiguracje encji. Rozwiązano problem z niespójnością typów danych dla identyfikatorów (int vs Guid). Skonfigurowano bazę danych PostgreSQL. Utworzono migrację. |
+| Etap 2 | 09.03.2025 | 10.03.2025 | Zakończony | Zaimplementowano integrację z Keycloak. Utworzono klienta Keycloak do komunikacji z API. Zaimplementowano serwis synchronizacji danych między modułem Identity a Keycloak. Dodano nasłuchiwanie zdarzeń z Keycloak. Zaimplementowano mapowanie atrybutów użytkownika do tokenów JWT. Skonfigurowano uwierzytelnianie JWT z Keycloak. Zoptymalizowano zapytania do bazy danych poprzez eager loading. Dodano obsługę błędów i logowanie. |
 | Etap 3 | | | Nie rozpoczęto | |
 | Etap 4 | | | Nie rozpoczęto | |
 | Etap 5 | | | Nie rozpoczęto | |
@@ -460,4 +464,10 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 | 09.03.2025 | Claude | Rozwiązanie problemu z niespójnością typów danych dla identyfikatorów (int vs Guid) |
 | 09.03.2025 | Claude | Konfiguracja bazy danych PostgreSQL |
 | 09.03.2025 | Claude | Usunięcie SQLite z projektu i pełne przejście na PostgreSQL |
-| 09.03.2025 | Claude | Rozwiązanie ostrzeżeń EF Core dotyczących komparatora wartości dla kolekcji i opcjonalnej zależności | 
+| 09.03.2025 | Claude | Rozwiązanie ostrzeżeń EF Core dotyczących komparatora wartości dla kolekcji i opcjonalnej zależności |
+| 09.03.2025 | Claude | Implementacja integracji z Keycloak (KeycloakClient, KeycloakSyncService, KeycloakEventListener, KeycloakAttributeMapper) |
+| 09.03.2025 | Claude | Konfiguracja uwierzytelniania JWT z Keycloak |
+| 09.03.2025 | Claude | Integracja Swagger z uwierzytelnianiem Keycloak |
+| 10.03.2025 | Claude | Optymalizacja zapytań do bazy danych poprzez eager loading |
+| 10.03.2025 | Claude | Dodanie obsługi błędów i logowania w serwisach Keycloak |
+| 10.03.2025 | Claude | Konfiguracja autoryzacji w aplikacji | 

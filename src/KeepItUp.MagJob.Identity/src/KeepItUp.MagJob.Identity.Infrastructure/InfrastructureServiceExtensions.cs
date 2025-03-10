@@ -3,6 +3,7 @@ using KeepItUp.MagJob.Identity.Core.Services;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Queries;
+using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 using KeepItUp.MagJob.Identity.UseCases.Contributors.List;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure;
@@ -28,6 +29,8 @@ public static class InfrastructureServiceExtensions
            .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
            .AddScoped<IDeleteContributorService, DeleteContributorService>();
 
+    // Dodanie usług związanych z Keycloak
+    services.AddKeycloakServices(config);
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 
