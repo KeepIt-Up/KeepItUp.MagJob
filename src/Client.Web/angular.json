@@ -9,16 +9,13 @@
         "@schematics/angular:component": {
           "standalone": true,
           "skipImport": true,
-          "skipTests": true,
-          "inlineStyle": true
+          "skipTests": true
         },
         "@schematics/angular:directive": {
-          "standalone": true,
-          "skipTests": true
+          "standalone": true
         },
         "@schematics/angular:pipe": {
-          "standalone": true,
-          "skipTests": true
+          "standalone": true
         },
         "@schematics/angular:service": {
           "skipTests": true
@@ -66,27 +63,53 @@
                   "maximumError": "4kB"
                 }
               ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
               "outputHashing": "all"
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
           "configurations": {
             "production": {
               "buildTarget": "Client.Web:build:production"
             },
             "development": {
               "buildTarget": "Client.Web:build:development"
+            },
+            "docker": {
+              "buildTarget": "Client.Web:build:docker"
+            },
+            "local": {
+              "buildTarget": "Client.Web:build:local"
             }
           },
           "defaultConfiguration": "development"

@@ -20,7 +20,7 @@ export class UserOrganizationsComponent {
   organizationState$ = this.userService.organizationState$;
   paginationOptions$ = this.userService.organizationsPaginationOptions$;
 
-  queryParams = computed(() => ({ userId: this.userState$().data?.id }));
+  queryParams = computed(() => ({ id: this.userState$().data?.id }));
 
   loadMore(): void {
     this.userService.getUserOrganizations(this.queryParams()).subscribe();

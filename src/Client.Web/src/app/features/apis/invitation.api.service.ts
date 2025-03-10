@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Invitation } from '@features/models/invitation/invitation';
 import { BaseApiService } from '@shared/services/base-api.service';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'

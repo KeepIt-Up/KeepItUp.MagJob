@@ -11,8 +11,9 @@ export interface Role {
 }
 
 export interface Permission {
-    id: string,
+    id: number,
     name: string
+    description?: string
 }
 
 export interface CreateRolePayload {

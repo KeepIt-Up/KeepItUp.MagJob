@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SearchModalComponent } from '@shared/components/search-modal/search-modal.component';
 import { Member } from '../../../models/member/member';
 import { OrganizationService } from '@features/services/organization.service';
+import { MemberService } from '@features/services/member.service';
 
 @Component({
     selector: 'app-member-search-modal',
@@ -33,10 +34,10 @@ export class MemberSearchModalComponent {
     @Output() search = new EventEmitter<string>();
     @Output() memberToggled = new EventEmitter<Member>();
     @Output() loadMore = new EventEmitter<void>();
-    private organizationService = inject(OrganizationService);
+    private memberService = inject(MemberService);
 
-    paginationOptions$ = this.organizationService.membersPaginationOptions$;
-    state$ = this.organizationService.memberSearchState$;
+    paginationOptions$ = this.memberService.memberSearchPaginationOptions$;
+    state$ = this.memberService.memberSearchState$;
 
     memberDisplayFn(member: Member): string {
         return `${member.firstName} ${member.lastName}`;

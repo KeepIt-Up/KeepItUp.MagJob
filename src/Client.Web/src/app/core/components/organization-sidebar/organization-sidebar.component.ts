@@ -14,8 +14,7 @@ interface NavItem {
 @Component({
   selector: 'app-organization-sidebar',
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './organization-sidebar.component.html',
-  styleUrl: './organization-sidebar.component.scss'
+  templateUrl: './organization-sidebar.component.html'
 })
 export class OrganizationSidebarComponent {
   @Input() organization!: Organization;
@@ -29,9 +28,7 @@ export class OrganizationSidebarComponent {
   mainNavItems: NavItem[] = [
     { path: 'dashboard', icon: 'bi-house', label: 'Home' },
     { path: 'members', icon: 'bi-people', label: 'Members' },
-    { path: 'reports', icon: 'bi-file-text', label: 'Reports' },
-    { path: 'tasks', icon: 'bi-list-task', label: 'Tasks' },
-    { path: 'documents', icon: 'bi-files', label: 'Documents' },
+    //{ path: 'schedule', icon: 'bi-calendar', label: 'Schedule' },
   ];
 
   settingsNavItems: NavItem[] = [

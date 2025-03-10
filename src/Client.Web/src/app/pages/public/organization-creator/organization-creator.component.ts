@@ -4,9 +4,9 @@ import { OrganizationService } from '@features/services/organization.service';
 import { NotificationService } from '@shared/services/notification.service';
 
 @Component({
-    selector: 'app-organization-creator',
-    imports: [FormsModule],
-    templateUrl: './organization-creator.component.html'
+  selector: 'app-organization-creator',
+  imports: [FormsModule],
+  templateUrl: './organization-creator.component.html'
 })
 export class OrganizationCreatorComponent {
   readonly organizationService = inject(OrganizationService);
@@ -14,9 +14,6 @@ export class OrganizationCreatorComponent {
   organizationCreatePayload = {
     name: '',
     description: '',
-    logoUrl: '',
-    websiteUrl: '',
-    location: ''
   };
 
   onSubmit() {

@@ -19,7 +19,7 @@ export class BaseApiService<T extends { id: string }> {
   }
 
   create<TPayload>(payload: TPayload) {
-    return this.http.post<T>(this.apiUrl, { payload });
+    return this.http.post<T>(this.apiUrl, payload);
   }
 
   update<TPayload>(id: string, payload: TPayload) {

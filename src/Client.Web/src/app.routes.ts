@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { CalendarComponent } from '@features/calendar/calendar.component';
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { MembersTableComponent } from '@pages/organization/members-table/member-table.component';
 import { OrganizationProfilComponent } from '@pages/organization/organization-profil/organization-profil.component';
@@ -12,6 +13,7 @@ import { UserSettingsComponent } from '@pages/user/user-settings/user-settings.c
 import { UserComponent } from '@pages/user/user.component';
 
 export const routes: Routes = [
+
   { path: '', redirectTo: 'user', pathMatch: 'full' },
   {
     path: 'organization/:organizationId', component: OrganizationComponent, children: [
@@ -19,6 +21,7 @@ export const routes: Routes = [
       { path: 'members', component: MembersTableComponent },
       { path: 'invitations', component: InvitationTableComponent },
       { path: 'roles', component: RolesManagementComponent },
+
       { path: 'settings', component: OrganizationProfilComponent },
       { path: '**', redirectTo: 'members' }
     ]
@@ -39,6 +42,6 @@ export const routes: Routes = [
       { path: '**', redirectTo: 'create-organization' }
     ]
   },
-  { path: '**', redirectTo: 'user' }
+  { path: '**', redirectTo: 'public' }
 
 ];

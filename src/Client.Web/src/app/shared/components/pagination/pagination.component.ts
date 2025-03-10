@@ -20,10 +20,10 @@ export interface PaginatedResponse<T extends { id: string }> {
 
 export function serializePaginationOptions<T extends { id: string }>(paginationOptions: PaginationOptions<T>): Record<string, any> {
   return {
-    'pageNumber': paginationOptions.pageNumber,
-    'pageSize': paginationOptions.pageSize,
-    //'options.sortField': paginationOptions.sortField,
-    //'options.ascending': paginationOptions.ascending
+    'options.pageNumber': paginationOptions.pageNumber,
+    'options.pageSize': paginationOptions.pageSize,
+    'options.sortField': paginationOptions.sortField,
+    'options.ascending': paginationOptions.ascending
   }
 }
 

@@ -28,7 +28,7 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
 
   organizationForm = new FormGroup({
     organizationName: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    organizationDescription: new FormControl('', [Validators.required, Validators.minLength(10)]),
+    organizationDescription: new FormControl<string | null>(null),
   });
 
   private organizationService = inject(OrganizationService);
@@ -70,15 +70,7 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
       this.organizationService.updateOrganization(
         this.organizationId,
         payload
-      ).subscribe({
-        next: () => {
-          this.organizationService.getOrganization(this.organizationId);
-          this.notificationService.show('Organization updated successfully', 'success');
-        },
-        error: () => {
-          this.notificationService.show('Error updating organization', 'error');
-        }
-      });
+      ).subscribe();
     }
   }
 
@@ -115,15 +107,7 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
       this.organizationService.updateOrganization(
         this.organizationId,
         payload
-      ).subscribe({
-        next: () => {
-          this.organizationService.getOrganization(this.organizationId);
-          this.notificationService.show('Organization updated successfully', 'success');
-        },
-        error: () => {
-          this.notificationService.show('Error updating organization', 'error');
-        }
-      });
+      ).subscribe();
     };
 
     reader.readAsDataURL(file);

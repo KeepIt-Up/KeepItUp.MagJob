@@ -42,7 +42,7 @@ export class RolesTableComponent implements OnInit {
 
   columnsConfig: ColumnDefinition<Role>[] = [
     {
-      title: "ID",
+      title: "Id",
       modelProp: "id",
     },
     {

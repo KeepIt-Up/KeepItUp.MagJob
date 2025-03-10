@@ -11,6 +11,7 @@ import { RoleService } from '@features/services/role.service';
 import { ActivatedRoute } from '@angular/router';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
 import { OrganizationService } from '@features/services/organization.service';
+import { MemberService } from '@features/services/member.service';
 
 interface Tab {
   id: string;
@@ -51,8 +52,8 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   //members
   memberSearchQuery: string = '';
   members: Member[] = [];
-  organizationService = inject(OrganizationService);
-  memberSearchState$ = this.organizationService.memberSearchState$;
+  memberService = inject(MemberService);
+  memberSearchState$ = this.memberService.memberSearchState$;
   showMemberSearchModal = false;
 
   ngOnInit(): void {
@@ -72,7 +73,11 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   }
 
   loadMoreRoles() {
-    this.roleService.getRoles(this.organizationId).subscribe();
+    this.roleService.getRoles(this.organizationId).subscribe(() => {
+      if (!this.selectedRole$() && this.state$().data?.length) {
+        this.selectRole(this.state$().data![0]);
+      }
+    });
   }
 
   selectRole(role: Role) {
@@ -102,21 +107,21 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   }
 
   updateRolePermissions() {
-    this.roleService.updateRolePermissions(this.selectedRolePermission$());
+    this.roleService.updateRolePermissions(this.selectedRole$()!.id, this.selectedRolePermission$().filter(p => p.value).map(p => p.permission.id)).subscribe();
   }
 
-  togglePermission(permissionId: string) {
+  togglePermission(permissionId: number) {
     if (!this.selectedRole$()) return;
     this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value = !this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value;
   }
 
   searchMembers(query: string) {
     this.memberSearchQuery = query;
-    this.organizationService.searchMembers(query, this.organizationId).subscribe();
+    this.memberService.searchMembers(query, this.organizationId).subscribe();
   }
 
   loadMoreMembers() {
-    this.organizationService.searchMembers(this.memberSearchQuery, this.organizationId).subscribe();
+    this.memberService.searchMembers(this.memberSearchQuery, this.organizationId).subscribe();
   }
 
   isMemberInRole(member: Member): boolean {

@@ -35,6 +35,9 @@
       ],
       "@pages/*": [
         "./src/app/pages/*"
+      ],
+      "@environments/*": [
+        "./src/environments/*"
       ]
     }
   },

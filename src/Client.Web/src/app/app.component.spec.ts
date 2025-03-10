@@ -4,7 +4,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { AppComponent } from './app.component';
 import { UserService } from '@features/services/user.service';
 import { DateTimeProvider, OAuthLogger, OAuthService, UrlHelperService } from 'angular-oauth2-oidc';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { NotificationsComponent } from '@shared/components/notifications/notifications.component';
 import { BehaviorSubject } from 'rxjs';

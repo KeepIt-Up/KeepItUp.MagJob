@@ -12,8 +12,8 @@ export interface Organization {
     ownerId: string;
     createdAt: Date;
     updatedAt: Date;
-    profileImage: string;
-    bannerImage: string;
+    profileImage?: string;
+    bannerImage?: string;
     invitations: Invitation[];
     members: Member[];
 }

@@ -11,8 +11,7 @@
         <!-- User Name -->
         <a class="flex items-center my-3 px-2" [routerLink]="['']">
             <span
-                class="self-center text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{$user()?.firstname}}
-                {{$user()?.lastname}}</span>
+                class="self-center text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{userName()}}</span>
         </a>
 
         <hr class="h-px my-4 bg-gray-200 dark:bg-gray-700 border-0">
