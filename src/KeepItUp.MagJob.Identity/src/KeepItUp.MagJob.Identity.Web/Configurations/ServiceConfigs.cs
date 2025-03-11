@@ -1,6 +1,8 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Infrastructure;
 using KeepItUp.MagJob.Identity.Infrastructure.Email;
+using KeepItUp.MagJob.Identity.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
@@ -10,6 +12,10 @@ public static class ServiceConfigs
   {
     services.AddInfrastructureServices(builder.Configuration, logger)
             .AddMediatrConfigs();
+
+    // Dodanie HttpContextAccessor i CurrentUserAccessor
+    services.AddHttpContextAccessor();
+    services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
 
     if (builder.Environment.IsDevelopment())
     {
@@ -26,7 +32,7 @@ public static class ServiceConfigs
       services.AddScoped<IEmailSender, MimeKitEmailSender>();
     }
 
-    logger.LogInformation("{Project} services registered", "Mediatr and Email Sender");
+    logger.LogInformation("{Project} services registered", "Mediatr, CurrentUserAccessor and Email Sender");
 
     return services;
   }

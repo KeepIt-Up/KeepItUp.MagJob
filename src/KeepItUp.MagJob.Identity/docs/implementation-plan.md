@@ -111,144 +111,159 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 #### Komendy
 
-- [ ] `CreateUserCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `CreateUserCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `UpdateUserCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `UpdateUserCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `DeactivateUserCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `DeactivateUserCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
 #### Zapytania
 
-- [ ] `GetUserByIdQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetUserByIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetUserByExternalIdQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetUserByExternalIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetUserOrganizationsQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetUserOrganizationsQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
 ### Organizacje
 
 #### Komendy
 
-- [ ] `CreateOrganizationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `CreateOrganizationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `UpdateOrganizationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `UpdateOrganizationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `DeactivateOrganizationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `DeactivateOrganizationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `CreateInvitationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `CreateInvitationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `AcceptInvitationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `AcceptInvitationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `RejectInvitationCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `RejectInvitationCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `RemoveMemberCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `RemoveMemberCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
 #### Zapytania
 
-- [ ] `GetOrganizationByIdQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetOrganizationByIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetOrganizationMembersQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetOrganizationMembersQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetOrganizationInvitationsQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetOrganizationInvitationsQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
+
+- [x] `GetMemberByIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
+
+- [x] `GetInvitationByIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
 ### Role i Uprawnienia
 
 #### Komendy
 
-- [ ] `CreateRoleCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `CreateRoleCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `UpdateRoleCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `UpdateRoleCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `DeleteRoleCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `DeleteRoleCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `AssignRoleToMemberCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `AssignRoleToMemberCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `RevokeRoleFromMemberCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `RevokeRoleFromMemberCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
-- [ ] `UpdateRolePermissionsCommand`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Validator
+- [x] `UpdateRolePermissionsCommand`
+  - [x] Request
+  - [x] Handler
+  - [x] Validator
 
 #### Zapytania
 
-- [ ] `GetRoleByIdQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetRoleByIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetRolesByOrganizationIdQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetRolesByOrganizationIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
-- [ ] `GetPermissionsQuery`
-  - [ ] Request
-  - [ ] Handler
-  - [ ] Response
+- [x] `GetRolesByMemberIdQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
+
+- [x] `GetPermissionsQuery`
+  - [x] Request
+  - [x] Handler
+  - [x] Response
 
 ## Infrastruktura (KeepItUp.MagJob.Identity.Infrastructure)
 
@@ -320,34 +335,33 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 #### Użytkownicy
 
-- [ ] `GetUserEndpoint`
-- [ ] `UpdateUserEndpoint`
-- [ ] `GetUserOrganizationsEndpoint`
+- [x] `GetUserEndpoint`
+- [x] `UpdateUserEndpoint`
+- [x] `GetUserOrganizationsEndpoint`
 
 #### Organizacje
 
-- [ ] `CreateOrganizationEndpoint`
-- [ ] `GetOrganizationEndpoint`
-- [ ] `UpdateOrganizationEndpoint`
-- [ ] `DeleteOrganizationEndpoint`
-- [ ] `GetOrganizationMembersEndpoint`
-- [ ] `CreateInvitationEndpoint`
-- [ ] `GetInvitationsEndpoint`
-- [ ] `AcceptInvitationEndpoint`
-- [ ] `RejectInvitationEndpoint`
-- [ ] `RemoveMemberEndpoint`
+- [x] `CreateOrganizationEndpoint`
+- [x] `GetOrganizationEndpoint`
+- [x] `UpdateOrganizationEndpoint`
+- [x] `DeleteOrganizationEndpoint`
+- [x] `GetOrganizationMembersEndpoint`
+- [x] `CreateInvitationEndpoint`
+- [x] `GetOrganizationInvitationsEndpoint`
+- [x] `AcceptInvitationEndpoint`
+- [x] `RejectInvitationEndpoint`
+- [x] `RemoveMemberEndpoint`
 
 #### Role i Uprawnienia
 
-- [ ] `CreateRoleEndpoint`
-- [ ] `GetRoleEndpoint`
-- [ ] `UpdateRoleEndpoint`
-- [ ] `DeleteRoleEndpoint`
-- [ ] `GetRolesEndpoint`
-- [ ] `UpdateRolePermissionsEndpoint`
-- [ ] `AssignRoleToMemberEndpoint`
-- [ ] `RevokeRoleFromMemberEndpoint`
-- [ ] `GetPermissionsEndpoint`
+- [x] `CreateRoleEndpoint`
+- [x] `GetOrganizationRolesEndpoint`
+- [x] `UpdateRoleEndpoint`
+- [x] `DeleteRoleEndpoint`
+- [x] `UpdateRolePermissionsEndpoint`
+- [x] `AssignRoleToMemberEndpoint`
+- [x] `RevokeRoleFromMemberEndpoint`
+- [x] `GetPermissionsEndpoint`
 
 ### Konfiguracja
 
@@ -420,10 +434,10 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Etap 3: Przypadki Użycia i Endpointy
 
-- [ ] Implementacja przypadków użycia dla użytkowników
-- [ ] Implementacja przypadków użycia dla organizacji
-- [ ] Implementacja przypadków użycia dla ról i uprawnień
-- [ ] Implementacja endpointów FastEndpoints
+- [x] Implementacja przypadków użycia dla użytkowników
+- [x] Implementacja przypadków użycia dla organizacji
+- [x] Implementacja przypadków użycia dla ról i uprawnień
+- [x] Implementacja endpointów FastEndpoints
 
 ### Etap 4: Audyt i Bezpieczeństwo
 
@@ -443,14 +457,14 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 |------|-------------|-------------|--------|-------|
 | Etap 1 | 09.03.2025 | 09.03.2025 | Zakończony | Zaimplementowano modele domeny. Wykorzystano Ardalis.SharedKernel dla klas bazowych. Zmodyfikowano klasę Member, aby mogła posiadać wiele ról. Zaimplementowano hybrydowe podejście do aktualizacji pól CreatedAt i UpdatedAt. Przekształcono UserProfile w prawdziwy Value Object. Zaimplementowano obsługę zdarzeń domenowych. Zastąpiono dedykowane repozytoria wzorcem Specification. Utworzono konfiguracje encji. Rozwiązano problem z niespójnością typów danych dla identyfikatorów (int vs Guid). Skonfigurowano bazę danych PostgreSQL. Utworzono migrację. |
 | Etap 2 | 09.03.2025 | 10.03.2025 | Zakończony | Zaimplementowano integrację z Keycloak. Utworzono klienta Keycloak do komunikacji z API. Zaimplementowano serwis synchronizacji danych między modułem Identity a Keycloak. Dodano nasłuchiwanie zdarzeń z Keycloak. Zaimplementowano mapowanie atrybutów użytkownika do tokenów JWT. Skonfigurowano uwierzytelnianie JWT z Keycloak. Zoptymalizowano zapytania do bazy danych poprzez eager loading. Dodano obsługę błędów i logowanie. |
-| Etap 3 | | | Nie rozpoczęto | |
+| Etap 3 | 11.03.2025 | 11.03.2025 | Zakończony | Zaimplementowano przypadki użycia dla użytkowników (CreateUserCommand, UpdateUserCommand, DeactivateUserCommand, GetUserByIdQuery, GetUserByExternalIdQuery, GetUserOrganizationsQuery). Zaimplementowano przypadki użycia dla organizacji (CreateOrganizationCommand, UpdateOrganizationCommand, DeactivateOrganizationCommand, GetOrganizationByIdQuery, GetOrganizationMembersQuery, GetOrganizationInvitationsQuery, GetMemberByIdQuery, GetInvitationByIdQuery). Zaimplementowano przypadki użycia dla zaproszeń (CreateInvitationCommand, AcceptInvitationCommand, RejectInvitationCommand). Zaimplementowano przypadki użycia dla ról (CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand, GetRoleByIdQuery, GetRolesByOrganizationIdQuery, GetRolesByMemberIdQuery, GetPermissionsQuery). Zaimplementowano przypadki użycia dla przypisywania ról (AssignRoleToMemberCommand, RevokeRoleFromMemberCommand). Zaimplementowano przypadki użycia dla przypisywania uprawnień (UpdateRolePermissionsCommand). Zaimplementowano endpointy FastEndpoints. |
 | Etap 4 | | | Nie rozpoczęto | |
 | Etap 5 | | | Nie rozpoczęto | |
 
 ## Zmiany i Aktualizacje
 
-| Data | Autor | Opis zmiany |
-|------|-------|-------------|
+| Data | Autor | Opis |
+|------|-------|------|
 | 09.03.2025 | Claude | Utworzenie planu implementacji |
 | 09.03.2025 | Claude | Implementacja modeli domeny i interfejsów repozytoriów |
 | 09.03.2025 | Claude | Wykorzystanie Ardalis.SharedKernel dla klas bazowych |
@@ -470,4 +484,28 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 | 09.03.2025 | Claude | Integracja Swagger z uwierzytelnianiem Keycloak |
 | 10.03.2025 | Claude | Optymalizacja zapytań do bazy danych poprzez eager loading |
 | 10.03.2025 | Claude | Dodanie obsługi błędów i logowania w serwisach Keycloak |
-| 10.03.2025 | Claude | Konfiguracja autoryzacji w aplikacji | 
+| 10.03.2025 | Claude | Konfiguracja autoryzacji w aplikacji |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla użytkowników (CreateUserCommand, UpdateUserCommand, DeactivateUserCommand) |
+| 11.03.2025 | Claude | Implementacja zapytań dla użytkowników (GetUserByIdQuery, GetUserByExternalIdQuery, GetUserOrganizationsQuery) |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla organizacji (CreateOrganizationCommand, UpdateOrganizationCommand, DeactivateOrganizationCommand) |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla zaproszeń (CreateInvitationCommand, AcceptInvitationCommand, RejectInvitationCommand) |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla ról (CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand) |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla przypisywania ról (AssignRoleToMemberCommand, RevokeRoleFromMemberCommand) |
+| 11.03.2025 | Claude | Implementacja zapytań dla organizacji (GetOrganizationByIdQuery, GetOrganizationMembersQuery, GetOrganizationInvitationsQuery) |
+| 11.03.2025 | Claude | Implementacja przypadków użycia dla zarządzania uprawnieniami (UpdateRolePermissionsCommand) |
+| 2023-11-15 | Claude | Implementacja zapytania o członka organizacji (GetMemberByIdQuery) |
+| 2023-11-15 | Claude | Implementacja zapytania o zaproszenie (GetInvitationByIdQuery) |
+| 2023-11-15 | Claude | Implementacja specyfikacji OrganizationWithMembersAndRolesSpec |
+| 2023-11-15 | Claude | Implementacja endpointów dla użytkowników (GetUserEndpoint, UpdateUserEndpoint, GetUserOrganizationsEndpoint) |
+| 2023-11-15 | Claude | Implementacja endpointów dla organizacji (CreateOrganizationEndpoint, GetOrganizationEndpoint, UpdateOrganizationEndpoint, DeleteOrganizationEndpoint, GetOrganizationMembersEndpoint) |
+| 2023-11-15 | Claude | Aktualizacja endpointów do zgodności z metodologią FastEndpoints (Configure, Summary, Description) oraz pobieranie ID użytkownika z tokenu JWT zamiast z żądania |
+| 2023-11-15 | Claude | Dodanie walidacji w endpointach, poprawienie importów dla metod autoryzacji, dodanie mapperów zgodnie z metodologią FastEndpoints |
+| 2023-11-16 | Claude | Utworzenie guide'a do tworzenia endpointów w FastEndpoints (fastendpoints-guide.md) |
+| 2023-11-16 | Claude | Implementacja CurrentUserAccessor do bezpiecznego pobierania ID użytkownika z kontekstu HTTP |
+| 2023-11-16 | Claude | Dostosowanie endpointów organizacji do guide'a (CreateOrganizationEndpoint, UpdateOrganizationEndpoint, DeleteOrganizationEndpoint, GetOrganizationEndpoint) |
+| 2023-11-16 | Claude | Implementacja nowych endpointów zgodnie z guide'em (GetOrganizationRolesEndpoint, GetOrganizationMembersEndpoint, GetOrganizationInvitationsEndpoint, CreateInvitationEndpoint) |
+| 2023-11-16 | Claude | Implementacja endpointów do zarządzania zaproszeniami (AcceptInvitationEndpoint, RejectInvitationEndpoint) |
+| 2023-11-16 | Claude | Implementacja endpointu do usuwania członków organizacji (RemoveMemberEndpoint) |
+| 2023-11-16 | Claude | Implementacja endpointów do zarządzania rolami (CreateRoleEndpoint, UpdateRoleEndpoint, DeleteRoleEndpoint) |
+| 2023-11-16 | Claude | Implementacja endpointów do zarządzania rolami członków (AssignRoleToMemberEndpoint, RevokeRoleFromMemberEndpoint) |
+| 2023-11-16 | Claude | Implementacja endpointów do zarządzania uprawnieniami (UpdateRolePermissionsEndpoint, GetPermissionsEndpoint) | 

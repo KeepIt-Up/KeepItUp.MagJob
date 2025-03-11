@@ -142,4 +142,15 @@ public class Role : BaseEntity
 
         return _permissions.Any(p => p.Name == permissionName);
     }
+
+    /// <summary>
+    /// Usuwa wszystkie uprawnienia z roli.
+    /// </summary>
+    public void ClearPermissions()
+    {
+        _permissions.Clear();
+        
+        // Wywołanie metody Update z klasy bazowej
+        base.Update();
+    }
 } 

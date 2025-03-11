@@ -465,4 +465,21 @@ public class Organization : BaseEntity, IAggregateRoot
 
     RegisterDomainEvent(new InvitationRejectedEvent(Id, invitationId));
   }
+
+  /// <summary>
+  /// Sprawdza, czy użytkownik ma dostęp do organizacji.
+  /// </summary>
+  /// <param name="userId">Identyfikator użytkownika.</param>
+  /// <returns>True, jeśli użytkownik ma dostęp do organizacji; w przeciwnym razie false.</returns>
+  public bool HasAccess(Guid userId)
+  {
+    // Właściciel organizacji zawsze ma dostęp
+    if (OwnerId == userId)
+    {
+      return true;
+    }
+
+    // Sprawdź, czy użytkownik jest członkiem organizacji
+    return _members.Any(m => m.UserId == userId);
+  }
 }

@@ -3,16 +3,19 @@ using Ardalis.Specification;
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
 
 /// <summary>
-/// Specyfikacja do wyszukiwania organizacji wraz z jej członkami.
+/// Specyfikacja do pobierania organizacji wraz z jej członkami.
 /// </summary>
-public class OrganizationWithMembersSpec : Specification<Organization>
+public class OrganizationWithMembersSpec : Specification<Organization>, ISingleResultSpecification<Organization>
 {
     /// <summary>
     /// Inicjalizuje nową instancję klasy <see cref="OrganizationWithMembersSpec"/>.
     /// </summary>
-    /// <param name="organizationId">ID organizacji do wyszukania.</param>
-    public OrganizationWithMembersSpec(Guid organizationId) =>
+    /// <param name="organizationId">Identyfikator organizacji.</param>
+    public OrganizationWithMembersSpec(Guid organizationId)
+    {
         Query
-            .Where(org => org.Id == organizationId)
-            .Include(org => org.Members);
+            .Where(o => o.Id == organizationId)
+            .Include(o => o.Members)
+                .ThenInclude(m => m.Roles);
+    }
 } 
