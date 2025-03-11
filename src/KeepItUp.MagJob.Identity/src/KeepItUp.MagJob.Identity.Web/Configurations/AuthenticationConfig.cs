@@ -1,6 +1,4 @@
 ﻿using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
@@ -20,25 +18,25 @@ public static class AuthenticationConfig
       throw new InvalidOperationException("Brak konfiguracji Keycloak");
     }
 
-    services.AddAuthentication(options =>
-    {
-      options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-      options.Authority = keycloakOptions.AuthorityUrl;
-      options.Audience = keycloakOptions.ClientId;
-      options.RequireHttpsMetadata = keycloakOptions.RequireHttps;
-      options.SaveToken = true;
-      options.TokenValidationParameters = new TokenValidationParameters
-      {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true
-      };
-    });
+    //services.AddAuthentication(options =>
+    //{
+    //  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    //  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    //})
+    //.AddJwtBearer(options =>
+    //{
+    //  options.Authority = keycloakOptions.AuthorityUrl;
+    //  options.Audience = keycloakOptions.ClientId;
+    //  options.RequireHttpsMetadata = keycloakOptions.RequireHttps;
+    //  options.SaveToken = true;
+    //  options.TokenValidationParameters = new TokenValidationParameters
+    //  {
+    //    ValidateIssuer = true,
+    //    ValidateAudience = true,
+    //    ValidateLifetime = true,
+    //    ValidateIssuerSigningKey = true
+    //  };
+    //});
 
     return services;
   }

@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
     services.AddScoped<IKeycloakSyncService, KeycloakSyncService>();
 
     // Rejestracja nasłuchiwacza zdarzeń
-    services.AddHostedService<KeycloakEventListener>();
+    //services.AddHostedService<KeycloakEventListener>();
 
     // Rejestracja transformacji claimów
     services.AddTransient<IClaimsTransformation, KeycloakAttributeMapper.KeycloakClaimsTransformation>();

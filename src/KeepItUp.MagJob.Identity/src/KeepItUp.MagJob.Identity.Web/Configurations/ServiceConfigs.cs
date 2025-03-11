@@ -2,7 +2,6 @@
 using KeepItUp.MagJob.Identity.Infrastructure;
 using KeepItUp.MagJob.Identity.Infrastructure.Email;
 using KeepItUp.MagJob.Identity.Web.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
