@@ -18,7 +18,7 @@ public static class MiddlewareConfig
       app.UseHsts();
     }
 
-    //app.UseAuthentication();
+    app.UseAuthentication();
 
     app.UseFastEndpoints()
         .UseSwaggerGen(); // Includes AddFileServer and static files middleware

@@ -16,6 +16,10 @@ public static class ServiceConfigs
     services.AddHttpContextAccessor();
     services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
 
+    // Dodanie HttpClient dla KeycloakAdminService
+    services.AddHttpClient();
+    services.AddScoped<IKeycloakAdminService, KeycloakAdminService>();
+
     if (builder.Environment.IsDevelopment())
     {
       // Use a local test email server
@@ -31,7 +35,7 @@ public static class ServiceConfigs
       services.AddScoped<IEmailSender, MimeKitEmailSender>();
     }
 
-    logger.LogInformation("{Project} services registered", "Mediatr, CurrentUserAccessor and Email Sender");
+    logger.LogInformation("{Project} services registered", "Mediatr, CurrentUserAccessor, KeycloakAdmin and Email Sender");
 
     return services;
   }
