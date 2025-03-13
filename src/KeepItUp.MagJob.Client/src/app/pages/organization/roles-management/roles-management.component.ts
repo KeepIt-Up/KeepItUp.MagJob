@@ -1,15 +1,15 @@
 import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
-import { Permission, Role } from '@features/models/role/role';
-import { Member } from '@features/models/member/member';
-import { RolesListComponent } from '@features/components/roles/roles-list/roles-list.component';
-import { MemberSearchModalComponent } from '@features/components/members/member-search-modal/member-search-modal.component';
 import { TabsComponent } from '@shared/components/tabs/tabs.component';
-import { RoleService } from '@features/services/role.service';
 import { ActivatedRoute } from '@angular/router';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
-import { MemberService } from '@features/services/member.service';
+import { RolesListComponent } from '../../../features/roles/components/roles-list/roles-list.component';
+import { MemberSearchModalComponent } from '../../../features/members/components/member-search-modal/member-search-modal.component';
+import { RoleService } from '../../../features/roles/services/role.service';
+import { Permission, Role } from '../../../features/roles/models/role.model';
+import { MemberService } from '../../../features/members/services/member.service';
+import { Member } from '../../../features/members/models/member';
 
 interface Tab {
   id: string;

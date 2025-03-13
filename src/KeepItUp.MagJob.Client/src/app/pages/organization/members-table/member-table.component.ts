@@ -4,10 +4,10 @@ import { TableWithPaginationComponent } from '@shared/components/table-with-pagi
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { RouterLink } from '@angular/router';
 import { MemberActionsComponent } from './member-actions.component';
-import { EditMemberModalComponent } from '@features/components/members/edit-member-modal/edit-member-modal.component';
-import { Member } from '@features/models/member/member';
 import { HeaderComponent } from '@shared/components/header/header.component';
-import { MemberService } from '@features/services/member.service';
+import { EditMemberModalComponent } from '../../../features/members/components/edit-member-modal/edit-member-modal.component';
+import { MemberService } from '../../../features/members/services/member.service';
+import { Member } from '../../../features/members/models/member';
 
 @Component({
   selector: 'app-members-table',
@@ -71,7 +71,7 @@ export class MembersTableComponent {
           onEditCallback: () => this.openEditModal(row),
           onDeleteCallback: () => {
             this.memberService.archiveMember(row.id).subscribe({
-              next: res => {
+              next: () => {
                 this.paginationOptions$().pageNumber = 1;
               },
             });

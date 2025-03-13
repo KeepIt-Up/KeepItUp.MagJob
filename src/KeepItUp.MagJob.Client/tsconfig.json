@@ -24,17 +24,29 @@
       "dom"
     ],
     "paths": {
-      "@shared/*": [
-        "./src/app/shared/*"
-      ],
-      "@features/*": [
-        "./src/app/features/*"
-      ],
       "@core/*": [
         "./src/app/core/*"
       ],
+      "@organizations/*": [
+        "./src/app/features/organizations/*"
+      ],
+      "@users/*": [
+        "./src/app/features/users/*"
+      ],
+      "@invitations/*": [
+        "./src/app/features/invitations/*"
+      ],
+      "@members/*": [
+        "./src/app/features/members/*"
+      ],
+      "@roles/*": [
+        "./src/app/features/roles/*"
+      ],
       "@pages/*": [
         "./src/app/pages/*"
+      ],
+      "@shared/*": [
+        "./src/app/shared/*"
       ],
       "@environments/*": [
         "./src/environments/*"

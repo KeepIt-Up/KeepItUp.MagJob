@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { HeaderComponent } from '@shared/components/header/header.component';
-import { UserService } from '@features/services/user.service';
-import { InvitationService } from '@features/services/invitation.service';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
-import { InvitationCardComponent } from '@features/components/invitations/invitation-card/invitation-card.component';
+import { UserService } from '../../../features/users/services/user.service';
+import { InvitationCardComponent } from '../../../features/invitations/components/invitation-card/invitation-card.component';
+import { InvitationService } from '../../../features/invitations/services/invitation.service';
 
 @Component({
   selector: 'app-user-invitations',

@@ -5,9 +5,9 @@ import { SearchInputComponent } from '@shared/components/search-input/search-inp
 import { DatePipe } from '@angular/common';
 import { TagComponent } from '@shared/components/tag/tag.component';
 import { HeaderComponent } from '@shared/components/header/header.component';
-import { OrganizationService } from '@features/services/organization.service';
-import { Invitation, InvitationStatus } from '@features/models/invitation/invitation';
 import { RouterLink } from '@angular/router';
+import { OrganizationService } from '../../../features/organizations/services/organization.service';
+import { Invitation, InvitationStatus } from '../../../features/invitations/models/invitation';
 
 function getStatusVariant(status: number): 'yellow' | 'green' | 'red' | 'gray' {
   switch (status) {

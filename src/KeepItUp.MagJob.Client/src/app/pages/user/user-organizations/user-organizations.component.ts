@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '@shared/components/header/header.component';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
-import { UserService } from '@features/services/user.service';
-import { OrganizationCardComponent } from '@features/components/organizations/organization-card/organization-card.component';
+import { UserService } from '../../../features/users/services/user.service';
+import { OrganizationCardComponent } from '../../../features/organizations/components/organization-card/organization-card.component';
 import { ErrorAlertComponent } from '../../../shared/components/error-alert/error-alert.component';
 
 @Component({

@@ -1,11 +1,11 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { OrganizationSidebarComponent } from '@features/components/organization-sidebar/organization-sidebar.component';
-import { NavbarComponent } from '@features/components/navbar/navbar.component';
-import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
+import { OrganizationSidebarComponent } from '@organizations/components/organization-sidebar/organization-sidebar.component';
+import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
+import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
+import { OrganizationService } from '@organizations/services/organization.service';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
-import { OrganizationService } from '@features/services/organization.service';
 
 @Component({
   selector: 'app-organization',

@@ -1,15 +1,16 @@
 import { Routes } from '@angular/router';
-import { InvitationTableComponent } from './app/pages/organization/invitation-table/invitation-table.component';
-import { MembersTableComponent } from './app/pages/organization/members-table/member-table.component';
-import { OrganizationProfilComponent } from './app/pages/organization/organization-profil/organization-profil.component';
-import { OrganizationComponent } from './app/pages/organization/organization.component';
-import { RolesManagementComponent } from './app/pages/organization/roles-management/roles-management.component';
-import { UserInvitationsComponent } from './app/pages/user/user-invitations/user-invitations.component';
-import { UserOrganizationsComponent } from './app/pages/user/user-organizations/user-organizations.component';
-import { UserSettingsComponent } from './app/pages/user/user-settings/user-settings.component';
+import { LandingComponent } from '@pages/landing/landing.component';
+import { HelpComponent } from '@pages/help/help.component';
 import { UserComponent } from './app/pages/user/user.component';
-import { authGuard } from './app/core/guards/auth.guard';
-import { LandingComponent } from '@features/landing/landing.component';
+import { UserOrganizationsComponent } from './app/pages/user/user-organizations/user-organizations.component';
+import { UserInvitationsComponent } from './app/pages/user/user-invitations/user-invitations.component';
+import { UserSettingsComponent } from './app/pages/user/user-settings/user-settings.component';
+import { authGuard } from '@core/guards/auth.guard';
+import { OrganizationProfilComponent } from '@pages/organization/organization-profil/organization-profil.component';
+import { RolesManagementComponent } from '@pages/organization/roles-management/roles-management.component';
+import { MembersTableComponent } from '@pages/organization/members-table/member-table.component';
+import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
+import { OrganizationComponent } from '@pages/organization/organization.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -41,6 +42,10 @@ export const routes: Routes = [
   {
     path: 'landing',
     component: LandingComponent,
+  },
+  {
+    path: 'help',
+    component: HelpComponent,
   },
   { path: '**', redirectTo: 'landing' },
 ];

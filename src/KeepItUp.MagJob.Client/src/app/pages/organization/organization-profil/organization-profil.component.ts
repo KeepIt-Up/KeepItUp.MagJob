@@ -1,14 +1,13 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, effect, inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ImageUploadModalComponent } from '@shared/components/image-upload-modal/image-upload-modal.component';
 import { Subject } from 'rxjs';
-import { UpdateOrganizationPayload } from '@features/apis/organization.api.service';
+import { Organization } from '../../../features/organizations/models/organization.model';
+import { OrganizationService } from '../../../features/organizations/services/organization.service';
 import { ImageService } from '@shared/services/image.service';
-import { Organization } from '@features/models/organization/organization';
-import { effect } from '@angular/core';
 import { NotificationService } from '@shared/services/notification.service';
+import { UpdateOrganizationPayload } from '../../../features/organizations/services/organization.api.service';
 import { SafeUrl } from '@angular/platform-browser';
-import { OrganizationService } from '@features/services/organization.service';
 
 @Component({
   selector: 'app-organization-profil',
