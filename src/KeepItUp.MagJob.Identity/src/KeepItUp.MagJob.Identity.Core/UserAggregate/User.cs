@@ -1,4 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.Core.Events;
+﻿using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 using KeepItUp.MagJob.Identity.Core.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
@@ -89,7 +89,7 @@ public class User : BaseEntity, IAggregateRoot
       CreatedDate = DateTime.UtcNow,
       LastModifiedDate = DateTime.UtcNow
     };
-    
+
     return user;
   }
 
@@ -213,12 +213,12 @@ public class User : BaseEntity, IAggregateRoot
     Guard.Against.NullOrEmpty(email, nameof(email));
 
     Email = email;
-    
+
     // Aktualizacja statusu aktywności
     if (IsActive != isActive)
     {
       IsActive = isActive;
-      
+
       if (isActive)
       {
         RegisterDomainEvent(new UserActivatedEvent(Id, ExternalId, Email));
