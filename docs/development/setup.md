@@ -47,7 +47,7 @@ This will start all the necessary services:
 ### Client Web Application
 
 ```bash
-cd src/Client.Web
+cd src/KeepItUp.MagJob.Client
 npm install
 npm start
 ```

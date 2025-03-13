@@ -20,7 +20,7 @@ RUN npm run build:dev
 FROM nginx:alpine
 
 # Kopiowanie zbudowanej aplikacji do nginx
-COPY --from=build /app/dist/client.web/browser/ /usr/share/nginx/html/
+COPY --from=build /app/dist/keepitup.magjob.client/browser/ /usr/share/nginx/html/
 
 # Kopiowanie konfiguracji nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf

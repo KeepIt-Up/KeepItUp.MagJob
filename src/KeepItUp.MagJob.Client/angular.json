@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Client.Web": {
+    "keepitup.magjob.client": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -28,7 +28,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/client.web",
+            "outputPath": "dist/keepitup.magjob.client",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -100,13 +100,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Client.Web:build:production"
+              "buildTarget": "keepitup.magjob.client:build:production"
             },
             "docker": {
-              "buildTarget": "Client.Web:build:docker"
+              "buildTarget": "keepitup.magjob.client:build:docker"
             },
             "local": {
-              "buildTarget": "Client.Web:build:local"
+              "buildTarget": "keepitup.magjob.client:build:local"
             }
           },
           "defaultConfiguration": "local"

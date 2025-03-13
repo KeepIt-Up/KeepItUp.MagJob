@@ -14,7 +14,7 @@ Szczegółowe standardy kodowania dla .NET zostały przeniesione do dokumentacji
 - **Podejście**: Modułowa struktura oparta na funkcjonalnościach
 - **Struktura katalogów**:
   ```
-  src/Client/Client.Web/
+  src/KeepItUp.MagJob.Client/
   ├── app/
   │   ├── core/                # Serwisy, guardy, interceptory używane w całej aplikacji
   │   │   ├── auth/            # Autentykacja i autoryzacja

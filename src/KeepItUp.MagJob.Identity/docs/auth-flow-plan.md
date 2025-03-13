@@ -155,7 +155,7 @@ Token JWT będzie tworzony bezpośrednio przez Keycloak, który jest dedykowanym
   - [ ] Konfiguracja wyglądu logowania i rejestracji
 
 - [ ] **Konfiguracja Client**
-  - [ ] Utworzenie klienta dla aplikacji webowej (client.web)
+  - [ ] Utworzenie klienta dla aplikacji webowej (keepitup.magjob.client)
   - [ ] Konfiguracja dozwolonych URL przekierowań
   - [ ] Ustawienie mapowania tokenów
   - [ ] Konfiguracja czasu życia tokenów

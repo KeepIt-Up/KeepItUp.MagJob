@@ -7,14 +7,14 @@ services:
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
-      - client.web
+      - keepitup.magjob.client
       - apigateway.web
 
   # Frontend
-  client.web:
-    image: ${DOCKER_REGISTRY-}clientweb
+  keepitup.magjob.client:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.client
     build:
-      context: ./src/Client.Web
+      context: ./src/KeepItUp.MagJob.Client
       dockerfile: Dockerfile
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:80" ]

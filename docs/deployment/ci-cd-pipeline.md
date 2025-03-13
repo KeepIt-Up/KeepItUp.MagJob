@@ -24,7 +24,6 @@ Pipeline CI/CD dla projektu MagJob jest zorganizowany wokół monorepo, które z
 │   │   └── KeepItUp.MagJob.Gateway.Tests/# Testy dla Gateway
 │   │
 │   ├── KeepItUp.MagJob.Client/              # Aplikacja frontendowa
-│   │   └── KeepItUp.MagJob.Client.Web/      # Kod źródłowy aplikacji frontendowej
 │   │
 │   ├── KeepItUp.MagJob.Identity/src       # Mikroserwis zarządzania organizacjami i użytkownikami
 │   │   ├── KeepItUp.MagJob.Identity.Web/         # API mikroserwisu
@@ -105,13 +104,13 @@ jobs:
       
       # Budowanie i testowanie Angular
       - name: Install Angular dependencies
-        run: cd src/Client/Client.Web && npm install
+        run: cd src/KeepItUp.MagJob.Client && npm install
       
       - name: Build Angular
-        run: cd src/Client/Client.Web && npm run build
+        run: cd src/KeepItUp.MagJob.Client && npm run build
       
       - name: Test Angular
-        run: cd src/Client/Client.Web && npm run test
+        run: cd src/KeepItUp.MagJob.Client && npm run test
       
       # Budowanie i testowanie Spring
       - name: Build Spring Schedules
@@ -128,7 +127,7 @@ jobs:
       
       # Statyczna analiza kodu
       - name: Run ESLint
-        run: cd src/Client/Client.Web && npm run lint
+        run: cd src/KeepItUp.MagJob.Client && npm run lint
       
       - name: Run SonarQube Scan
         uses: SonarSource/sonarcloud-github-action@master
