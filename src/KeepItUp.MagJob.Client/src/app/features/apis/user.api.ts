@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Invitation } from '@features/models/invitation/invitation';
 import { Organization } from '@features/models/organization/organization';
-import { User } from '@features/models/user/user';
+import { User } from '@core/models/user-base.model';
 import {
   PaginatedResponse,
   PaginationOptions,

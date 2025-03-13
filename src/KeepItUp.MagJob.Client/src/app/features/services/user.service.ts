@@ -9,7 +9,7 @@ import {
 import { Organization } from '@features/models/organization/organization';
 import { Invitation } from '@features/models/invitation/invitation';
 import { ListStateService } from '@shared/services/list-state.service';
-import { User } from '@features/models/user/user';
+import { User } from '@core/models/user-base.model';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 

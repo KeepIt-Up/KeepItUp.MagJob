@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Organization } from '../../../features/models/organization/organization';
+import { Organization } from '../../models/organization/organization';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ImageService } from '@shared/services/image.service';
 import { SafeUrl } from '@angular/platform-browser';

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { NavbarComponent } from '@core/components/navbar/navbar.component';
+import { NavbarComponent } from '@features/components/navbar/navbar.component';
 import { RouterOutlet } from '@angular/router';
-import { UserSidebarComponent } from '@core/components/user-sidebar/user-sidebar.component';
+import { UserSidebarComponent } from '@features/components/user-sidebar/user-sidebar.component';
 import { UserService } from '@features/services/user.service';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';

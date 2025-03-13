@@ -2,22 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { User } from '@features/models/user/user';
 import { authCodeFlowConfig } from '@core/configs/auth.config';
-
-interface IdentityClaims {
-  sub: string;
-  given_name?: string;
-  family_name?: string;
-  email?: string;
-  [key: string]: unknown;
-}
+import { UserBase } from '@core/models/user-base.model';
+import { IdentityClaims } from '@core/models/identity-claims.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private userProfileSubject = new BehaviorSubject<User | null>(null);
+  private userProfileSubject = new BehaviorSubject<UserBase | null>(null);
 
   private readonly oauthService = inject(OAuthService);
   private readonly router = inject(Router);
@@ -98,7 +91,7 @@ export class AuthService {
    * Pobiera profil użytkownika
    * @returns Observable z profilem użytkownika
    */
-  public getUserProfile(): Observable<User | null> {
+  public getUserProfile(): Observable<UserBase | null> {
     return this.userProfileSubject.asObservable();
   }
 
@@ -108,10 +101,10 @@ export class AuthService {
   private loadUserProfile(): void {
     const claims = this.oauthService.getIdentityClaims() as IdentityClaims;
     if (claims) {
-      const user: User = {
+      const user: UserBase = {
         id: claims.sub,
-        firstname: claims.given_name ?? '',
-        lastname: claims.family_name ?? '',
+        given_name: claims.given_name ?? '',
+        family_name: claims.family_name ?? '',
         email: claims.email ?? '',
       };
       this.userProfileSubject.next(user);

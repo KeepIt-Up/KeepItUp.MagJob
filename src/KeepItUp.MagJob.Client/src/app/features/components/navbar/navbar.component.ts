@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DropdownComponent } from '../../../shared/components/dropdown/dropdown.component';
 import { RouterLink } from '@angular/router';
 import { ClickOutsideDirective } from '../../../shared/directives/click-outside.directive';
-import { User } from '@features/models/user/user';
-import { AuthService } from '../../services/auth.service';
+import { User } from '@core/models/user-base.model';
+import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-navbar',
   imports: [CommonModule, DropdownComponent, RouterLink, ClickOutsideDirective],

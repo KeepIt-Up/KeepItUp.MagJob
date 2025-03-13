@@ -1,7 +1,7 @@
 import { Component, computed, EventEmitter, inject, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { UserService } from '../../../features/services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-sidebar',
