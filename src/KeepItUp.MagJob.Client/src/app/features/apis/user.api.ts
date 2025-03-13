@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Invitation } from '@features/models/invitation/invitation';
 import { Organization } from '@features/models/organization/organization';
-import { User } from '@core/models/user-base.model';
+import { UserBase } from '@core/models/user-base.model';
 import {
   PaginatedResponse,
   PaginationOptions,
@@ -37,9 +37,9 @@ export class UserApiService {
     });
   }
 
-  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<User>) {
+  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<UserBase>) {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<User>>(`${this.apiUrl}`, {
+    return this.http.get<PaginatedResponse<UserBase>>(`${this.apiUrl}`, {
       params: { ...query, ...options },
     });
   }

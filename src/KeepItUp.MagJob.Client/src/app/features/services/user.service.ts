@@ -9,7 +9,7 @@ import {
 import { Organization } from '@features/models/organization/organization';
 import { Invitation } from '@features/models/invitation/invitation';
 import { ListStateService } from '@shared/services/list-state.service';
-import { User } from '@core/models/user-base.model';
+import { UserBase } from '@core/models/user-base.model';
 import { AuthService } from '@core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -17,7 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   providedIn: 'root',
 })
 export class UserService {
-  private userState = new StateService<User>();
+  private userState = new StateService<UserBase>();
   private invitationStateService = new ListStateService<Invitation, { endOfData: boolean }>();
   private organizationStateService = new ListStateService<Organization, { endOfData: boolean }>();
 

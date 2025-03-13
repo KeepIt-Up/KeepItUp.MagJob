@@ -20,7 +20,7 @@ export class UserSidebarComponent {
   }
 
   state$ = this.userService.userState$;
-  userName = computed(() => `${this.state$().data?.firstname} ${this.state$().data?.lastname}`);
+  userName = computed(() => `${this.state$().data?.given_name} ${this.state$().data?.family_name}`);
 
   logOut() {
     this.authService.logOut();
