@@ -12,6 +12,12 @@ public static class ServiceConfigs
     services.AddInfrastructureServices(builder.Configuration, logger)
             .AddMediatrConfigs();
 
+    // Dodanie CORS
+    services.AddCorsConfiguration(builder.Configuration);
+
+    // Dodanie autoryzacji
+    services.AddAuthorization();
+
     // Dodanie HttpContextAccessor i CurrentUserAccessor
     services.AddHttpContextAccessor();
     services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
@@ -35,7 +41,7 @@ public static class ServiceConfigs
       services.AddScoped<IEmailSender, MimeKitEmailSender>();
     }
 
-    logger.LogInformation("{Project} services registered", "Mediatr, CurrentUserAccessor, KeycloakAdmin and Email Sender");
+    logger.LogInformation("{Project} services registered", "Mediatr, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
 
     return services;
   }

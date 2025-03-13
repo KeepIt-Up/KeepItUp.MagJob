@@ -3,8 +3,16 @@ using KeepItUp.MagJob.Identity.Infrastructure.Data;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
+/// <summary>
+/// Konfiguracja middleware dla aplikacji
+/// </summary>
 public static class MiddlewareConfig
 {
+  /// <summary>
+  /// Konfiguruje middleware aplikacji i inicjalizuje bazę danych
+  /// </summary>
+  /// <param name="app">Aplikacja webowa</param>
+  /// <returns>Skonfigurowana aplikacja</returns>
   public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app)
   {
     if (app.Environment.IsDevelopment())
@@ -18,18 +26,34 @@ public static class MiddlewareConfig
       app.UseHsts();
     }
 
+    app.UseCors(CorsConfig.CorsPolicyName);
+
     app.UseAuthentication();
+    app.UseAuthorization();
 
-    app.UseFastEndpoints()
-        .UseSwaggerGen(); // Includes AddFileServer and static files middleware
+    app.UseFastEndpoints(c =>
+    {
+      // Ustawienie PropertyNamingPolicy na null powoduje, że nazwy właściwości w JSON
+      // są zachowywane dokładnie tak, jak w klasach C# (PascalCase).
+      // Jest to zgodne z konwencją .NET, ale różni się od standardu JSON (camelCase).
+      // Uwaga: Jeśli klienci oczekują camelCase, należy zmienić to ustawienie na:
+      // c.Serializer.Options.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+      c.Serializer.Options.PropertyNamingPolicy = null;
+    });
 
-    app.UseHttpsRedirection(); // Note this will drop Authorization headers
+    app.UseSwaggerGen();
+
+    app.UseHttpsRedirection();
 
     await SeedDatabase(app);
 
     return app;
   }
 
+  /// <summary>
+  /// Inicjalizuje bazę danych i wypełnia ją danymi początkowymi
+  /// </summary>
+  /// <param name="app">Aplikacja webowa</param>
   static async Task SeedDatabase(WebApplication app)
   {
     using var scope = app.Services.CreateScope();
