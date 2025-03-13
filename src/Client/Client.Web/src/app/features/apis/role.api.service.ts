@@ -3,7 +3,6 @@ import { Role } from "@features/models/role/role";
 import { PaginatedResponse, PaginationOptions, serializePaginationOptions } from "@shared/components/pagination/pagination.component";
 import { BaseApiService } from "@shared/services/base-api.service";
 import { Observable } from "rxjs";
-import { environment } from "@environments/environment";
 
 @Injectable({
   providedIn: 'root'

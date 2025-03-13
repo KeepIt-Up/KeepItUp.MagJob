@@ -1,4 +1,3 @@
-using System;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
@@ -25,7 +24,7 @@ public class KeycloakOptions
     /// <summary>
     /// Sekret klienta (client_secret) używany do uwierzytelniania
     /// </summary>
-    public required string ClientSecret { get; set; }
+    public required string ClientSecret { get; set; } = string.Empty;
     
     /// <summary>
     /// Adres URL do pobrania metadanych OpenID Connect
@@ -56,4 +55,24 @@ public class KeycloakOptions
     /// Maksymalny czas oczekiwania na odpowiedź z Keycloak w sekundach
     /// </summary>
     public int TimeoutSeconds { get; set; } = 30;
+    
+    /// <summary>
+    /// Maksymalny czas oczekiwania na odpowiedź z Keycloak w sekundach (alias dla TimeoutSeconds)
+    /// </summary>
+    public int MaxTimeoutSeconds => TimeoutSeconds;
+
+    /// <summary>
+    /// Nazwa użytkownika administratora Keycloak
+    /// </summary>
+    public string AdminUsername { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Hasło administratora Keycloak
+    /// </summary>
+    public string AdminPassword { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Identyfikator klienta używany do uwierzytelniania administratora (domyślnie "admin-cli")
+    /// </summary>
+    public string AdminClientId { get; set; } = "admin-cli";
 } 

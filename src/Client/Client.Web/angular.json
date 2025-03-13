@@ -71,14 +71,14 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
+            "docker": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
+                  "with": "src/environments/environment.docker.ts"
                 }
               ]
             },
@@ -94,16 +94,13 @@
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "Client.Web:build:production"
-            },
-            "development": {
-              "buildTarget": "Client.Web:build:development"
             },
             "docker": {
               "buildTarget": "Client.Web:build:docker"
@@ -112,7 +109,7 @@
               "buildTarget": "Client.Web:build:local"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"

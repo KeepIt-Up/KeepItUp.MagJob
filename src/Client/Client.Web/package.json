@@ -5,11 +5,9 @@
     "ng": "ng",
     "local": "ng serve --host=127.0.0.1 --configuration local",
     "docker": "ng serve --host=0.0.0.0 --configuration docker",
-    "dev": "ng serve --host=127.0.0.1 --configuration development",
     "prod": "ng serve --host=127.0.0.1 --configuration production",
     "build:local": "ng build --configuration local",
     "build:docker": "ng build --configuration docker",
-    "build:dev": "ng build --configuration development",
     "build:prod": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint"

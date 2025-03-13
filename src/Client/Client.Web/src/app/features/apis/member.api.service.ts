@@ -5,7 +5,6 @@ import { BaseApiService } from '@shared/services/base-api.service';
 import { PaginationOptions } from '@shared/components/pagination/pagination.component';
 import { PaginatedResponse } from '@shared/components/pagination/pagination.component';
 import { serializePaginationOptions } from '@shared/components/pagination/pagination.component';
-import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'

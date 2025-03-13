@@ -3,11 +3,7 @@ using KeepItUp.MagJob.Identity.Core.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Reflection;
-using Ardalis.SharedKernel;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options,
@@ -32,7 +28,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
     // Utworzenie schematu "identity"
     modelBuilder.HasDefaultSchema(DataSchemaConstants.IDENTITY_SCHEMA);
-    modelBuilder.HasPostgresExtension("uuid-ossp"); // Dodanie rozszerzenia dla UUID
+    // Dodanie rozszerzenia dla UUID
+    modelBuilder.HasPostgresExtension("uuid-ossp"); 
   }
 
   public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -41,10 +38,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     
     int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-    // ignore events if no dispatcher provided
     if (_dispatcher == null) return result;
 
-    // dispatch events only if save was successful
     var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
         .Select(e => e.Entity)
         .Where(e => e.DomainEvents.Any())

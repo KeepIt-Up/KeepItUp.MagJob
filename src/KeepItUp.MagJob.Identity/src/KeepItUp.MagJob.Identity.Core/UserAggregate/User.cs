@@ -38,34 +38,58 @@ public class User : BaseEntity, IAggregateRoot
   /// </summary>
   public bool IsActive { get; private set; } = true;
 
+  /// <summary>
+  /// Data utworzenia użytkownika.
+  /// </summary>
+  public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
+
+  /// <summary>
+  /// Data ostatniej modyfikacji użytkownika.
+  /// </summary>
+  public DateTime LastModifiedDate { get; private set; } = DateTime.UtcNow;
+
+  /// <summary>
+  /// Nazwa użytkownika.
+  /// </summary>
+  public string Username { get; private set; } = string.Empty;
+
+  /// <summary>
+  /// Lista uprawnień użytkownika.
+  /// </summary>
+  public List<string> Permissions { get; private set; } = new List<string>();
+
+  /// <summary>
+  /// Data ostatniego logowania użytkownika.
+  /// </summary>
+  public DateTime LastLoginDate { get; private set; } = DateTime.MinValue;
+
   // Prywatny konstruktor dla EF Core
   private User() { }
 
   /// <summary>
   /// Tworzy nowego użytkownika.
   /// </summary>
-  /// <param name="externalId">Identyfikator użytkownika w systemie zewnętrznym (Keycloak).</param>
-  /// <param name="email">Adres e-mail użytkownika.</param>
-  /// <param name="firstName">Imię użytkownika.</param>
-  /// <param name="lastName">Nazwisko użytkownika.</param>
-  /// <returns>Nowy użytkownik.</returns>
-  public static User Create(string externalId, string email, string firstName, string lastName)
+  /// <param name="firstName">Imię</param>
+  /// <param name="lastName">Nazwisko</param>
+  /// <param name="email">Adres e-mail</param>
+  /// <param name="username">Nazwa użytkownika</param>
+  /// <param name="externalId">Identyfikator zewnętrzny</param>
+  /// <param name="isActive">Czy użytkownik jest aktywny</param>
+  /// <returns>Nowy użytkownik</returns>
+  public static User Create(string firstName, string lastName, string email, string username, string externalId, bool isActive)
   {
-    Guard.Against.NullOrEmpty(externalId, nameof(externalId));
-    Guard.Against.NullOrEmpty(email, nameof(email));
-    Guard.Against.NullOrEmpty(firstName, nameof(firstName));
-    Guard.Against.NullOrEmpty(lastName, nameof(lastName));
-
     var user = new User
     {
-      ExternalId = externalId,
-      Email = email,
       FirstName = firstName,
-      LastName = lastName
+      LastName = lastName,
+      Email = email,
+      Username = username,
+      ExternalId = externalId,
+      IsActive = isActive,
+      CreatedDate = DateTime.UtcNow,
+      LastModifiedDate = DateTime.UtcNow
     };
-
-    user.RegisterDomainEvent(new UserCreatedEvent(user.Id, user.ExternalId, user.Email));
-
+    
     return user;
   }
 
@@ -130,7 +154,25 @@ public class User : BaseEntity, IAggregateRoot
   }
 
   /// <summary>
-  /// Dezaktywuje użytkownika.
+  /// Aktualizuje uprawnienia użytkownika
+  /// </summary>
+  /// <param name="permissions">Lista uprawnień</param>
+  public void UpdatePermissions(List<string> permissions)
+  {
+    Permissions = permissions ?? new List<string>();
+  }
+
+  /// <summary>
+  /// Aktualizuje datę ostatniego logowania
+  /// </summary>
+  /// <param name="lastLoginDate">Data ostatniego logowania</param>
+  public void UpdateLastLoginDate(DateTime lastLoginDate)
+  {
+    LastLoginDate = lastLoginDate;
+  }
+
+  /// <summary>
+  /// Dezaktywuje użytkownika
   /// </summary>
   public void Deactivate()
   {
@@ -194,27 +236,31 @@ public class User : BaseEntity, IAggregateRoot
   }
 
   /// <summary>
-  /// Aktualizuje wszystkie podstawowe dane użytkownika.
+  /// Aktualizuje wszystkie dane użytkownika
   /// </summary>
-  /// <param name="firstName">Imię użytkownika.</param>
-  /// <param name="lastName">Nazwisko użytkownika.</param>
-  /// <param name="email">Adres email użytkownika.</param>
-  /// <param name="isActive">Status aktywności użytkownika.</param>
-  public void UpdateAllDetails(string firstName, string lastName, string email, bool isActive)
+  /// <param name="firstName">Imię</param>
+  /// <param name="lastName">Nazwisko</param>
+  /// <param name="email">Adres e-mail</param>
+  /// <param name="username">Nazwa użytkownika</param>
+  /// <param name="isActive">Czy użytkownik jest aktywny</param>
+  public void UpdateAllDetails(string firstName, string lastName, string email, string username, bool isActive)
   {
     Guard.Against.NullOrEmpty(firstName, nameof(firstName));
     Guard.Against.NullOrEmpty(lastName, nameof(lastName));
     Guard.Against.NullOrEmpty(email, nameof(email));
+    Guard.Against.NullOrEmpty(username, nameof(username));
 
     FirstName = firstName;
     LastName = lastName;
     Email = email;
-    
+    Username = username;
+    LastModifiedDate = DateTime.UtcNow;
+
     // Aktualizacja statusu aktywności
     if (IsActive != isActive)
     {
       IsActive = isActive;
-      
+
       if (isActive)
       {
         RegisterDomainEvent(new UserActivatedEvent(Id, ExternalId, Email));

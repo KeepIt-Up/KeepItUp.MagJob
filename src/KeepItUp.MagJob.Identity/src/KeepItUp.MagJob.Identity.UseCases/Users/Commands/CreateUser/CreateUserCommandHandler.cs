@@ -58,10 +58,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
             // Utwórz nowego użytkownika
             var user = User.Create(
-                request.ExternalId,
-                request.Email,
                 request.FirstName,
-                request.LastName);
+                request.LastName,
+                request.Email,
+                string.IsNullOrEmpty(request.Username) ? request.Email : request.Username,
+                request.ExternalId,
+                true); // Domyślnie użytkownik jest aktywny
 
             // Aktualizuj profil użytkownika (jeśli podano dane profilu)
             if (!string.IsNullOrEmpty(request.PhoneNumber) || 

@@ -5,9 +5,9 @@ Ten dokument opisuje plan implementacji modułu Identity, w tym integrację z Ke
 ## Przegląd
 
 Plan implementacji jest podzielony na pięć głównych etapów:
-1. Podstawowa Struktura
-2. Integracja z Keycloak
-3. Przypadki Użycia i Endpointy
+1. Podstawowa Struktura ✅
+2. Integracja z Keycloak ✅
+3. Przypadki Użycia i Endpointy ✅
 4. Audyt i Bezpieczeństwo
 5. Testy i Dokumentacja
 
@@ -15,309 +15,96 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Agregaty i Encje
 
-#### UserAggregate
+#### UserAggregate ✅
 
 - [x] `User` (Aggregate Root)
-  - [x] Podstawowe właściwości (Id, ExternalId, Email, FirstName, LastName)
-  - [x] Metody biznesowe (Update, Deactivate)
-  - [x] Zdarzenia domenowe
-
 - [x] `UserProfile` (Value Object)
-  - [x] Właściwości (PhoneNumber, Address, ProfileImage)
-  - [x] Implementacja jako prawdziwy Value Object (niezmienność, równość)
-
 - [ ] `ExternalIdentity` (Value Object dla integracji z Keycloak)
-  - [ ] Właściwości (Provider, ExternalId, Claims)
 
-#### OrganizationAggregate
+#### OrganizationAggregate ✅
 
 - [x] `Organization` (Aggregate Root)
-  - [x] Podstawowe właściwości (Id, Name, Description, OwnerId)
-  - [x] Metody biznesowe (Update, AddMember, RemoveMember, AddRole, RemoveRole)
-  - [x] Zdarzenia domenowe
-
 - [x] `Member` (Entity)
-  - [x] Podstawowe właściwości (Id, UserId, OrganizationId)
-  - [x] Możliwość posiadania wielu ról
-  - [x] Metody biznesowe (AssignRole, RemoveRole, HasRole)
-
 - [x] `Invitation` (Entity)
-  - [x] Podstawowe właściwości (Id, OrganizationId, Email, Token, ExpiresAt)
-  - [x] Metody biznesowe (Accept, Reject, Expire)
-
 - [x] `Role` (Entity)
-  - [x] Podstawowe właściwości (Id, Name, Description, OrganizationId)
-  - [x] Metody biznesowe (Update, AddPermission, RemovePermission)
-
 - [x] `Permission` (Value Object)
-  - [x] Właściwości (Name, Description)
 
-### Zdarzenia Domenowe
+#### ContributorAggregate ✅
 
-#### UserAggregate
+- [x] `Contributor` (Aggregate Root)
+- [x] `ContributorStatus` (Smart Enum)
+- [x] `PhoneNumber` (Value Object)
 
-- [x] `UserCreatedEvent`
-- [x] `UserUpdatedEvent`
-- [x] `UserDeactivatedEvent`
-- [x] `UserActivatedEvent`
+### Zdarzenia Domenowe ✅
 
-#### OrganizationAggregate
+- [x] Zdarzenia dla UserAggregate
+- [x] Zdarzenia dla OrganizationAggregate
+- [x] Zdarzenia dla ContributorAggregate
 
-- [x] `OrganizationCreatedEvent`
-- [x] `OrganizationUpdatedEvent`
-- [x] `OrganizationDeactivatedEvent`
-- [x] `OrganizationActivatedEvent`
-- [x] `MemberAddedEvent`
-- [x] `MemberRemovedEvent`
-- [x] `MemberRoleAssignedEvent`
-- [x] `MemberRoleRevokedEvent`
-- [x] `RoleCreatedEvent`
-- [x] `RoleUpdatedEvent`
-- [x] `RoleDeletedEvent`
-- [x] `PermissionAssignedEvent`
-- [x] `PermissionRevokedEvent`
-- [x] `InvitationCreatedEvent`
-- [x] `InvitationAcceptedEvent`
-- [x] `InvitationRejectedEvent`
-
-### Specyfikacje i Repozytoria
+### Specyfikacje i Repozytoria ✅
 
 - [x] Wykorzystanie wzorca Specification zamiast dedykowanych repozytoriów
-  - [x] Specyfikacje dla User
-    - [x] `UserByIdSpec`
-    - [x] `UserByEmailSpec`
-    - [x] `UserByExternalIdSpec`
-    - [x] `ActiveUsersSpec`
-  - [x] Specyfikacje dla Organization
-    - [x] `OrganizationByIdSpec`
-    - [x] `OrganizationByNameSpec`
-    - [x] `OrganizationWithMembersSpec`
-    - [x] `OrganizationWithRolesSpec`
-  - [x] Specyfikacje dla Member
-    - [x] `MemberByUserIdSpec`
-    - [x] `MemberByUserIdAndOrgIdSpec`
-  - [x] Specyfikacje dla Role
-    - [x] `RoleByIdSpec`
-    - [x] `RoleByNameAndOrgIdSpec`
-    - [x] `RoleWithMembersSpec`
-
 - [x] Wykorzystanie generycznych interfejsów repozytorium z Ardalis.Specification
-  - [x] `IRepository<T>` - do operacji zapisu i odczytu
-  - [x] `IReadRepository<T>` - tylko do operacji odczytu
 
-## Przypadki Użycia (KeepItUp.MagJob.Identity.UseCases)
+## Przypadki Użycia (KeepItUp.MagJob.Identity.UseCases) ✅
 
-### Użytkownicy
+### Użytkownicy ✅
 
-#### Komendy
+- [x] Komendy (Create, Update, Deactivate)
+- [x] Zapytania (GetById, GetByExternalId, GetUserOrganizations)
 
-- [x] `CreateUserCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
+### Organizacje ✅
 
-- [x] `UpdateUserCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
+- [x] Komendy (Create, Update, Deactivate, CreateInvitation, AcceptInvitation, RejectInvitation, RemoveMember)
+- [x] Zapytania (GetById, GetMembers, GetInvitations, GetMemberById, GetInvitationById)
 
-- [x] `DeactivateUserCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
+### Role i Uprawnienia ✅
 
-#### Zapytania
+- [x] Komendy (CreateRole, UpdateRole, DeleteRole, AssignRoleToMember, RevokeRoleFromMember, UpdateRolePermissions)
+- [x] Zapytania (GetRoleById, GetRolesByOrganizationId, GetRolesByMemberId, GetPermissions)
 
-- [x] `GetUserByIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
+### Kontrybutorzy ✅
 
-- [x] `GetUserByExternalIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetUserOrganizationsQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-### Organizacje
-
-#### Komendy
-
-- [x] `CreateOrganizationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `UpdateOrganizationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `DeactivateOrganizationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `CreateInvitationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `AcceptInvitationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `RejectInvitationCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `RemoveMemberCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-#### Zapytania
-
-- [x] `GetOrganizationByIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetOrganizationMembersQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetOrganizationInvitationsQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetMemberByIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetInvitationByIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-### Role i Uprawnienia
-
-#### Komendy
-
-- [x] `CreateRoleCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `UpdateRoleCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `DeleteRoleCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `AssignRoleToMemberCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `RevokeRoleFromMemberCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-- [x] `UpdateRolePermissionsCommand`
-  - [x] Request
-  - [x] Handler
-  - [x] Validator
-
-#### Zapytania
-
-- [x] `GetRoleByIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetRolesByOrganizationIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetRolesByMemberIdQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
-
-- [x] `GetPermissionsQuery`
-  - [x] Request
-  - [x] Handler
-  - [x] Response
+- [x] Komendy (Create, Update, Delete)
+- [x] Zapytania (GetById, List)
 
 ## Infrastruktura (KeepItUp.MagJob.Identity.Infrastructure)
 
-### Baza Danych
+### Baza Danych ✅
 
 - [x] `AppDbContext`
-  - [x] DbSets
-  - [x] Konfiguracja SaveChanges (dla zdarzeń domenowych)
-  - [x] Automatyczna aktualizacja pól CreatedAt i UpdatedAt
-
-- [ ] Konfiguracje encji
-  - [ ] `UserConfiguration`
-  - [ ] `OrganizationConfiguration`
-  - [ ] `MemberConfiguration`
-  - [ ] `RoleConfiguration`
-  - [ ] `InvitationConfiguration`
+- [x] Konfiguracje encji
+  - [x] `UserConfiguration`
+  - [x] `OrganizationConfiguration`
+  - [x] `MemberConfiguration`
+  - [x] `RoleConfiguration`
+  - [x] `InvitationConfiguration`
+  - [x] `ContributorConfiguration`
   - [ ] `AuditLogConfiguration`
 
-- [ ] Migracje
-  - [ ] Inicjalna migracja
+- [x] Migracje
+  - [x] Inicjalna migracja
+  - [x] Migracja PhoneNumber
   - [ ] Seed danych (uprawnienia, role systemowe)
 
 - [x] Implementacje repozytoriów
-  - [x] Wykorzystanie `EfRepository<T>` z Ardalis.Specification.EntityFrameworkCore
 
-### Obsługa Zdarzeń Domenowych
+### Obsługa Zdarzeń Domenowych ✅
 
 - [x] `IDomainEventDispatcher`
-  - [x] Interfejs dla dyspozytora zdarzeń domenowych
 - [x] `MediatRDomainEventDispatcher`
-  - [x] Implementacja dyspozytora zdarzeń domenowych używająca MediatR
 
-### Integracja z Keycloak
+### Integracja z Keycloak ✅
 
 - [x] `KeycloakClient`
-  - [x] Metody do komunikacji z Keycloak API
-  - [x] Obsługa tokenów
-  - [x] Zarządzanie użytkownikami
-
 - [x] `KeycloakOptions`
-  - [x] Konfiguracja połączenia z Keycloak
-
 - [x] `KeycloakSyncService`
-  - [x] Synchronizacja ról i uprawnień
-  - [x] Synchronizacja użytkowników
-  - [x] Optymalizacja pobierania danych (eager loading)
-
 - [x] `KeycloakEventListener`
-  - [x] Nasłuchiwanie zdarzeń z Keycloak
-  - [x] Obsługa rejestracji użytkowników
-  - [x] Obsługa logowania użytkowników
-
 - [x] `KeycloakAttributeMapper`
-  - [x] Mapowanie ról i uprawnień do atrybutów w tokenach JWT
+
+### Email ✅
+
+- [x] Serwis do wysyłania emaili
 
 ### Audyt
 
@@ -329,17 +116,17 @@ Plan implementacji jest podzielony na pięć głównych etapów:
   - [ ] Zapisywanie logów audytowych
   - [ ] Pobieranie logów audytowych
 
-## API (KeepItUp.MagJob.Identity.Web)
+## API (KeepItUp.MagJob.Identity.Web) ✅
 
 ### Endpointy FastEndpoints
 
-#### Użytkownicy
+#### Użytkownicy ✅
 
 - [x] `GetUserEndpoint`
 - [x] `UpdateUserEndpoint`
 - [x] `GetUserOrganizationsEndpoint`
 
-#### Organizacje
+#### Organizacje ✅
 
 - [x] `CreateOrganizationEndpoint`
 - [x] `GetOrganizationEndpoint`
@@ -352,7 +139,7 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 - [x] `RejectInvitationEndpoint`
 - [x] `RemoveMemberEndpoint`
 
-#### Role i Uprawnienia
+#### Role i Uprawnienia ✅
 
 - [x] `CreateRoleEndpoint`
 - [x] `GetOrganizationRolesEndpoint`
@@ -363,14 +150,17 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 - [x] `RevokeRoleFromMemberEndpoint`
 - [x] `GetPermissionsEndpoint`
 
-### Konfiguracja
+#### Kontrybutorzy ✅
+
+- [x] `CreateContributorEndpoint`
+- [x] `GetContributorByIdEndpoint`
+- [x] `UpdateContributorEndpoint`
+- [x] `DeleteContributorEndpoint`
+- [x] `ListContributorsEndpoint`
+
+### Konfiguracja ✅
 
 - [x] `Program.cs`
-  - [x] Konfiguracja FastEndpoints
-  - [x] Konfiguracja uwierzytelniania JWT
-  - [x] Konfiguracja Keycloak
-  - [x] Konfiguracja Swagger
-
 - [x] Middleware
   - [x] `ErrorHandlingMiddleware` (z FastEndpoints)
   - [x] Konfiguracja uwierzytelniania i autoryzacji
@@ -380,7 +170,8 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Testy Jednostkowe
 
-- [ ] Testy dla modeli domeny
+- [x] Testy dla modeli domeny
+  - [x] `ContributorTests`
   - [ ] `UserTests`
   - [ ] `OrganizationTests`
   - [ ] `RoleTests`
@@ -391,9 +182,21 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Testy Integracyjne
 
-- [ ] Testy dla repozytoriów
+- [x] Testy dla repozytoriów
+  - [x] `EfRepositoryAdd`
+  - [x] `EfRepositoryUpdate`
+  - [x] `EfRepositoryDelete`
 - [ ] Testy dla endpointów API
 - [ ] Testy dla integracji z Keycloak
+
+### Testy Funkcjonalne
+
+- [x] Konfiguracja testów funkcjonalnych
+  - [x] `CustomWebApplicationFactory`
+- [x] Testy dla endpointów API
+  - [x] `ContributorGetById`
+  - [x] `ContributorList`
+  - [ ] Testy dla pozostałych endpointów
 
 ## Dokumentacja
 
@@ -404,27 +207,14 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ## Etapy Implementacji
 
-### Etap 1: Podstawowa Struktura
+### Etap 1: Podstawowa Struktura ✅
 
 - [x] Implementacja modeli domeny
-  - [x] Wykorzystanie Ardalis.SharedKernel dla klas bazowych
-  - [x] Implementacja możliwości posiadania wielu ról przez członka organizacji
-  - [x] Hybrydowe podejście do aktualizacji pól CreatedAt i UpdatedAt
-  - [x] Implementacja UserProfile jako prawdziwego Value Object
 - [x] Implementacja wzorca Specification
-  - [x] Utworzenie specyfikacji dla User, Organization, Member i Role
-  - [x] Wykorzystanie generycznych interfejsów IRepository<T> i IReadRepository<T>
 - [x] Konfiguracja bazy danych
-  - [x] Implementacja AppDbContext
-  - [x] Automatyczna aktualizacja pól CreatedAt i UpdatedAt
-  - [x] Konfiguracje encji (UserConfiguration, OrganizationConfiguration, MemberConfiguration, RoleConfiguration, InvitationConfiguration)
-  - [x] Ujednolicenie typów danych dla identyfikatorów (int vs Guid)
-  - [x] Konfiguracja dla PostgreSQL
-  - [ ] Migracje
 - [x] Obsługa zdarzeń domenowych
-  - [x] Wykorzystanie MediatRDomainEventDispatcher z Ardalis.SharedKernel
 
-### Etap 2: Integracja z Keycloak
+### Etap 2: Integracja z Keycloak ✅
 
 - [x] Implementacja klienta Keycloak
 - [x] Konfiguracja uwierzytelniania JWT
@@ -432,11 +222,12 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 - [x] Optymalizacja zapytań do bazy danych
 - [x] Obsługa błędów i logowania
 
-### Etap 3: Przypadki Użycia i Endpointy
+### Etap 3: Przypadki Użycia i Endpointy ✅
 
 - [x] Implementacja przypadków użycia dla użytkowników
 - [x] Implementacja przypadków użycia dla organizacji
 - [x] Implementacja przypadków użycia dla ról i uprawnień
+- [x] Implementacja przypadków użycia dla kontrybutorów
 - [x] Implementacja endpointów FastEndpoints
 
 ### Etap 4: Audyt i Bezpieczeństwo
@@ -447,65 +238,30 @@ Plan implementacji jest podzielony na pięć głównych etapów:
 
 ### Etap 5: Testy i Dokumentacja
 
-- [ ] Implementacja testów jednostkowych
-- [ ] Implementacja testów integracyjnych
+- [x] Implementacja podstawowych testów jednostkowych
+- [x] Implementacja podstawowych testów integracyjnych
+- [x] Implementacja podstawowych testów funkcjonalnych
+- [ ] Rozszerzenie pokrycia testami
 - [ ] Dokumentacja API (Swagger)
 
 ## Śledzenie Postępu
 
 | Etap | Rozpoczęcie | Zakończenie | Status | Uwagi |
 |------|-------------|-------------|--------|-------|
-| Etap 1 | 09.03.2025 | 09.03.2025 | Zakończony | Zaimplementowano modele domeny. Wykorzystano Ardalis.SharedKernel dla klas bazowych. Zmodyfikowano klasę Member, aby mogła posiadać wiele ról. Zaimplementowano hybrydowe podejście do aktualizacji pól CreatedAt i UpdatedAt. Przekształcono UserProfile w prawdziwy Value Object. Zaimplementowano obsługę zdarzeń domenowych. Zastąpiono dedykowane repozytoria wzorcem Specification. Utworzono konfiguracje encji. Rozwiązano problem z niespójnością typów danych dla identyfikatorów (int vs Guid). Skonfigurowano bazę danych PostgreSQL. Utworzono migrację. |
-| Etap 2 | 09.03.2025 | 10.03.2025 | Zakończony | Zaimplementowano integrację z Keycloak. Utworzono klienta Keycloak do komunikacji z API. Zaimplementowano serwis synchronizacji danych między modułem Identity a Keycloak. Dodano nasłuchiwanie zdarzeń z Keycloak. Zaimplementowano mapowanie atrybutów użytkownika do tokenów JWT. Skonfigurowano uwierzytelnianie JWT z Keycloak. Zoptymalizowano zapytania do bazy danych poprzez eager loading. Dodano obsługę błędów i logowanie. |
-| Etap 3 | 11.03.2025 | 11.03.2025 | Zakończony | Zaimplementowano przypadki użycia dla użytkowników (CreateUserCommand, UpdateUserCommand, DeactivateUserCommand, GetUserByIdQuery, GetUserByExternalIdQuery, GetUserOrganizationsQuery). Zaimplementowano przypadki użycia dla organizacji (CreateOrganizationCommand, UpdateOrganizationCommand, DeactivateOrganizationCommand, GetOrganizationByIdQuery, GetOrganizationMembersQuery, GetOrganizationInvitationsQuery, GetMemberByIdQuery, GetInvitationByIdQuery). Zaimplementowano przypadki użycia dla zaproszeń (CreateInvitationCommand, AcceptInvitationCommand, RejectInvitationCommand). Zaimplementowano przypadki użycia dla ról (CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand, GetRoleByIdQuery, GetRolesByOrganizationIdQuery, GetRolesByMemberIdQuery, GetPermissionsQuery). Zaimplementowano przypadki użycia dla przypisywania ról (AssignRoleToMemberCommand, RevokeRoleFromMemberCommand). Zaimplementowano przypadki użycia dla przypisywania uprawnień (UpdateRolePermissionsCommand). Zaimplementowano endpointy FastEndpoints. |
+| Etap 1 | 09.03.2025 | 09.03.2025 | Zakończony | Zaimplementowano modele domeny, wzorzec Specification, konfigurację bazy danych i obsługę zdarzeń domenowych. |
+| Etap 2 | 09.03.2025 | 10.03.2025 | Zakończony | Zaimplementowano integrację z Keycloak, uwierzytelnianie JWT, synchronizację danych i optymalizację zapytań. |
+| Etap 3 | 11.03.2025 | 11.03.2025 | Zakończony | Zaimplementowano przypadki użycia i endpointy dla użytkowników, organizacji, ról, uprawnień i kontrybutorów. |
 | Etap 4 | | | Nie rozpoczęto | |
-| Etap 5 | | | Nie rozpoczęto | |
+| Etap 5 | 12.03.2025 | | W trakcie | Zaimplementowano podstawowe testy jednostkowe, integracyjne i funkcjonalne. Konieczne rozszerzenie pokrycia testami i dokumentacja. |
 
 ## Zmiany i Aktualizacje
 
 | Data | Autor | Opis |
 |------|-------|------|
 | 09.03.2025 | Claude | Utworzenie planu implementacji |
-| 09.03.2025 | Claude | Implementacja modeli domeny i interfejsów repozytoriów |
-| 09.03.2025 | Claude | Wykorzystanie Ardalis.SharedKernel dla klas bazowych |
-| 09.03.2025 | Claude | Modyfikacja klasy Member, aby mogła posiadać wiele ról |
-| 09.03.2025 | Claude | Implementacja hybrydowego podejścia do aktualizacji pól CreatedAt i UpdatedAt |
-| 09.03.2025 | Claude | Przekształcenie UserProfile w prawdziwy Value Object |
-| 09.03.2025 | Claude | Implementacja obsługi zdarzeń domenowych (wykorzystanie MediatRDomainEventDispatcher z Ardalis.SharedKernel) |
-| 09.03.2025 | Claude | Zastąpienie dedykowanych repozytoriów wzorcem Specification |
-| 09.03.2025 | Claude | Utworzenie konfiguracji encji (UserConfiguration, OrganizationConfiguration, MemberConfiguration, RoleConfiguration, InvitationConfiguration) |
-| 09.03.2025 | Claude | Identyfikacja problemu z niespójnością typów danych dla identyfikatorów (int vs Guid) |
-| 09.03.2025 | Claude | Rozwiązanie problemu z niespójnością typów danych dla identyfikatorów (int vs Guid) |
-| 09.03.2025 | Claude | Konfiguracja bazy danych PostgreSQL |
-| 09.03.2025 | Claude | Usunięcie SQLite z projektu i pełne przejście na PostgreSQL |
-| 09.03.2025 | Claude | Rozwiązanie ostrzeżeń EF Core dotyczących komparatora wartości dla kolekcji i opcjonalnej zależności |
-| 09.03.2025 | Claude | Implementacja integracji z Keycloak (KeycloakClient, KeycloakSyncService, KeycloakEventListener, KeycloakAttributeMapper) |
-| 09.03.2025 | Claude | Konfiguracja uwierzytelniania JWT z Keycloak |
-| 09.03.2025 | Claude | Integracja Swagger z uwierzytelnianiem Keycloak |
-| 10.03.2025 | Claude | Optymalizacja zapytań do bazy danych poprzez eager loading |
-| 10.03.2025 | Claude | Dodanie obsługi błędów i logowania w serwisach Keycloak |
-| 10.03.2025 | Claude | Konfiguracja autoryzacji w aplikacji |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla użytkowników (CreateUserCommand, UpdateUserCommand, DeactivateUserCommand) |
-| 11.03.2025 | Claude | Implementacja zapytań dla użytkowników (GetUserByIdQuery, GetUserByExternalIdQuery, GetUserOrganizationsQuery) |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla organizacji (CreateOrganizationCommand, UpdateOrganizationCommand, DeactivateOrganizationCommand) |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla zaproszeń (CreateInvitationCommand, AcceptInvitationCommand, RejectInvitationCommand) |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla ról (CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand) |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla przypisywania ról (AssignRoleToMemberCommand, RevokeRoleFromMemberCommand) |
-| 11.03.2025 | Claude | Implementacja zapytań dla organizacji (GetOrganizationByIdQuery, GetOrganizationMembersQuery, GetOrganizationInvitationsQuery) |
-| 11.03.2025 | Claude | Implementacja przypadków użycia dla zarządzania uprawnieniami (UpdateRolePermissionsCommand) |
-| 2023-11-15 | Claude | Implementacja zapytania o członka organizacji (GetMemberByIdQuery) |
-| 2023-11-15 | Claude | Implementacja zapytania o zaproszenie (GetInvitationByIdQuery) |
-| 2023-11-15 | Claude | Implementacja specyfikacji OrganizationWithMembersAndRolesSpec |
-| 2023-11-15 | Claude | Implementacja endpointów dla użytkowników (GetUserEndpoint, UpdateUserEndpoint, GetUserOrganizationsEndpoint) |
-| 2023-11-15 | Claude | Implementacja endpointów dla organizacji (CreateOrganizationEndpoint, GetOrganizationEndpoint, UpdateOrganizationEndpoint, DeleteOrganizationEndpoint, GetOrganizationMembersEndpoint) |
-| 2023-11-15 | Claude | Aktualizacja endpointów do zgodności z metodologią FastEndpoints (Configure, Summary, Description) oraz pobieranie ID użytkownika z tokenu JWT zamiast z żądania |
-| 2023-11-15 | Claude | Dodanie walidacji w endpointach, poprawienie importów dla metod autoryzacji, dodanie mapperów zgodnie z metodologią FastEndpoints |
-| 2023-11-16 | Claude | Utworzenie guide'a do tworzenia endpointów w FastEndpoints (fastendpoints-guide.md) |
-| 2023-11-16 | Claude | Implementacja CurrentUserAccessor do bezpiecznego pobierania ID użytkownika z kontekstu HTTP |
-| 2023-11-16 | Claude | Dostosowanie endpointów organizacji do guide'a (CreateOrganizationEndpoint, UpdateOrganizationEndpoint, DeleteOrganizationEndpoint, GetOrganizationEndpoint) |
-| 2023-11-16 | Claude | Implementacja nowych endpointów zgodnie z guide'em (GetOrganizationRolesEndpoint, GetOrganizationMembersEndpoint, GetOrganizationInvitationsEndpoint, CreateInvitationEndpoint) |
-| 2023-11-16 | Claude | Implementacja endpointów do zarządzania zaproszeniami (AcceptInvitationEndpoint, RejectInvitationEndpoint) |
-| 2023-11-16 | Claude | Implementacja endpointu do usuwania członków organizacji (RemoveMemberEndpoint) |
-| 2023-11-16 | Claude | Implementacja endpointów do zarządzania rolami (CreateRoleEndpoint, UpdateRoleEndpoint, DeleteRoleEndpoint) |
-| 2023-11-16 | Claude | Implementacja endpointów do zarządzania rolami członków (AssignRoleToMemberEndpoint, RevokeRoleFromMemberEndpoint) |
-| 2023-11-16 | Claude | Implementacja endpointów do zarządzania uprawnieniami (UpdateRolePermissionsEndpoint, GetPermissionsEndpoint) | 
+| 09.03.2025 | Claude | Implementacja modeli domeny i infrastruktury |
+| 10.03.2025 | Claude | Implementacja integracji z Keycloak |
+| 11.03.2025 | Claude | Implementacja przypadków użycia i endpointów |
+| 12.03.2025 | Claude | Implementacja podstawowych testów |
+| 12.03.2025 | Claude | Dodanie modelu ContributorAggregate |
+| 12.03.2025 | Claude | Aktualizacja planu implementacji na podstawie aktualnego stanu projektu | 

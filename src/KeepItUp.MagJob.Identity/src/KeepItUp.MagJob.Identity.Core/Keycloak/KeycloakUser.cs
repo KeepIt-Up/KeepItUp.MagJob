@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak.Models;
+namespace KeepItUp.MagJob.Identity.Core.Keycloak;
 
 /// <summary>
 /// Reprezentuje użytkownika w kontekście Keycloak

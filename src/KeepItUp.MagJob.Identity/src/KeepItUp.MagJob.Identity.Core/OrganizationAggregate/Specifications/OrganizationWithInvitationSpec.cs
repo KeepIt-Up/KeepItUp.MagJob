@@ -1,4 +1,3 @@
-using Ardalis.Specification;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
 

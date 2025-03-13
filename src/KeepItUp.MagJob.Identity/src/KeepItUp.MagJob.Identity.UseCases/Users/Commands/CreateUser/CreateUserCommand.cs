@@ -19,6 +19,11 @@ public record CreateUserCommand : IRequest<Result<Guid>>
     public string Email { get; init; } = string.Empty;
 
     /// <summary>
+    /// Nazwa użytkownika.
+    /// </summary>
+    public string Username { get; init; } = string.Empty;
+
+    /// <summary>
     /// Imię użytkownika.
     /// </summary>
     public string FirstName { get; init; } = string.Empty;

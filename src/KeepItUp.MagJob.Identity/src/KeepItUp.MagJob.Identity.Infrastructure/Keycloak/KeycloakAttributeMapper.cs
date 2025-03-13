@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Json;
-using KeepItUp.MagJob.Identity.Infrastructure.Keycloak.Models;
+using KeepItUp.MagJob.Identity.Core.Keycloak;
 using Microsoft.AspNetCore.Authentication;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;

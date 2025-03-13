@@ -1,29 +1,27 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
+
+namespace KeepItUp.MagJob.Identity.Core.Interfaces;
 
 /// <summary>
-/// Interfejs serwisu do synchronizacji danych między modułem Identity a Keycloak
+/// Interfejs serwisu synchronizacji z Keycloak
 /// </summary>
 public interface IKeycloakSyncService
 {
     /// <summary>
-    /// Synchronizuje role i organizacje użytkownika z Keycloak
+    /// Synchronizuje role użytkownika z Keycloak
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w module Identity</param>
+    /// <param name="userId">Identyfikator użytkownika w Keycloak</param>
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
-    Task SyncUserRolesAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task SyncUserRolesAsync(string userId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Synchronizuje dane użytkownika z Keycloak
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w module Identity</param>
+    /// <param name="userId">Identyfikator użytkownika w Keycloak</param>
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
-    Task SyncUserDataAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task SyncUserDataAsync(string userId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Synchronizuje wszystkich użytkowników z Keycloak

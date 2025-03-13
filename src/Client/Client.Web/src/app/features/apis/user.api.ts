@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@environments/environment';
 import { Invitation } from '@features/models/invitation/invitation';
 import { Organization } from '@features/models/organization/organization';
 import { User } from '@features/models/user/user';
@@ -28,22 +27,6 @@ export class UserApiService {
   getAll(query: Record<any, any>, paginationOptions: PaginationOptions<User>) {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<User>>(`${this.apiUrl}`, { params: { ...query, ...options } });
-  }
-
-  create(): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}`, {});
-  }
-
-  getUser() {
-    return this.http.get<User>(`${this.apiUrl}/me`);
-  }
-
-  delete() {
-
-  }
-
-  update() {
-
   }
 
 }

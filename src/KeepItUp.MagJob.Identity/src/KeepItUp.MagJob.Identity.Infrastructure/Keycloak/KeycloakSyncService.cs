@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
+using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Infrastructure.Keycloak.Models;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
@@ -37,42 +38,50 @@ public class KeycloakSyncService : IKeycloakSyncService
   }
 
   /// <inheritdoc />
-  public async Task SyncUserRolesAsync(Guid userId, CancellationToken cancellationToken = default)
+  public async Task SyncUserRolesAsync(string userId, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+      _logger.LogInformation("Rozpoczęto synchronizację ról użytkownika {UserId} z Keycloak", userId);
+
+      // Pobierz użytkownika z naszej bazy danych
+      var user = await _userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
       if (user == null)
       {
-        _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze {UserId}", userId);
+        _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId} podczas synchronizacji ról", userId);
         return;
       }
-      
-      // Pobierz organizacje i role użytkownika
-      var organizations = await GetUserOrganizationsWithRolesAsync(userId, cancellationToken);
-      
-      // Pobierz uprawnienia użytkownika w kontekście organizacji
-      var permissionsByOrg = await GetUserPermissionsByOrgAsync(userId, organizations, cancellationToken);
-      
-      // Pobierz wszystkie uprawnienia użytkownika (dla kompatybilności wstecznej)
-      var allPermissions = new HashSet<string>();
-      foreach (var permissions in permissionsByOrg.Values)
-      {
-        foreach (var permission in permissions)
-        {
-          allPermissions.Add(permission);
-        }
-      }
-      
+
+      // Pobierz role użytkownika z Keycloak
+      var keycloakRoles = await _keycloakClient.GetUserRolesAsync(userId, cancellationToken);
+
+      // Mapuj role Keycloak na uprawnienia w naszej aplikacji
+      var permissions = MapRolesToPermissions(keycloakRoles);
+
+      // Aktualizuj uprawnienia użytkownika
+      user.UpdatePermissions(permissions);
+      await _userRepository.UpdateAsync(user, cancellationToken);
+
       // Aktualizuj atrybuty użytkownika w Keycloak
-      await _keycloakClient.UpdateUserAttributesAsync(user.ExternalId, new Dictionary<string, List<string>>
+      var keycloakUser = await _keycloakClient.GetUserByIdAsync(userId, cancellationToken);
+      if (keycloakUser != null)
       {
-        ["organizations"] = new List<string> { JsonSerializer.Serialize(organizations) },
-        ["permissions"] = allPermissions.ToList(),
-        ["permissions_by_org"] = new List<string> { JsonSerializer.Serialize(permissionsByOrg) }
-      }, cancellationToken);
-      
-      _logger.LogInformation("Zsynchronizowano role i uprawnienia użytkownika {UserId} z Keycloak", userId);
+        // Dodaj informacje o organizacjach użytkownika jako atrybuty
+        var organizations = await _organizationRepository.ListAsync(new OrganizationsByUserIdSpec(user.Id), cancellationToken);
+        var organizationIds = organizations.Select(o => o.Id.ToString()).ToList();
+
+        if (keycloakUser.Attributes == null)
+        {
+          keycloakUser.Attributes = new Dictionary<string, List<string>>();
+        }
+
+        keycloakUser.Attributes["organizations"] = organizationIds;
+        keycloakUser.Attributes["permissions"] = permissions;
+
+        await _keycloakClient.UpdateUserAsync(keycloakUser, cancellationToken);
+      }
+
+      _logger.LogInformation("Zakończono synchronizację ról użytkownika {UserId} z Keycloak", userId);
     }
     catch (Exception ex)
     {
@@ -82,36 +91,54 @@ public class KeycloakSyncService : IKeycloakSyncService
   }
 
   /// <inheritdoc />
-  public async Task SyncUserDataAsync(Guid userId, CancellationToken cancellationToken = default)
+  public async Task SyncUserDataAsync(string userId, CancellationToken cancellationToken = default)
   {
     try
     {
-      var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
-      if (user == null)
-      {
-        _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze {UserId}", userId);
-        return;
-      }
+      _logger.LogInformation("Rozpoczęto synchronizację danych użytkownika {UserId} z Keycloak", userId);
 
       // Pobierz dane użytkownika z Keycloak
-      var keycloakUser = await _keycloakClient.GetUserByIdAsync(user.ExternalId, cancellationToken);
+      var keycloakUser = await _keycloakClient.GetUserByIdAsync(userId, cancellationToken);
       if (keycloakUser == null)
       {
-        _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze {ExternalId} w Keycloak", user.ExternalId);
+        _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze {UserId} w Keycloak", userId);
         return;
       }
 
-      // Aktualizuj dane użytkownika w module Identity
-      user.UpdateAllDetails(
-          keycloakUser.FirstName ?? string.Empty,
-          keycloakUser.LastName ?? string.Empty,
-          keycloakUser.Email,
-          keycloakUser.Enabled
-      );
+      // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
+      var existingUser = await _userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
 
-      await _userRepository.UpdateAsync(user, cancellationToken);
+      if (existingUser == null)
+      {
+        // Utwórz nowego użytkownika
+        var newUser = User.Create(
+            keycloakUser.FirstName ?? string.Empty,
+            keycloakUser.LastName ?? string.Empty,
+            keycloakUser.Email,
+            keycloakUser.Username ?? keycloakUser.Email,
+            userId,
+            true
+        );
 
-      _logger.LogInformation("Zsynchronizowano dane użytkownika {UserId} z Keycloak", userId);
+        await _userRepository.AddAsync(newUser, cancellationToken);
+        _logger.LogInformation("Utworzono nowego użytkownika {UserId} na podstawie danych z Keycloak", newUser.Id);
+      }
+      else
+      {
+        // Aktualizuj istniejącego użytkownika
+        existingUser.UpdateAllDetails(
+            keycloakUser.FirstName ?? string.Empty,
+            keycloakUser.LastName ?? string.Empty,
+            keycloakUser.Email,
+            keycloakUser.Username,
+            keycloakUser.Enabled
+        );
+
+        await _userRepository.UpdateAsync(existingUser, cancellationToken);
+        _logger.LogInformation("Zaktualizowano dane użytkownika {UserId} na podstawie danych z Keycloak", existingUser.Id);
+      }
+
+      _logger.LogInformation("Zakończono synchronizację danych użytkownika {UserId} z Keycloak", userId);
     }
     catch (Exception ex)
     {
@@ -125,24 +152,26 @@ public class KeycloakSyncService : IKeycloakSyncService
   {
     try
     {
-      // Pobierz wszystkich użytkowników z modułu Identity
-      var users = await _userRepository.ListAsync(cancellationToken);
+      _logger.LogInformation("Rozpoczęto synchronizację wszystkich użytkowników z Keycloak");
 
-      foreach (var user in users)
+      // Pobierz wszystkich użytkowników z Keycloak
+      var keycloakUsers = await _keycloakClient.GetAllUsersAsync(cancellationToken);
+
+      foreach (var keycloakUser in keycloakUsers)
       {
         try
         {
-          await SyncUserDataAsync(user.Id, cancellationToken);
-          await SyncUserRolesAsync(user.Id, cancellationToken);
+          await SyncUserDataAsync(keycloakUser.Id, cancellationToken);
+          await SyncUserRolesAsync(keycloakUser.Id, cancellationToken);
         }
         catch (Exception ex)
         {
-          _logger.LogError(ex, "Wystąpił błąd podczas synchronizacji użytkownika {UserId} z Keycloak", user.Id);
+          _logger.LogError(ex, "Wystąpił błąd podczas synchronizacji użytkownika {UserId} z Keycloak", keycloakUser.Id);
           // Kontynuuj synchronizację pozostałych użytkowników
         }
       }
 
-      _logger.LogInformation("Zsynchronizowano wszystkich użytkowników z Keycloak");
+      _logger.LogInformation("Zakończono synchronizację wszystkich użytkowników z Keycloak");
     }
     catch (Exception ex)
     {
@@ -165,7 +194,7 @@ public class KeycloakSyncService : IKeycloakSyncService
 
       // Sprawdź, czy użytkownik już istnieje w module Identity
       var existingUser = await _userRepository.FirstOrDefaultAsync(
-          new UserByExternalIdSpecification(keycloakUserId),
+          new UserByExternalIdSpec(keycloakUserId),
           cancellationToken);
 
       if (existingUser != null)
@@ -176,10 +205,12 @@ public class KeycloakSyncService : IKeycloakSyncService
 
       // Utwórz nowego użytkownika w module Identity
       var newUser = User.Create(
-          keycloakUserId,
-          keycloakUser.Email,
           keycloakUser.FirstName ?? string.Empty,
-          keycloakUser.LastName ?? string.Empty
+          keycloakUser.LastName ?? string.Empty,
+          keycloakUser.Email,
+          keycloakUser.Username ?? keycloakUser.Email,
+          keycloakUserId,
+          true
       );
 
       await _userRepository.AddAsync(newUser, cancellationToken);
@@ -195,235 +226,47 @@ public class KeycloakSyncService : IKeycloakSyncService
     }
   }
 
-  private async Task<List<KeycloakOrganization>> GetUserOrganizationsWithRolesAsync(Guid userId, CancellationToken cancellationToken)
-  {
-    var result = new List<KeycloakOrganization>();
-    
-    try
-    {
-        // Pobierz wszystkie organizacje z ich członkami i rolami dla konkretnego użytkownika w jednym zapytaniu
-        var organizations = await _organizationRepository.ListAsync(
-            new OrganizationsWithMembersForUserSpecification(userId),
-            cancellationToken);
-        
-        if (organizations == null || !organizations.Any())
-        {
-            _logger.LogInformation("Nie znaleziono żadnych organizacji dla użytkownika {UserId}", userId);
-            return result;
-        }
-        
-        // Przetwórz organizacje, w których użytkownik jest członkiem
-        foreach (var organization in organizations)
-        {
-            // Pobierz członkostwo użytkownika w organizacji
-            var member = organization.Members.FirstOrDefault(m => m.UserId == userId);
-            if (member == null)
-            {
-                // To nie powinno się zdarzyć, ponieważ specyfikacja już filtruje organizacje
-                continue;
-            }
-            
-            // Pobierz role użytkownika w organizacji
-            var roleIds = member.RoleIds;
-            
-            // Pobierz nazwy ról
-            var roleNames = new List<string>();
-            foreach (var roleId in roleIds)
-            {
-                var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
-                if (role != null)
-                {
-                    roleNames.Add(role.Name);
-                }
-            }
-            
-            // Dodaj organizację z rolami do wyniku
-            result.Add(new KeycloakOrganization
-            {
-                Id = organization.Id.ToString(),
-                Name = organization.Name,
-                Roles = roleNames
-            });
-        }
-        
-        return result;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Wystąpił błąd podczas pobierania organizacji i ról użytkownika {UserId}", userId);
-        throw;
-    }
-  }
-
-  private async Task<Dictionary<string, List<string>>> GetUserPermissionsByOrgAsync(Guid userId, List<KeycloakOrganization> organizations, CancellationToken cancellationToken)
-  {
-    var result = new Dictionary<string, List<string>>();
-    
-    try
-    {
-        // Pobierz wszystkie organizacje z ich rolami w jednym zapytaniu
-        var allOrganizations = await _organizationRepository.ListAsync(
-            new OrganizationsWithRolesSpecification(),
-            cancellationToken);
-        
-        if (allOrganizations == null || !allOrganizations.Any())
-        {
-            _logger.LogInformation("Nie znaleziono żadnych organizacji z rolami");
-            return result;
-        }
-        
-        foreach (var org in organizations)
-        {
-            var orgId = Guid.Parse(org.Id);
-            var orgPermissions = new List<string>();
-            
-            // Znajdź organizację
-            var organization = allOrganizations.FirstOrDefault(o => o.Id == orgId);
-            if (organization == null)
-            {
-                _logger.LogWarning("Nie znaleziono organizacji o identyfikatorze {OrganizationId}", orgId);
-                continue;
-            }
-            
-            foreach (var roleName in org.Roles)
-            {
-                // Znajdź rolę w organizacji
-                var role = organization.Roles.FirstOrDefault(r => r.Name == roleName);
-                if (role == null)
-                {
-                    _logger.LogWarning("Nie znaleziono roli {RoleName} w organizacji {OrganizationId}", roleName, orgId);
-                    continue;
-                }
-                
-                // Dodaj uprawnienia roli do wyniku
-                foreach (var permission in role.Permissions)
-                {
-                    orgPermissions.Add(permission.Name);
-                }
-            }
-            
-            // Dodaj uprawnienia organizacji do wyniku
-            if (orgPermissions.Any())
-            {
-                result[org.Id] = orgPermissions.Distinct().ToList();
-            }
-        }
-        
-        return result;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Wystąpił błąd podczas pobierania uprawnień użytkownika {UserId} w kontekście organizacji", userId);
-        throw;
-    }
-  }
-}
-
-/// <summary>
-/// Specyfikacja do pobierania użytkownika na podstawie identyfikatora zewnętrznego
-/// </summary>
-public class UserByExternalIdSpecification : Specification<User>
-{
   /// <summary>
-  /// Inicjalizuje nową instancję klasy <see cref="UserByExternalIdSpecification"/>
+  /// Mapuje role Keycloak na uprawnienia w naszej aplikacji
   /// </summary>
-  /// <param name="externalId">Identyfikator zewnętrzny użytkownika</param>
-  public UserByExternalIdSpecification(string externalId)
+  /// <param name="roles">Role z Keycloak</param>
+  /// <returns>Lista uprawnień</returns>
+  private List<string> MapRolesToPermissions(List<string> roles)
   {
-    Query.Where(u => u.ExternalId == externalId);
-  }
-}
+    var permissions = new List<string>();
 
-/// <summary>
-/// Specyfikacja do pobierania członkostw użytkownika
-/// </summary>
-public class UserMembershipsSpecification : Specification<Member>
-{
-  /// <summary>
-  /// Inicjalizuje nową instancję klasy <see cref="UserMembershipsSpecification"/>
-  /// </summary>
-  /// <param name="userId">Identyfikator użytkownika</param>
-  public UserMembershipsSpecification(Guid userId)
-  {
-    Query.Where(m => m.UserId == userId);
-  }
-}
-
-/// <summary>
-/// Specyfikacja do pobierania roli na podstawie identyfikatora
-/// </summary>
-public class RoleByIdSpecification : Specification<Role>
-{
-  /// <summary>
-  /// Inicjalizuje nową instancję klasy <see cref="RoleByIdSpecification"/>
-  /// </summary>
-  /// <param name="roleId">Identyfikator roli</param>
-  public RoleByIdSpecification(Guid roleId)
-  {
-    Query.Where(r => r.Id == roleId);
-  }
-}
-
-/// <summary>
-/// Specyfikacja do pobierania roli na podstawie nazwy i identyfikatora organizacji
-/// </summary>
-public class RoleByNameAndOrgIdSpecification : Specification<Role>
-{
-  /// <summary>
-  /// Inicjalizuje nową instancję klasy <see cref="RoleByNameAndOrgIdSpecification"/>
-  /// </summary>
-  /// <param name="organizationId">Identyfikator organizacji</param>
-  /// <param name="name">Nazwa roli</param>
-  public RoleByNameAndOrgIdSpecification(Guid organizationId, string name)
-  {
-    Query.Where(r => r.OrganizationId == organizationId && r.Name == name);
-  }
-}
-
-/// <summary>
-/// Specyfikacja do pobierania organizacji wraz z członkami i rolami
-/// </summary>
-public class OrganizationsWithMembersAndRolesSpecification : Specification<Organization>
-{
-    /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="OrganizationsWithMembersAndRolesSpecification"/>
-    /// </summary>
-    public OrganizationsWithMembersAndRolesSpecification()
+    // Mapowanie ról na uprawnienia
+    // To jest przykładowa implementacja, którą należy dostosować do rzeczywistych potrzeb
+    foreach (var role in roles)
     {
-        // Załaduj członków i role organizacji
-        Query.Include(o => o.Members)
-             .Include(o => o.Roles);
+      switch (role)
+      {
+        case "admin":
+          permissions.Add("users.view");
+          permissions.Add("users.create");
+          permissions.Add("users.edit");
+          permissions.Add("users.delete");
+          permissions.Add("organizations.view");
+          permissions.Add("organizations.create");
+          permissions.Add("organizations.edit");
+          permissions.Add("organizations.delete");
+          break;
+
+        case "manager":
+          permissions.Add("users.view");
+          permissions.Add("organizations.view");
+          permissions.Add("organizations.edit");
+          break;
+
+        case "user":
+          permissions.Add("users.view.self");
+          permissions.Add("organizations.view");
+          break;
+      }
     }
+
+    // Usuń duplikaty
+    return permissions.Distinct().ToList();
+  }
 }
 
-/// <summary>
-/// Specyfikacja do pobierania organizacji wraz z rolami
-/// </summary>
-public class OrganizationsWithRolesSpecification : Specification<Organization>
-{
-    /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="OrganizationsWithRolesSpecification"/>
-    /// </summary>
-    public OrganizationsWithRolesSpecification()
-    {
-        // Załaduj role organizacji
-        Query.Include(o => o.Roles);
-    }
-}
-
-/// <summary>
-/// Specyfikacja do pobierania organizacji z członkami i rolami dla konkretnego użytkownika
-/// </summary>
-public class OrganizationsWithMembersForUserSpecification : Specification<Organization>
-{
-    /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="OrganizationsWithMembersForUserSpecification"/>
-    /// </summary>
-    /// <param name="userId">Identyfikator użytkownika</param>
-    public OrganizationsWithMembersForUserSpecification(Guid userId)
-    {
-        Query.Include(o => o.Members)
-             .Include(o => o.Roles)
-             .Where(o => o.Members.Any(m => m.UserId == userId));
-    }
-}

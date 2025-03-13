@@ -4,7 +4,6 @@ import { Organization } from '@features/models/organization/organization';
 import { PaginatedResponse, PaginationOptions, serializePaginationOptions } from '@shared/components/pagination/pagination.component';
 import { Invitation } from '@features/models/invitation/invitation';
 import { BaseApiService } from '@shared/services/base-api.service';
-import { environment } from '@environments/environment';
 
 export interface CreateOrganizationPayload {
   name: string;

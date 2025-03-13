@@ -1,11 +1,10 @@
-using System;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using KeepItUp.MagJob.Identity.Infrastructure.Keycloak.Models;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Net.Http.Json;
+using System.Net.Http.Headers;
+using KeepItUp.MagJob.Identity.Core.Interfaces;
+using KeepItUp.MagJob.Identity.Core.UserAggregate;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.Keycloak;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
@@ -14,173 +13,317 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 /// </summary>
 public class KeycloakEventListener : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IKeycloakClient _keycloakClient;
     private readonly ILogger<KeycloakEventListener> _logger;
-    
+    private readonly KeycloakOptions _keycloakOptions;
+    private readonly HttpClient _httpClient;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    private DateTime _lastEventTime = DateTime.UtcNow.AddMinutes(-5); // Start by fetching events from 5 minutes ago
+
     /// <summary>
     /// Inicjalizuje nową instancję klasy <see cref="KeycloakEventListener"/>
     /// </summary>
-    /// <param name="serviceProvider">Dostawca usług</param>
+    /// <param name="keycloakClient">Klient Keycloak</param>
     /// <param name="logger">Logger</param>
+    /// <param name="keycloakOptions">Opcje Keycloak</param>
+    /// <param name="httpClientFactory">Fabryka klientów HTTP</param>
+    /// <param name="serviceScopeFactory">Fabryka zakresów usług</param>
     public KeycloakEventListener(
-        IServiceProvider serviceProvider,
-        ILogger<KeycloakEventListener> logger)
+        IKeycloakClient keycloakClient,
+        ILogger<KeycloakEventListener> logger,
+        IOptions<KeycloakOptions> keycloakOptions,
+        IHttpClientFactory httpClientFactory,
+        IServiceScopeFactory serviceScopeFactory)
     {
-        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _keycloakClient = keycloakClient;
+        _logger = logger;
+        _keycloakOptions = keycloakOptions.Value;
+        _httpClient = httpClientFactory.CreateClient("KeycloakEvents");
+        _httpClient.BaseAddress = new Uri(_keycloakOptions.ServerUrl);
+        _serviceScopeFactory = serviceScopeFactory;
     }
     
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Uruchomiono nasłuchiwanie zdarzeń z Keycloak");
-        
+        _logger.LogInformation("Keycloak Event Listener uruchomiony");
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                // W rzeczywistej implementacji tutaj byłoby nasłuchiwanie zdarzeń z Keycloak
-                // np. poprzez webhook lub kolejkę wiadomości
-                
-                // Symulacja oczekiwania na zdarzenia
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await _semaphore.WaitAsync(stoppingToken);
+                try
+                {
+                    await FetchAndProcessEventsAsync(stoppingToken);
+                }
+                finally
+                {
+                    _semaphore.Release();
+                }
+
+                // Poczekaj przed kolejnym sprawdzeniem zdarzeń
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
-                // Ignoruj wyjątek anulowania operacji
+                // Normalne zakończenie
                 break;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Wystąpił błąd podczas nasłuchiwania zdarzeń z Keycloak");
+                _logger.LogError(ex, "Błąd podczas przetwarzania zdarzeń Keycloak");
                 
                 // Poczekaj przed ponowną próbą
-                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+                try
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
+
+        _logger.LogInformation("Keycloak Event Listener zatrzymany");
+    }
+
+    private async Task FetchAndProcessEventsAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Pobierz token klienta usługi
+            _logger.LogDebug("Pobieranie tokenu klienta usługi Keycloak");
+            var token = await _keycloakClient.GetAdminAccessTokenAsync(cancellationToken);
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                _logger.LogError("Nie udało się pobrać tokenu klienta usługi Keycloak");
+                return;
+            }
+            
+            _logger.LogDebug("Token klienta usługi Keycloak pobrany pomyślnie");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Pobierz zdarzenia od ostatniego sprawdzenia
+            // Konwertuj datę na format yyyy-MM-dd wymagany przez Keycloak
+            var fromDate = _lastEventTime.ToString("yyyy-MM-dd");
+            
+            // Endpoint do pobierania zdarzeń użytkowników
+            var eventsUrl = $"/admin/realms/{_keycloakOptions.Realm}/events?first=0&max=100&dateFrom={fromDate}";
+            _logger.LogDebug("Pobieranie zdarzeń Keycloak z URL: {Url}", eventsUrl);
+            
+            var response = await _httpClient.GetAsync(eventsUrl, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogError("Błąd podczas pobierania zdarzeń z Keycloak. Status: {StatusCode}, URL: {Url}, Treść: {Content}", 
+                    response.StatusCode, 
+                    eventsUrl,
+                    responseContent);
+                
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    _logger.LogWarning("Konto usługi nie ma wystarczających uprawnień do pobierania zdarzeń. " +
+                                      "Upewnij się, że konto usługi ma przypisaną rolę 'view-events' w Keycloak.");
+                    
+                    // Spróbuj pobrać informacje o koncie usługi, aby zweryfikować, jakie role są przypisane
+                    try
+                    {
+                        var serviceAccountUrl = $"/admin/realms/{_keycloakOptions.Realm}/users?username=service-account-{_keycloakOptions.ClientId}";
+                        var serviceAccountResponse = await _httpClient.GetAsync(serviceAccountUrl, cancellationToken);
+                        
+                        if (serviceAccountResponse.IsSuccessStatusCode)
+                        {
+                            var users = await serviceAccountResponse.Content.ReadFromJsonAsync<List<object>>(cancellationToken: cancellationToken);
+                            _logger.LogInformation("Znaleziono {Count} kont usługi dla klienta {ClientId}", 
+                                users?.Count ?? 0, _keycloakOptions.ClientId);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Nie można pobrać informacji o koncie usługi. Status: {StatusCode}", 
+                                serviceAccountResponse.StatusCode);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Błąd podczas próby pobrania informacji o koncie usługi");
+                    }
+                }
+                
+                return;
+            }
+
+            var events = await response.Content.ReadFromJsonAsync<List<KeycloakEvent>>(cancellationToken: cancellationToken);
+            
+            if (events == null || !events.Any())
+            {
+                _logger.LogDebug("Brak nowych zdarzeń z Keycloak");
+                return;
+            }
+
+            _logger.LogInformation("Pobrano {Count} zdarzeń z Keycloak", events.Count);
+
+            // Aktualizuj czas ostatniego zdarzenia
+            var latestEventTime = events.Max(e => e.Time);
+            if (latestEventTime > 0)
+            {
+                _lastEventTime = DateTimeOffset.FromUnixTimeMilliseconds(latestEventTime).UtcDateTime;
+            }
+
+            // Przetwórz zdarzenia
+            foreach (var keycloakEvent in events.OrderBy(e => e.Time))
+            {
+                try
+                {
+                    await ProcessEventAsync(keycloakEvent, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Błąd podczas przetwarzania zdarzenia Keycloak: {EventType}, UserId: {UserId}",
+                        keycloakEvent.Type, keycloakEvent.UserId);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Błąd podczas pobierania i przetwarzania zdarzeń z Keycloak");
+        }
+    }
+
+    private async Task ProcessEventAsync(KeycloakEvent keycloakEvent, CancellationToken cancellationToken)
+    {
+        _logger.LogDebug("Przetwarzanie zdarzenia Keycloak: {EventType}, UserId: {UserId}", 
+            keycloakEvent.Type, keycloakEvent.UserId);
+
+        switch (keycloakEvent.Type)
+        {
+            case "REGISTER":
+            case "UPDATE_PROFILE":
+                await HandleUserRegistrationEventAsync(keycloakEvent.UserId, cancellationToken);
+                break;
+                
+            case "LOGIN":
+                // Możemy zaktualizować ostatnie logowanie użytkownika
+                await HandleUserLoginEventAsync(keycloakEvent.UserId, cancellationToken);
+                break;
+                
+            case "DELETE_ACCOUNT":
+                await HandleUserDeleteEventAsync(keycloakEvent.UserId, cancellationToken);
+                break;
+                
+            case "UPDATE_PASSWORD":
+                // Możemy zareagować na zmianę hasła
+                _logger.LogInformation("Użytkownik {UserId} zmienił hasło", keycloakEvent.UserId);
+                break;
+                
+            case "CLIENT_ROLE_MAPPING":
+            case "REALM_ROLE_MAPPING":
+                await HandleRoleMappingEventAsync(keycloakEvent.UserId, cancellationToken);
+                break;
+                
+            default:
+                _logger.LogDebug("Nieobsługiwany typ zdarzenia: {EventType}", keycloakEvent.Type);
+                break;
+        }
+    }
+
+    private async Task HandleUserLoginEventAsync(string userId, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
         
-        _logger.LogInformation("Zatrzymano nasłuchiwanie zdarzeń z Keycloak");
+        try
+        {
+            // Użyj specyfikacji UserByExternalIdSpec zamiast GetByIdAsync
+            var user = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+            if (user != null)
+            {
+                user.UpdateLastLoginDate(DateTime.UtcNow);
+                await userRepository.UpdateAsync(user, cancellationToken);
+                _logger.LogInformation("Zaktualizowano datę ostatniego logowania dla użytkownika {UserId}", userId);
+            }
+            else
+            {
+                _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId} podczas aktualizacji daty logowania", userId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Błąd podczas aktualizacji daty logowania dla użytkownika {ExternalId}", userId);
+        }
     }
-    
-    /// <summary>
-    /// Obsługuje zdarzenie rejestracji użytkownika
-    /// </summary>
-    /// <param name="eventData">Dane zdarzenia</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
-    public async Task HandleUserRegistrationEventAsync(string eventData)
+
+    private async Task HandleUserDeleteEventAsync(string userId, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
+        
+        try
+        {
+            // Użyj specyfikacji UserByExternalIdSpec zamiast GetByIdAsync
+            var user = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+            if (user != null)
+            {
+                // Możemy oznaczyć użytkownika jako nieaktywnego zamiast go usuwać
+                user.Deactivate();
+                await userRepository.UpdateAsync(user, cancellationToken);
+                _logger.LogInformation("Użytkownik {UserId} został dezaktywowany po usunięciu konta w Keycloak", userId);
+            }
+            else
+            {
+                _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId} podczas dezaktywacji", userId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Błąd podczas dezaktywacji użytkownika {ExternalId}", userId);
+        }
+    }
+
+    private async Task HandleRoleMappingEventAsync(string userId, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var keycloakSyncService = scope.ServiceProvider.GetRequiredService<IKeycloakSyncService>();
+        
+        await keycloakSyncService.SyncUserRolesAsync(userId, cancellationToken);
+        _logger.LogInformation("Zsynchronizowano role użytkownika {UserId} po zmianie mapowania ról", userId);
+    }
+
+    private async Task HandleUserRegistrationEventAsync(string userId, CancellationToken cancellationToken)
     {
         try
         {
-            var keycloakEvent = JsonSerializer.Deserialize<KeycloakEvent>(eventData);
-            if (keycloakEvent == null || keycloakEvent.Type != "REGISTER" || string.IsNullOrEmpty(keycloakEvent.UserId))
-            {
-                _logger.LogWarning("Otrzymano nieprawidłowe dane zdarzenia rejestracji użytkownika");
-                return;
-            }
-            
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var keycloakSyncService = scope.ServiceProvider.GetRequiredService<IKeycloakSyncService>();
+            var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
+
+            // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
+            var existingUser = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
             
-            // Importuj użytkownika z Keycloak do modułu Identity
-            await keycloakSyncService.ImportUserFromKeycloakAsync(keycloakEvent.UserId);
-            
-            _logger.LogInformation("Zaimportowano nowego użytkownika {UserId} z Keycloak", keycloakEvent.UserId);
+            if (existingUser != null)
+            {
+                // Aktualizuj istniejącego użytkownika
+                await keycloakSyncService.SyncUserDataAsync(userId, cancellationToken);
+                _logger.LogInformation("Zaktualizowano dane użytkownika {UserId} z Keycloak", userId);
+            }
+            else
+            {
+                // Importuj nowego użytkownika
+                await keycloakSyncService.SyncUserDataAsync(userId, cancellationToken);
+                _logger.LogInformation("Zaimportowano nowego użytkownika {UserId} z Keycloak", userId);
+            }
+
+            // Synchronizuj role użytkownika
+            await keycloakSyncService.SyncUserRolesAsync(userId, cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Wystąpił błąd podczas obsługi zdarzenia rejestracji użytkownika");
-        }
-    }
-    
-    /// <summary>
-    /// Obsługuje zdarzenie aktualizacji użytkownika
-    /// </summary>
-    /// <param name="eventData">Dane zdarzenia</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
-    public async Task HandleUserUpdateEventAsync(string eventData)
-    {
-        try
-        {
-            var keycloakEvent = JsonSerializer.Deserialize<KeycloakEvent>(eventData);
-            if (keycloakEvent == null || keycloakEvent.Type != "UPDATE_PROFILE" || string.IsNullOrEmpty(keycloakEvent.UserId))
-            {
-                _logger.LogWarning("Otrzymano nieprawidłowe dane zdarzenia aktualizacji użytkownika");
-                return;
-            }
-            
-            using var scope = _serviceProvider.CreateScope();
-            var keycloakClient = scope.ServiceProvider.GetRequiredService<IKeycloakClient>();
-            var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<Core.UserAggregate.User>>();
-            
-            // Pobierz użytkownika z modułu Identity na podstawie identyfikatora zewnętrznego
-            var user = await userRepository.FirstOrDefaultAsync(
-                new UserByExternalIdSpecification(keycloakEvent.UserId));
-            
-            if (user == null)
-            {
-                _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId}", keycloakEvent.UserId);
-                return;
-            }
-            
-            // Pobierz zaktualizowane dane użytkownika z Keycloak
-            var keycloakUser = await keycloakClient.GetUserByIdAsync(keycloakEvent.UserId);
-            if (keycloakUser == null)
-            {
-                _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze {UserId} w Keycloak", keycloakEvent.UserId);
-                return;
-            }
-            
-            // Aktualizuj dane użytkownika w module Identity
-            user.UpdateAllDetails(
-                keycloakUser.FirstName ?? string.Empty,
-                keycloakUser.LastName ?? string.Empty,
-                keycloakUser.Email,
-                keycloakUser.Enabled
-            );
-            
-            await userRepository.UpdateAsync(user);
-            
-            _logger.LogInformation("Zaktualizowano dane użytkownika {UserId} na podstawie zdarzenia z Keycloak", user.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Wystąpił błąd podczas obsługi zdarzenia aktualizacji użytkownika");
+            _logger.LogError(ex, "Błąd podczas obsługi zdarzenia rejestracji użytkownika {UserId}", userId);
+            throw;
         }
     }
 }
-
-/// <summary>
-/// Reprezentuje zdarzenie z Keycloak
-/// </summary>
-public class KeycloakEvent
-{
-    /// <summary>
-    /// Typ zdarzenia
-    /// </summary>
-    public string Type { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// Identyfikator użytkownika
-    /// </summary>
-    public string UserId { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// Czas zdarzenia
-    /// </summary>
-    public long Time { get; set; }
-    
-    /// <summary>
-    /// Identyfikator klienta
-    /// </summary>
-    public string ClientId { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// Adres IP
-    /// </summary>
-    public string IpAddress { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// Szczegóły zdarzenia
-    /// </summary>
-    public JsonElement Details { get; set; }
-} 

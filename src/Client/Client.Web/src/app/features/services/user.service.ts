@@ -18,22 +18,7 @@ export class UserService {
   private invitationStateService = new ListStateService<Invitation, { endOfData: boolean }>();
   private organizationStateService = new ListStateService<Organization, { endOfData: boolean }>();
 
-  private authService = inject(OAuthService);
   private api = inject(UserApiService);
-
-  constructor() {
-    if (this.authService.hasValidAccessToken()) {
-      this.getUser().subscribe();
-      return;
-    }
-
-    this.authService.events.subscribe((event: OAuthEvent) => {
-      switch (event.type) {
-        case 'token_received':
-          this.getUser().subscribe();
-      }
-    });
-  }
 
   userState$ = this.userState.state$;
   invitationState$ = this.invitationStateService.state$;
@@ -85,20 +70,6 @@ export class UserService {
         throw error;
       })
     );
-  }
-
-
-  getUser() {
-    return this.api.getUser().pipe(
-      tap((user: User) => {
-        this.userState.setData(user);
-      }),
-      catchError((error) => {
-        window.alert("We can recognize you. Please contact with our support or try again");
-        //this.authService.logOut();
-        return error;
-      })
-    )
   }
 
 }
