@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { SearchInputComponent } from '../../../shared/components/search-input/search-input.component';
 import { CommonModule } from '@angular/common';
 import { DropdownComponent } from '../../../shared/components/dropdown/dropdown.component';
 import { RouterLink } from '@angular/router';
@@ -8,24 +7,18 @@ import { User } from '@features/models/user/user';
 import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-navbar',
-  imports: [
-    SearchInputComponent,
-    CommonModule,
-    DropdownComponent,
-    RouterLink,
-    ClickOutsideDirective,
-  ],
+  imports: [CommonModule, DropdownComponent, RouterLink, ClickOutsideDirective],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {
   isDropdownOpen = false;
-  userInfo: User | null = null;
+  user: User | null = null;
 
   readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.authService.getUserProfile().subscribe((user: User) => {
-      this.userInfo = user;
+    this.authService.getUserProfile().subscribe((user: User | null) => {
+      this.user = user;
     });
   }
 

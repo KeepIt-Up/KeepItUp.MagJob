@@ -25,13 +25,11 @@ export class UserService {
   private authService = inject(AuthService);
 
   constructor() {
-    this.authService.getAuthStatus().subscribe(isAuthenticated => {
-      console.log(isAuthenticated);
-      if (isAuthenticated) {
-        this.authService.getUserProfile().subscribe(user => {
-          console.log(user);
-          this.userState.setData(user as User);
-        });
+    this.authService.getUserProfile().subscribe(user => {
+      if (user) {
+        this.userState.setData(user);
+      } else {
+        this.userState.setError(new Error('User not found'));
       }
     });
   }

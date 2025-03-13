@@ -57,10 +57,10 @@
         <app-dropdown [isOpen]="isDropdownOpen" (appClickOutside)="closeDropdown()">
           <div class="py-3 px-4">
             <span class="block text-sm text-gray-900 dark:text-white"
-              >{{ userInfo?.firstname }} {{ userInfo?.lastname }}</span
+              >{{ user?.firstname }} {{ user?.lastname }}</span
             >
             <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{
-              userInfo?.email
+              user?.email
             }}</span>
           </div>
           <ul class="py-1" aria-labelledby="user-menu-button">

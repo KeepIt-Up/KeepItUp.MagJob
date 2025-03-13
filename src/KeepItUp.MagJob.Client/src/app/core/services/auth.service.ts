@@ -3,61 +3,62 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { User } from '@features/models/user/user';
+import { authCodeFlowConfig } from '@core/configs/auth.config';
+
+interface IdentityClaims {
+  sub: string;
+  given_name?: string;
+  family_name?: string;
+  email?: string;
+  [key: string]: unknown;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private userProfileSubject = new BehaviorSubject<User | null>(null);
-  private router = inject(Router);
 
-  constructor(private oauthService: OAuthService) {
-    void this.initAuth();
-    this.setupEventHandlers();
-  }
-
-  /**
-   * Konfiguruje obsługę zdarzeń OAuth
-   */
-  private setupEventHandlers(): void {
-    this.oauthService.events.subscribe(event => {
-      if (event.type === 'token_received') {
-        this.isAuthenticatedSubject.next(this.oauthService.hasValidAccessToken());
-        this.loadUserProfile();
-      } else if (event.type === 'token_expires') {
-        console.log('Token wygasł, odświeżanie...');
-      } else if (event.type === 'logout') {
-        this.isAuthenticatedSubject.next(false);
-        this.userProfileSubject.next(null);
-        void this.router.navigate(['/landing']);
-      }
-    });
-  }
+  private readonly oauthService = inject(OAuthService);
+  private readonly router = inject(Router);
 
   /**
    * Inicjalizuje uwierzytelnianie
    * @returns Promise reprezentujący asynchroniczną operację
    */
   public async initAuth(): Promise<void> {
-    try {
-      await this.oauthService.loadDiscoveryDocumentAndTryLogin();
-      this.isAuthenticatedSubject.next(this.oauthService.hasValidAccessToken());
+    return new Promise(resolve => {
+      // Konfiguracja OAuthService
+      this.oauthService.configure(authCodeFlowConfig);
 
-      if (this.isAuthenticated()) {
-        this.loadUserProfile();
-      }
-    } catch (error) {
-      console.error('Błąd podczas inicjalizacji uwierzytelniania', error);
-      throw error;
-    }
+      // Włączenie automatycznego odświeżania tokenów
+      this.oauthService.setupAutomaticSilentRefresh();
+
+      // Konfiguracja obsługi zdarzeń
+      this.setupEventHandlers();
+
+      // Ładowanie dokumentu discovery i próba logowania
+      this.oauthService
+        .loadDiscoveryDocument()
+        .then(() => {
+          return this.oauthService.tryLogin();
+        })
+        .then(() => {
+          this.loadUserProfile();
+          resolve();
+        })
+        .catch(error => {
+          console.error('Error during OAuth initialization:', error);
+          resolve();
+        });
+    });
   }
 
   /**
    * Inicjuje proces logowania
    * @param redirectUri Opcjonalny URI przekierowania po zalogowaniu
    */
-  login(redirectUri?: string): void {
+  public login(redirectUri?: string): void {
     this.oauthService.initLoginFlow(redirectUri);
   }
 
@@ -89,7 +90,7 @@ export class AuthService {
    * @returns Identyfikator użytkownika
    */
   public getUserId(): string | null {
-    const claims = this.oauthService.getIdentityClaims() as any;
+    const claims = this.oauthService.getIdentityClaims() as IdentityClaims;
     return claims ? claims.sub : null;
   }
 
@@ -97,51 +98,39 @@ export class AuthService {
    * Pobiera profil użytkownika
    * @returns Observable z profilem użytkownika
    */
-  public getUserProfile(): Observable<any> {
+  public getUserProfile(): Observable<User | null> {
     return this.userProfileSubject.asObservable();
-  }
-
-  /**
-   * Pobiera status uwierzytelnienia
-   * @returns Observable ze statusem uwierzytelnienia
-   */
-  public getAuthStatus(): Observable<boolean> {
-    return this.isAuthenticatedSubject.asObservable();
-  }
-
-  /**
-   * Pobiera uprawnienia użytkownika
-   * @returns Lista uprawnień użytkownika
-   */
-  public getUserPermissions(): string[] {
-    const claims = this.oauthService.getIdentityClaims() as any;
-    return claims?.permissions ? claims.permissions : [];
-  }
-
-  /**
-   * Sprawdza, czy użytkownik ma określone uprawnienie
-   * @param permission Uprawnienie do sprawdzenia
-   * @returns Czy użytkownik ma uprawnienie
-   */
-  public hasPermission(permission: string): boolean {
-    const permissions = this.getUserPermissions();
-    return permissions.includes(permission);
   }
 
   /**
    * Ładuje profil użytkownika
    */
   private loadUserProfile(): void {
-    // Najpierw próbujemy pobrać profil z tokenu
-    const claims = this.oauthService.getIdentityClaims();
+    const claims = this.oauthService.getIdentityClaims() as IdentityClaims;
     if (claims) {
       const user: User = {
-        id: claims['sub'] as string,
-        firstname: claims['given_name'] as string,
-        lastname: claims['family_name'] as string,
-        email: claims['email'] as string,
+        id: claims.sub,
+        firstname: claims.given_name ?? '',
+        lastname: claims.family_name ?? '',
+        email: claims.email ?? '',
       };
       this.userProfileSubject.next(user);
     }
+  }
+
+  /**
+   * Konfiguruje obsługę zdarzeń OAuth
+   */
+  private setupEventHandlers(): void {
+    this.oauthService.events.subscribe(event => {
+      if (event.type === 'token_received') {
+        this.loadUserProfile();
+      } else if (event.type === 'logout') {
+        this.userProfileSubject.next(null);
+        void this.router.navigate(['/landing']);
+      } else if (event.type === 'token_error' || event.type === 'token_refresh_error') {
+        console.error('Token error:', event);
+      }
+    });
   }
 }

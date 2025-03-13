@@ -5,9 +5,9 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '@environments/environment';
 
 export const tokenInterceptor: HttpInterceptorFn = (
-  request: HttpRequest<any>,
+  request: HttpRequest<unknown>,
   next: HttpHandlerFn,
-): Observable<HttpEvent<any>> => {
+): Observable<HttpEvent<unknown>> => {
   const oauthService = inject(OAuthService);
 
   // Dodaj token tylko do żądań do naszego API
@@ -20,7 +20,7 @@ export const tokenInterceptor: HttpInterceptorFn = (
   return next(request);
 };
 
-function addToken(request: HttpRequest<any>, token: string) {
+function addToken(request: HttpRequest<unknown>, token: string) {
   const tokenType = 'Bearer';
   return request.clone({
     setHeaders: {
