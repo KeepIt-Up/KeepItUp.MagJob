@@ -1,0 +1,14 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-content">
+      <button (click)="onLogin()" class="login-button">
+        <span class="button-text">Zaloguj się przez Keycloak</span>
+      </button>
+      @if (errorMessage) {
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+      }
+    </div>
+  </div>
+</div>

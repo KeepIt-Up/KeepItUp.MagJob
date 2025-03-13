@@ -10,6 +10,8 @@ import { Organization } from '@features/models/organization/organization';
 import { Invitation } from '@features/models/invitation/invitation';
 import { ListStateService } from '@shared/services/list-state.service';
 import { User } from '@features/models/user/user';
+import { AuthService } from '@core/services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +22,19 @@ export class UserService {
   private organizationStateService = new ListStateService<Organization, { endOfData: boolean }>();
 
   private api = inject(UserApiService);
+  private authService = inject(AuthService);
+
+  constructor() {
+    this.authService.getAuthStatus().subscribe(isAuthenticated => {
+      console.log(isAuthenticated);
+      if (isAuthenticated) {
+        this.authService.getUserProfile().subscribe(user => {
+          console.log(user);
+          this.userState.setData(user as User);
+        });
+      }
+    });
+  }
 
   userState$ = this.userState.state$;
   invitationState$ = this.invitationStateService.state$;
@@ -50,7 +65,7 @@ export class UserService {
         }
       }),
       catchError(error => {
-        this.organizationStateService.setError(error);
+        this.organizationStateService.setError(error as HttpErrorResponse);
         throw error;
       }),
     );
@@ -67,7 +82,7 @@ export class UserService {
         }
       }),
       catchError(error => {
-        this.invitationStateService.setError(error);
+        this.invitationStateService.setError(error as HttpErrorResponse);
         throw error;
       }),
     );

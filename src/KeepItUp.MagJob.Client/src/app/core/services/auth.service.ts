@@ -2,16 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { User } from '@features/models/user/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  private userProfileSubject = new BehaviorSubject<any>(null);
+  private userProfileSubject = new BehaviorSubject<User | null>(null);
   private router = inject(Router);
 
   constructor(private oauthService: OAuthService) {
+    void this.initAuth();
     this.setupEventHandlers();
   }
 
@@ -28,7 +30,7 @@ export class AuthService {
       } else if (event.type === 'logout') {
         this.isAuthenticatedSubject.next(false);
         this.userProfileSubject.next(null);
-        void this.router.navigate(['/login']);
+        void this.router.navigate(['/landing']);
       }
     });
   }
@@ -133,7 +135,13 @@ export class AuthService {
     // Najpierw próbujemy pobrać profil z tokenu
     const claims = this.oauthService.getIdentityClaims();
     if (claims) {
-      this.userProfileSubject.next(claims);
+      const user: User = {
+        id: claims['sub'] as string,
+        firstname: claims['given_name'] as string,
+        lastname: claims['family_name'] as string,
+        email: claims['email'] as string,
+      };
+      this.userProfileSubject.next(user);
     }
   }
 }

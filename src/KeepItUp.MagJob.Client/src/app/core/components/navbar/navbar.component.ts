@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { DropdownComponent } from '../../../shared/components/dropdown/dropdown.component';
 import { RouterLink } from '@angular/router';
 import { ClickOutsideDirective } from '../../../shared/directives/click-outside.directive';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { User } from '@features/models/user/user';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-navbar',
   imports: [
@@ -18,21 +19,19 @@ import { OAuthService } from 'angular-oauth2-oidc';
 })
 export class NavbarComponent implements OnInit {
   isDropdownOpen = false;
-  userInfo: any;
+  userInfo: User | null = null;
 
-  readonly authService = inject(OAuthService);
+  readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.userInfo = this.authService.getIdentityClaims();
+    this.authService.getUserProfile().subscribe((user: User) => {
+      this.userInfo = user;
+    });
   }
 
   toggleDarkMode() {
     const html = document.documentElement;
     html.classList.toggle('dark');
-  }
-
-  search(text: string) {
-    console.log('Search for:', text);
   }
 
   toggleDropdown(event: Event) {
@@ -41,18 +40,10 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logOut();
+    this.authService.logout();
   }
 
   closeDropdown() {
     this.isDropdownOpen = false;
-  }
-
-  getUserName(): string {
-    return this.userInfo?.name || this.userInfo?.preferred_username || 'User';
-  }
-
-  getUserEmail(): string {
-    return this.userInfo?.email || '';
   }
 }

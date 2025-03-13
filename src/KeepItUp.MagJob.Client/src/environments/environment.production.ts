@@ -10,7 +10,7 @@ export const environment = {
       'https://KEYCLOAK_PRODUCTION_URL/realms/magjob-realm/protocol/openid-connect/token',
     userinfoEndpoint:
       'https://KEYCLOAK_PRODUCTION_URL/realms/magjob-realm/protocol/openid-connect/userinfo',
-    redirectUri: window.location.origin,
+    redirectUri: window.location.origin + '/user',
     clientId: 'client.web',
     responseType: 'code',
     scope: 'openid profile email',

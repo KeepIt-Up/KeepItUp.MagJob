@@ -6,12 +6,6 @@
       <span class="text-2xl font-semibold dark:text-white">MagJob</span>
     </a>
     <div class="flex items-center gap-2">
-      <app-search-input
-        class="hidden md:block"
-        (valueChange)="search($event)"
-        placeholder="Search..."
-        [disabled]="true"
-      ></app-search-input>
       <button
         (click)="toggleDarkMode()"
         class="hidden md:block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700"
@@ -62,9 +56,11 @@
         </button>
         <app-dropdown [isOpen]="isDropdownOpen" (appClickOutside)="closeDropdown()">
           <div class="py-3 px-4">
-            <span class="block text-sm text-gray-900 dark:text-white">{{ getUserName() }}</span>
+            <span class="block text-sm text-gray-900 dark:text-white"
+              >{{ userInfo?.firstname }} {{ userInfo?.lastname }}</span
+            >
             <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{
-              getUserEmail()
+              userInfo?.email
             }}</span>
           </div>
           <ul class="py-1" aria-labelledby="user-menu-button">

@@ -4,20 +4,15 @@ import { MembersTableComponent } from './app/pages/organization/members-table/me
 import { OrganizationProfilComponent } from './app/pages/organization/organization-profil/organization-profil.component';
 import { OrganizationComponent } from './app/pages/organization/organization.component';
 import { RolesManagementComponent } from './app/pages/organization/roles-management/roles-management.component';
-import { OrganizationCreatorComponent } from './app/pages/public/organization-creator/organization-creator.component';
-import { PublicComponent } from './app/pages/public/public.component';
 import { UserInvitationsComponent } from './app/pages/user/user-invitations/user-invitations.component';
 import { UserOrganizationsComponent } from './app/pages/user/user-organizations/user-organizations.component';
 import { UserSettingsComponent } from './app/pages/user/user-settings/user-settings.component';
 import { UserComponent } from './app/pages/user/user.component';
 import { authGuard } from './app/core/guards/auth.guard';
-import { LoginComponent } from '@features/auth/login/login.component';
-import { ForbiddenComponent } from '@features/auth/forbidden/forbidden.component';
+import { LandingComponent } from '@features/landing/landing.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'user', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'forbidden', component: ForbiddenComponent },
+  { path: '', redirectTo: 'landing', pathMatch: 'full' },
   {
     path: 'organization/:organizationId',
     component: OrganizationComponent,
@@ -44,13 +39,8 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'public',
-    component: PublicComponent,
-    children: [
-      { path: '', redirectTo: 'create-organization', pathMatch: 'full' },
-      { path: 'create-organization', component: OrganizationCreatorComponent },
-      { path: '**', redirectTo: 'create-organization' },
-    ],
+    path: 'landing',
+    component: LandingComponent,
   },
-  { path: '**', redirectTo: 'user' },
+  { path: '**', redirectTo: 'landing' },
 ];

@@ -13,7 +13,7 @@ export const environment = {
     loginUrl: 'http://localhost:18080/realms/magjob-realm/protocol/openid-connect/auth',
     tokenEndpoint: 'http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token',
     userinfoEndpoint: 'http://localhost:18080/realms/magjob-realm/protocol/openid-connect/userinfo',
-    redirectUri: window.location.origin + '/dashboard',
+    redirectUri: window.location.origin + '/user',
     clientId: 'client.web',
     responseType: 'code',
     scope: 'openid profile email',
