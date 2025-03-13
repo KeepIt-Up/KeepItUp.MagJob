@@ -37,17 +37,17 @@ export function serializePaginationOptions<T extends { id: string }>(
 })
 export class PaginationComponent<T extends { id: string }> implements OnInit {
   @Input() items: T[] = [];
-  @Input() defaultPageSize: number = 10;
-  @Input() currentPage: number = 1;
-  @Input() totalItems: number = 0;
-  @Input() showPageSizeSelector: boolean = false;
-  @Input() showStartEnd: boolean = false;
-  @Input() buttonsCount: number = 5;
+  @Input() defaultPageSize = 10;
+  @Input() currentPage = 1;
+  @Input() totalItems = 0;
+  @Input() showPageSizeSelector = false;
+  @Input() showStartEnd = false;
+  @Input() buttonsCount = 5;
 
   @Output() pageChange = new EventEmitter<number>();
   @Output() pageSizeChange = new EventEmitter<number>();
 
-  pageSize: number = 10;
+  pageSize = 10;
   pagesNumbers: number[] = [];
 
   ngOnInit(): void {

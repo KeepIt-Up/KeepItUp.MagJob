@@ -2,9 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, input } from '@angular/core';
 import { AlertComponent } from '../alert/alert.component';
 
-export interface ErrorMessages {
-  [statusCode: number]: string;
-}
+export type ErrorMessages = Record<number, string>;
 
 @Component({
   selector: 'app-error-alert',

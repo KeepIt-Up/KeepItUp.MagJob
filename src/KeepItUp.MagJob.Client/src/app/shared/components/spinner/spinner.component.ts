@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SpinnerComponent {
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
-  @Input() color: string = '#007bff';
+  @Input() color = '#007bff';
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Role } from '../../../models/role/role';
 import { CommonModule } from '@angular/common';
 

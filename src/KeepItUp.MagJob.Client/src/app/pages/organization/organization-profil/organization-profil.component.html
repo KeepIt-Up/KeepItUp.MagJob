@@ -99,13 +99,13 @@
 <app-image-upload-modal
   [isOpen]="isProfileModalOpen"
   [title]="'Upload Profile Image'"
-  (close)="isProfileModalOpen = false"
-  (upload)="handleProfileUpload($event)"
+  (closeModal)="isProfileModalOpen = false"
+  (imageUpload)="handleProfileUpload($event)"
 ></app-image-upload-modal>
 
 <app-image-upload-modal
   [isOpen]="isBannerModalOpen"
   [title]="'Upload Banner Image'"
-  (close)="isBannerModalOpen = false"
-  (upload)="handleBannerUpload($event)"
+  (closeModal)="isBannerModalOpen = false"
+  (imageUpload)="handleBannerUpload($event)"
 ></app-image-upload-modal>

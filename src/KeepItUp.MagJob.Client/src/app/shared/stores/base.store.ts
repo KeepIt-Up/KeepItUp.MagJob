@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Signal, computed, signal } from '@angular/core';
+import { computed, signal } from '@angular/core';
 
 export interface BaseState<T> {
   data: T | null;

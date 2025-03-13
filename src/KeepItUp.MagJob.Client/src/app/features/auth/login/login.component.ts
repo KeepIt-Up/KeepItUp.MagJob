@@ -119,7 +119,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 })
 export class LoginComponent implements OnInit {
   errorMessage: string | null = null;
-  returnUrl: string = '/dashboard';
+  returnUrl = '/dashboard';
 
   constructor(
     private oauthService: OAuthService,
@@ -131,21 +131,21 @@ export class LoginComponent implements OnInit {
     // Sprawdź, czy użytkownik jest już zalogowany
     if (this.oauthService.hasValidAccessToken()) {
       console.log('User already logged in, redirecting to dashboard');
-      this.router.navigate([this.returnUrl]);
+      void this.router.navigate([this.returnUrl]);
       return;
     }
 
     // Pobierz returnUrl z parametrów zapytania
     this.route.queryParams.subscribe(params => {
       if (params['returnUrl']) {
-        this.returnUrl = params['returnUrl'];
+        this.returnUrl = params['returnUrl'] as string;
       }
     });
 
     // Sprawdź, czy jest komunikat o błędzie
     this.route.queryParams.subscribe(params => {
       if (params['error']) {
-        this.errorMessage = params['error'];
+        this.errorMessage = params['error'] as string;
       }
     });
 
@@ -158,7 +158,7 @@ export class LoginComponent implements OnInit {
 
       if (event.type === 'token_received') {
         console.log('Token received in login component, redirecting to dashboard');
-        this.router.navigate([this.returnUrl]);
+        void this.router.navigate([this.returnUrl]);
       }
     });
   }

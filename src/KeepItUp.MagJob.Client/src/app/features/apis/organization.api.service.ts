@@ -14,11 +14,6 @@ export interface CreateOrganizationPayload {
   description?: string;
 }
 
-interface ServerResponse {
-  message: string;
-  status: 'success' | 'error';
-}
-
 export interface UpdateOrganizationPayload {
   name?: string;
   description?: string;

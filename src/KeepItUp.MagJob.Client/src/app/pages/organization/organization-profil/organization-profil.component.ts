@@ -15,7 +15,7 @@ import { OrganizationService } from '@features/services/organization.service';
   imports: [ReactiveFormsModule, ImageUploadModalComponent],
   templateUrl: './organization-profil.component.html',
 })
-export class OrganizationProfilComponent implements OnInit, OnDestroy {
+export class OrganizationProfilComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   isProfileModalOpen = false;
@@ -48,8 +48,6 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
 
   organizationId!: string;
 
-  ngOnInit() {}
-
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
@@ -58,8 +56,8 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.organizationForm.valid) {
       const payload: UpdateOrganizationPayload = {
-        name: this.organizationForm.get('organizationName')?.value || '',
-        description: this.organizationForm.get('organizationDescription')?.value || '',
+        name: this.organizationForm.get('organizationName')?.value ?? '',
+        description: this.organizationForm.get('organizationDescription')?.value ?? '',
       };
 
       this.isResponseModalOpen = true;

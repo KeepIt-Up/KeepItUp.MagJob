@@ -1,4 +1,4 @@
-<app-modal [isOpen]="isOpen" [title]="'Edit Member'" (onCloseClick)="close.emit()">
+<app-modal [isOpen]="isOpen" [title]="'Edit Member'" (onCloseClick)="closeModal.emit()">
   <div class="p-4 md:p-5">
     <form #editForm="ngForm" (ngSubmit)="onSubmit()">
       <div class="grid gap-4 mb-4">
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="flex items-center justify-end space-x-4">
-        <button type="button" class="mg-btn mg-btn-sm mg-btn-secondary" (click)="close.emit()">
+        <button type="button" class="mg-btn mg-btn-sm mg-btn-secondary" (click)="closeModal.emit()">
           Cancel
         </button>
         <button type="submit" class="mg-btn mg-btn-sm mg-btn-primary">Save Changes</button>

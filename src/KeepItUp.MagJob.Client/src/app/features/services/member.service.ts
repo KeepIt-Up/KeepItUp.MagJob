@@ -40,8 +40,8 @@ export class MemberService {
   archiveMember(memberId: string) {
     return this.api.archiveMember(memberId).pipe(
       tap(() => {
-        var data = this.memberStateService.state$().data;
-        var index = data?.items?.findIndex((m: Member) => m.id === memberId);
+        const data = this.memberStateService.state$().data;
+        const index = data?.items?.findIndex((m: Member) => m.id === memberId);
         if (index !== undefined) {
           data!.items[index].archived = true;
         }
@@ -58,8 +58,8 @@ export class MemberService {
   updateMember(memberId: string, member: Partial<Member>) {
     return this.api.update(memberId, member).pipe(
       tap((member: Member) => {
-        var data = this.memberStateService.state$().data;
-        var index = data?.items?.findIndex((m: Member) => m.id === member.id);
+        const data = this.memberStateService.state$().data;
+        const index = data?.items?.findIndex((m: Member) => m.id === member.id);
         if (index !== undefined) {
           data!.items[index] = member;
         }

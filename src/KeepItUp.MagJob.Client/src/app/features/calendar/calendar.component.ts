@@ -50,7 +50,7 @@ export class CalendarComponent {
   ];
 
   // Update selection-related variables
-  isSelecting: boolean = false;
+  isSelecting = false;
   selectionStart: TimeSelection | null = null;
   selectionEnd: TimeSelection | null = null;
   selections: Selection[] = []; // Array to store multiple selections

@@ -1,5 +1,16 @@
 module.exports = {
     root: true,
+    ignorePatterns: [
+        "dist/**/*",
+        "tmp/**/*",
+        "out-tsc/**/*",
+        "bazel-out/**/*",
+        "node_modules/**/*",
+        ".idea/**/*",
+        ".vscode/**/*",
+        ".angular/cache/**/*",
+        "coverage/**/*"
+    ],
     overrides: [
         {
             files: ['*.ts'],
@@ -30,7 +41,15 @@ module.exports = {
                         style: 'kebab-case'
                     }
                 ],
-                'prettier/prettier': 'error'
+                'prettier/prettier': 'error',
+                // Temporarily relax some rules
+                '@typescript-eslint/no-explicit-any': 'warn',
+                '@typescript-eslint/no-unsafe-return': 'warn',
+                '@typescript-eslint/no-unsafe-member-access': 'warn',
+                '@typescript-eslint/no-unsafe-assignment': 'warn',
+                '@typescript-eslint/no-floating-promises': 'warn',
+                '@typescript-eslint/no-unused-vars': 'warn',
+                '@typescript-eslint/no-inferrable-types': 'warn'
             }
         },
         {

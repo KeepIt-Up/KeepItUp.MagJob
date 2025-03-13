@@ -12,7 +12,7 @@ import { Component, Input } from '@angular/core';
 })
 export class TagComponent {
   @Input() variant: 'yellow' | 'green' | 'red' | 'gray' = 'gray';
-  @Input() text: string = '';
+  @Input() text = '';
 
   get colorClasses(): string {
     const classes = {

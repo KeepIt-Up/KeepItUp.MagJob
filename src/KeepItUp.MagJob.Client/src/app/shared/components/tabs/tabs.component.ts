@@ -13,7 +13,7 @@ export interface Tab {
 })
 export class TabsComponent {
   @Input() tabs: Tab[] = [];
-  @Input() activeTab: string = '';
+  @Input() activeTab = '';
   @Output() tabChange = new EventEmitter<string>();
 
   setActiveTab(tabId: string): void {

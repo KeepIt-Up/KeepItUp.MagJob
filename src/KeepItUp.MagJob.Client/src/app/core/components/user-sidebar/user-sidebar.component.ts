@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { UserService } from '../../../features/services/user.service';
@@ -12,7 +12,7 @@ export class UserSidebarComponent {
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
   private authService = inject(OAuthService);
   private userService = inject(UserService);
-  sidebarExpanded: boolean = true;
+  sidebarExpanded = true;
 
   toggle() {
     this.sidebarExpanded = !this.sidebarExpanded;

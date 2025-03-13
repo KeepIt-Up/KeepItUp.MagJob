@@ -73,7 +73,7 @@ export class SearchModalComponent<T extends { id: string }> {
   title = input<string>('');
   searchPlaceholder = input<string>('');
   selectedItems = input<T[]>([]);
-  displayFn = input<(item: T) => string>((item: T) => item.toString());
+  displayFn = input<(item: T) => string>((item: T) => item.id || 'Unknown');
   trackBy = input<(item: T) => any>();
   compareFn = input<(a: T, b: T) => boolean>((a: T, b: T) => a.id === b.id);
 

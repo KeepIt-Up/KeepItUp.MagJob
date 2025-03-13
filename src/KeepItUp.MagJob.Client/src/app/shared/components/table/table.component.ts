@@ -10,12 +10,12 @@ import {
 import { DynamicPipe } from '../../pipes/dynamic.pipe';
 import { NgComponentOutlet } from '@angular/common';
 
-export type ComponentCellDefinition<T> = {
+export interface ComponentCellDefinition<T> {
   type: Type<any>;
   inputs?: (row: T) => Record<string, any>;
-};
+}
 
-export type ColumnDefinition<T extends Record<any, any>> = {
+export interface ColumnDefinition<T extends Record<any, any>> {
   title: string;
   modelProp: keyof T;
   isSortable?: boolean;
@@ -23,12 +23,12 @@ export type ColumnDefinition<T extends Record<any, any>> = {
   component?: ComponentCellDefinition<T>;
   pipe?: Type<any>;
   pipeArgs?: any[];
-};
+}
 
-export type SortBy<T> = {
+export interface SortBy<T> {
   modelProp?: keyof T;
   ascending: boolean;
-};
+}
 
 @Component({
   selector: 'app-table',

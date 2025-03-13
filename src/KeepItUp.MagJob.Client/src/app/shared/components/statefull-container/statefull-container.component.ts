@@ -1,4 +1,4 @@
-import { Component, computed, effect, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { State } from '@shared/services/state.service';

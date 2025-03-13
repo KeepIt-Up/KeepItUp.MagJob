@@ -1,13 +1,11 @@
-import { query } from '@angular/animations';
 import { inject, Injectable, signal } from '@angular/core';
 import { RoleApiService } from '@features/apis/role.api.service';
-import { Permission, Role } from '@features/models/role/role';
+import { Role } from '@features/models/role/role';
 import {
   PaginatedResponse,
   PaginationOptions,
 } from '@shared/components/pagination/pagination.component';
 import { NotificationService } from '@shared/services/notification.service';
-import { StateService } from '@shared/services/state.service';
 import { catchError, tap, throwError } from 'rxjs';
 import { PermissionService } from './permission.service';
 import { ListStateService } from '@shared/services/list-state.service';

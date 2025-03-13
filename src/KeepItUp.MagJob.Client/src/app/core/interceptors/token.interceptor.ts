@@ -13,7 +13,7 @@ export const tokenInterceptor: HttpInterceptorFn = (
   // Dodaj token tylko do żądań do naszego API
   if (request.url.startsWith(environment.apiUrl)) {
     if (oauthService.hasValidAccessToken()) {
-      request = addToken(request, oauthService.getAccessToken()!);
+      request = addToken(request, oauthService.getAccessToken());
     }
   }
 

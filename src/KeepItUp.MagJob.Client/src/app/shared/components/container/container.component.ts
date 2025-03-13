@@ -28,7 +28,7 @@ export interface ContainerState<T> {
 })
 export class ContainerComponent<T> implements OnInit, OnChanges, OnDestroy {
   @Input() source$!: Observable<T>;
-  @Output() onStateChange = new EventEmitter<ContainerState<T>>();
+  @Output() stateChange = new EventEmitter<ContainerState<T>>();
 
   _state: ContainerState<T> = {
     isLoading: true,
@@ -37,7 +37,7 @@ export class ContainerComponent<T> implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
-    this.onStateChange.emit(this._state);
+    this.stateChange.emit(this._state);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -53,13 +53,13 @@ export class ContainerComponent<T> implements OnInit, OnChanges, OnDestroy {
 
   private updateState(isLoading: boolean, data?: T, error?: HttpErrorResponse) {
     this._state = { isLoading, data, error };
-    this.onStateChange.emit(this._state);
+    this.stateChange.emit(this._state);
   }
 
   private subscribeToSource() {
     this.source$.pipe(takeUntil(this.destroy$)).subscribe({
       next: data => this.updateState(false, data),
-      error: error => this.updateState(false, undefined, error),
+      error: (error: unknown) => this.updateState(false, undefined, error as HttpErrorResponse),
     });
   }
 }

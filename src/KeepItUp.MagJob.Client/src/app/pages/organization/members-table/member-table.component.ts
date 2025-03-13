@@ -1,13 +1,12 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { ColumnDefinition } from '@shared/components/table/table.component';
 import { TableWithPaginationComponent } from '@shared/components/table-with-pagination/table-with-pagination.component';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MemberActionsComponent } from './member-actions.component';
 import { EditMemberModalComponent } from '@features/components/members/edit-member-modal/edit-member-modal.component';
 import { Member } from '@features/models/member/member';
 import { HeaderComponent } from '@shared/components/header/header.component';
-import { OrganizationService } from '@features/services/organization.service';
 import { MemberService } from '@features/services/member.service';
 
 @Component({

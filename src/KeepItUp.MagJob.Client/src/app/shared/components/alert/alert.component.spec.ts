@@ -66,7 +66,7 @@ describe('AlertComponent', () => {
   });
 
   it('should apply correct CSS classes based on alertType', () => {
-    const alertTypes: Array<'info' | 'danger' | 'success' | 'warning' | 'dark'> = [
+    const alertTypes: ('info' | 'danger' | 'success' | 'warning' | 'dark')[] = [
       'info',
       'danger',
       'success',

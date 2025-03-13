@@ -12,7 +12,7 @@ export class NotificationService {
     return this.notifications.asObservable();
   }
 
-  show(message: string, type: NotificationType = 'info', duration: number = 3000): void {
+  show(message: string, type: NotificationType = 'info', duration = 3000): void {
     const notification: Notification = {
       id: this.generateId(),
       message,

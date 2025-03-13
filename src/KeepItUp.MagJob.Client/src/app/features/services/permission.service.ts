@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { PermissionApiService } from '@features/apis/permission.api.service';
 import { Permission } from '@features/models/role/role';
 import { StateService } from '@shared/services/state.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class PermissionService {
   getPermissions() {
     this.permissionApiService.getAllPermissions().subscribe({
       next: permissions => this.permissionStateService.setData(permissions),
-      error: error => this.permissionStateService.setError(error),
+      error: error => this.permissionStateService.setError(error as HttpErrorResponse),
     });
   }
 }

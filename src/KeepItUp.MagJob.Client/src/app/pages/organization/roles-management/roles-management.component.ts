@@ -1,7 +1,6 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
-import { PermissionApiService } from '@features/apis/permission.api.service';
 import { Permission, Role } from '@features/models/role/role';
 import { Member } from '@features/models/member/member';
 import { RolesListComponent } from '@features/components/roles/roles-list/roles-list.component';
@@ -10,7 +9,6 @@ import { TabsComponent } from '@shared/components/tabs/tabs.component';
 import { RoleService } from '@features/services/role.service';
 import { ActivatedRoute } from '@angular/router';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
-import { OrganizationService } from '@features/services/organization.service';
 import { MemberService } from '@features/services/member.service';
 
 interface Tab {
@@ -61,7 +59,7 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   activeTab = 'appearance';
 
   //members
-  memberSearchQuery: string = '';
+  memberSearchQuery = '';
   members: Member[] = [];
   memberService = inject(MemberService);
   memberSearchState$ = this.memberService.memberSearchState$;
@@ -71,7 +69,7 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
     this.scrollControlService.setScrollable(false);
 
     this.route.parent?.params.subscribe(params => {
-      this.organizationId = params['organizationId'];
+      this.organizationId = params['organizationId'] as string;
     });
   }
 

@@ -7,7 +7,7 @@ import { Component, Input, input } from '@angular/core';
   templateUrl: './dropdown.component.html',
 })
 export class DropdownComponent {
-  @Input() isOpen: boolean = false;
+  @Input() isOpen = false;
   userName = input<string>('');
   userEmail = input<string>('');
 }

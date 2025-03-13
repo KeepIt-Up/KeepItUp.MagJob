@@ -28,7 +28,7 @@ export class AuthService {
       } else if (event.type === 'logout') {
         this.isAuthenticatedSubject.next(false);
         this.userProfileSubject.next(null);
-        this.router.navigate(['/login']);
+        void this.router.navigate(['/login']);
       }
     });
   }
@@ -113,7 +113,7 @@ export class AuthService {
    */
   public getUserPermissions(): string[] {
     const claims = this.oauthService.getIdentityClaims() as any;
-    return claims && claims.permissions ? claims.permissions : [];
+    return claims?.permissions ? claims.permissions : [];
   }
 
   /**

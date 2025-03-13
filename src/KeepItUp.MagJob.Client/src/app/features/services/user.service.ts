@@ -1,7 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { UserApiService } from '../apis/user.api';
 import { StateService } from '@shared/services/state.service';
-import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { catchError, Observable, tap } from 'rxjs';
 import {
   PaginatedResponse,

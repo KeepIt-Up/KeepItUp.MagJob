@@ -2,7 +2,6 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchModalComponent } from '@shared/components/search-modal/search-modal.component';
 import { Member } from '../../../models/member/member';
-import { OrganizationService } from '@features/services/organization.service';
 import { MemberService } from '@features/services/member.service';
 
 @Component({
@@ -18,8 +17,8 @@ import { MemberService } from '@features/services/member.service';
       [selectedItems]="selectedMembers"
       [displayFn]="memberDisplayFn"
       [compareFn]="memberCompareFn"
-      (close)="closeModal()"
-      (search)="searchMembers($event)"
+      (close)="handleClose()"
+      (search)="handleSearch($event)"
       (selectionChange)="memberToggled.emit($event)"
       (onLoad)="loadMore.emit()"
     >
@@ -31,8 +30,8 @@ export class MemberSearchModalComponent {
   @Input() filteredMembers: Member[] = [];
   @Input() selectedMembers: Member[] = [];
 
-  @Output() close = new EventEmitter<void>();
-  @Output() search = new EventEmitter<string>();
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() searchMembers = new EventEmitter<string>();
   @Output() memberToggled = new EventEmitter<Member>();
   @Output() loadMore = new EventEmitter<void>();
   private memberService = inject(MemberService);
@@ -48,11 +47,11 @@ export class MemberSearchModalComponent {
     return a.id === b.id;
   }
 
-  closeModal(): void {
-    this.close.emit();
+  handleClose(): void {
+    this.closeModal.emit();
   }
 
-  searchMembers(query: string): void {
-    this.search.emit(query);
+  handleSearch(query: string): void {
+    this.searchMembers.emit(query);
   }
 }

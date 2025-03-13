@@ -208,8 +208,8 @@
     [isOpen]="showMemberSearchModal"
     [filteredMembers]="memberSearchState$().data ?? []"
     [selectedMembers]="role.members"
-    (close)="showMemberSearchModal = false"
-    (search)="searchMembers($event)"
+    (closeModal)="showMemberSearchModal = false"
+    (searchMembers)="searchMembers($event)"
     (memberToggled)="toggleMemberRole($event)"
     (loadMore)="loadMoreMembers()"
   >

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Input, output, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../modal/modal.component';
 
@@ -10,8 +10,8 @@ import { ModalComponent } from '../modal/modal.component';
 export class ImageUploadModalComponent {
   @Input() isOpen = false;
   @Input() title = '';
-  @Output() close = new EventEmitter<void>();
-  @Output() upload = new EventEmitter<File>();
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() imageUpload = new EventEmitter<File>();
 
   selectedFile: File | null = null;
   previewUrl: string | null = null;
@@ -20,7 +20,7 @@ export class ImageUploadModalComponent {
   onClose(): void {
     this.selectedFile = null;
     this.previewUrl = null;
-    this.close.emit();
+    this.closeModal.emit();
   }
 
   onFileSelected(event: Event): void {
@@ -33,7 +33,7 @@ export class ImageUploadModalComponent {
 
   onUpload(): void {
     if (this.selectedFile) {
-      this.upload.emit(this.selectedFile);
+      this.imageUpload.emit(this.selectedFile);
       this.onClose();
     }
   }
