@@ -1,145 +1,177 @@
 @if (sidebarExpanded) {
-<aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform" aria-label="Sidebar">
+  <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform" aria-label="Sidebar">
     <button
-        class="absolute -right-5 top-5 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600"
-        (click)="toggle()">
-        <i class="bi bi-chevron-left text-lg"></i>
+      class="absolute -right-5 top-5 w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600"
+      (click)="toggle()"
+    >
+      <i class="bi bi-chevron-left text-lg"></i>
     </button>
 
     <div
-        class="h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-        <!-- User Name -->
-        <a class="flex items-center my-3 px-2" [routerLink]="['']">
-            <span
-                class="self-center text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{userName()}}</span>
-        </a>
+      class="h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"
+    >
+      <!-- User Name -->
+      <a class="flex items-center my-3 px-2" [routerLink]="['']">
+        <span class="self-center text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{
+          userName()
+        }}</span>
+      </a>
 
-        <hr class="h-px my-4 bg-gray-200 dark:bg-gray-700 border-0">
+      <hr class="h-px my-4 bg-gray-200 dark:bg-gray-700 border-0" />
 
-        <!-- Main Navigation -->
-        <div class="space-y-2">
-            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase px-2">Main</p>
-            <ul class="space-y-2">
-                <li>
-                    <a [routerLink]="['organizations']"
-                        routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                        class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group">
-                        <i class="bi bi-building text-lg"></i>
-                        <span class="ml-3">Organizations</span>
-                    </a>
-                </li>
-                <li>
-                    <a [routerLink]="['invitations']"
-                        routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                        class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group">
-                        <i class="bi bi-envelope text-lg"></i>
-                        <span class="ml-3">Invitations</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <hr class="h-px my-4 bg-gray-200 dark:bg-gray-700 border-0">
-
-        <!-- Settings Navigation -->
-        <div class="space-y-2">
-            <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase px-2">Settings</p>
-            <ul class="space-y-2">
-                <li>
-                    <a [routerLink]="['settings']"
-                        routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                        class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group">
-                        <i class="bi bi-person text-lg"></i>
-                        <span class="ml-3">Profile</span>
-                    </a>
-                </li>
-                <li>
-                    <a [routerLink]="['security/password']"
-                        routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                        class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group">
-                        <i class="bi bi-shield-lock text-lg"></i>
-                        <span class="ml-3">Security</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Help Section at Bottom -->
-        <div class="fixed bottom-4 left-0 w-64 px-3">
-            <div class="space-y-2">
-                <a href="#"
-                    class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group">
-                    <i class="bi bi-info-circle text-lg"></i>
-                    <span class="ml-3">Help</span>
-                </a>
-                <a href="#" (click)="logOut()"
-                    class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-red-800 hover:text-white dark:hover:bg-red-900 group">
-                    <i class="bi bi-box-arrow-right text-lg"></i>
-                    <span class="ml-3">Sign Out</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</aside>
-} @else {
-<aside class="fixed top-0 left-0 z-40 w-16 h-screen transition-transform">
-    <div class="h-full px-3 py-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-        <!-- Toggle Button -->
-        <button
-            class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600 mb-5"
-            (click)="toggle()">
-            <i class="bi bi-chevron-right text-lg"></i>
-        </button>
-
-        <!-- Main Navigation Icons -->
+      <!-- Main Navigation -->
+      <div class="space-y-2">
+        <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase px-2">Main</p>
         <ul class="space-y-2">
-            <li>
-                <a [routerLink]="['organizations']"
-                    routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700">
-                    <i class="bi bi-building text-lg"></i>
-                </a>
-            </li>
-            <li>
-                <a [routerLink]="['invitations']"
-                    routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700">
-                    <i class="bi bi-envelope text-lg"></i>
-                </a>
-            </li>
+          <li>
+            <a
+              [routerLink]="['organizations']"
+              routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+              class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
+            >
+              <i class="bi bi-building text-lg"></i>
+              <span class="ml-3">Organizations</span>
+            </a>
+          </li>
+          <li>
+            <a
+              [routerLink]="['invitations']"
+              routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+              class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
+            >
+              <i class="bi bi-envelope text-lg"></i>
+              <span class="ml-3">Invitations</span>
+            </a>
+          </li>
         </ul>
+      </div>
 
-        <!-- Settings Navigation Icons -->
-        <ul class="space-y-2 mt-4">
-            <li>
-                <a [routerLink]="['settings']"
-                    routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700">
-                    <i class="bi bi-person text-lg"></i>
-                </a>
-            </li>
-            <li>
-                <a [routerLink]="['security/password']"
-                    routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700">
-                    <i class="bi bi-shield-lock text-lg"></i>
-                </a>
-            </li>
+      <hr class="h-px my-4 bg-gray-200 dark:bg-gray-700 border-0" />
+
+      <!-- Settings Navigation -->
+      <div class="space-y-2">
+        <p class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase px-2">Settings</p>
+        <ul class="space-y-2">
+          <li>
+            <a
+              [routerLink]="['settings']"
+              routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+              class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
+            >
+              <i class="bi bi-person text-lg"></i>
+              <span class="ml-3">Profile</span>
+            </a>
+          </li>
+          <li>
+            <a
+              [routerLink]="['security/password']"
+              routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+              class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
+            >
+              <i class="bi bi-shield-lock text-lg"></i>
+              <span class="ml-3">Security</span>
+            </a>
+          </li>
         </ul>
+      </div>
 
-        <!-- Help Icon -->
-        <div class="fixed bottom-4 left-0 w-16 px-3">
-            <div class="space-y-2">
-                <a href="#"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700">
-                    <i class="bi bi-info-circle text-lg"></i>
-                </a>
-                <a href="#" (click)="logOut()"
-                    class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-red-800 hover:text-white dark:hover:bg-red-900">
-                    <i class="bi bi-box-arrow-right text-lg"></i>
-                </a>
-            </div>
+      <!-- Help Section at Bottom -->
+      <div class="fixed bottom-4 left-0 w-64 px-3">
+        <div class="space-y-2">
+          <a
+            href="#"
+            class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
+          >
+            <i class="bi bi-info-circle text-lg"></i>
+            <span class="ml-3">Help</span>
+          </a>
+          <a
+            href="#"
+            (click)="logOut()"
+            class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-red-800 hover:text-white dark:hover:bg-red-900 group"
+          >
+            <i class="bi bi-box-arrow-right text-lg"></i>
+            <span class="ml-3">Sign Out</span>
+          </a>
         </div>
+      </div>
     </div>
-</aside>
+  </aside>
+} @else {
+  <aside class="fixed top-0 left-0 z-40 w-16 h-screen transition-transform">
+    <div
+      class="h-full px-3 py-4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"
+    >
+      <!-- Toggle Button -->
+      <button
+        class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600 mb-5"
+        (click)="toggle()"
+      >
+        <i class="bi bi-chevron-right text-lg"></i>
+      </button>
+
+      <!-- Main Navigation Icons -->
+      <ul class="space-y-2">
+        <li>
+          <a
+            [routerLink]="['organizations']"
+            routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
+          >
+            <i class="bi bi-building text-lg"></i>
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="['invitations']"
+            routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
+          >
+            <i class="bi bi-envelope text-lg"></i>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Settings Navigation Icons -->
+      <ul class="space-y-2 mt-4">
+        <li>
+          <a
+            [routerLink]="['settings']"
+            routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
+          >
+            <i class="bi bi-person text-lg"></i>
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="['security/password']"
+            routerLinkActive="bg-gray-800 dark:bg-gray-700 text-white dark:text-white"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
+          >
+            <i class="bi bi-shield-lock text-lg"></i>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Help Icon -->
+      <div class="fixed bottom-4 left-0 w-16 px-3">
+        <div class="space-y-2">
+          <a
+            href="#"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
+          >
+            <i class="bi bi-info-circle text-lg"></i>
+          </a>
+          <a
+            href="#"
+            (click)="logOut()"
+            class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-red-800 hover:text-white dark:hover:bg-red-900"
+          >
+            <i class="bi bi-box-arrow-right text-lg"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
 }

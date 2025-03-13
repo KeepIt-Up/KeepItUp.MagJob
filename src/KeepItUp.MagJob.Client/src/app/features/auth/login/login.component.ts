@@ -33,87 +33,89 @@ import { OAuthService } from 'angular-oauth2-oidc';
       </div>
     </div>
   `,
-  styles: [`
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f5f5f5;
-    }
+  styles: [
+    `
+      .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+      }
 
-    .login-card {
-      width: 100%;
-      max-width: 400px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
 
-    .login-header {
-      padding: 2rem;
-      text-align: center;
-      background-color: #3498db;
-      color: white;
-    }
+      .login-header {
+        padding: 2rem;
+        text-align: center;
+        background-color: #3498db;
+        color: white;
+      }
 
-    .login-header h1 {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 700;
-    }
+      .login-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 700;
+      }
 
-    .login-header p {
-      margin: 0.5rem 0 0;
-      opacity: 0.9;
-    }
+      .login-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+      }
 
-    .login-content {
-      padding: 2rem;
-    }
+      .login-content {
+        padding: 2rem;
+      }
 
-    .login-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background-color: #2ecc71;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+      .login-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #2ecc71;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-    .login-button:hover {
-      background-color: #27ae60;
-    }
+      .login-button:hover {
+        background-color: #27ae60;
+      }
 
-    .button-icon {
-      margin-right: 0.5rem;
-      font-size: 1.25rem;
-    }
+      .button-icon {
+        margin-right: 0.5rem;
+        font-size: 1.25rem;
+      }
 
-    .error-message {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      background-color: #ffebee;
-      color: #c62828;
-      border-radius: 4px;
-      text-align: center;
-    }
+      .error-message {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background-color: #ffebee;
+        color: #c62828;
+        border-radius: 4px;
+        text-align: center;
+      }
 
-    .login-footer {
-      padding: 1rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #7f8c8d;
-      border-top: 1px solid #f5f5f5;
-    }
-  `]
+      .login-footer {
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        border-top: 1px solid #f5f5f5;
+      }
+    `,
+  ],
 })
 export class LoginComponent implements OnInit {
   errorMessage: string | null = null;
@@ -122,7 +124,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private oauthService: OAuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {

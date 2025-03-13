@@ -7,7 +7,7 @@ import { State } from '@shared/services/state.service';
 @Component({
   selector: 'app-infinite-list',
   imports: [StatefullContainerComponent, InfiniteScrollComponent],
-  templateUrl: './infinite-list.component.html'
+  templateUrl: './infinite-list.component.html',
 })
 export class InfiniteListComponent<T extends { id: string }> implements OnInit {
   paginationOptions$ = input.required<PaginationOptions<T>>();
@@ -30,5 +30,4 @@ export class InfiniteListComponent<T extends { id: string }> implements OnInit {
       this.onLoad.emit();
     }
   }
-
 }

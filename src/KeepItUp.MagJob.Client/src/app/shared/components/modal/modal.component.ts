@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-modal',
   imports: [CommonModule],
-  templateUrl: './modal.component.html'
+  templateUrl: './modal.component.html',
 })
 export class ModalComponent {
   isOpen = input.required<boolean>();

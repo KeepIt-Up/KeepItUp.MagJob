@@ -1,8 +1,8 @@
-import { authCodeFlowConfig } from "@core/configs/auth.config";
-import { OAuthService } from "angular-oauth2-oidc";
+import { authCodeFlowConfig } from '@core/configs/auth.config';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 export function initializeOAuth(oauthService: OAuthService): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // Konfiguracja OAuthService
     oauthService.configure(authCodeFlowConfig);
 
@@ -34,7 +34,8 @@ export function initializeOAuth(oauthService: OAuthService): Promise<void> {
     });
 
     // Ładowanie dokumentu discovery i próba logowania
-    oauthService.loadDiscoveryDocument()
+    oauthService
+      .loadDiscoveryDocument()
       .then(() => {
         console.log('Discovery document loaded');
 

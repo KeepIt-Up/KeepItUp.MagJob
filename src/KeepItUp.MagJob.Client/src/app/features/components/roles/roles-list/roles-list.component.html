@@ -1,11 +1,16 @@
 <div class="space-y-2">
-    @for (role of roles$(); track role.id) {
-    <div (click)="onRoleSelect.emit(role)" (keydown.enter)="onRoleSelect.emit(role)"
-        [class.bg-gray-100]="selectedRole$()?.id === role.id" [class.dark:bg-gray-700]="selectedRole$()?.id === role.id"
-        class="mx-2 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center gap-2"
-        tabindex="0" role="button">
-        <div class="rounded-full bi bi-person-gear" [style.color]="role.color || '#6B7280'"></div>
-        {{ role.name }}
+  @for (role of roles$(); track role.id) {
+    <div
+      (click)="onRoleSelect.emit(role)"
+      (keydown.enter)="onRoleSelect.emit(role)"
+      [class.bg-gray-100]="selectedRole$()?.id === role.id"
+      [class.dark:bg-gray-700]="selectedRole$()?.id === role.id"
+      class="mx-2 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center gap-2"
+      tabindex="0"
+      role="button"
+    >
+      <div class="rounded-full bi bi-person-gear" [style.color]="role.color || '#6B7280'"></div>
+      {{ role.name }}
     </div>
-    }
+  }
 </div>

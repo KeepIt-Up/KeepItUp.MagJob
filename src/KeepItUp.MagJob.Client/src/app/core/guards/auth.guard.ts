@@ -12,7 +12,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (!oauthService.hasValidAccessToken()) {
     // Przekieruj do strony logowania z parametrem returnUrl
     return router.createUrlTree(['/login'], {
-      queryParams: { returnUrl: state.url }
+      queryParams: { returnUrl: state.url },
     });
   }
 
@@ -22,7 +22,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (requiredPermissions && requiredPermissions.length > 0) {
     // Sprawdź, czy użytkownik ma wszystkie wymagane uprawnienia
     const hasAllPermissions = requiredPermissions.every(permission =>
-      authService.hasPermission(permission)
+      authService.hasPermission(permission),
     );
 
     if (!hasAllPermissions) {

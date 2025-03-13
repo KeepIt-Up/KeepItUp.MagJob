@@ -1,4 +1,4 @@
-import { AuthConfig } from "angular-oauth2-oidc";
+import { AuthConfig } from 'angular-oauth2-oidc';
 
 /**
  * Environment configuration for local development
@@ -30,6 +30,6 @@ export const environment = {
     clearHashAfterLogin: true,
     nonceStateSeparator: 'semicolon',
     skipIssuerCheck: true,
-    dummyClientSecret: 'bYBrriEeDclOCaDTVneVAbeCrbgnWrWd'
-  } as AuthConfig
+    dummyClientSecret: 'bYBrriEeDclOCaDTVneVAbeCrbgnWrWd',
+  } as AuthConfig,
 };

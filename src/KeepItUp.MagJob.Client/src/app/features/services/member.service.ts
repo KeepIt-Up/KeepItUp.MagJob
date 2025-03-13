@@ -3,15 +3,17 @@ import { catchError, EMPTY, Observable, tap } from 'rxjs';
 import { NotificationService } from '@shared/services/notification.service';
 import { MemberApiService } from '@features/apis/member.api.service';
 import { Member } from '@features/models/member/member';
-import { PaginatedResponse, PaginationOptions } from '@shared/components/pagination/pagination.component';
+import {
+  PaginatedResponse,
+  PaginationOptions,
+} from '@shared/components/pagination/pagination.component';
 import { ListStateService } from '@shared/services/list-state.service';
 import { StateService } from '@shared/services/state.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MemberService {
-
   private api = inject(MemberApiService);
   private notificationService = inject(NotificationService);
 
@@ -24,15 +26,15 @@ export class MemberService {
   membersPaginationOptions$ = signal<PaginationOptions<Member>>({
     pageNumber: 1,
     pageSize: 10,
-    sortField: "id",
-    ascending: true
+    sortField: 'id',
+    ascending: true,
   });
 
   memberSearchPaginationOptions$ = signal<PaginationOptions<Member>>({
     pageNumber: 1,
     pageSize: 10,
-    sortField: "id",
-    ascending: true
+    sortField: 'id',
+    ascending: true,
   });
 
   archiveMember(memberId: string) {
@@ -49,7 +51,7 @@ export class MemberService {
       catchError(() => {
         this.notificationService.show('Failed to archive member', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 
@@ -67,7 +69,7 @@ export class MemberService {
       catchError(() => {
         this.notificationService.show('Failed to update member', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 
@@ -90,7 +92,7 @@ export class MemberService {
       catchError(() => {
         this.notificationService.show('Failed to search members', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 }

@@ -12,7 +12,7 @@ import { Role } from '../../../models/role/role';
 @Component({
   selector: 'app-roles-table',
   imports: [TableWithPaginationComponent, SearchInputComponent, RouterLink],
-  templateUrl: './role-table.component.html'
+  templateUrl: './role-table.component.html',
 })
 export class RolesTableComponent implements OnInit {
   roleService = inject(RoleApiService);
@@ -28,13 +28,13 @@ export class RolesTableComponent implements OnInit {
     this.route.parent?.params.subscribe(params => {
       this.organizationId = params['organizationId'];
       this.queryParams = {
-        organizationId: this.organizationId
+        organizationId: this.organizationId,
       };
       this.paginationOptions = {
         pageNumber: 1,
         pageSize: 10,
-        sortField: "id",
-        ascending: true
+        sortField: 'id',
+        ascending: true,
       };
       this.endpointURL = `/api/organizations/roles`;
     });
@@ -42,35 +42,35 @@ export class RolesTableComponent implements OnInit {
 
   columnsConfig: ColumnDefinition<Role>[] = [
     {
-      title: "Id",
-      modelProp: "id",
+      title: 'Id',
+      modelProp: 'id',
     },
     {
-      title: "Name",
+      title: 'Name',
       modelProp: 'name',
-      isSortable: true
+      isSortable: true,
     },
     {
-      title: "Description",
+      title: 'Description',
       modelProp: 'description',
-      isSortable: true
+      isSortable: true,
     },
     {
-      title: "Members Count",
+      title: 'Members Count',
       modelProp: 'members',
-      computeValue: (row) => row.members.length.toString()
+      computeValue: row => row.members.length.toString(),
     },
     {
-      title: "Actions",
+      title: 'Actions',
       modelProp: 'id',
       component: {
         type: RoleActionsComponent,
-        inputs: (row) => ({
+        inputs: row => ({
           roleId: row.id,
           onEditCallback: () => this.navigateToRoleManagement(row.id),
         }),
-      }
-    }
+      },
+    },
   ];
 
   navigateToRoleManagement(roleId: string) {
@@ -80,4 +80,4 @@ export class RolesTableComponent implements OnInit {
   deleteRole(roleId: string) {
     // Implement role deletion logic
   }
-} 
+}

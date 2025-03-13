@@ -20,8 +20,14 @@ interface Tab {
 
 @Component({
   selector: 'app-roles-management',
-  imports: [FormsModule, TabsComponent, RolesListComponent, MemberSearchModalComponent, InfiniteListComponent],
-  templateUrl: './roles-management.component.html'
+  imports: [
+    FormsModule,
+    TabsComponent,
+    RolesListComponent,
+    MemberSearchModalComponent,
+    InfiniteListComponent,
+  ],
+  templateUrl: './roles-management.component.html',
 })
 export class RolesManagementComponent implements OnInit, OnDestroy {
   //scroll
@@ -37,17 +43,22 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   paginationOptions$ = this.roleService.paginationOptions$;
   selectedRole$ = this.roleService.selectedRole$;
   permissions$ = this.roleService.permissions$;
-  selectedRolePermission$: Signal<{ permission: Permission, value: boolean }[]> = computed(() => this.permissions$().data?.map((p) => ({ permission: p, value: this.selectedRole$()?.permissions.some((p2) => p2.id === p.id) ?? false })) ?? []);
+  selectedRolePermission$: Signal<{ permission: Permission; value: boolean }[]> = computed(
+    () =>
+      this.permissions$().data?.map(p => ({
+        permission: p,
+        value: this.selectedRole$()?.permissions.some(p2 => p2.id === p.id) ?? false,
+      })) ?? [],
+  );
 
   //tabs
   tabs: Tab[] = [
     { id: 'appearance', label: 'Appearance' },
     { id: 'permissions', label: 'Permissions' },
-    { id: 'assignments', label: 'Assignments' }
+    { id: 'assignments', label: 'Assignments' },
   ];
   // do wyciągania do komponentu
   activeTab = 'appearance';
-
 
   //members
   memberSearchQuery: string = '';
@@ -92,14 +103,19 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
     if (!this.selectedRole$()) return;
 
     const role = this.selectedRole$()!;
-    this.roleService.updateRole(role.id, {
-      name: role.name,
-      color: role.color
-    }).subscribe();
+    this.roleService
+      .updateRole(role.id, {
+        name: role.name,
+        color: role.color,
+      })
+      .subscribe();
   }
 
   deleteRole() {
-    if (!this.selectedRole$() || !confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
+    if (
+      !this.selectedRole$() ||
+      !confirm('Are you sure you want to delete this role? This action cannot be undone.')
+    ) {
       return;
     }
 
@@ -107,12 +123,20 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
   }
 
   updateRolePermissions() {
-    this.roleService.updateRolePermissions(this.selectedRole$()!.id, this.selectedRolePermission$().filter(p => p.value).map(p => p.permission.id)).subscribe();
+    this.roleService
+      .updateRolePermissions(
+        this.selectedRole$()!.id,
+        this.selectedRolePermission$()
+          .filter(p => p.value)
+          .map(p => p.permission.id),
+      )
+      .subscribe();
   }
 
   togglePermission(permissionId: number) {
     if (!this.selectedRole$()) return;
-    this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value = !this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value;
+    this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value =
+      !this.selectedRolePermission$().find(p => p.permission.id === permissionId)!.value;
   }
 
   searchMembers(query: string) {

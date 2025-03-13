@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, Type } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  Type,
+} from '@angular/core';
 import { DynamicPipe } from '../../pipes/dynamic.pipe';
 import { NgComponentOutlet } from '@angular/common';
 
@@ -20,12 +28,12 @@ export type ColumnDefinition<T extends Record<any, any>> = {
 export type SortBy<T> = {
   modelProp?: keyof T;
   ascending: boolean;
-}
+};
 
 @Component({
-    selector: 'app-table',
-    imports: [DynamicPipe, NgComponentOutlet],
-    templateUrl: './table.component.html'
+  selector: 'app-table',
+  imports: [DynamicPipe, NgComponentOutlet],
+  templateUrl: './table.component.html',
 })
 export class TableComponent<T extends { id: K }, K = string> implements OnChanges {
   @Input({ required: true }) rows!: T[];
@@ -70,17 +78,16 @@ export class TableComponent<T extends { id: K }, K = string> implements OnChange
 
   _sortBy: SortBy<T> = {
     ascending: true,
-    modelProp: "id"
-  }
+    modelProp: 'id',
+  };
 
   updateSortBy(modelProp: keyof T) {
     if (modelProp === this._sortBy.modelProp) {
       this._sortBy.ascending = !this._sortBy.ascending;
-    }
-    else {
+    } else {
       this._sortBy = {
         ascending: true,
-        modelProp: modelProp
+        modelProp: modelProp,
       };
     }
 

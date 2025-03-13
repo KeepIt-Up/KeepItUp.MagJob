@@ -10,7 +10,7 @@ export interface ErrorMessages {
   selector: 'app-error-alert',
   templateUrl: './error-alert.component.html',
   imports: [AlertComponent],
-  standalone: true
+  standalone: true,
 })
 export class ErrorAlertComponent {
   error = input.required<HttpErrorResponse | Error | undefined>();
@@ -26,9 +26,13 @@ export class ErrorAlertComponent {
     500: 'Internal Server Error: Something went wrong on our servers.',
     502: 'Bad Gateway: The server received an invalid response from the upstream server.',
     503: 'Service Unavailable: The server is temporarily unable to handle the request.',
-    504: 'Gateway Timeout: The server did not receive a timely response from the upstream server.'
+    504: 'Gateway Timeout: The server did not receive a timely response from the upstream server.',
   });
 
-  httpErrorResponse = computed(() => this.error() instanceof HttpErrorResponse ? this.error() as HttpErrorResponse : undefined);
-  applicationError = computed(() => this.error() instanceof Error ? this.error() as Error : undefined);
+  httpErrorResponse = computed(() =>
+    this.error() instanceof HttpErrorResponse ? (this.error() as HttpErrorResponse) : undefined,
+  );
+  applicationError = computed(() =>
+    this.error() instanceof Error ? (this.error() as Error) : undefined,
+  );
 }

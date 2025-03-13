@@ -7,7 +7,7 @@ export type AlertType = 'info' | 'danger' | 'success' | 'warning' | 'dark';
   selector: 'app-alert',
   imports: [CommonModule, NgClass],
   templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss']
+  styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent {
   /**

@@ -4,93 +4,93 @@
 @tailwind utilities;
 
 @layer components {
-    .mg-btn {
-        @apply flex flex-row justify-center items-center;
-    }
+  .mg-btn {
+    @apply flex flex-row justify-center items-center;
+  }
 
-    .mg-btn-icon {
-        @apply mg-btn w-11 h-11 rounded-full;
-    }
+  .mg-btn-icon {
+    @apply mg-btn w-11 h-11 rounded-full;
+  }
 
-    .mg-btn-icon .icon {
-        font-size: 32px;
-        line-height: 32px;
-        @apply w-8 h-8;
-    }
+  .mg-btn-icon .icon {
+    font-size: 32px;
+    line-height: 32px;
+    @apply w-8 h-8;
+  }
 
-    .mg-btn-sm {
-        @apply h-9 px-4 py-2 gap-2 rounded text-sm font-medium;
-    }
+  .mg-btn-sm {
+    @apply h-9 px-4 py-2 gap-2 rounded text-sm font-medium;
+  }
 
-    .mg-btn-sm .icon {
-        font-size: 20px;
-        line-height: 20px;
-        @apply w-5 h-5;
-    }
+  .mg-btn-sm .icon {
+    font-size: 20px;
+    line-height: 20px;
+    @apply w-5 h-5;
+  }
 
-    .mg-btn-md {
-        @apply h-11 px-4 py-2 gap-2 rounded-lg text-sm font-medium;
-    }
+  .mg-btn-md {
+    @apply h-11 px-4 py-2 gap-2 rounded-lg text-sm font-medium;
+  }
 
-    .mg-btn-md .icon {
-        @apply w-6 h-6;
-    }
+  .mg-btn-md .icon {
+    @apply w-6 h-6;
+  }
 
-    .mg-btn-lg {
-        @apply h-12 px-6 py-2 gap-2 rounded-xl text-base font-semibold;
-    }
+  .mg-btn-lg {
+    @apply h-12 px-6 py-2 gap-2 rounded-xl text-base font-semibold;
+  }
 
-    .mg-btn-lg .icon {
-        @apply w-6 h-6;
-    }
+  .mg-btn-lg .icon {
+    @apply w-6 h-6;
+  }
 
-    .mg-btn-outline {
-        border-width: 1px;
-        background: none;
-        @apply border border-gray-600 text-black hover:bg-gray-100;
-    }
+  .mg-btn-outline {
+    border-width: 1px;
+    background: none;
+    @apply border border-gray-600 text-black hover:bg-gray-100;
+  }
 
-    .mg-btn-primary {
-        background: #44BBA4;
-        @apply text-white hover:bg-emerald-500 fill-white;
-    }
+  .mg-btn-primary {
+    background: #44bba4;
+    @apply text-white hover:bg-emerald-500 fill-white;
+  }
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-button {
-    display: none;
+  display: none;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 dark:bg-gray-600;
-    border-radius: 50px;
+  @apply bg-gray-400 dark:bg-gray-600;
+  border-radius: 50px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500 dark:bg-gray-500;
+  @apply bg-gray-500 dark:bg-gray-500;
 }
 
 ::-webkit-scrollbar-thumb:active {
-    @apply bg-gray-600 dark:bg-gray-400;
+  @apply bg-gray-600 dark:bg-gray-400;
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-gray-800;
-    border-radius: 50px;
+  @apply bg-gray-100 dark:bg-gray-800;
+  border-radius: 50px;
 }
 
 ::-webkit-scrollbar-track:hover {
-    @apply bg-gray-200 dark:bg-gray-700;
+  @apply bg-gray-200 dark:bg-gray-700;
 }
 
 ::-webkit-scrollbar-track:active {
-    @apply bg-gray-300 dark:bg-gray-600;
+  @apply bg-gray-300 dark:bg-gray-600;
 }
 
 ::-webkit-scrollbar-corner {
-    @apply bg-transparent;
+  @apply bg-transparent;
 }

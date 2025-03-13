@@ -1,18 +1,24 @@
-import { Injectable } from "@angular/core";
-import { Role } from "@features/models/role/role";
-import { PaginatedResponse, PaginationOptions, serializePaginationOptions } from "@shared/components/pagination/pagination.component";
-import { BaseApiService } from "@shared/services/base-api.service";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Role } from '@features/models/role/role';
+import {
+  PaginatedResponse,
+  PaginationOptions,
+  serializePaginationOptions,
+} from '@shared/components/pagination/pagination.component';
+import { BaseApiService } from '@shared/services/base-api.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoleApiService extends BaseApiService<Role> {
   override readonly apiUrl = '/api/roles';
 
   getAllRoles(query: Record<any, any>, paginationOptions: PaginationOptions<Role>) {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Role>>(`/api/organizations/roles`, { params: { ...query, ...options } });
+    return this.http.get<PaginatedResponse<Role>>(`/api/organizations/roles`, {
+      params: { ...query, ...options },
+    });
   }
 
   updateRolePermissions(roleId: string, permissionIds: number[]): Observable<void> {

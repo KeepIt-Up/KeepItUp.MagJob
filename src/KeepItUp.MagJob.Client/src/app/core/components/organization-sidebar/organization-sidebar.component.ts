@@ -14,7 +14,7 @@ interface NavItem {
 @Component({
   selector: 'app-organization-sidebar',
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './organization-sidebar.component.html'
+  templateUrl: './organization-sidebar.component.html',
 })
 export class OrganizationSidebarComponent {
   @Input() organization!: Organization;
@@ -31,9 +31,7 @@ export class OrganizationSidebarComponent {
     //{ path: 'schedule', icon: 'bi-calendar', label: 'Schedule' },
   ];
 
-  settingsNavItems: NavItem[] = [
-    { path: 'settings', icon: 'bi-gear', label: 'Settings' },
-  ];
+  settingsNavItems: NavItem[] = [{ path: 'settings', icon: 'bi-gear', label: 'Settings' }];
 
   toggle() {
     this.sidebarExpanded = !this.sidebarExpanded;
@@ -47,5 +45,4 @@ export class OrganizationSidebarComponent {
   logout() {
     this.authService.logOut();
   }
-
 }

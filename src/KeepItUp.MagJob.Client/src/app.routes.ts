@@ -19,30 +19,38 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'forbidden', component: ForbiddenComponent },
   {
-    path: 'organization/:organizationId', component: OrganizationComponent, canActivate: [authGuard], children: [
+    path: 'organization/:organizationId',
+    component: OrganizationComponent,
+    canActivate: [authGuard],
+    children: [
       { path: '', redirectTo: 'members', pathMatch: 'full' },
       { path: 'members', component: MembersTableComponent },
       { path: 'invitations', component: InvitationTableComponent },
       { path: 'roles', component: RolesManagementComponent },
       { path: 'settings', component: OrganizationProfilComponent },
-      { path: '**', redirectTo: 'members' }
-    ]
+      { path: '**', redirectTo: 'members' },
+    ],
   },
   {
-    path: 'user', component: UserComponent, canActivate: [authGuard], children: [
+    path: 'user',
+    component: UserComponent,
+    canActivate: [authGuard],
+    children: [
       { path: '', redirectTo: 'organizations', pathMatch: 'full' },
       { path: 'organizations', component: UserOrganizationsComponent },
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
       { path: '**', redirectTo: 'organizations' },
-    ]
+    ],
   },
   {
-    path: 'public', component: PublicComponent, children: [
+    path: 'public',
+    component: PublicComponent,
+    children: [
       { path: '', redirectTo: 'create-organization', pathMatch: 'full' },
       { path: 'create-organization', component: OrganizationCreatorComponent },
-      { path: '**', redirectTo: 'create-organization' }
-    ]
+      { path: '**', redirectTo: 'create-organization' },
+    ],
   },
-  { path: '**', redirectTo: 'user' }
+  { path: '**', redirectTo: 'user' },
 ];

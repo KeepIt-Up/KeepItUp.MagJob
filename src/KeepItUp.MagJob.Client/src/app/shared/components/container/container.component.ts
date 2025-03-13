@@ -1,4 +1,13 @@
-import { Component, Input, OnInit, OnDestroy, EventEmitter, Output, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  EventEmitter,
+  Output,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -15,14 +24,14 @@ export interface ContainerState<T> {
   selector: 'app-container',
   standalone: true,
   imports: [CommonModule, SpinnerComponent, HttpErrorResponseAlertComponent],
-  templateUrl: './container.component.html'
+  templateUrl: './container.component.html',
 })
 export class ContainerComponent<T> implements OnInit, OnChanges, OnDestroy {
   @Input() source$!: Observable<T>;
   @Output() onStateChange = new EventEmitter<ContainerState<T>>();
 
   _state: ContainerState<T> = {
-    isLoading: true
+    isLoading: true,
   };
 
   private destroy$ = new Subject<void>();
@@ -48,12 +57,9 @@ export class ContainerComponent<T> implements OnInit, OnChanges, OnDestroy {
   }
 
   private subscribeToSource() {
-    this.source$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (data) => this.updateState(false, data),
-      error: (error) => this.updateState(false, undefined, error)
+    this.source$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: data => this.updateState(false, data),
+      error: error => this.updateState(false, undefined, error),
     });
   }
-
 }

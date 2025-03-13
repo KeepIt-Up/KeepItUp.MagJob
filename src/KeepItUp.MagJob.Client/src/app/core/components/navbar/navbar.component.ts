@@ -7,8 +7,14 @@ import { ClickOutsideDirective } from '../../../shared/directives/click-outside.
 import { OAuthService } from 'angular-oauth2-oidc';
 @Component({
   selector: 'app-navbar',
-  imports: [SearchInputComponent, CommonModule, DropdownComponent, RouterLink, ClickOutsideDirective],
-  templateUrl: './navbar.component.html'
+  imports: [
+    SearchInputComponent,
+    CommonModule,
+    DropdownComponent,
+    RouterLink,
+    ClickOutsideDirective,
+  ],
+  templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {
   isDropdownOpen = false;
@@ -26,7 +32,7 @@ export class NavbarComponent implements OnInit {
   }
 
   search(text: string) {
-    console.log("Search for:", text);
+    console.log('Search for:', text);
   }
 
   toggleDropdown(event: Event) {

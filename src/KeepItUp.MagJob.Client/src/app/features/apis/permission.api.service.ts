@@ -4,10 +4,9 @@ import { Permission } from '@features/models/role/role';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PermissionApiService {
-
   private readonly apiUrl = '/api/permissions';
   private http = inject(HttpClient);
 

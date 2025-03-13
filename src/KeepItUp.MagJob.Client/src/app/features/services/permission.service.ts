@@ -4,7 +4,7 @@ import { Permission } from '@features/models/role/role';
 import { StateService } from '@shared/services/state.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PermissionService {
   private readonly permissionApiService = inject(PermissionApiService);
@@ -18,8 +18,8 @@ export class PermissionService {
 
   getPermissions() {
     this.permissionApiService.getAllPermissions().subscribe({
-      next: (permissions) => this.permissionStateService.setData(permissions),
-      error: (error) => this.permissionStateService.setError(error)
+      next: permissions => this.permissionStateService.setData(permissions),
+      error: error => this.permissionStateService.setError(error),
     });
   }
 }

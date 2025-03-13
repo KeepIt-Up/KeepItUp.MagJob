@@ -11,7 +11,7 @@ export interface State<T, M = undefined> {
 @Injectable()
 export class StateService<T, M = undefined> {
   protected state = signal<State<T, M>>({
-    loading: true
+    loading: true,
   });
 
   state$ = this.state.asReadonly();
@@ -25,33 +25,32 @@ export class StateService<T, M = undefined> {
   }
 
   protected updateState(state: Partial<State<T, M>>) {
-    this.state.update((prev) => ({
+    this.state.update(prev => ({
       ...prev,
-      ...state
+      ...state,
     }));
   }
 
   setLoading(loading: boolean) {
-    this.state.update((prev) => ({
+    this.state.update(prev => ({
       ...prev,
-      loading
+      loading,
     }));
   }
 
   setError(error: HttpErrorResponse | Error) {
-    this.state.update((prev) => ({
+    this.state.update(prev => ({
       ...prev,
       loading: false,
-      error
+      error,
     }));
   }
 
   setData(data: T) {
-    this.state.update((prev) => ({
+    this.state.update(prev => ({
       ...prev,
       loading: false,
-      data: data
+      data: data,
     }));
   }
-
 }

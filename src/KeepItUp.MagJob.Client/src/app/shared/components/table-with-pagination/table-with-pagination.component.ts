@@ -1,13 +1,17 @@
 import { Component, input, OnInit, output } from '@angular/core';
 import { StatefullContainerComponent } from '../statefull-container/statefull-container.component';
 import { State } from '@shared/services/state.service';
-import { PaginatedResponse, PaginationComponent, PaginationOptions } from '../pagination/pagination.component';
+import {
+  PaginatedResponse,
+  PaginationComponent,
+  PaginationOptions,
+} from '../pagination/pagination.component';
 import { ColumnDefinition, SortBy, TableComponent } from '../table/table.component';
 
 @Component({
   selector: 'app-table-with-pagination',
   imports: [StatefullContainerComponent, TableComponent, PaginationComponent],
-  templateUrl: 'table-with-pagination.component.html'
+  templateUrl: 'table-with-pagination.component.html',
 })
 export class TableWithPaginationComponent<T extends { id: string }> implements OnInit {
   columnsConfig = input.required<ColumnDefinition<T>[]>();
@@ -16,8 +20,8 @@ export class TableWithPaginationComponent<T extends { id: string }> implements O
   onGetData = output<void>();
 
   sortBy: SortBy<T> = {
-    modelProp: "id",
-    ascending: true
+    modelProp: 'id',
+    ascending: true,
   };
 
   ngOnInit(): void {
@@ -42,7 +46,7 @@ export class TableWithPaginationComponent<T extends { id: string }> implements O
   }
 
   onPageSizeChange(pageSize: number) {
-    this.paginationOptions().pageSize = pageSize
+    this.paginationOptions().pageSize = pageSize;
     this.update();
   }
 }

@@ -8,9 +8,15 @@ import { ScrollControlService } from '@shared/services/scroll-control.service';
 import { OrganizationService } from '@features/services/organization.service';
 
 @Component({
-    selector: 'app-organization',
-    imports: [RouterOutlet, OrganizationSidebarComponent, NavbarComponent, ErrorAlertComponent, SpinnerComponent],
-    templateUrl: './organization.component.html'
+  selector: 'app-organization',
+  imports: [
+    RouterOutlet,
+    OrganizationSidebarComponent,
+    NavbarComponent,
+    ErrorAlertComponent,
+    SpinnerComponent,
+  ],
+  templateUrl: './organization.component.html',
 })
 export class OrganizationComponent implements OnInit {
   @Input() organizationId!: string;

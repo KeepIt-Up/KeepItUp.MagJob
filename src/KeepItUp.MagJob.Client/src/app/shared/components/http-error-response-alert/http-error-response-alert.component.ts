@@ -9,7 +9,7 @@ export interface ErrorMessages {
   selector: 'app-http-error-response-alert',
   standalone: true,
   imports: [],
-  templateUrl: './http-error-response-alert.component.html'
+  templateUrl: './http-error-response-alert.component.html',
 })
 export class HttpErrorResponseAlertComponent {
   @Input({ required: true }) error!: HttpErrorResponse;
@@ -27,7 +27,7 @@ export class HttpErrorResponseAlertComponent {
     500: 'Internal Server Error: Something went wrong on our servers.',
     502: 'Bad Gateway: The server received an invalid response from the upstream server.',
     503: 'Service Unavailable: The server is temporarily unable to handle the request.',
-    504: 'Gateway Timeout: The server did not receive a timely response from the upstream server.'
+    504: 'Gateway Timeout: The server did not receive a timely response from the upstream server.',
   };
 
   getErrorMessage(): string {
@@ -35,7 +35,6 @@ export class HttpErrorResponseAlertComponent {
       return JSON.stringify(this.error);
     }
 
-    return this.errorMessages[this.error.status] ||
-      `Error ${this.error.status}`;
+    return this.errorMessages[this.error.status] || `Error ${this.error.status}`;
   }
 }

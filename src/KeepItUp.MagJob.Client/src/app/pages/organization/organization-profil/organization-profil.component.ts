@@ -12,11 +12,8 @@ import { OrganizationService } from '@features/services/organization.service';
 
 @Component({
   selector: 'app-organization-profil',
-  imports: [
-    ReactiveFormsModule,
-    ImageUploadModalComponent
-  ],
-  templateUrl: './organization-profil.component.html'
+  imports: [ReactiveFormsModule, ImageUploadModalComponent],
+  templateUrl: './organization-profil.component.html',
 })
 export class OrganizationProfilComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -43,7 +40,7 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
         this.organizationId = org.id.toString();
         this.organizationForm.patchValue({
           organizationName: org.name,
-          organizationDescription: org.description
+          organizationDescription: org.description,
         });
       }
     });
@@ -51,8 +48,7 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
 
   organizationId!: string;
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -63,14 +59,11 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
     if (this.organizationForm.valid) {
       const payload: UpdateOrganizationPayload = {
         name: this.organizationForm.get('organizationName')?.value || '',
-        description: this.organizationForm.get('organizationDescription')?.value || ''
+        description: this.organizationForm.get('organizationDescription')?.value || '',
       };
 
       this.isResponseModalOpen = true;
-      this.organizationService.updateOrganization(
-        this.organizationId,
-        payload
-      ).subscribe();
+      this.organizationService.updateOrganization(this.organizationId, payload).subscribe();
     }
   }
 
@@ -101,13 +94,10 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
     reader.onload = () => {
       const base64String = (reader.result as string).split(',')[1];
       const payload: UpdateOrganizationPayload = {
-        [imageType]: base64String
+        [imageType]: base64String,
       };
 
-      this.organizationService.updateOrganization(
-        this.organizationId,
-        payload
-      ).subscribe();
+      this.organizationService.updateOrganization(this.organizationId, payload).subscribe();
     };
 
     reader.readAsDataURL(file);

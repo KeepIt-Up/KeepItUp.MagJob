@@ -6,7 +6,7 @@ import { NotificationService } from '@shared/services/notification.service';
 @Component({
   selector: 'app-organization-creator',
   imports: [FormsModule],
-  templateUrl: './organization-creator.component.html'
+  templateUrl: './organization-creator.component.html',
 })
 export class OrganizationCreatorComponent {
   readonly organizationService = inject(OrganizationService);

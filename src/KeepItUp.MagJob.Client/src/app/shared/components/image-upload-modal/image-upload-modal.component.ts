@@ -5,7 +5,7 @@ import { ModalComponent } from '../modal/modal.component';
 @Component({
   selector: 'app-image-upload-modal',
   imports: [CommonModule, ModalComponent],
-  templateUrl: './image-upload-modal.component.html'
+  templateUrl: './image-upload-modal.component.html',
 })
 export class ImageUploadModalComponent {
   @Input() isOpen = false;
@@ -74,4 +74,4 @@ export class ImageUploadModalComponent {
       }
     }
   }
-} 
+}

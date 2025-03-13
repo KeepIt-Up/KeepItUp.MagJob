@@ -18,20 +18,22 @@ export interface PaginatedResponse<T extends { id: string }> {
   hasNextPage: boolean;
 }
 
-export function serializePaginationOptions<T extends { id: string }>(paginationOptions: PaginationOptions<T>): Record<string, any> {
+export function serializePaginationOptions<T extends { id: string }>(
+  paginationOptions: PaginationOptions<T>,
+): Record<string, any> {
   return {
     'options.pageNumber': paginationOptions.pageNumber,
     'options.pageSize': paginationOptions.pageSize,
     'options.sortField': paginationOptions.sortField,
-    'options.ascending': paginationOptions.ascending
-  }
+    'options.ascending': paginationOptions.ascending,
+  };
 }
 
 @Component({
   selector: 'app-pagination',
   imports: [CommonModule, FormsModule],
   templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss']
+  styleUrls: ['./pagination.component.scss'],
 })
 export class PaginationComponent<T extends { id: string }> implements OnInit {
   @Input() items: T[] = [];
@@ -50,11 +52,7 @@ export class PaginationComponent<T extends { id: string }> implements OnInit {
 
   ngOnInit(): void {
     this.pageSize = this.defaultPageSize;
-    this.pagesNumbers = this.getSequence(
-      this.currentPage,
-      this.totalPages,
-      this.buttonsCount
-    );
+    this.pagesNumbers = this.getSequence(this.currentPage, this.totalPages, this.buttonsCount);
   }
 
   get totalPages(): number {
@@ -71,11 +69,7 @@ export class PaginationComponent<T extends { id: string }> implements OnInit {
       this.currentPage = page;
       this.pageChange.emit(page);
     }
-    this.pagesNumbers = this.getSequence(
-      this.currentPage,
-      this.totalPages,
-      this.buttonsCount
-    );
+    this.pagesNumbers = this.getSequence(this.currentPage, this.totalPages, this.buttonsCount);
   }
 
   onPageSizeChange(newPageSize: number | string): void {
@@ -95,7 +89,10 @@ export class PaginationComponent<T extends { id: string }> implements OnInit {
    */
   private getSequence(current: number, max: number, length: number): number[] {
     const sequenceLength = Math.min(max, length);
-    const start = Math.max(1, Math.min(current - Math.floor(sequenceLength / 2), max - sequenceLength + 1));
+    const start = Math.max(
+      1,
+      Math.min(current - Math.floor(sequenceLength / 2), max - sequenceLength + 1),
+    );
     return Array.from({ length: sequenceLength }, (_, i) => start + i);
   }
 }

@@ -5,9 +5,9 @@ import { ModalComponent } from '@shared/components/modal/modal.component';
 import { Member } from '../../../models/member/member';
 
 @Component({
-    selector: 'app-edit-member-modal',
-    imports: [CommonModule, FormsModule, ModalComponent],
-    templateUrl: './edit-member-modal.component.html'
+  selector: 'app-edit-member-modal',
+  imports: [CommonModule, FormsModule, ModalComponent],
+  templateUrl: './edit-member-modal.component.html',
 })
 export class EditMemberModalComponent {
   @Input() isOpen = false;

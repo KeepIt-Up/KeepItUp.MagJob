@@ -1,14 +1,25 @@
 <div class="flex flex-row justify-between items-center mx-6">
-    <h2 class="text-3xl font-bold dark:text-white">Roles</h2>
-    <div class="flex flex-row items-baseline">
-        <button type="button" [routerLink]="['/organization', this.organizationId, 'roles', 'new']"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-            Add Role
-        </button>
-        <app-search-input class="hidden md:block" placeholder="Search roles..." [disabled]="true"></app-search-input>
-    </div>
+  <h2 class="text-3xl font-bold dark:text-white">Roles</h2>
+  <div class="flex flex-row items-baseline">
+    <button
+      type="button"
+      [routerLink]="['/organization', this.organizationId, 'roles', 'new']"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+    >
+      Add Role
+    </button>
+    <app-search-input
+      class="hidden md:block"
+      placeholder="Search roles..."
+      [disabled]="true"
+    ></app-search-input>
+  </div>
 </div>
 
-<app-table-with-pagination [columnsConfig]="columnsConfig" [endpointURL]="endpointURL" [queryParams]="queryParams"
-    [paginationOptions]="paginationOptions">
+<app-table-with-pagination
+  [columnsConfig]="columnsConfig"
+  [endpointURL]="endpointURL"
+  [queryParams]="queryParams"
+  [paginationOptions]="paginationOptions"
+>
 </app-table-with-pagination>

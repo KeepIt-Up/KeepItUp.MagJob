@@ -4,10 +4,9 @@ import { Invitation } from '@features/models/invitation/invitation';
 import { BaseApiService } from '@shared/services/base-api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InvitationApiService extends BaseApiService<Invitation> {
-
   override readonly apiUrl = '/api/invitations';
 
   acceptInvitation(invitationId: string): Observable<void> {

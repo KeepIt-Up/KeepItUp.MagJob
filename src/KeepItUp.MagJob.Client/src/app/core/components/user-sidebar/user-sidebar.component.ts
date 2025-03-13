@@ -6,7 +6,7 @@ import { UserService } from '../../../features/services/user.service';
 @Component({
   selector: 'app-user-sidebar',
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './user-sidebar.component.html'
+  templateUrl: './user-sidebar.component.html',
 })
 export class UserSidebarComponent {
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();

@@ -7,19 +7,16 @@ import { OAuthService, provideOAuthClient } from 'angular-oauth2-oidc';
 import { tokenInterceptor } from './app/core/interceptors/token.interceptor';
 import { initializeOAuth } from '@core/functions/initialize-oauth.function';
 
-
 //TODO: ADD comments with explanation
 export const appConfig: ApplicationConfig = {
-    providers: [
-        provideHttpClient(
-            withInterceptors([tokenInterceptor])
-        ),
-        provideRouter(routes, withComponentInputBinding()),
-        provideOAuthClient(),
-        provideAppInitializer(async () => {
-            const oauthService = inject(OAuthService);
-            await initializeOAuth(oauthService);
-        }),
-        provideAnimationsAsync('noop'),
-    ],
+  providers: [
+    provideHttpClient(withInterceptors([tokenInterceptor])),
+    provideRouter(routes, withComponentInputBinding()),
+    provideOAuthClient(),
+    provideAppInitializer(async () => {
+      const oauthService = inject(OAuthService);
+      await initializeOAuth(oauthService);
+    }),
+    provideAnimationsAsync('noop'),
+  ],
 };

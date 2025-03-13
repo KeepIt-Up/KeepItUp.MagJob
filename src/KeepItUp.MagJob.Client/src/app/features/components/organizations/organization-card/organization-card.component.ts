@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-organization-card',
   imports: [RouterLink],
-  templateUrl: './organization-card.component.html'
+  templateUrl: './organization-card.component.html',
 })
 export class OrganizationCardComponent {
   @Input() organization!: Organization;

@@ -12,8 +12,14 @@ import { MemberService } from '@features/services/member.service';
 
 @Component({
   selector: 'app-members-table',
-  imports: [HeaderComponent, TableWithPaginationComponent, SearchInputComponent, RouterLink, EditMemberModalComponent],
-  templateUrl: './member-table.component.html'
+  imports: [
+    HeaderComponent,
+    TableWithPaginationComponent,
+    SearchInputComponent,
+    RouterLink,
+    EditMemberModalComponent,
+  ],
+  templateUrl: './member-table.component.html',
 })
 export class MembersTableComponent {
   @Input() organizationId!: string;
@@ -26,46 +32,54 @@ export class MembersTableComponent {
   selectedMember?: Member;
 
   onGetData() {
-    this.memberService.getMembersByOrganizationId("0193eaf4-48a4-7723-9c4c-f3e6ec5cba4c").subscribe();
+    this.memberService
+      .getMembersByOrganizationId('0193eaf4-48a4-7723-9c4c-f3e6ec5cba4c')
+      .subscribe();
   }
 
   columnsConfig: ColumnDefinition<Member>[] = [
     {
-      title: "Name",
+      title: 'Name',
       modelProp: 'firstName',
-      computeValue: (row) => { return row.firstName + " " + row.lastName },
-      isSortable: true
+      computeValue: row => {
+        return row.firstName + ' ' + row.lastName;
+      },
+      isSortable: true,
     },
     {
-      title: "Is Still Member?",
+      title: 'Is Still Member?',
       modelProp: 'archived',
       isSortable: true,
-      computeValue: (row) => { return row.archived ? "" : "✅" }
+      computeValue: row => {
+        return row.archived ? '' : '✅';
+      },
     },
     {
-      title: "Role",
+      title: 'Role',
       modelProp: 'roles',
       isSortable: true,
-      computeValue: (row) => { return row.roles.map(role => role.name).join(", ") }
+      computeValue: row => {
+        return row.roles.map(role => role.name).join(', ');
+      },
     },
     {
-      title: "Actions",
+      title: 'Actions',
       modelProp: 'id',
       component: {
         type: MemberActionsComponent,
-        inputs: (row) => ({
+        inputs: row => ({
           memberId: row.id,
           onEditCallback: () => this.openEditModal(row),
           onDeleteCallback: () => {
             this.memberService.archiveMember(row.id).subscribe({
-              next: (res) => {
+              next: res => {
                 this.paginationOptions$().pageNumber = 1;
-              }
+              },
             });
-          }
+          },
         }),
-      }
-    }
+      },
+    },
   ];
 
   openEditModal(member: Member) {
@@ -85,7 +99,7 @@ export class MembersTableComponent {
           this.closeEditModal();
           // Refresh the table
           this.paginationOptions$().pageNumber = 1;
-        }
+        },
       });
     }
   }

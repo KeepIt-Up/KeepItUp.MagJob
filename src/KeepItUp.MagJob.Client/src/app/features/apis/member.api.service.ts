@@ -7,23 +7,32 @@ import { PaginatedResponse } from '@shared/components/pagination/pagination.comp
 import { serializePaginationOptions } from '@shared/components/pagination/pagination.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MemberApiService extends BaseApiService<Member> {
-
   override readonly apiUrl = '/api/members';
 
   archiveMember(memberId: string) {
     return this.http.put(`${this.apiUrl}/${memberId}/archive`, {});
   }
 
-  getMembers(query: Record<any, any>, paginationOptions: PaginationOptions<Member>): Observable<PaginatedResponse<Member>> {
+  getMembers(
+    query: Record<any, any>,
+    paginationOptions: PaginationOptions<Member>,
+  ): Observable<PaginatedResponse<Member>> {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Member>>(`/api/organizations/members`, { params: { ...query, ...options } });
+    return this.http.get<PaginatedResponse<Member>>(`/api/organizations/members`, {
+      params: { ...query, ...options },
+    });
   }
 
-  searchMembers(query: Record<any, any>, paginationOptions: PaginationOptions<Member>): Observable<PaginatedResponse<Member>> {
+  searchMembers(
+    query: Record<any, any>,
+    paginationOptions: PaginationOptions<Member>,
+  ): Observable<PaginatedResponse<Member>> {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Member>>(`/api/members/search`, { params: { ...query, ...options } });
+    return this.http.get<PaginatedResponse<Member>>(`/api/members/search`, {
+      params: { ...query, ...options },
+    });
   }
 }

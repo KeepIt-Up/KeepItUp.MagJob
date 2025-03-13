@@ -11,11 +11,16 @@ import { RouterLink } from '@angular/router';
 
 function getStatusVariant(status: number): 'yellow' | 'green' | 'red' | 'gray' {
   switch (status) {
-    case 0: return 'yellow';
-    case 1: return 'green';
-    case 2: return 'red';
-    case 3: return 'gray';
-    default: return 'gray';
+    case 0:
+      return 'yellow';
+    case 1:
+      return 'green';
+    case 2:
+      return 'red';
+    case 3:
+      return 'gray';
+    default:
+      return 'gray';
   }
 }
 
@@ -23,7 +28,7 @@ function getStatusVariant(status: number): 'yellow' | 'green' | 'red' | 'gray' {
   selector: 'app-invitation-table',
   imports: [TableWithPaginationComponent, SearchInputComponent, HeaderComponent, RouterLink],
   providers: [DatePipe],
-  templateUrl: './invitation-table.component.html'
+  templateUrl: './invitation-table.component.html',
 })
 export class InvitationTableComponent {
   private organizationService = inject(OrganizationService);
@@ -37,27 +42,27 @@ export class InvitationTableComponent {
 
   columnsConfig: ColumnDefinition<Invitation>[] = [
     {
-      title: "Name",
-      modelProp: 'userName'
+      title: 'Name',
+      modelProp: 'userName',
     },
     {
-      title: "Date of creation",
+      title: 'Date of creation',
       modelProp: 'createdAt',
       pipe: DatePipe,
       pipeArgs: ['dd/MM/yyyy HH:mm:ss'],
       isSortable: true,
     },
     {
-      title: "Status",
+      title: 'Status',
       modelProp: 'status',
       component: {
         type: TagComponent,
         inputs: (invitation: Invitation) => ({
           variant: getStatusVariant(invitation.status),
-          text: InvitationStatus[invitation.status]
-        })
+          text: InvitationStatus[invitation.status],
+        }),
       },
       isSortable: true,
-    }
+    },
   ];
 }

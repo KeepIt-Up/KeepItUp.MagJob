@@ -9,7 +9,7 @@ import { InvitationCardComponent } from '@features/components/invitations/invita
 @Component({
   selector: 'app-user-invitations',
   imports: [HeaderComponent, CommonModule, InfiniteListComponent, InvitationCardComponent],
-  templateUrl: './user-invitations.component.html'
+  templateUrl: './user-invitations.component.html',
 })
 export class UserInvitationsComponent {
   queryParams = computed(() => ({ userId: this.userState$().data?.id }));
@@ -32,5 +32,4 @@ export class UserInvitationsComponent {
   loadMore(): void {
     this.userService.getUserInvitations(this.queryParams()).subscribe();
   }
-
 }

@@ -4,13 +4,11 @@ import { catchError, EMPTY, Observable, tap } from 'rxjs';
 import { NotificationService } from '@shared/services/notification.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InvitationService {
-
   private apiService = inject(InvitationApiService);
   private notificationService = inject(NotificationService);
-
 
   acceptInvitation(invitationId: string): Observable<void> {
     return this.apiService.acceptInvitation(invitationId).pipe(
@@ -20,7 +18,7 @@ export class InvitationService {
       catchError(() => {
         this.notificationService.show('Error accepting invitation', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 
@@ -32,7 +30,7 @@ export class InvitationService {
       catchError(() => {
         this.notificationService.show('Error rejecting invitation', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 
@@ -44,7 +42,7 @@ export class InvitationService {
       catchError(() => {
         this.notificationService.show('Error cancelling invitation', 'error');
         return EMPTY;
-      })
+      }),
     );
   }
 }

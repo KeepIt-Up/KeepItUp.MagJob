@@ -3,17 +3,19 @@ import { UserApiService } from '../apis/user.api';
 import { StateService } from '@shared/services/state.service';
 import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { catchError, Observable, tap } from 'rxjs';
-import { PaginatedResponse, PaginationOptions } from '@shared/components/pagination/pagination.component';
+import {
+  PaginatedResponse,
+  PaginationOptions,
+} from '@shared/components/pagination/pagination.component';
 import { Organization } from '@features/models/organization/organization';
 import { Invitation } from '@features/models/invitation/invitation';
 import { ListStateService } from '@shared/services/list-state.service';
 import { User } from '@features/models/user/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   private userState = new StateService<User>();
   private invitationStateService = new ListStateService<Invitation, { endOfData: boolean }>();
   private organizationStateService = new ListStateService<Organization, { endOfData: boolean }>();
@@ -27,15 +29,15 @@ export class UserService {
   organizationsPaginationOptions$ = signal<PaginationOptions<Organization>>({
     pageNumber: 1,
     pageSize: 10,
-    sortField: "id",
-    ascending: true
+    sortField: 'id',
+    ascending: true,
   });
 
   invitationsPaginationOptions$ = signal<PaginationOptions<Invitation>>({
     pageNumber: 1,
     pageSize: 10,
-    sortField: "id",
-    ascending: true
+    sortField: 'id',
+    ascending: true,
   });
 
   getUserOrganizations(query: Record<any, any>): Observable<PaginatedResponse<Organization>> {
@@ -48,10 +50,10 @@ export class UserService {
           this.organizationStateService.setError(new Error('You have no organizations'));
         }
       }),
-      catchError((error) => {
+      catchError(error => {
         this.organizationStateService.setError(error);
         throw error;
-      })
+      }),
     );
   }
 
@@ -65,11 +67,10 @@ export class UserService {
           this.invitationStateService.setError(new Error('You have no invitations'));
         }
       }),
-      catchError((error) => {
+      catchError(error => {
         this.invitationStateService.setError(error);
         throw error;
-      })
+      }),
     );
   }
-
 }

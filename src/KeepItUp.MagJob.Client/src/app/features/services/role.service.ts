@@ -2,7 +2,10 @@ import { query } from '@angular/animations';
 import { inject, Injectable, signal } from '@angular/core';
 import { RoleApiService } from '@features/apis/role.api.service';
 import { Permission, Role } from '@features/models/role/role';
-import { PaginatedResponse, PaginationOptions } from '@shared/components/pagination/pagination.component';
+import {
+  PaginatedResponse,
+  PaginationOptions,
+} from '@shared/components/pagination/pagination.component';
 import { NotificationService } from '@shared/services/notification.service';
 import { StateService } from '@shared/services/state.service';
 import { catchError, tap, throwError } from 'rxjs';
@@ -10,7 +13,7 @@ import { PermissionService } from './permission.service';
 import { ListStateService } from '@shared/services/list-state.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoleService {
   private readonly apiService = inject(RoleApiService);
@@ -24,10 +27,9 @@ export class RoleService {
   paginationOptions$ = signal<PaginationOptions<Role>>({
     pageNumber: 1,
     pageSize: 10,
-    sortField: "id",
-    ascending: true
+    sortField: 'id',
+    ascending: true,
   });
-
 
   selectedRole$ = signal<Role | undefined>(undefined);
   selectRole(role: Role) {
@@ -38,39 +40,39 @@ export class RoleService {
     const query = { id: organizationId };
     return this.apiService.getAllRoles(query, this.paginationOptions$()).pipe(
       tap((response: PaginatedResponse<Role>) => {
-        response.items.forEach((role) => this.roleStateService.add(role));
+        response.items.forEach(role => this.roleStateService.add(role));
         this.roleStateService.setMetadata({ endOfData: !response.hasNextPage });
       }),
-      catchError((error) => {
+      catchError(error => {
         this.roleStateService.setError(error);
         throw error;
-      })
+      }),
     );
   }
 
   createRole(organizationId: string, name: string) {
     return this.apiService.create({ organizationId: organizationId, name: name }).pipe(
-      tap((createdRole) => {
-        this.roleStateService.setData([...this.roles$().data ?? [], createdRole]);
+      tap(createdRole => {
+        this.roleStateService.setData([...(this.roles$().data ?? []), createdRole]);
       }),
-      catchError((error) => {
+      catchError(error => {
         this.roleStateService.setError(error);
         this.notificationService.show('Failed to create role', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 
   updateRole(roleId: string, role: Partial<Role>) {
     return this.apiService.update(roleId, role).pipe(
-      tap((updatedRole) => {
+      tap(updatedRole => {
         this.roleStateService.update(updatedRole);
         this.notificationService.show('Role updated successfully', 'success');
       }),
-      catchError((error) => {
+      catchError(error => {
         this.notificationService.show('Failed to update role', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -81,10 +83,10 @@ export class RoleService {
         this.selectedRole$.set(undefined);
         this.notificationService.show('Role deleted successfully', 'success');
       }),
-      catchError((error) => {
+      catchError(error => {
         this.notificationService.show('Failed to delete role', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -93,10 +95,10 @@ export class RoleService {
       tap(() => {
         this.notificationService.show('Permissions updated successfully', 'success');
       }),
-      catchError((error) => {
+      catchError(error => {
         this.notificationService.show('Failed to update permissions', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -105,10 +107,10 @@ export class RoleService {
       tap(() => {
         this.notificationService.show('Members assigned successfully', 'success');
       }),
-      catchError((error) => {
+      catchError(error => {
         this.notificationService.show('Failed to assign members', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -117,10 +119,10 @@ export class RoleService {
       tap(() => {
         this.notificationService.show('Members removed successfully', 'success');
       }),
-      catchError((error) => {
+      catchError(error => {
         this.notificationService.show('Failed to remove members', 'error');
         return throwError(() => error);
-      })
+      }),
     );
   }
 }

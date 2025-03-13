@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Organization } from '@features/models/organization/organization';
-import { PaginatedResponse, PaginationOptions, serializePaginationOptions } from '@shared/components/pagination/pagination.component';
+import {
+  PaginatedResponse,
+  PaginationOptions,
+  serializePaginationOptions,
+} from '@shared/components/pagination/pagination.component';
 import { Invitation } from '@features/models/invitation/invitation';
 import { BaseApiService } from '@shared/services/base-api.service';
 
@@ -23,14 +27,18 @@ export interface UpdateOrganizationPayload {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrganizationApiService extends BaseApiService<Organization> {
-
   override readonly apiUrl = '/api/organizations';
 
-  getInvitations(query: Record<any, any>, paginationOptions: PaginationOptions<Invitation>): Observable<PaginatedResponse<Invitation>> {
+  getInvitations(
+    query: Record<any, any>,
+    paginationOptions: PaginationOptions<Invitation>,
+  ): Observable<PaginatedResponse<Invitation>> {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Invitation>>(`${this.apiUrl}/invitations`, { params: { ...query, ...options } });
+    return this.http.get<PaginatedResponse<Invitation>>(`${this.apiUrl}/invitations`, {
+      params: { ...query, ...options },
+    });
   }
 }

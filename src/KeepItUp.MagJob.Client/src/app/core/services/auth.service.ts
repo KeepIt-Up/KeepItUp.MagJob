@@ -4,16 +4,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private userProfileSubject = new BehaviorSubject<any>(null);
   private router = inject(Router);
 
-  constructor(
-    private oauthService: OAuthService
-  ) {
+  constructor(private oauthService: OAuthService) {
     this.setupEventHandlers();
   }
 
@@ -137,6 +135,5 @@ export class AuthService {
     if (claims) {
       this.userProfileSubject.next(claims);
     }
-
   }
 }
