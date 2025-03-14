@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 68, 187, 164; /* #44bba4 */
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-200;
+  }
+}
+
 @layer components {
   .mg-btn {
     @apply flex flex-row justify-center items-center;
@@ -46,13 +56,27 @@
 
   .mg-btn-outline {
     border-width: 1px;
-    background: none;
-    @apply border border-gray-600 text-black hover:bg-gray-100;
+    @apply border border-gray-600 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200;
   }
 
   .mg-btn-primary {
-    background: #44bba4;
-    @apply text-white hover:bg-emerald-500 fill-white;
+    @apply bg-primary text-white hover:bg-primary-500 fill-white transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow transition-colors duration-200;
+  }
+
+  .card-header {
+    @apply p-4 border-b border-gray-200 dark:border-gray-700 transition-colors duration-200;
+  }
+
+  .card-body {
+    @apply p-4;
+  }
+
+  .card-footer {
+    @apply p-4 border-t border-gray-200 dark:border-gray-700 transition-colors duration-200;
   }
 }
 

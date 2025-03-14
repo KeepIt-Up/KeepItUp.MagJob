@@ -1,14 +1,33 @@
 <nav
-  class="bg-white border-b dark:border-gray-700 border-gray-200 dark:bg-gray-900 flex items-center"
+  class="bg-white border-b dark:border-gray-700 border-gray-200 dark:bg-gray-900 flex items-center transition-colors duration-200"
 >
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2 h-14 w-full">
-    <a class="flex items-center ml-8">
-      <span class="text-2xl font-semibold dark:text-white">MagJob</span>
+    <a [routerLink]="['/landing']" class="flex items-center ml-8">
+      <span
+        class="text-2xl font-semibold text-gray-900 dark:text-white transition-colors duration-200"
+        >MagJob</span
+      >
     </a>
+
+    <!-- Navigation Links -->
+    <div class="hidden md:flex items-center space-x-4 mx-4">
+      <!-- Links for authenticated users only -->
+      @if (user) {
+        <a
+          [routerLink]="['/user/organizations']"
+          class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+        >
+          My Organizations
+        </a>
+      }
+    </div>
+
     <div class="flex items-center gap-2">
+      <!-- Dark Mode Toggle (Desktop) -->
       <button
         (click)="toggleDarkMode()"
-        class="hidden md:block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700"
+        class="hidden md:block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-colors duration-200"
+        aria-label="Toggle dark mode"
       >
         <!-- Sun icon for dark mode -->
         <svg
@@ -41,90 +60,122 @@
           />
         </svg>
       </button>
-      <div class="relative hidden md:block">
+
+      <!-- Login Button for Unauthenticated Users -->
+      @if (!user) {
         <button
-          type="button"
-          class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-          (click)="toggleDropdown($event)"
+          (click)="login()"
+          class="px-4 py-2 bg-primary hover:bg-primary-500 text-white font-medium rounded-lg transition-colors duration-200"
         >
-          <span class="sr-only">Open user menu</span>
-          <img
-            class="w-7 h-7 rounded-full"
-            src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
-            alt="user photo"
-          />
+          Sign In
         </button>
-        <app-dropdown [isOpen]="isDropdownOpen" (appClickOutside)="closeDropdown()">
-          <div class="py-3 px-4">
-            <span class="block text-sm text-gray-900 dark:text-white"
-              >{{ user?.given_name }} {{ user?.family_name }}</span
-            >
-            <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{
-              user?.email
-            }}</span>
-          </div>
-          <ul class="py-1" aria-labelledby="user-menu-button">
-            <li>
-              <button
-                [routerLink]="['/user/profile']"
-                (click)="closeDropdown()"
-                class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
+      }
+
+      <!-- User Profile Dropdown for Authenticated Users -->
+      @if (user) {
+        <div class="relative hidden md:block">
+          <button
+            type="button"
+            class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors duration-200"
+            (click)="toggleDropdown($event)"
+          >
+            <span class="sr-only">Open user menu</span>
+            <img
+              class="w-7 h-7 rounded-full"
+              src="https://flowbite.com/docs/images/people/profile-picture-3.jpg"
+              alt="user photo"
+            />
+          </button>
+          <app-dropdown [isOpen]="isDropdownOpen" (appClickOutside)="closeDropdown()">
+            <div class="py-3 px-4">
+              <span
+                class="block text-sm text-gray-900 dark:text-white transition-colors duration-200"
+                >{{ user?.given_name }} {{ user?.family_name }}</span
               >
-                Profile
-              </button>
-            </li>
-            <li>
-              <button
-                [routerLink]="['/user/profile/settings']"
-                (click)="closeDropdown()"
-                class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
+              <span
+                class="block text-sm text-gray-500 truncate dark:text-gray-400 transition-colors duration-200"
+                >{{ user?.email }}</span
               >
-                Settings
-              </button>
-            </li>
-            <li>
-              <button
-                (click)="logout(); closeDropdown()"
-                class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
-              >
-                Sign out
-              </button>
-            </li>
-          </ul>
-        </app-dropdown>
-      </div>
+            </div>
+            <ul class="py-1" aria-labelledby="user-menu-button">
+              <li>
+                <button
+                  [routerLink]="['/user/profile']"
+                  (click)="closeDropdown()"
+                  class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 transition-colors duration-200"
+                >
+                  Profile
+                </button>
+              </li>
+              <li>
+                <button
+                  [routerLink]="['/user/profile/settings']"
+                  (click)="closeDropdown()"
+                  class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 transition-colors duration-200"
+                >
+                  Settings
+                </button>
+              </li>
+              <li>
+                <button
+                  (click)="logout(); closeDropdown()"
+                  class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 transition-colors duration-200"
+                >
+                  Sign out
+                </button>
+              </li>
+            </ul>
+          </app-dropdown>
+        </div>
+      }
     </div>
+
+    <!-- Mobile Menu Controls -->
     <div class="md:hidden flex items-center gap-2">
+      <!-- Dark Mode Toggle (Mobile) -->
       <button
-        type="button"
-        data-collapse-toggle="navbar-search"
-        aria-controls="navbar-search"
-        aria-expanded="false"
-        class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2"
+        (click)="toggleDarkMode()"
+        class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-colors duration-200"
+        aria-label="Toggle dark mode"
       >
+        <!-- Sun icon for dark mode -->
         <svg
-          class="w-5 h-5"
-          aria-hidden="true"
+          class="w-5 h-5 text-gray-800 dark:hidden"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
-          viewBox="0 0 20 20"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
           <path
-            stroke="currentColor"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
-        <span class="sr-only">Search</span>
+        <!-- Moon icon for light mode -->
+        <svg
+          class="w-5 h-5 text-white hidden dark:block"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
       </button>
+
+      <!-- Mobile Menu Button -->
       <button
-        data-collapse-toggle="navbar-search"
         type="button"
-        class="inline-flex items-center p-1.5 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-        aria-controls="navbar-search"
-        aria-expanded="false"
+        (click)="toggleMobileMenu()"
+        class="inline-flex items-center p-1.5 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 transition-colors duration-200"
+        aria-label="Toggle mobile menu"
       >
         <span class="sr-only">Open main menu</span>
         <svg
@@ -145,4 +196,53 @@
       </button>
     </div>
   </div>
+
+  <!-- Mobile Menu -->
+  @if (isMobileMenuOpen) {
+    <div
+      class="md:hidden absolute top-14 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 z-50 transition-colors duration-200"
+    >
+      <div class="px-4 py-3 space-y-2">
+        <!-- Mobile links for authenticated users only -->
+        @if (user) {
+          <a
+            [routerLink]="['/user/organizations']"
+            class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+          >
+            My Organizations
+          </a>
+
+          <div class="border-t border-gray-200 dark:border-gray-700 my-2 pt-2">
+            <a
+              [routerLink]="['/user/profile']"
+              class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+            >
+              Profile
+            </a>
+            <a
+              [routerLink]="['/user/profile/settings']"
+              class="block px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+            >
+              Settings
+            </a>
+            <button
+              (click)="logout()"
+              class="w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+            >
+              Sign out
+            </button>
+          </div>
+        } @else {
+          <div class="border-t border-gray-200 dark:border-gray-700 my-2 pt-2">
+            <button
+              (click)="login()"
+              class="w-full text-left px-3 py-2 text-primary font-medium transition-colors duration-200"
+            >
+              Sign In
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </nav>
