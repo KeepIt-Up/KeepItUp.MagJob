@@ -1,0 +1,1482 @@
+2025-03-14 01:07:11.687 +01:00 [INF] Registered 30 endpoints in 689 milliseconds.
+2025-03-14 01:07:12.954 +01:00 [INF] Executed DbCommand (42ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE WHEN COUNT(*) = 0 THEN FALSE ELSE TRUE END
+FROM pg_class AS cls
+JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+WHERE
+        cls.relkind IN ('r', 'v', 'm', 'f', 'p') AND
+        ns.nspname NOT IN ('pg_catalog', 'information_schema') AND
+        -- Exclude tables which are members of PG extensions
+        NOT EXISTS (
+            SELECT 1 FROM pg_depend WHERE
+                classid=(
+                    SELECT cls.oid
+                    FROM pg_class AS cls
+                             JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+                    WHERE relname='pg_class' AND ns.nspname='pg_catalog'
+                ) AND
+                objid=cls.oid AND
+                deptype IN ('e', 'x')
+        )
+2025-03-14 01:07:13.161 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM identity."Contributors" AS c)
+2025-03-14 01:07:13.312 +01:00 [INF] User profile is available. Using 'C:\Users\Damia\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-03-14 01:07:13.327 +01:00 [INF] Keycloak Event Listener uruchomiony
+2025-03-14 01:07:13.348 +01:00 [INF] Start processing HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 01:07:13.352 +01:00 [INF] Sending HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 01:07:13.436 +01:00 [INF] Received HTTP response headers after 76.2444ms - 200
+2025-03-14 01:07:13.442 +01:00 [INF] End processing HTTP request after 97.4281ms - 200
+2025-03-14 01:07:13.496 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:07:13.497 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:07:13.527 +01:00 [INF] Received HTTP response headers after 28.7545ms - 200
+2025-03-14 01:07:13.528 +01:00 [INF] End processing HTTP request after 31.6143ms - 200
+2025-03-14 01:07:13.549 +01:00 [INF] Pobrano 2 zdarzeń z Keycloak
+2025-03-14 01:07:13.577 +01:00 [INF] Now listening on: https://localhost:57679
+2025-03-14 01:07:13.585 +01:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-03-14 01:07:13.629 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-14 01:07:13.630 +01:00 [INF] Hosting environment: Development
+2025-03-14 01:07:13.630 +01:00 [INF] Content root path: C:\Users\Damia\Desktop\MagJob2.0\src\KeepItUp.MagJob.Identity\src\KeepItUp.MagJob.Identity.Web
+2025-03-14 01:07:13.671 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:13.675 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:14.046 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger - null null
+2025-03-14 01:07:14.199 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger - 302 0 null 157.9329ms
+2025-03-14 01:07:14.206 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/index.html - null null
+2025-03-14 01:07:14.242 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/index.html - 200 null text/html; charset=utf-8 35.7966ms
+2025-03-14 01:07:14.285 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:14.295 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:14.296 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 10.9998ms
+2025-03-14 01:07:14.333 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 37.8984ms
+2025-03-14 01:07:14.377 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - null null
+2025-03-14 01:07:14.534 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 156.6411ms
+2025-03-14 01:07:19.539 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjE5IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=ff977143-7d44-4ad1-8e01-8d46148720df.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - null null
+2025-03-14 01:07:19.551 +01:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-03-14 01:07:19.553 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjE5IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=ff977143-7d44-4ad1-8e01-8d46148720df.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - 200 null text/html 13.6586ms
+2025-03-14 01:07:19.599 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:19.606 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:19.609 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 3.4514ms
+2025-03-14 01:07:19.614 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 15.5423ms
+2025-03-14 01:07:21.884 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjIxIEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=e12f52dd-4cad-4c36-9d87-eb2726defb2b.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - null null
+2025-03-14 01:07:21.889 +01:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-03-14 01:07:21.890 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjIxIEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=e12f52dd-4cad-4c36-9d87-eb2726defb2b.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - 200 null text/html 5.9413ms
+2025-03-14 01:07:21.947 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:21.947 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:21.952 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 4.723ms
+2025-03-14 01:07:21.957 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.8259ms
+2025-03-14 01:07:29.073 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjI4IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=f087d558-253c-4703-97dd-4452194ce5b9.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - null null
+2025-03-14 01:07:29.077 +01:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-03-14 01:07:29.079 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjI4IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=f087d558-253c-4703-97dd-4452194ce5b9.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - 200 null text/html 5.9245ms
+2025-03-14 01:07:29.133 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:29.135 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:29.139 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 3.9512ms
+2025-03-14 01:07:29.141 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 7.7028ms
+2025-03-14 01:07:30.887 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjMwIEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=873d7339-52e6-413a-bb9d-a9c8035c55fb.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - null null
+2025-03-14 01:07:30.891 +01:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-03-14 01:07:30.892 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjMwIEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=1d12adc2-4dca-496a-b859-e7e4e335cf9f&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=873d7339-52e6-413a-bb9d-a9c8035c55fb.1d12adc2-4dca-496a-b859-e7e4e335cf9f.24e9914b-1f09-479a-838a-5009f3272149 - 200 null text/html 5.3596ms
+2025-03-14 01:07:30.965 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:30.994 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:30.996 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 31.6506ms
+2025-03-14 01:07:30.996 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 2.6325ms
+2025-03-14 01:07:41.457 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger - null null
+2025-03-14 01:07:41.461 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger - 302 0 null 4.0175ms
+2025-03-14 01:07:41.464 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/index.html - null null
+2025-03-14 01:07:41.468 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/index.html - 200 null text/html; charset=utf-8 4.6927ms
+2025-03-14 01:07:41.487 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/swagger-ui.css - null null
+2025-03-14 01:07:41.487 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/swagger-ui-bundle.js - null null
+2025-03-14 01:07:41.487 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:41.487 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/swagger-ui-standalone-preset.js - null null
+2025-03-14 01:07:41.501 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 13.7496ms
+2025-03-14 01:07:41.487 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/index.css - null null
+2025-03-14 01:07:41.508 +01:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-03-14 01:07:41.508 +01:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-03-14 01:07:41.511 +01:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2025-03-14 01:07:41.512 +01:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-03-14 01:07:41.513 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/swagger-ui-standalone-preset.js - 200 230294 text/javascript 25.4022ms
+2025-03-14 01:07:41.513 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/swagger-ui.css - 200 152073 text/css 25.9192ms
+2025-03-14 01:07:41.514 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/index.css - 200 218 text/css 26.8984ms
+2025-03-14 01:07:41.515 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/swagger-ui-bundle.js - 200 1452754 text/javascript 27.9405ms
+2025-03-14 01:07:41.525 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:41.533 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 8.155ms
+2025-03-14 01:07:41.665 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - null null
+2025-03-14 01:07:41.668 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 2.9066ms
+2025-03-14 01:07:41.681 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/favicon-32x32.png - null null
+2025-03-14 01:07:41.683 +01:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-03-14 01:07:41.685 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/favicon-32x32.png - 200 628 image/png 3.6451ms
+2025-03-14 01:07:43.677 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:07:43.678 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:07:43.686 +01:00 [INF] Received HTTP response headers after 7.5839ms - 200
+2025-03-14 01:07:43.688 +01:00 [INF] End processing HTTP request after 10.895ms - 200
+2025-03-14 01:07:43.689 +01:00 [INF] Pobrano 10 zdarzeń z Keycloak
+2025-03-14 01:07:43.736 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:43.738 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:43.743 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:43.745 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:43.748 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:43.750 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:43.752 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:43.754 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:43.756 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:07:43.758 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:07:56.985 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjQ5IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=4b5457ef-e8dc-4642-937f-36502159ba40&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=6f66af6e-0c0b-4c4d-b37c-479319437ca0.4b5457ef-e8dc-4642-937f-36502159ba40.24e9914b-1f09-479a-838a-5009f3272149 - null null
+2025-03-14 01:07:56.989 +01:00 [INF] Sending file. Request path: '/oauth2-redirect.html'. Physical path: 'N/A'
+2025-03-14 01:07:56.991 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/oauth2-redirect.html?state=RnJpIE1hciAxNCAyMDI1IDAxOjA3OjQ5IEdNVCswMTAwIChjemFzIMWbcm9ka293b2V1cm9wZWpza2kgc3RhbmRhcmRvd3kp&session_state=4b5457ef-e8dc-4642-937f-36502159ba40&iss=http%3A%2F%2Flocalhost%3A18080%2Frealms%2Fmagjob-realm&code=6f66af6e-0c0b-4c4d-b37c-479319437ca0.4b5457ef-e8dc-4642-937f-36502159ba40.24e9914b-1f09-479a-838a-5009f3272149 - 200 null text/html 5.5035ms
+2025-03-14 01:07:57.014 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 01:07:57.014 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 01:07:57.018 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 3.796ms
+2025-03-14 01:07:57.019 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 5.1613ms
+2025-03-14 01:08:06.189 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/Users/1/Organizations - null null
+2025-03-14 01:08:06.339 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/Users/1/Organizations - 404 0 null 149.8779ms
+2025-03-14 01:08:06.342 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:57679/Users/1/Organizations, Response status code: 404
+2025-03-14 01:08:13.759 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:08:13.761 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 01:08:13.770 +01:00 [INF] Received HTTP response headers after 8.9341ms - 200
+2025-03-14 01:08:13.772 +01:00 [INF] End processing HTTP request after 12.468ms - 200
+2025-03-14 01:08:13.773 +01:00 [INF] Pobrano 12 zdarzeń z Keycloak
+2025-03-14 01:08:13.777 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.779 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:08:13.782 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.784 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:08:13.787 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.789 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:08:13.793 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.795 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:08:13.798 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.800 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 01:08:13.803 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 01:08:13.805 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:30.994 +01:00 [INF] Registered 30 endpoints in 4 307 milliseconds.
+2025-03-14 18:21:33.638 +01:00 [INF] Executed DbCommand (89ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE WHEN COUNT(*) = 0 THEN FALSE ELSE TRUE END
+FROM pg_class AS cls
+JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+WHERE
+        cls.relkind IN ('r', 'v', 'm', 'f', 'p') AND
+        ns.nspname NOT IN ('pg_catalog', 'information_schema') AND
+        -- Exclude tables which are members of PG extensions
+        NOT EXISTS (
+            SELECT 1 FROM pg_depend WHERE
+                classid=(
+                    SELECT cls.oid
+                    FROM pg_class AS cls
+                             JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+                    WHERE relname='pg_class' AND ns.nspname='pg_catalog'
+                ) AND
+                objid=cls.oid AND
+                deptype IN ('e', 'x')
+        )
+2025-03-14 18:21:33.997 +01:00 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM identity."Contributors" AS c)
+2025-03-14 18:21:34.597 +01:00 [INF] User profile is available. Using 'C:\Users\Damia\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-03-14 18:21:34.626 +01:00 [INF] Keycloak Event Listener uruchomiony
+2025-03-14 18:21:34.690 +01:00 [INF] Start processing HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:21:34.701 +01:00 [INF] Sending HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:21:35.207 +01:00 [INF] Now listening on: https://localhost:57679
+2025-03-14 18:21:35.218 +01:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-03-14 18:21:35.353 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-03-14 18:21:35.359 +01:00 [INF] Hosting environment: Development
+2025-03-14 18:21:35.360 +01:00 [INF] Content root path: C:\Users\Damia\Desktop\MagJob2.0\src\KeepItUp.MagJob.Identity\src\KeepItUp.MagJob.Identity.Web
+2025-03-14 18:21:37.740 +01:00 [INF] Received HTTP response headers after 3032.8095ms - 200
+2025-03-14 18:21:37.748 +01:00 [INF] End processing HTTP request after 3066.4459ms - 200
+2025-03-14 18:21:37.811 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:21:37.816 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:21:38.152 +01:00 [INF] Received HTTP response headers after 325.1122ms - 200
+2025-03-14 18:21:38.170 +01:00 [INF] End processing HTTP request after 359.0205ms - 200
+2025-03-14 18:21:38.195 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:21:38.244 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger - null null
+2025-03-14 18:21:38.579 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.588 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.588 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger - 302 0 null 353.567ms
+2025-03-14 18:21:38.597 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/index.html - null null
+2025-03-14 18:21:38.648 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/index.html - 200 null text/html; charset=utf-8 51.6646ms
+2025-03-14 18:21:38.684 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.688 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.704 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.708 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.713 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.717 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.722 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.727 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.740 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:21:38.816 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:21:38.868 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2025-03-14 18:21:38.869 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/_vs/browserLink - null null
+2025-03-14 18:21:38.887 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 16541 application/javascript; charset=utf-8 19.0973ms
+2025-03-14 18:21:38.973 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 104.2886ms
+2025-03-14 18:21:39.047 +01:00 [INF] Request starting HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - null null
+2025-03-14 18:21:39.359 +01:00 [INF] Request finished HTTP/2 GET https://localhost:57679/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 312.02ms
+2025-03-14 18:22:08.821 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:22:08.823 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:22:08.854 +01:00 [INF] Received HTTP response headers after 29.6469ms - 200
+2025-03-14 18:22:08.855 +01:00 [INF] End processing HTTP request after 33.9901ms - 200
+2025-03-14 18:22:08.856 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:22:08.868 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.870 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:08.875 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.877 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:08.881 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.883 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:08.887 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.889 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:08.894 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.896 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:08.899 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:08.900 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:38.902 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:22:38.904 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:22:38.929 +01:00 [INF] Received HTTP response headers after 24.2003ms - 200
+2025-03-14 18:22:38.930 +01:00 [INF] End processing HTTP request after 27.7852ms - 200
+2025-03-14 18:22:38.931 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:22:38.982 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:38.984 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:38.987 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:38.989 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:38.993 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:38.995 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:38.997 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:39.000 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:39.003 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:39.005 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:22:39.008 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:22:39.010 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.011 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:23:09.013 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:23:09.030 +01:00 [INF] Received HTTP response headers after 15.7133ms - 200
+2025-03-14 18:23:09.031 +01:00 [INF] End processing HTTP request after 19.7038ms - 200
+2025-03-14 18:23:09.032 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:23:09.035 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.036 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.039 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.041 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.043 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.045 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.047 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.049 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.051 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.052 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:09.054 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:09.056 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.057 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:23:39.058 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:23:39.118 +01:00 [INF] Received HTTP response headers after 59.5417ms - 200
+2025-03-14 18:23:39.120 +01:00 [INF] End processing HTTP request after 62.843ms - 200
+2025-03-14 18:23:39.121 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:23:39.124 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.126 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.128 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.130 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.133 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.135 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.138 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.140 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.143 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.145 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:23:39.149 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:23:39.152 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.153 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:24:09.154 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:24:09.171 +01:00 [INF] Received HTTP response headers after 16.1422ms - 200
+2025-03-14 18:24:09.172 +01:00 [INF] End processing HTTP request after 19.399ms - 200
+2025-03-14 18:24:09.173 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:24:09.198 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.201 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.204 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.205 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.207 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.209 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.210 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.212 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.214 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.216 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:09.219 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:09.220 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.221 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:24:39.223 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:24:39.245 +01:00 [INF] Received HTTP response headers after 21.5466ms - 200
+2025-03-14 18:24:39.247 +01:00 [INF] End processing HTTP request after 25.862ms - 200
+2025-03-14 18:24:39.250 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:24:39.253 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.256 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.261 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.263 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.264 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.266 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.268 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.270 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.272 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.274 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:24:39.276 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:24:39.278 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.279 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:25:09.280 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:25:09.294 +01:00 [INF] Received HTTP response headers after 13.7939ms - 200
+2025-03-14 18:25:09.295 +01:00 [INF] End processing HTTP request after 16.6938ms - 200
+2025-03-14 18:25:09.296 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:25:09.298 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.304 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.307 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.309 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.310 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.312 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.314 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.317 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.321 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.323 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:09.325 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:09.326 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.328 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:25:39.330 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:25:39.394 +01:00 [INF] Received HTTP response headers after 62.9324ms - 200
+2025-03-14 18:25:39.395 +01:00 [INF] End processing HTTP request after 66.3254ms - 200
+2025-03-14 18:25:39.396 +01:00 [INF] Pobrano 13 zdarzeń z Keycloak
+2025-03-14 18:25:39.398 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.400 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.403 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.404 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.406 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.408 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.410 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.412 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.414 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.416 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:25:39.418 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:25:39.419 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.421 +01:00 [INF] Start processing HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:26:09.422 +01:00 [INF] Sending HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:26:09.466 +01:00 [INF] Received HTTP response headers after 43.0217ms - 200
+2025-03-14 18:26:09.467 +01:00 [INF] End processing HTTP request after 46.1955ms - 200
+2025-03-14 18:26:09.468 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:26:09.469 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:26:09.496 +01:00 [INF] Received HTTP response headers after 25.6837ms - 200
+2025-03-14 18:26:09.497 +01:00 [INF] End processing HTTP request after 28.4853ms - 200
+2025-03-14 18:26:09.498 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:26:09.501 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.503 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.505 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.506 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.509 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.511 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.512 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.514 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.516 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.518 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:09.520 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:09.523 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.524 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:26:39.525 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:26:39.546 +01:00 [INF] Received HTTP response headers after 19.1838ms - 200
+2025-03-14 18:26:39.547 +01:00 [INF] End processing HTTP request after 22.9104ms - 200
+2025-03-14 18:26:39.548 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:26:39.614 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.616 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.618 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.620 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.623 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.625 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.627 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.629 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.631 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.633 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:26:39.637 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:26:39.639 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.641 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:27:09.642 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:27:09.663 +01:00 [INF] Received HTTP response headers after 19.6337ms - 200
+2025-03-14 18:27:09.664 +01:00 [INF] End processing HTTP request after 22.9074ms - 200
+2025-03-14 18:27:09.665 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:27:09.667 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.669 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.670 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.672 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.675 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.676 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.678 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.680 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.682 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.683 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:09.685 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:09.686 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.688 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:27:39.689 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:27:39.752 +01:00 [INF] Received HTTP response headers after 62.027ms - 200
+2025-03-14 18:27:39.753 +01:00 [INF] End processing HTTP request after 65.5206ms - 200
+2025-03-14 18:27:39.755 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:27:39.758 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.759 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.764 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.766 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.768 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.770 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.772 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.774 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.778 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.781 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:27:39.783 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:27:39.785 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.787 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:28:09.788 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:28:09.808 +01:00 [INF] Received HTTP response headers after 18.3238ms - 200
+2025-03-14 18:28:09.808 +01:00 [INF] End processing HTTP request after 21.8013ms - 200
+2025-03-14 18:28:09.809 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:28:09.812 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.814 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.816 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.818 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.819 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.821 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.823 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.824 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.827 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.829 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:09.830 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:09.832 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.833 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:28:39.834 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:28:39.857 +01:00 [INF] Received HTTP response headers after 22.4488ms - 200
+2025-03-14 18:28:39.858 +01:00 [INF] End processing HTTP request after 25.5485ms - 200
+2025-03-14 18:28:39.859 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:28:39.861 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.863 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.865 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.867 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.869 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.871 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.873 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.875 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.877 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.880 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:28:39.881 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:28:39.884 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.885 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:29:09.886 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:29:09.902 +01:00 [INF] Received HTTP response headers after 15.2345ms - 200
+2025-03-14 18:29:09.904 +01:00 [INF] End processing HTTP request after 18.9787ms - 200
+2025-03-14 18:29:09.905 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:29:09.906 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.913 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.915 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.917 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.919 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.920 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.922 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.923 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.925 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.927 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:09.929 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:09.932 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:39.932 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:29:39.933 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:29:39.976 +01:00 [INF] Received HTTP response headers after 42.1183ms - 200
+2025-03-14 18:29:39.977 +01:00 [INF] End processing HTTP request after 45.0875ms - 200
+2025-03-14 18:29:39.978 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:29:39.981 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:39.983 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:39.985 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:39.987 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:39.989 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:39.991 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:39.993 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:39.995 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:39.997 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:39.999 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:29:40.000 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:29:40.002 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.003 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:30:10.004 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:30:10.019 +01:00 [INF] Received HTTP response headers after 14.6053ms - 200
+2025-03-14 18:30:10.020 +01:00 [INF] End processing HTTP request after 17.6776ms - 200
+2025-03-14 18:30:10.021 +01:00 [INF] Pobrano 14 zdarzeń z Keycloak
+2025-03-14 18:30:10.024 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.025 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.027 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.029 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.031 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.033 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.035 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.037 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.039 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.041 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:10.043 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:10.045 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.044 +01:00 [INF] Start processing HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:30:40.046 +01:00 [INF] Sending HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:30:40.081 +01:00 [INF] Received HTTP response headers after 33.8094ms - 200
+2025-03-14 18:30:40.082 +01:00 [INF] End processing HTTP request after 37.4903ms - 200
+2025-03-14 18:30:40.083 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:30:40.084 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:30:40.100 +01:00 [INF] Received HTTP response headers after 14.0474ms - 200
+2025-03-14 18:30:40.101 +01:00 [INF] End processing HTTP request after 17.4497ms - 200
+2025-03-14 18:30:40.102 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:30:40.104 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.106 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.109 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.110 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.112 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.115 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.116 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.118 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.120 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.122 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:30:40.124 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:30:40.126 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.127 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:31:10.128 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:31:10.143 +01:00 [INF] Received HTTP response headers after 13.7445ms - 200
+2025-03-14 18:31:10.144 +01:00 [INF] End processing HTTP request after 17.1301ms - 200
+2025-03-14 18:31:10.145 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:31:10.147 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.149 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.150 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.152 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.154 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.156 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.157 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.159 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.161 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.162 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:10.165 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:10.167 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.167 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:31:40.169 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:31:40.201 +01:00 [INF] Received HTTP response headers after 31.2814ms - 200
+2025-03-14 18:31:40.202 +01:00 [INF] End processing HTTP request after 34.4597ms - 200
+2025-03-14 18:31:40.204 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:31:40.243 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.246 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.248 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.249 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.252 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.254 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.257 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.259 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.261 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.262 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:31:40.264 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:31:40.266 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.268 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:32:10.269 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:32:10.306 +01:00 [INF] Received HTTP response headers after 35.3765ms - 200
+2025-03-14 18:32:10.307 +01:00 [INF] End processing HTTP request after 39.3544ms - 200
+2025-03-14 18:32:10.309 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:32:10.311 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.313 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.315 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.316 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.318 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.319 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.320 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.322 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.323 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.325 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:10.327 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:10.328 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.329 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:32:40.330 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:32:40.373 +01:00 [INF] Received HTTP response headers after 42.8187ms - 200
+2025-03-14 18:32:40.374 +01:00 [INF] End processing HTTP request after 45.5378ms - 200
+2025-03-14 18:32:40.375 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:32:40.381 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.383 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.385 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.386 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.388 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.389 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.391 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.393 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.394 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.396 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:32:40.397 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:32:40.399 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.400 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:33:10.401 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:33:10.415 +01:00 [INF] Received HTTP response headers after 13.3131ms - 200
+2025-03-14 18:33:10.416 +01:00 [INF] End processing HTTP request after 17.0065ms - 200
+2025-03-14 18:33:10.418 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:33:10.419 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.424 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.426 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.428 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.430 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.432 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.433 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.434 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.436 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.438 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:10.439 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:10.441 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.443 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:33:40.444 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:33:40.511 +01:00 [INF] Received HTTP response headers after 66.7958ms - 200
+2025-03-14 18:33:40.512 +01:00 [INF] End processing HTTP request after 69.529ms - 200
+2025-03-14 18:33:40.513 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:33:40.516 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.518 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.520 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.522 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.524 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.526 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.527 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.529 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.531 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.533 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:33:40.535 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:33:40.537 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.538 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:34:10.540 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:34:10.553 +01:00 [INF] Received HTTP response headers after 12.6989ms - 200
+2025-03-14 18:34:10.554 +01:00 [INF] End processing HTTP request after 15.8394ms - 200
+2025-03-14 18:34:10.555 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:34:10.557 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.559 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.560 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.562 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.564 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.566 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.568 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.569 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.571 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.572 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:10.573 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:10.575 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.576 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:34:40.577 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:34:40.597 +01:00 [INF] Received HTTP response headers after 18.745ms - 200
+2025-03-14 18:34:40.598 +01:00 [INF] End processing HTTP request after 22.1732ms - 200
+2025-03-14 18:34:40.599 +01:00 [INF] Pobrano 15 zdarzeń z Keycloak
+2025-03-14 18:34:40.605 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.607 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.610 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.612 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.614 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.616 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.618 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.620 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.621 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.622 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:34:40.624 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:34:40.626 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.627 +01:00 [INF] Start processing HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:35:10.628 +01:00 [INF] Sending HTTP request POST http://localhost:18080/realms/magjob-realm/protocol/openid-connect/token
+2025-03-14 18:35:10.666 +01:00 [INF] Received HTTP response headers after 37.0689ms - 200
+2025-03-14 18:35:10.667 +01:00 [INF] End processing HTTP request after 40.1424ms - 200
+2025-03-14 18:35:10.668 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:35:10.669 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:35:10.683 +01:00 [INF] Received HTTP response headers after 13.143ms - 200
+2025-03-14 18:35:10.683 +01:00 [INF] End processing HTTP request after 15.5352ms - 200
+2025-03-14 18:35:10.685 +01:00 [INF] Pobrano 16 zdarzeń z Keycloak
+2025-03-14 18:35:10.686 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.688 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.689 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.691 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.694 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.695 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.697 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.699 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.700 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.702 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:10.704 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:10.705 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.705 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:35:40.706 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:35:40.732 +01:00 [INF] Received HTTP response headers after 25.1105ms - 200
+2025-03-14 18:35:40.733 +01:00 [INF] End processing HTTP request after 27.9432ms - 200
+2025-03-14 18:35:40.734 +01:00 [INF] Pobrano 16 zdarzeń z Keycloak
+2025-03-14 18:35:40.736 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.737 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.739 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.740 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.742 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.744 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.745 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.747 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.748 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.750 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:35:40.752 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:35:40.753 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.754 +01:00 [INF] Start processing HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:36:10.755 +01:00 [INF] Sending HTTP request GET http://localhost:18080/admin/realms/magjob-realm/events?*
+2025-03-14 18:36:10.773 +01:00 [INF] Received HTTP response headers after 17.1953ms - 200
+2025-03-14 18:36:10.775 +01:00 [INF] End processing HTTP request after 21.0245ms - 200
+2025-03-14 18:36:10.777 +01:00 [INF] Pobrano 16 zdarzeń z Keycloak
+2025-03-14 18:36:10.779 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.781 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.783 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.785 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.787 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.790 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.792 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.794 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.796 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.798 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
+2025-03-14 18:36:10.800 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__externalId_0='?'], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."CreatedDate", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."LastLoginDate", u."LastModifiedDate", u."LastName", u."Permissions", u."UpdatedAt", u."Username", u."Profile_Address", u."Profile_IsProfileCreated", u."Profile_PhoneNumber", u."Profile_ProfileImage"
+FROM identity."Users" AS u
+WHERE u."ExternalId" = @__externalId_0
+LIMIT 1
+2025-03-14 18:36:10.802 +01:00 [WRN] Nie znaleziono użytkownika o identyfikatorze zewnętrznym 2133cb04-9d2e-4abc-bb7d-a867d0bb1682 podczas aktualizacji daty logowania
