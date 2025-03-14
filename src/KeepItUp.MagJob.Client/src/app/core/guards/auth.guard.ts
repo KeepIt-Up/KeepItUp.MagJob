@@ -12,9 +12,7 @@ export const authGuard: CanActivateFn = state => {
   const router = inject(Router);
 
   if (!oauthService.hasValidAccessToken()) {
-    return router.createUrlTree(['/login'], {
-      queryParams: { returnUrl: state.url },
-    });
+    return router.createUrlTree(['/login']);
   }
 
   return true;
