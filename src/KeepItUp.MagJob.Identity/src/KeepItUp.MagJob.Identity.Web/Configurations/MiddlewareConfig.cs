@@ -41,8 +41,6 @@ public static class MiddlewareConfig
       c.Serializer.Options.PropertyNamingPolicy = null;
     });
 
-    app.UseSwaggerGen();
-
     app.UseHttpsRedirection();
 
     await SeedDatabase(app);

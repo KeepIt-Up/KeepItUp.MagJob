@@ -8,18 +8,18 @@ namespace KeepItUp.MagJob.Identity.Web.Services;
 /// </summary>
 public interface ICurrentUserAccessor
 {
-    /// <summary>
-    /// Pobiera identyfikator bieżącego użytkownika.
-    /// </summary>
-    /// <returns>Identyfikator użytkownika lub null, jeśli użytkownik nie jest zalogowany.</returns>
-    Guid? GetCurrentUserId();
-    
-    /// <summary>
-    /// Pobiera identyfikator bieżącego użytkownika lub zgłasza wyjątek, jeśli użytkownik nie jest zalogowany.
-    /// </summary>
-    /// <returns>Identyfikator użytkownika.</returns>
-    /// <exception cref="UnauthorizedAccessException">Zgłaszany, gdy użytkownik nie jest zalogowany.</exception>
-    Guid GetRequiredCurrentUserId();
+  /// <summary>
+  /// Pobiera identyfikator bieżącego użytkownika.
+  /// </summary>
+  /// <returns>Identyfikator użytkownika lub null, jeśli użytkownik nie jest zalogowany.</returns>
+  Guid? GetCurrentUserId();
+
+  /// <summary>
+  /// Pobiera identyfikator bieżącego użytkownika lub zgłasza wyjątek, jeśli użytkownik nie jest zalogowany.
+  /// </summary>
+  /// <returns>Identyfikator użytkownika.</returns>
+  /// <exception cref="UnauthorizedAccessException">Zgłaszany, gdy użytkownik nie jest zalogowany.</exception>
+  Guid GetRequiredCurrentUserId();
 }
 
 /// <summary>
@@ -27,38 +27,38 @@ public interface ICurrentUserAccessor
 /// </summary>
 public class CurrentUserAccessor : ICurrentUserAccessor
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+  private readonly IHttpContextAccessor _httpContextAccessor;
 
-    /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CurrentUserAccessor"/>.
-    /// </summary>
-    /// <param name="httpContextAccessor">Dostęp do kontekstu HTTP.</param>
-    public CurrentUserAccessor(IHttpContextAccessor httpContextAccessor)
+  /// <summary>
+  /// Inicjalizuje nową instancję klasy <see cref="CurrentUserAccessor"/>.
+  /// </summary>
+  /// <param name="httpContextAccessor">Dostęp do kontekstu HTTP.</param>
+  public CurrentUserAccessor(IHttpContextAccessor httpContextAccessor)
+  {
+    _httpContextAccessor = httpContextAccessor;
+  }
+
+  /// <inheritdoc />
+  public Guid? GetCurrentUserId()
+  {
+    var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue("sub");
+    if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
     {
-        _httpContextAccessor = httpContextAccessor;
+      return null;
     }
 
-    /// <inheritdoc />
-    public Guid? GetCurrentUserId()
+    return userGuid;
+  }
+
+  /// <inheritdoc />
+  public Guid GetRequiredCurrentUserId()
+  {
+    var userId = GetCurrentUserId();
+    if (!userId.HasValue)
     {
-        var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
-        {
-            return null;
-        }
-        
-        return userGuid;
+      throw new UnauthorizedAccessException("Użytkownik nie jest zalogowany lub nie można zidentyfikować użytkownika.");
     }
 
-    /// <inheritdoc />
-    public Guid GetRequiredCurrentUserId()
-    {
-        var userId = GetCurrentUserId();
-        if (!userId.HasValue)
-        {
-            throw new UnauthorizedAccessException("Użytkownik nie jest zalogowany lub nie można zidentyfikować użytkownika.");
-        }
-        
-        return userId.Value;
-    }
-} 
+    return userId.Value;
+  }
+}

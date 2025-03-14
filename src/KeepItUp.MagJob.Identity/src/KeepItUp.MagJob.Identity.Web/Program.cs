@@ -14,21 +14,25 @@ builder.AddLoggerConfigs();
 var appLogger = new SerilogLoggerFactory(logger)
     .CreateLogger<Program>();
 
+// Dodaj konfigurację opcji
 builder.Services.AddOptionConfigs(builder.Configuration, appLogger, builder);
+
+// Dodaj konfigurację usług
 builder.Services.AddServiceConfigs(appLogger, builder);
 
-builder.Services.AddFastEndpoints()
-                .SwaggerDocument(o =>
-                {
-                  o.ShortSchemaNames = true;
-                });
+// Dodaj konfigurację Swagger
+builder.Services.AddSwaggerConfig(appLogger);
 
-builder.Services.AddKeycloakAuthentication(builder.Configuration);
-
+// Dodaj uwierzytelnianie Keycloak
+builder.Services.AddKeycloakAuthentication();
 
 var app = builder.Build();
 
+// Skonfiguruj middleware
 await app.UseAppMiddlewareAndSeedDatabase();
+
+// Użyj konfiguracji Swagger
+app.UseSwaggerConfig(appLogger);
 
 app.Run();
 

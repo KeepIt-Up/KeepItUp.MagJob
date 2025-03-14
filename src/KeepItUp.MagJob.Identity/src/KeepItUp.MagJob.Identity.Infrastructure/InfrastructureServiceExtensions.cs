@@ -30,7 +30,7 @@ public static class InfrastructureServiceExtensions
            .AddScoped<IDeleteContributorService, DeleteContributorService>();
 
     // Dodanie usług związanych z Keycloak
-    services.AddKeycloakServices(config);
+    services.AddKeycloakServices();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

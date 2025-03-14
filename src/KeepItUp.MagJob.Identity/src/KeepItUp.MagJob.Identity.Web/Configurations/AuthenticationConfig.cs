@@ -1,8 +1,9 @@
-﻿using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
@@ -12,11 +13,13 @@ public static class AuthenticationConfig
   /// Dodaje uwierzytelnianie JWT z Keycloak
   /// </summary>
   /// <param name="services">Kolekcja usług</param>
-  /// <param name="configuration">Konfiguracja</param>
   /// <returns>Kolekcja usług</returns>
-  public static IServiceCollection AddKeycloakAuthentication(this IServiceCollection services, IConfiguration configuration)
+  public static IServiceCollection AddKeycloakAuthentication(this IServiceCollection services)
   {
-    var keycloakOptions = configuration.GetSection("Keycloak").Get<KeycloakOptions>();
+    // Pobierz konfigurację Keycloak dla klienta web
+    var serviceProvider = services.BuildServiceProvider();
+    var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakAdminOptions>>().Value;
+
     if (keycloakOptions == null)
     {
       throw new InvalidOperationException("Brak konfiguracji Keycloak");

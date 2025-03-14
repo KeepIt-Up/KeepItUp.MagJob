@@ -5,15 +5,28 @@ using KeepItUp.MagJob.Identity.Web.Services;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
+/// <summary>
+/// Konfiguracja usług dla aplikacji
+/// </summary>
 public static class ServiceConfigs
 {
+  /// <summary>
+  /// Dodaje konfigurację usług do kolekcji usług
+  /// </summary>
+  /// <param name="services">Kolekcja usług</param>
+  /// <param name="logger">Logger</param>
+  /// <param name="builder">Builder aplikacji</param>
+  /// <returns>Kolekcja usług</returns>
   public static IServiceCollection AddServiceConfigs(this IServiceCollection services, Microsoft.Extensions.Logging.ILogger logger, WebApplicationBuilder builder)
   {
+    // Dodaj FastEndpoints
+    services.AddFastEndpoints();
+
     services.AddInfrastructureServices(builder.Configuration, logger)
             .AddMediatrConfigs();
 
     // Dodanie CORS
-    services.AddCorsConfiguration(builder.Configuration);
+    services.AddCorsConfig(builder.Configuration);
 
     // Dodanie autoryzacji
     services.AddAuthorization();
@@ -41,7 +54,7 @@ public static class ServiceConfigs
       services.AddScoped<IEmailSender, MimeKitEmailSender>();
     }
 
-    logger.LogInformation("{Project} services registered", "Mediatr, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
+    logger.LogInformation("{Project} services registered", "FastEndpoints, Mediatr, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
 
     return services;
   }

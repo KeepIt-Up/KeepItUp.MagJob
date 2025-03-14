@@ -736,11 +736,13 @@
         "https://localhost/*",
         "http://localhost:4200/*",
         "http://localhost/*",
-        "https://localhost:4200/*"
+        "https://localhost:4200/*",
+        "https://localhost:57679/*"
       ],
       "webOrigins": [
         "https://localhost",
         "https://localhost:4200",
+        "https://localhost:57679",
         "http://localhost",
         "http://localhost:4200"
       ],
@@ -866,14 +868,15 @@
         "frontchannel.logout.session.required": "true",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
+        "use.jwks.url": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "defaultClientScopes": [
-        "service_account",
         "web-origins",
+        "service_account",
         "acr",
         "profile",
         "roles",

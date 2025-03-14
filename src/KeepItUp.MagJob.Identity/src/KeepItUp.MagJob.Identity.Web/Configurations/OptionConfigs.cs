@@ -1,6 +1,6 @@
 ﻿using Ardalis.ListStartupServices;
 using KeepItUp.MagJob.Identity.Infrastructure.Email;
-using KeepItUp.MagJob.Identity.Web.Services;
+using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
@@ -13,7 +13,9 @@ public static class OptionConfigs
   {
     services.Configure<MailserverConfiguration>(configuration.GetSection("Mailserver"))
     // Konfiguracja Keycloak
-    .Configure<KeycloakSettings>(configuration.GetSection("Keycloak"))
+    .Configure<KeycloakAdminOptions>(configuration.GetSection("KeycloakAdmin"))
+    // Konfiguracja KeycloakClient
+    .Configure<KeycloakClientOptions>(configuration.GetSection("KeycloakClient"))
     // Configure Web Behavior
     .Configure<CookiePolicyOptions>(options =>
     {
