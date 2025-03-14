@@ -20,7 +20,7 @@ MagJob to system wsparcia w rozwoju oraz komunikacji w małych i średnich firma
 
 ### 2. API Gateway
 
-- **Struktura projektu**: `src/APIGateway/`
+- **Struktura projektu**: `src/KeepItUp.MagJob.APIGateway/`
 - **Funkcjonalności**:
   - Centralizacja dostępu do mikrousług
   - Routing zapytań do odpowiednich mikrousług
@@ -151,4 +151,4 @@ System jest zaprojektowany z myślą o obsłudze do 50 000 użytkowników miesi�
 - **Konteneryzacja**: Docker
 - **Orkiestracja**: W przyszłości potencjalnie Kubernetes
 - **CI/CD**: GitHub Actions
-- **Dokumentacja API**: OpenAPI / Swagger 
+- **Dokumentacja API**: OpenAPI / Swagger

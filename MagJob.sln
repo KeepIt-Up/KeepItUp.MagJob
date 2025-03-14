@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A53B099F-562
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5FA9653B-7469-4491-9DCD-CCFB8D05EF19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway.Web", "src\APIGateway.Web\APIGateway.Web.csproj", "{4689C340-9EA7-4083-88AA-2EC16035701C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.APIGateway", "src\KeepItUp.MagJob.APIGateway\KeepItUp.MagJob.APIGateway.csproj", "{4689C340-9EA7-4083-88AA-2EC16035701C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organizations.API", "src\Organizations.API\Organizations.API.csproj", "{79814922-DF10-4A0F-B790-70EA677572C9}"
 	ProjectSection(ProjectDependencies) = postProject

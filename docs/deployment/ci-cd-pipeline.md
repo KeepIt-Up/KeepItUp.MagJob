@@ -62,87 +62,87 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       # Konfiguracja .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 8.0.x
-      
+
       # Konfiguracja Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       # Konfiguracja Java
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
-          java-version: '17'
-      
+          distribution: "adopt"
+          java-version: "17"
+
       # Budowanie i testowanie .NET
       - name: Build .NET Projects
         run: |
-          dotnet build src/APIGateway/APIGateway.Web/APIGateway.Web.csproj
+          dotnet build src/KeepItUp.MagJob.APIGateway/KeepItUp.MagJob.APIGateway.csproj
           dotnet build src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web/KeepItUp.MagJob.Identity.Web.csproj
-      
+
       - name: Test .NET Projects
         run: |
-          dotnet test src/APIGateway/APIGateway.Tests/APIGateway.Tests.csproj
+          dotnet test src/KeepItUp.MagJob.APIGateway/KeepItUp.MagJob.APIGateway.Tests/KeepItUp.MagJob.APIGateway.Tests.csproj
           dotnet test src/KeepItUp.MagJob.Identity/tests/KeepItUp.MagJob.Identity.Tests/KeepItUp.MagJob.Identity.Tests.csproj
-      
+
       # Budowanie i testowanie Angular
       - name: Install Angular dependencies
         run: cd src/KeepItUp.MagJob.Client && npm install
-      
+
       - name: Build Angular
         run: cd src/KeepItUp.MagJob.Client && npm run build
-      
+
       - name: Test Angular
         run: cd src/KeepItUp.MagJob.Client && npm run test
-      
+
       # Budowanie i testowanie Spring
       - name: Build Spring Schedules
         run: cd src/Schedules/Schedules.API && ./mvnw clean package
-      
+
       - name: Test Spring Schedules
         run: cd src/Schedules/Schedules.API && ./mvnw test
-        
+
       - name: Build Spring WorkEvidence
         run: cd src/WorkEvidence/WorkEvidence.API && ./mvnw clean package
-      
+
       - name: Test Spring WorkEvidence
         run: cd src/WorkEvidence/WorkEvidence.API && ./mvnw test
-      
+
       # Statyczna analiza kodu
       - name: Run ESLint
         run: cd src/KeepItUp.MagJob.Client && npm run lint
-      
+
       - name: Run SonarQube Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      
+
       # Skanowanie bezpieczeństwa
       - name: Run OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
-          project: 'MagJob'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
+          project: "MagJob"
+          path: "."
+          format: "HTML"
+          out: "reports"
 ```
 
 ### Workflow dla CD - Środowisko Dev
@@ -154,7 +154,7 @@ name: Deploy to Dev
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   deploy-to-dev:
@@ -162,13 +162,13 @@ jobs:
     needs: build-and-test
     steps:
       - uses: actions/checkout@v2
-      
+
       # Logowanie do Azure
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
       # Budowanie i publikowanie obrazów Docker
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
@@ -179,24 +179,24 @@ jobs:
             magjob/client-web:${{ github.sha }}
             magjob/api-gateway:${{ github.sha }}
             magjob/identity-api:${{ github.sha }}
-      
+
       # Wdrażanie do Azure
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'magjob-dev'
+          app-name: "magjob-dev"
           images: |
             magjob/api-gateway:${{ github.sha }}
             magjob/client-web:${{ github.sha }}
             magjob/identity-api:${{ github.sha }}
-      
+
       # Powiadomienie o wdrożeniu
       - name: Notify Deployment
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: 'Deployment to Dev'
-          SLACK_MESSAGE: 'Successfully deployed to Dev environment'
+          SLACK_TITLE: "Deployment to Dev"
+          SLACK_MESSAGE: "Successfully deployed to Dev environment"
 ```
 
 ### Workflow dla CD - Środowisko Prod
@@ -208,7 +208,7 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy-to-prod:
@@ -216,13 +216,13 @@ jobs:
     needs: build-and-test
     steps:
       - uses: actions/checkout@v2
-      
+
       # Logowanie do Azure
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
       # Budowanie i publikowanie obrazów Docker
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
@@ -233,7 +233,7 @@ jobs:
             magjob/client-web:${{ github.sha }}
             magjob/api-gateway:${{ github.sha }}
             magjob/identity-api:${{ github.sha }}
-      
+
       # Wdrażanie do Azure
       - name: Deploy to Azure Kubernetes Service
         uses: azure/k8s-deploy@v1
@@ -242,14 +242,14 @@ jobs:
             kubernetes/client-web-deployment.yaml
             kubernetes/api-gateway-deployment.yaml
             kubernetes/identity-api-deployment.yaml
-      
+
       # Powiadomienie o wdrożeniu
       - name: Notify Deployment
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: 'Deployment to Production'
-          SLACK_MESSAGE: 'Successfully deployed to Production environment'
+          SLACK_TITLE: "Deployment to Production"
+          SLACK_MESSAGE: "Successfully deployed to Production environment"
 ```
 
 ## Strategia branchy
@@ -314,7 +314,7 @@ Sekrety i zmienne środowiskowe są zarządzane w następujący sposób:
 
 1. **GitHub Secrets**: Przechowywanie sekretów używanych w pipeline CI/CD
 2. **Azure Key Vault**: Przechowywanie sekretów używanych przez aplikację
-3. **Zmienne środowiskowe**: Konfiguracja specyficzna dla środowiska przekazywana do kontenerów Docker 
+3. **Zmienne środowiskowe**: Konfiguracja specyficzna dla środowiska przekazywana do kontenerów Docker
 
 ## Aktualizacje w pliku
 
