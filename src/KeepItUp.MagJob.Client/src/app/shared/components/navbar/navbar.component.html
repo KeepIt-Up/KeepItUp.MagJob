@@ -43,7 +43,7 @@
       @if (!user) {
         <button
           (click)="login()"
-          class="px-4 py-2 bg-primary hover:bg-primary-500 text-white font-medium rounded-lg transition-colors duration-200"
+          class="hidden md:block px-4 py-2 bg-primary hover:bg-primary-500 text-white font-medium rounded-lg transition-colors duration-200"
         >
           Sign In
         </button>
@@ -126,16 +126,25 @@
         </div>
       </button>
 
-      <!-- Mobile Menu Button -->
-      <button
-        type="button"
-        (click)="toggleMobileMenu()"
-        class="inline-flex items-center p-1.5 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 transition-colors duration-200"
-        aria-label="Toggle mobile menu"
-      >
-        <span class="sr-only">Open main menu</span>
-        <ng-icon [name]="isMobileMenuOpen ? 'heroXMark' : 'heroBars3'" class="w-5 h-5"></ng-icon>
-      </button>
+      @if (user) {
+        <!-- Mobile Menu Button -->
+        <button
+          type="button"
+          (click)="toggleMobileMenu()"
+          class="inline-flex items-center p-1.5 w-8 h-8 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 transition-colors duration-200"
+          aria-label="Toggle mobile menu"
+        >
+          <span class="sr-only">Open main menu</span>
+          <ng-icon [name]="isMobileMenuOpen ? 'heroXMark' : 'heroBars3'" class="w-5 h-5"></ng-icon>
+        </button>
+      } @else {
+        <button
+          (click)="login()"
+          class="px-4 py-2 bg-primary hover:bg-primary-500 text-white font-medium rounded-lg transition-colors duration-200"
+        >
+          Sign In
+        </button>
+      }
     </div>
   </div>
 
