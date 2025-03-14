@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { UserBase } from '@core/models/user-base.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, DropdownComponent, RouterLink, ClickOutsideDirective],
+  imports: [CommonModule, DropdownComponent, RouterLink, ClickOutsideDirective, NgIcon],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {

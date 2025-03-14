@@ -17,28 +17,18 @@
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           How can we help you?
         </h2>
-        <div class="relative">
-          <input
-            type="text"
-            placeholder="Search for help topics..."
-            class="w-full p-4 pr-12 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          />
-          <button class="absolute right-3 top-3 text-gray-500 dark:text-gray-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-grow">
+            <app-input
+              placeholder="Search for help topics..."
+              [fullWidth]="true"
+              iconLeft="heroMagnifyingGlass"
+              [(ngModel)]="searchQuery"
+            ></app-input>
+          </div>
+          <app-button variant="primary" (clicked)="onSearch()" ariaLabel="Search">
+            Search
+          </app-button>
         </div>
       </div>
     </div>
@@ -52,21 +42,10 @@
         >
           <div class="p-6">
             <div class="flex items-center mb-4">
-              <div class="bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroBolt" class="h-6 w-6 text-primary"></ng-icon>
               </div>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Getting Started</h3>
             </div>
@@ -75,54 +54,15 @@
             </p>
             <ul class="space-y-2 text-gray-600 dark:text-gray-300">
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Creating your account</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Setting up your organization</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Inviting team members</span>
               </li>
             </ul>
@@ -135,21 +75,10 @@
         >
           <div class="p-6">
             <div class="flex items-center mb-4">
-              <div class="bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroUserGroup" class="h-6 w-6 text-primary"></ng-icon>
               </div>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                 Organization Management
@@ -160,54 +89,15 @@
             </p>
             <ul class="space-y-2 text-gray-600 dark:text-gray-300">
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Managing members</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Setting up roles and permissions</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Organization settings</span>
               </li>
             </ul>
@@ -220,21 +110,10 @@
         >
           <div class="p-6">
             <div class="flex items-center mb-4">
-              <div class="bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                  />
-                </svg>
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroClipboardDocument" class="h-6 w-6 text-primary"></ng-icon>
               </div>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Task Management</h3>
             </div>
@@ -243,54 +122,15 @@
             </p>
             <ul class="space-y-2 text-gray-600 dark:text-gray-300">
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Creating tasks</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Assigning tasks to members</span>
               </li>
               <li class="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
                 <span>Tracking task progress</span>
               </li>
             </ul>
@@ -352,23 +192,9 @@
         <p class="text-gray-600 dark:text-gray-300 mb-6">
           Our support team is available to assist you with any questions or issues you may have.
         </p>
-        <button
-          class="px-6 py-3 bg-primary hover:bg-primary-500 text-white font-medium rounded-lg transition-colors duration-200 inline-flex items-center"
-        >
+        <app-button variant="primary" size="md" iconRight="heroEnvelope">
           Contact Support
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 ml-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
+        </app-button>
       </div>
     </div>
   </main>

@@ -26,39 +26,17 @@
       <!-- Dark Mode Toggle (Desktop) -->
       <button
         (click)="toggleDarkMode()"
-        class="hidden md:block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-colors duration-200"
+        class="hidden md:block px-2 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-colors duration-200"
         aria-label="Toggle dark mode"
       >
         <!-- Sun icon for dark mode -->
-        <svg
-          class="w-5 h-5 text-gray-800 dark:hidden"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
+        <div class="block dark:hidden w-6 h-6">
+          <ng-icon name="heroSun" class="w-5 h-5 text-gray-800"></ng-icon>
+        </div>
         <!-- Moon icon for light mode -->
-        <svg
-          class="w-5 h-5 text-white hidden dark:block"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          />
-        </svg>
+        <div class="hidden dark:block w-6 h-6">
+          <ng-icon name="heroMoon" class="w-5 h-5 text-white"></ng-icon>
+        </div>
       </button>
 
       <!-- Login Button for Unauthenticated Users -->
@@ -90,11 +68,11 @@
             <div class="py-3 px-4">
               <span
                 class="block text-sm text-gray-900 dark:text-white transition-colors duration-200"
-                >{{ user?.given_name }} {{ user?.family_name }}</span
+                >{{ user.given_name }} {{ user.family_name }}</span
               >
               <span
                 class="block text-sm text-gray-500 truncate dark:text-gray-400 transition-colors duration-200"
-                >{{ user?.email }}</span
+                >{{ user.email }}</span
               >
             </div>
             <ul class="py-1" aria-labelledby="user-menu-button">
@@ -139,35 +117,13 @@
         aria-label="Toggle dark mode"
       >
         <!-- Sun icon for dark mode -->
-        <svg
-          class="w-5 h-5 text-gray-800 dark:hidden"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
-        </svg>
+        <div class="block dark:hidden w-6 h-6">
+          <ng-icon name="heroSun" class="w-5 h-5 text-gray-800"></ng-icon>
+        </div>
         <!-- Moon icon for light mode -->
-        <svg
-          class="w-5 h-5 text-white hidden dark:block"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          />
-        </svg>
+        <div class="hidden dark:block w-6 h-6">
+          <ng-icon name="heroMoon" class="w-5 h-5 text-white"></ng-icon>
+        </div>
       </button>
 
       <!-- Mobile Menu Button -->
@@ -178,21 +134,7 @@
         aria-label="Toggle mobile menu"
       >
         <span class="sr-only">Open main menu</span>
-        <svg
-          class="w-5 h-5"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 17 14"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M1 1h15M1 7h15M1 13h15"
-          />
-        </svg>
+        <ng-icon [name]="isMobileMenuOpen ? 'heroXMark' : 'heroBars3'" class="w-5 h-5"></ng-icon>
       </button>
     </div>
   </div>

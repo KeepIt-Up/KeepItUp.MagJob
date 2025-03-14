@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'app-landing',
-  imports: [RouterLink, NavbarComponent],
+  imports: [RouterLink, NavbarComponent, ButtonComponent, NgIcon],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
 })
