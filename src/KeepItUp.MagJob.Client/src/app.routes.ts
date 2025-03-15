@@ -11,9 +11,15 @@ import { RolesManagementComponent } from '@pages/organization/roles-management/r
 import { MembersTableComponent } from '@pages/organization/members-table/member-table.component';
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { OrganizationComponent } from '@pages/organization/organization.component';
+import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
+  {
+    path: 'organization/create',
+    component: CreateOrganizationComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'organization/:organizationId',
     component: OrganizationComponent,

@@ -38,6 +38,10 @@ export class InputComponent implements ControlValueAccessor, OnInit {
   @Input() iconRight = '';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() fullWidth = false;
+  @Input() set error(value: string) {
+    this.errorText = value;
+    this.hasError = !!value;
+  }
 
   @Output() valueChanged = new EventEmitter<string>();
   @Output() blurred = new EventEmitter<FocusEvent>();
