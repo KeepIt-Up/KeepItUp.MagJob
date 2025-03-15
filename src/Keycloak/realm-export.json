@@ -875,8 +875,8 @@
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "defaultClientScopes": [
-        "web-origins",
         "service_account",
+        "web-origins",
         "acr",
         "profile",
         "roles",
@@ -2778,7 +2778,7 @@
     "clientSessionMaxLifespan": "0",
     "adminEventsExpiration": "600"
   },
-  "keycloakVersion": "26.1.3",
+  "keycloakVersion": "26.1.4",
   "userManagedAccessAllowed": false,
   "organizationsEnabled": false,
   "verifiableCredentialsEnabled": false,

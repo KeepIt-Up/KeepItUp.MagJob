@@ -1,5 +1,3 @@
-import { AuthConfig } from 'angular-oauth2-oidc';
-
 /**
  * Environment configuration for local development
  * Copy this file to environment.local.ts and fill in the values
@@ -13,6 +11,6 @@ export const environment = {
     realm: 'magjob-realm',
     clientId: 'client.web',
     redirectUri: `${window.location.origin}/user`,
-    dummyClientSecret: 'bYBrriEeDclOCaDTVneVAbeCrbgnWrWd',
+    dummyClientSecret: 'zLvcsyGzuY2BLDAhG3WGBnLxBsWxdmfd',
   },
 };
