@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using KeepItUp.MagJob.APIGateway.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json;
+using System.Net.Mime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,47 +13,35 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("gatewayConfiguration.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot(builder.Configuration);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.Audience = builder.Configuration["Authentication:Audience"];
-    options.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidIssuer = builder.Configuration["Authentication:ValidIssuer"],
-    };
-});
-
 // Cors configuration
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:4200", "https://localhost:4200", "http://localhost", "https://localhost")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials();
-        });
-});
+builder.Services.AddCorsConfig(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.Authority = builder.Configuration["JwtSettings:Authority"];
+        options.Audience = builder.Configuration["JwtSettings:Audience"];
+        options.RequireHttpsMetadata = bool.Parse(builder.Configuration["JwtSettings:RequireHttpsMetadata"] ?? "false");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Authority"]
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseCors("CorsPolicy");
-}
-else
-{
-    app.UseHttpsRedirection();
-}
+app.UseCors(IServiceCollectionExtensions.CorsPolicyName);
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
 
 await app.UseOcelot();
 

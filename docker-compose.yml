@@ -1,0 +1,78 @@
+services:
+  # Frontend
+  client:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.client
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.Client/Dockerfile
+    ports:
+      - "80:80"
+
+  # API Gateway
+  apigateway:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.apigateway
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.APIGateway/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_HTTP_PORTS=80
+      # Wyłączenie HTTPS
+      - ASPNETCORE_URLS=http://+:80
+
+  # Mikrousługi
+  identity:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.identity
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.Identity/Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_HTTP_PORTS=80
+      # Wyłączenie HTTPS
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      - magjob.database
+      - keycloak
+
+  # Keycloak (Identity Server)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    command: start-dev --import-realm
+    ports:
+      - "18080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=keycloak.database
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+    volumes:
+      - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    depends_on:
+      - keycloak.database
+
+  keycloak.database:
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: keycloak
+    volumes:
+      - ${APPDATA}/MagJob2.0/db/keycloak:/var/lib/postgresql/data
+
+  # PostgreSQL (baza danych)
+  magjob.database:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: magjob
+    volumes:
+      - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data

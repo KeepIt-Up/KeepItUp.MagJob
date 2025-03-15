@@ -1,5 +1,6 @@
 ﻿using Ardalis.ListStartupServices;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
@@ -60,8 +61,11 @@ public static class MiddlewareConfig
     try
     {
       var context = services.GetRequiredService<AppDbContext>();
+      var logger = services.GetRequiredService<ILogger<Program>>();
 
-      context.Database.EnsureCreated();
+      logger.LogInformation("Applying migrations...");
+      await context.Database.MigrateAsync();
+      logger.LogInformation("Migrations applied successfully");
 
       await SeedData.InitializeAsync(context);
     }

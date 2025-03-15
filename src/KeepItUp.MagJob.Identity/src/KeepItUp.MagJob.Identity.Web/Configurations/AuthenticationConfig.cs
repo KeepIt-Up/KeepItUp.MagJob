@@ -88,6 +88,14 @@ public static class AuthenticationConfig
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
+        // Obsługa różnych issuerów (localhost i keycloak)
+        ValidIssuers = new[]
+        {
+          keycloakOptions.AuthorityUrl,
+          $"http://localhost:18080/realms/{keycloakOptions.Realm}",
+          $"http://keycloak:8080/realms/{keycloakOptions.Realm}"
+        },
+
         // Ustaw dozwolone audience - ważne dla poprawnej walidacji tokenu
         ValidAudiences = new[]
         {

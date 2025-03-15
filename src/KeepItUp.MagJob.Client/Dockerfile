@@ -1,30 +1,33 @@
-# Etap budowania
-FROM node:20.9 AS build
+# Stage 1: Build the Angular application
+FROM node:20-alpine AS build
 
-# Ustawienie katalogu roboczego
+# Set working directory
 WORKDIR /app
 
-# Kopiowanie pliku package.json i package-lock.json (jeśli istnieje)
-COPY package*.json ./
+# Copy package.json and package-lock.json
+COPY src/KeepItUp.MagJob.Client/package*.json ./
 
-# Instalacja zależności
-RUN npm install
+# Install dependencies
+RUN npm ci
 
-# Kopiowanie całej aplikacji Angular
-COPY . .
+# Copy the rest of the application code
+COPY src/KeepItUp.MagJob.Client/ ./
 
-# Budowanie aplikacji w trybie development
-RUN npm run build:dev
 
-# Etap serwowania
+# Build the application
+RUN npm run build:docker
+
+# Stage 2: Serve the application with Nginx
 FROM nginx:alpine
 
-# Kopiowanie zbudowanej aplikacji do nginx
-COPY --from=build /app/dist/keepitup.magjob.client/browser/ /usr/share/nginx/html/
+# Copy the build output to replace the default nginx contents
+COPY --from=build /app/dist/keepitup.magjob.client/browser /usr/share/nginx/html
 
-# Kopiowanie konfiguracji nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom nginx configuration
+COPY src/KeepItUp.MagJob.Client/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Expose port 80
 EXPOSE 80
 
+# When the container starts, nginx will start and serve the application
 CMD ["nginx", "-g", "daemon off;"]
