@@ -4,197 +4,8 @@ Ten dokument opisuje standardy kodowania dla technologii .NET i Angular używany
 
 ## Standardy dla .NET
 
-### Architektura i Organizacja Kodu
-
-- **Podejście architektoniczne**: Clean Architecture, CQRS, Domain-Driven Design (DDD)
-- **Struktura projektu**:
-  ```
-  src/Organizations/
-  ├── Organizations.API/           # Warstwa prezentacji (API)
-  ├── Organizations.Application/   # Warstwa aplikacji (use cases, CQRS)
-  ├── Organizations.Domain/        # Warstwa domeny (encje, agregaty, value objects)
-  ├── Organizations.Infrastructure/# Warstwa infrastruktury (repozytoria, zewnętrzne usługi)
-  └── Organizations.Tests/         # Testy
-  ```
-
-### Konwencje Nazewnictwa
-
-- **Klasy, Interfejsy, Metody, Properties, Events, Delegates**: PascalCase
-  ```csharp
-  public class UserService
-  public interface IUserRepository
-  public void ProcessRequest()
-  public string FirstName { get; set; }
-  ```
-- **Zmienne lokalne, parametry**: camelCase
-  ```csharp
-  var userId = 123;
-  public void ProcessUser(int userId)
-  ```
-- **Pola prywatne**: _camelCase (z podkreślnikiem)
-  ```csharp
-  private string _firstName;
-  ```
-- **Stałe**: PascalCase
-  ```csharp
-  public const string DefaultRole = "User";
-  ```
-- **Interfejsy**: I + PascalCase
-  ```csharp
-  public interface IUserRepository
-  ```
-
-### Biblioteki i Frameworki
-
-- **MediatR**: Do implementacji wzorca CQRS i mediator
-- **Entity Framework Core**: ORM do dostępu do bazy danych
-- **Mapster**: Do mapowania obiektów między warstwami
-- **FluentValidation**: Do walidacji danych wejściowych
-
-### Dobre Praktyki
-
-- **Zasady SOLID**: Przestrzeganie zasad SOLID w projektowaniu klas i interfejsów
-- **Immutability**: Preferowanie typów niemutowalnych, szczególnie w warstwie domeny
-- **Asynchroniczność**: Używanie async/await dla operacji I/O
-- **Walidacja**: Walidacja danych wejściowych za pomocą FluentValidation
-- **Obsługa błędów**: Używanie Result Pattern zamiast wyjątków do obsługi błędów biznesowych
-- **Logowanie**: Strukturalne logowanie z użyciem Serilog
-
-### Przykład Implementacji CQRS z MediatR
-
-```csharp
-// Command
-public class CreateUserCommand : IRequest<Result<UserDto>>
-{
-    public string Email { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-}
-
-// Command Handler
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<UserDto>>
-{
-    private readonly IUserRepository _userRepository;
-    
-    public CreateUserCommandHandler(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-    
-    public async Task<Result<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
-    {
-        var user = new User(request.Email, request.FirstName, request.LastName);
-        
-        await _userRepository.AddAsync(user, cancellationToken);
-        
-        return Result.Success(user.Adapt<UserDto>());
-    }
-}
-
-// Query
-public class GetUserByIdQuery : IRequest<Result<UserDto>>
-{
-    public Guid Id { get; set; }
-}
-
-// Query Handler
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserDto>>
-{
-    private readonly IUserRepository _userRepository;
-    
-    public GetUserByIdQueryHandler(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-    
-    public async Task<Result<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
-    {
-        var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
-        
-        if (user == null)
-            return Result.Failure<UserDto>("User not found");
-        
-        return Result.Success(user.Adapt<UserDto>());
-    }
-}
-```
-
-### Przykład Implementacji DDD
-
-```csharp
-// Aggregate Root
-public class Organization : AggregateRoot
-{
-    private readonly List<Member> _members = new();
-    
-    public string Name { get; private set; }
-    public string Description { get; private set; }
-    public Guid OwnerId { get; private set; }
-    public bool IsActive { get; private set; }
-    
-    public IReadOnlyCollection<Member> Members => _members.AsReadOnly();
-    
-    private Organization() { } // Dla EF Core
-    
-    public Organization(string name, string description, Guid ownerId)
-    {
-        Name = name;
-        Description = description;
-        OwnerId = ownerId;
-        IsActive = true;
-        
-        AddDomainEvent(new OrganizationCreatedDomainEvent(Id, name, ownerId));
-    }
-    
-    public void AddMember(Guid userId, Guid roleId)
-    {
-        if (_members.Any(m => m.UserId == userId))
-            throw new DomainException("User is already a member of this organization");
-        
-        var member = new Member(Id, userId, roleId);
-        _members.Add(member);
-        
-        AddDomainEvent(new MemberAddedDomainEvent(Id, userId, roleId));
-    }
-    
-    public void Deactivate()
-    {
-        if (!IsActive)
-            return;
-        
-        IsActive = false;
-        
-        AddDomainEvent(new OrganizationDeactivatedDomainEvent(Id));
-    }
-}
-
-// Value Object
-public class Address : ValueObject
-{
-    public string Street { get; }
-    public string City { get; }
-    public string PostalCode { get; }
-    public string Country { get; }
-    
-    private Address() { } // Dla EF Core
-    
-    public Address(string street, string city, string postalCode, string country)
-    {
-        Street = street;
-        City = city;
-        PostalCode = postalCode;
-        Country = country;
-    }
-    
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Street;
-        yield return City;
-        yield return PostalCode;
-        yield return Country;
-    }
-}
-```
+Szczegółowe standardy kodowania dla .NET zostały przeniesione do dokumentacji modułu Identity:
+[Standardy Kodowania dla .NET - MagJob Identity](../../src/KeepItUp.MagJob.Identity/docs/dotnet-standards.md)
 
 ## Standardy dla Angular
 
@@ -203,14 +14,14 @@ public class Address : ValueObject
 - **Podejście**: Modułowa struktura oparta na funkcjonalnościach
 - **Struktura katalogów**:
   ```
-  src/Client/Client.Web/
+  src/KeepItUp.MagJob.Client/
   ├── app/
   │   ├── core/                # Serwisy, guardy, interceptory używane w całej aplikacji
   │   │   ├── auth/            # Autentykacja i autoryzacja
   │   │   ├── http/            # Interceptory HTTP
   │   │   └── services/        # Serwisy współdzielone
   │   ├── features/            # Moduły funkcjonalne
-  │   │   ├── organizations/   # Moduł organizacji
+  │   │   ├── identity/        # Moduł tożsamości
   │   │   ├── schedules/       # Moduł grafików
   │   │   └── work-evidence/   # Moduł ewidencji czasu pracy
   │   ├── shared/              # Komponenty, dyrektywy, pipes współdzielone

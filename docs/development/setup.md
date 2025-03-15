@@ -20,6 +20,7 @@ cd magjob
 ## Environment Configuration
 
 1. Copy the example environment file:
+
    ```bash
    cp .env.example .env
    ```
@@ -35,9 +36,10 @@ docker-compose up -d
 ```
 
 This will start all the necessary services:
+
 - Client Web Application
 - API Gateway
-- Organizations API
+- Identity API
 - Keycloak
 - Database
 - Other dependencies
@@ -47,7 +49,7 @@ This will start all the necessary services:
 ### Client Web Application
 
 ```bash
-cd src/Client.Web
+cd src/KeepItUp.MagJob.Client
 npm install
 npm start
 ```
@@ -55,24 +57,24 @@ npm start
 ### API Gateway
 
 ```bash
-cd src/APIGateway.Web
+cd src/KeepItUp.MagJob.APIGateway
 dotnet run
 ```
 
-### Organizations API
+### Identity API
 
 ```bash
-cd src/Organizations.API
+cd src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web
 dotnet run
 ```
 
 ## Database Setup
 
-*[Instructions for setting up and migrating the database]*
+_[Instructions for setting up and migrating the database]_
 
 ## Authentication Setup
 
-*[Instructions for configuring Keycloak for local development]*
+_[Instructions for configuring Keycloak for local development]_
 
 ## Running Tests
 
@@ -82,8 +84,8 @@ dotnet test
 
 ## Debugging
 
-*[Instructions for debugging different components]*
+_[Instructions for debugging different components]_
 
 ## Common Issues
 
-*[List of common setup issues and their solutions]* 
+_[List of common setup issues and their solutions]_

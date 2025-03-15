@@ -1,9 +1,0 @@
-:host {
-  display: block;
-  height: 100%;
-}
-
-.calendar-grid {
-  height: calc(100vh - 100px);
-  overflow-y: auto;
-}

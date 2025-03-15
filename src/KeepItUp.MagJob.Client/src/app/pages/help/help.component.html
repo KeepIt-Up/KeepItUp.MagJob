@@ -1,0 +1,201 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation -->
+  <app-navbar></app-navbar>
+
+  <!-- Help Header -->
+  <header class="bg-white dark:bg-gray-800 shadow">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Help Center</h1>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Search Section -->
+    <div class="px-4 py-6 sm:px-0 mb-8">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          How can we help you?
+        </h2>
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-grow">
+            <app-input
+              placeholder="Search for help topics..."
+              [fullWidth]="true"
+              iconLeft="heroMagnifyingGlass"
+              [(ngModel)]="searchQuery"
+            ></app-input>
+          </div>
+          <app-button variant="primary" (clicked)="onSearch()" ariaLabel="Search">
+            Search
+          </app-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Categories -->
+    <div class="px-4 sm:px-0">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Getting Started -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200"
+        >
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroBolt" class="h-6 w-6 text-primary"></ng-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Getting Started</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Learn the basics of using MagJob for your organization.
+            </p>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Creating your account</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Setting up your organization</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Inviting team members</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Organization Management -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200"
+        >
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroUserGroup" class="h-6 w-6 text-primary"></ng-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                Organization Management
+              </h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Learn how to manage your organization effectively.
+            </p>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Managing members</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Setting up roles and permissions</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Organization settings</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Task Management -->
+        <div
+          class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200"
+        >
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div
+                class="w-11 h-11 flex items-center justify-center bg-primary/10 dark:bg-primary/20 p-2 rounded-lg mr-4"
+              >
+                <ng-icon name="heroClipboardDocument" class="h-6 w-6 text-primary"></ng-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Task Management</h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              Learn how to create and manage tasks efficiently.
+            </p>
+            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Creating tasks</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Assigning tasks to members</span>
+              </li>
+              <li class="flex items-center">
+                <ng-icon name="heroChevronRight" class="h-4 w-4 mr-2 text-primary"></ng-icon>
+                <span>Tracking task progress</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="px-4 sm:px-0 mt-12">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Frequently Asked Questions
+      </h2>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden transition-colors duration-200"
+      >
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+          <!-- FAQ Item 1 -->
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              How do I reset my password?
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              You can reset your password by clicking on the "Forgot Password" link on the login
+              page. You will receive an email with instructions to reset your password.
+            </p>
+          </div>
+
+          <!-- FAQ Item 2 -->
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              How do I invite new members to my organization?
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Navigate to your organization page, click on the "Members" tab, and then click the
+              "Invite Member" button. Enter the email address of the person you want to invite and
+              select their role.
+            </p>
+          </div>
+
+          <!-- FAQ Item 3 -->
+          <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Can I have multiple organizations?
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Yes, you can create or be a member of multiple organizations. You can switch between
+              organizations from your dashboard.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="px-4 sm:px-0 mt-12 mb-16">
+      <div class="bg-primary/10 dark:bg-primary/20 rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Still need help?</h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
+          Our support team is available to assist you with any questions or issues you may have.
+        </p>
+        <app-button variant="primary" size="md" iconRight="heroEnvelope">
+          Contact Support
+        </app-button>
+      </div>
+    </div>
+  </main>
+</div>

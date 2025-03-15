@@ -1,8 +1,0 @@
-<app-header title="Your Invitations"></app-header>
-
-<app-infinite-list [paginationOptions$]="paginationOptions$()" [state$]="invitationState$()" (onLoad)="loadMore()">
-    @for (invitation of invitationState$().data; track invitation.id) {
-    <app-invitation-card [invitation]="invitation" (acceptInvitation)="acceptInvitation($event)"
-        (rejectInvitation)="rejectInvitation($event)" />
-    }
-</app-infinite-list>

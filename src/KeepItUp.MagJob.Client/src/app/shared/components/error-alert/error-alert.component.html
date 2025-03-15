@@ -1,0 +1,11 @@
+@if (httpErrorResponse(); as error) {
+  <app-alert
+    [alertType]="'danger'"
+    [title]="'Error ' + error.status"
+    [description]="errorMessages()[error.status]"
+  />
+}
+
+@if (applicationError(); as error) {
+  <app-alert [alertType]="'info'" [title]="'Application Error'" [description]="error.message" />
+}

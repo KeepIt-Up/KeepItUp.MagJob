@@ -1,0 +1,154 @@
+@use 'sass:map';
+
+// Button component styles
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  gap: 0.5rem;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  // Size variants
+  &--sm {
+    height: 2.25rem; // 36px
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+
+    .app-button__icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  &--md {
+    height: 2.75rem; // 44px
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+
+    .app-button__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  &--lg {
+    height: 3rem; // 48px
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+
+    .app-button__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  // Variant styles
+  &--primary {
+    background-color: rgb(var(--color-primary));
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: rgb(var(--color-primary-500, var(--color-primary)));
+    }
+
+    &:focus:not(:disabled) {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.4);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgb(var(--color-primary-600, var(--color-primary)));
+    }
+  }
+
+  &--outline {
+    background-color: transparent;
+    border: 1px solid rgb(var(--color-primary));
+    color: rgb(var(--color-primary));
+
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--color-primary), 0.1);
+    }
+
+    &:focus:not(:disabled) {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.4);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba(var(--color-primary), 0.2);
+    }
+  }
+
+  &--text {
+    background-color: transparent;
+    color: rgb(var(--color-primary));
+
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--color-primary), 0.1);
+    }
+
+    &:focus:not(:disabled) {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.4);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba(var(--color-primary), 0.2);
+    }
+  }
+
+  // Full width modifier
+  &--full-width {
+    width: 100%;
+  }
+
+  // Icon styles
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &--left {
+      margin-right: 0.25rem;
+    }
+
+    &--right {
+      margin-left: 0.25rem;
+    }
+  }
+}
+
+// Dark mode adjustments
+:host-context(.dark) {
+  .app-button {
+    &--outline {
+      border-color: rgb(var(--color-primary));
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--color-primary), 0.2);
+      }
+    }
+
+    &--text {
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--color-primary), 0.2);
+      }
+    }
+  }
+}
