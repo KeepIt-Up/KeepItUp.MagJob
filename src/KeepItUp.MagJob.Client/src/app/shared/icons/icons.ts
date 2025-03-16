@@ -10,6 +10,7 @@ import {
   heroBolt,
   heroQuestionMarkCircle,
   heroChevronRight,
+  heroChevronLeft,
   heroSun,
   heroMoon,
   heroUserGroup,
@@ -23,6 +24,10 @@ import {
   heroArrowRightOnRectangle,
   heroCog,
   heroBell,
+  heroArrowPath,
+  heroBuildingOffice,
+  heroShieldCheck,
+  heroCalendar,
 } from '@ng-icons/heroicons/outline';
 
 export const heroIcons = provideIcons({
@@ -36,6 +41,7 @@ export const heroIcons = provideIcons({
   heroBolt,
   heroQuestionMarkCircle,
   heroChevronRight,
+  heroChevronLeft,
   heroSun,
   heroMoon,
   heroUserGroup,
@@ -49,4 +55,8 @@ export const heroIcons = provideIcons({
   heroArrowRightOnRectangle,
   heroCog,
   heroBell,
+  heroArrowPath,
+  heroBuildingOffice,
+  heroShieldCheck,
+  heroCalendar,
 });
