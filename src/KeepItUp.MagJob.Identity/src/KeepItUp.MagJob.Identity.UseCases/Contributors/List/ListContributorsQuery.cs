@@ -1,3 +1,6 @@
-﻿namespace KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+using KeepItUp.MagJob.Identity.UseCases.Common;
 
-public record ListContributorsQuery(int? Skip, int? Take) : IQuery<Result<IEnumerable<ContributorDTO>>>;
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+
+public record ListContributorsQuery(PaginationOptions Options) : IQuery<Result<IPaginatedResponse<Contributor, ContributorDTO>>>;

@@ -1,5 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
@@ -11,6 +10,6 @@ public class GetContributorValidator : Validator<GetContributorByIdRequest>
   public GetContributorValidator()
   {
     RuleFor(x => x.ContributorId)
-      .GreaterThan(0);
+      .NotNull().WithMessage("Id is required");
   }
 }

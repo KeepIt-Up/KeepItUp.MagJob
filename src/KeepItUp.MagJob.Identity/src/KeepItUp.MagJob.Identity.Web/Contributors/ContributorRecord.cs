@@ -1,3 +1,3 @@
 ﻿namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
-public record ContributorRecord(int Id, string Name, string? PhoneNumber);
+public record ContributorRecord(Guid Id, string Name, string? PhoneNumber);

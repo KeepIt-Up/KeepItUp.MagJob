@@ -2,10 +2,12 @@
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
-public class ContributorConfiguration : IEntityTypeConfiguration<Contributor>
+public class ContributorConfiguration : BaseEntityConfiguration<Contributor>
 {
-  public void Configure(EntityTypeBuilder<Contributor> builder)
+  public override void Configure(EntityTypeBuilder<Contributor> builder)
   {
+    base.Configure(builder);
+
     builder.Property(p => p.Name)
         .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH)
         .IsRequired();
@@ -17,4 +19,6 @@ public class ContributorConfiguration : IEntityTypeConfiguration<Contributor>
           x => x.Value,
           x => ContributorStatus.FromValue(x));
   }
+
+  protected override string GetTableName() => DataSchemaConstants.CONTRIBUTOR_TABLE;
 }

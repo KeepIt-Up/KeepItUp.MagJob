@@ -29,13 +29,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     // Utworzenie schematu "identity"
     modelBuilder.HasDefaultSchema(DataSchemaConstants.IDENTITY_SCHEMA);
     // Dodanie rozszerzenia dla UUID
-    modelBuilder.HasPostgresExtension("uuid-ossp"); 
+    modelBuilder.HasPostgresExtension("uuid-ossp");
   }
 
   public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
   {
     UpdateTimestamps();
-    
+
     int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
     if (_dispatcher == null) return result;
@@ -55,7 +55,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     UpdateTimestamps();
     return base.SaveChanges();
   }
-  
+
   /// <summary>
   /// Automatycznie aktualizuje pola CreatedAt i UpdatedAt dla encji dziedziczących z BaseEntity.
   /// </summary>
@@ -68,14 +68,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
     foreach (var entity in entities)
     {
-        var baseEntity = (BaseEntity)entity.Entity;
-        
-        if (entity.State == EntityState.Added)
-        {
-            entity.Property("CreatedAt").CurrentValue = now;
-        }
+      var baseEntity = (BaseEntity)entity.Entity;
 
-        entity.Property("UpdatedAt").CurrentValue = now;
+      if (entity.State == EntityState.Added)
+      {
+        entity.Property("CreatedAt").CurrentValue = now;
+      }
+
+      entity.Property("UpdatedAt").CurrentValue = now;
     }
   }
 }

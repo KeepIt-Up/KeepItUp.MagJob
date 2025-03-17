@@ -19,6 +19,5 @@ public class EfRepositoryAdd : BaseEfRepoTestFixture
 
     Assert.Equal(testContributorName, newContributor?.Name);
     Assert.Equal(testContributorStatus, newContributor?.Status);
-    Assert.True(newContributor?.Id > 0);
   }
 }

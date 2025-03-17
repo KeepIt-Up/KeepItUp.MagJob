@@ -1,11 +1,14 @@
-﻿namespace KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+using KeepItUp.MagJob.Identity.UseCases.Common;
 
-public class ListContributorsHandler(IListContributorsQueryService _query)
-  : IQueryHandler<ListContributorsQuery, Result<IEnumerable<ContributorDTO>>>
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+
+public class ListContributorsHandler(IEfRepository<Contributor> _repository)
+  : IQueryHandler<ListContributorsQuery, Result<IPaginatedResponse<Contributor, ContributorDTO>>>
 {
-  public async Task<Result<IEnumerable<ContributorDTO>>> Handle(ListContributorsQuery request, CancellationToken cancellationToken)
+  public async Task<Result<IPaginatedResponse<Contributor, ContributorDTO>>> Handle(ListContributorsQuery request, CancellationToken cancellationToken)
   {
-    var result = await _query.ListAsync();
+    var result = await _repository.ToPaginatedResponse<ContributorDTO>(request.Options);
 
     return Result.Success(result);
   }

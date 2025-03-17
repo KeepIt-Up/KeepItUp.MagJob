@@ -18,4 +18,4 @@ public class GetOrganizationMembersResponse
     /// Lista członków organizacji.
     /// </summary>
     public List<MemberDto> MembersList { get; set; } = new();
-} 
+}

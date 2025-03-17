@@ -17,4 +17,4 @@ public record GetOrganizationMembersQuery : IRequest<Result<List<MemberDto>>>
     /// Identyfikator użytkownika wykonującego zapytanie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

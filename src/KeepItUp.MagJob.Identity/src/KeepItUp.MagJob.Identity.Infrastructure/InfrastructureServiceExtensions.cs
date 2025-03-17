@@ -2,9 +2,8 @@
 using KeepItUp.MagJob.Identity.Core.Services;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
-using KeepItUp.MagJob.Identity.Infrastructure.Data.Queries;
 using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
-using KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+using KeepItUp.MagJob.Identity.UseCases.Common;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 public static class InfrastructureServiceExtensions
@@ -26,11 +25,14 @@ public static class InfrastructureServiceExtensions
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
            .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
-           .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
+           .AddScoped(typeof(IEfRepository<>), typeof(EfRepository<>))
            .AddScoped<IDeleteContributorService, DeleteContributorService>();
 
     // Dodanie usług związanych z Keycloak
     services.AddKeycloakServices();
+
+    // Dodanie konfiguracji Mapster
+    services.AddMapsterConfiguration();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

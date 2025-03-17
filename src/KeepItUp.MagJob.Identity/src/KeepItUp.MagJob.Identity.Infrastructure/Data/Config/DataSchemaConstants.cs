@@ -25,4 +25,5 @@ public static class DataSchemaConstants
   public const string INVITATIONS_TABLE = "Invitations";
   public const string MEMBER_ROLES_TABLE = "MemberRoles";
   public const string ROLE_PERMISSIONS_TABLE = "RolePermissions";
+  public const string CONTRIBUTOR_TABLE = "Contributors";
 }

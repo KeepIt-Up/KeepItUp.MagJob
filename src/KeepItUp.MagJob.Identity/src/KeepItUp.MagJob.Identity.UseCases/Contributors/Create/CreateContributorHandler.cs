@@ -3,9 +3,9 @@
 namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Create;
 
 public class CreateContributorHandler(IRepository<Contributor> _repository)
-  : ICommandHandler<CreateContributorCommand, Result<int>>
+  : ICommandHandler<CreateContributorCommand, Result<Guid>>
 {
-  public async Task<Result<int>> Handle(CreateContributorCommand request,
+  public async Task<Result<Guid>> Handle(CreateContributorCommand request,
     CancellationToken cancellationToken)
   {
     var newContributor = new Contributor(request.Name);

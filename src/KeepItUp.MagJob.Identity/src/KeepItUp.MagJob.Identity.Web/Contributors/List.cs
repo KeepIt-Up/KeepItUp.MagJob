@@ -1,5 +1,8 @@
-﻿using KeepItUp.MagJob.Identity.UseCases.Contributors;
+﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+using KeepItUp.MagJob.Identity.UseCases.Common;
+using KeepItUp.MagJob.Identity.UseCases.Contributors;
 using KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+using KeepItUp.MagJob.Identity.Web.Common;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
@@ -9,7 +12,7 @@ namespace KeepItUp.MagJob.Identity.Web.Contributors;
 /// <remarks>
 /// List all contributors - returns a ContributorListResponse containing the Contributors.
 /// </remarks>
-public class List(IMediator _mediator) : EndpointWithoutRequest<ContributorListResponse>
+public class List(IMediator _mediator) : Endpoint<RequestWithPagination, IPaginatedResponse<Contributor, ContributorDTO>>
 {
   public override void Configure()
   {
@@ -17,16 +20,13 @@ public class List(IMediator _mediator) : EndpointWithoutRequest<ContributorListR
     AllowAnonymous();
   }
 
-  public override async Task HandleAsync(CancellationToken cancellationToken)
+  public override async Task HandleAsync(RequestWithPagination request, CancellationToken cancellationToken)
   {
-    Result<IEnumerable<ContributorDTO>> result = await _mediator.Send(new ListContributorsQuery(null, null), cancellationToken);
+    Result<IPaginatedResponse<Contributor, ContributorDTO>> result = await _mediator.Send(new ListContributorsQuery(request.Options), cancellationToken);
 
     if (result.IsSuccess)
     {
-      Response = new ContributorListResponse
-      {
-        Contributors = result.Value.Select(c => new ContributorRecord(c.Id, c.Name, c.PhoneNumber)).ToList()
-      };
+      Response = result.Value;
     }
   }
 }

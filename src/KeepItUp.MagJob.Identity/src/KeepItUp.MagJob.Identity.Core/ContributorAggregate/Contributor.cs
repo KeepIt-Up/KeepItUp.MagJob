@@ -1,6 +1,8 @@
-﻿namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.SharedKernel;
 
-public class Contributor(string name) : EntityBase, IAggregateRoot
+namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+
+public class Contributor(string name) : BaseEntity, IAggregateRoot
 {
   // Example of validating primary constructor inputs
   // See: https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/primary-constructors#initialize-base-class

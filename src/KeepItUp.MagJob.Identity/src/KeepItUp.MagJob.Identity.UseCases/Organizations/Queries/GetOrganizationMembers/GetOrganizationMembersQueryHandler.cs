@@ -102,4 +102,4 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
             return Result<List<MemberDto>>.Error("Wystąpił błąd podczas pobierania członków organizacji: " + ex.Message);
         }
     }
-} 
+}
