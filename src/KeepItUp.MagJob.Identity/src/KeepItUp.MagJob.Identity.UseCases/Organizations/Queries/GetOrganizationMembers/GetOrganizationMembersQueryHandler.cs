@@ -1,9 +1,8 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,8 +14,8 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizatio
 /// </summary>
 public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizationMembersQuery, Result<List<MemberDto>>>
 {
-    private readonly IReadRepository<Organization> _organizationRepository;
-    private readonly IReadRepository<User> _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<GetOrganizationMembersQueryHandler> _logger;
 
     /// <summary>
@@ -26,8 +25,8 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
     /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationMembersQueryHandler(
-        IReadRepository<Organization> organizationRepository,
-        IReadRepository<User> userRepository,
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository,
         ILogger<GetOrganizationMembersQueryHandler> logger)
     {
         _organizationRepository = organizationRepository;
@@ -46,8 +45,7 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _organizationRepository.FirstOrDefaultAsync(
-                new OrganizationWithMembersSpec(request.OrganizationId), cancellationToken);
+            var organization = await _organizationRepository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -56,7 +54,7 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
             bool hasAccess = organization.OwnerId == request.UserId ||
-                             organization.Members.Any(m => m.UserId == request.UserId);
+                             await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
             if (!hasAccess)
             {
@@ -68,8 +66,7 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
             // Pobierz dane użytkowników dla członków organizacji
             foreach (var member in organization.Members)
             {
-                var user = await _userRepository.FirstOrDefaultAsync(
-                    new UserByIdSpec(member.UserId), cancellationToken);
+                var user = await _userRepository.GetByIdAsync(member.UserId, cancellationToken);
 
                 if (user != null)
                 {

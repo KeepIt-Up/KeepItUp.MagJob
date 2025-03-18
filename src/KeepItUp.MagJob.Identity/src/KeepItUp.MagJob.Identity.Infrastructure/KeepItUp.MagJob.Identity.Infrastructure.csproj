@@ -3,7 +3,6 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.SharedKernel" />
-    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MailKit" />
     <PackageReference Include="Mapster" />

@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRolePer
 /// Handler dla komendy <see cref="UpdateRolePermissionsCommand"/>.
 /// </summary>
 public class UpdateRolePermissionsCommandHandler(
-    IRepository<Organization> organizationRepository,
+    IOrganizationRepository organizationRepository,
     ILogger<UpdateRolePermissionsCommandHandler> logger)
     : IRequestHandler<UpdateRolePermissionsCommand, Result>
 {
@@ -26,8 +25,7 @@ public class UpdateRolePermissionsCommandHandler(
         try
         {
             // Pobieramy organizację wraz z rolami
-            var spec = new OrganizationWithRolesSpec(request.OrganizationId);
-            var organization = await organizationRepository.FirstOrDefaultAsync(spec, cancellationToken);
+            var organization = await organizationRepository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -35,7 +33,8 @@ public class UpdateRolePermissionsCommandHandler(
             }
 
             // Sprawdzamy, czy użytkownik ma dostęp do organizacji
-            if (!organization.HasAccess(request.UserId))
+            if (!await organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken) &&
+                organization.OwnerId != request.UserId)
             {
                 return Result.Forbidden("Brak dostępu do organizacji.");
             }
@@ -65,4 +64,4 @@ public class UpdateRolePermissionsCommandHandler(
             return Result.Error("Wystąpił błąd podczas aktualizacji uprawnień roli.");
         }
     }
-} 
+}

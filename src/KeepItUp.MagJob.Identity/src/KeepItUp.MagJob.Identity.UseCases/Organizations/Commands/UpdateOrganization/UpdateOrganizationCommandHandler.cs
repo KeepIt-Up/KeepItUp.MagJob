@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganiz
 /// </summary>
 public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizationCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<UpdateOrganizationCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<UpdateOrganizationCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationByIdSpec(request.Id), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.Id, cancellationToken);
 
             if (organization == null)
             {
@@ -50,7 +48,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
             // Sprawdź, czy użytkownik ma uprawnienia do aktualizacji organizacji
             if (organization.OwnerId != request.UserId)
             {
-                var isMember = organization.Members.Any(m => m.UserId == request.UserId && 
+                var isMember = organization.Members.Any(m => m.UserId == request.UserId &&
                     m.Roles.Any(r => r.Name == "Admin"));
 
                 if (!isMember)
@@ -62,8 +60,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
             // Sprawdź, czy nazwa organizacji nie jest już używana przez inną organizację
             if (organization.Name != request.Name)
             {
-                var existingOrganization = await _repository.FirstOrDefaultAsync(
-                    new OrganizationByNameSpec(request.Name), cancellationToken);
+                var existingOrganization = await _repository.GetByNameAsync(request.Name, cancellationToken);
 
                 if (existingOrganization != null && existingOrganization.Id != request.Id)
                 {
@@ -76,7 +73,6 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Zaktualizowano organizację o ID {OrganizationId}", organization.Id);
 
@@ -88,4 +84,4 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
             return Result.Error("Wystąpił błąd podczas aktualizacji organizacji: " + ex.Message);
         }
     }
-} 
+}

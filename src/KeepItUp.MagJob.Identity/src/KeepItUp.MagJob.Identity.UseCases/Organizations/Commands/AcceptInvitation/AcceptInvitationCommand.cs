@@ -5,8 +5,13 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AcceptInvitat
 /// <summary>
 /// Komenda do akceptacji zaproszenia do organizacji.
 /// </summary>
-public record AcceptInvitationCommand : IRequest<Result>
+public record AcceptInvitationCommand : IRequest<Result<Guid>>
 {
+    /// <summary>
+    /// Identyfikator organizacji.
+    /// </summary>
+    public Guid OrganizationId { get; init; }
+
     /// <summary>
     /// Identyfikator zaproszenia.
     /// </summary>
@@ -21,4 +26,4 @@ public record AcceptInvitationCommand : IRequest<Result>
     /// Identyfikator użytkownika akceptującego zaproszenie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

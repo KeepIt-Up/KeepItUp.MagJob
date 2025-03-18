@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 /// </summary>
 public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<UpdateRoleCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public UpdateRoleCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<UpdateRoleCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -84,7 +82,6 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Zaktualizowano rolę o ID {RoleId} w organizacji o ID {OrganizationId}",
                 request.RoleId, organization.Id);
@@ -97,4 +94,4 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
             return Result.Error("Wystąpił błąd podczas aktualizacji roli: " + ex.Message);
         }
     }
-} 
+}

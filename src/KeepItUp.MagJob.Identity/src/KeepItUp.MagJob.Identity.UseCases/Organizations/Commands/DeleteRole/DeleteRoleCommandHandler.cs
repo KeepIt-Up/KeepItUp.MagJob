@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
 /// </summary>
 public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<DeleteRoleCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public DeleteRoleCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<DeleteRoleCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -71,7 +69,7 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
             }
 
             // Sprawdź, czy rola nie jest przypisana do żadnego członka
-            var membersWithRole = organization.Members.Where(m => m.Roles.Any(r => r.Id == request.RoleId)).ToList();
+            var membersWithRole = organization.Members.Where(m => m.HasRole(request.RoleId)).ToList();
             if (membersWithRole.Any())
             {
                 return Result.Error("Nie można usunąć roli, która jest przypisana do członków organizacji.");
@@ -82,7 +80,6 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Usunięto rolę o ID {RoleId} z organizacji o ID {OrganizationId}",
                 request.RoleId, organization.Id);
@@ -95,4 +92,4 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
             return Result.Error("Wystąpił błąd podczas usuwania roli: " + ex.Message);
         }
     }
-} 
+}

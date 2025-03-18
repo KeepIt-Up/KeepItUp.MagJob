@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetInvitationB
 /// </summary>
 public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQuery, Result<InvitationDto>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetInvitationByIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +21,7 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetInvitationByIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetInvitationByIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +39,7 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithInvitationsSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -50,7 +48,7 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
             bool hasAccess = organization.OwnerId == request.UserId ||
-                             organization.Members.Any(m => m.UserId == request.UserId);
+                             await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
             if (!hasAccess)
             {
@@ -82,9 +80,9 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas pobierania zaproszenia o ID {InvitationId} w organizacji o ID {OrganizationId}", 
+            _logger.LogError(ex, "Błąd podczas pobierania zaproszenia o ID {InvitationId} w organizacji o ID {OrganizationId}",
                 request.InvitationId, request.OrganizationId);
             return Result<InvitationDto>.Error("Wystąpił błąd podczas pobierania zaproszenia: " + ex.Message);
         }
     }
-} 
+}

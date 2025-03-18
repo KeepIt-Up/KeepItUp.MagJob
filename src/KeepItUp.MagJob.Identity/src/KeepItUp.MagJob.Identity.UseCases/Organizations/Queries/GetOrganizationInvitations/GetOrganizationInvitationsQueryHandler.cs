@@ -1,8 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizatio
 /// </summary>
 public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganizationInvitationsQuery, Result<List<InvitationDto>>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetOrganizationInvitationsQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +19,7 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationInvitationsQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetOrganizationInvitationsQueryHandler> logger)
     {
         _repository = repository;
@@ -40,59 +37,42 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithInvitationsSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
                 return Result<List<InvitationDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do przeglądania zaproszeń
-            if (organization.OwnerId != request.UserId)
-            {
-                var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                if (requestingMember == null || !requestingMember.Roles.Any(r => r.Name == "Admin"))
-                {
-                    return Result<List<InvitationDto>>.Forbidden("Brak uprawnień do przeglądania zaproszeń organizacji.");
-                }
-            }
+            // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
+            bool hasAccess = organization.OwnerId == request.UserId ||
+                              await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
-            var result = new List<InvitationDto>();
+            if (!hasAccess)
+            {
+                return Result<List<InvitationDto>>.Forbidden("Brak dostępu do organizacji.");
+            }
 
             // Mapuj zaproszenia na DTO
-            foreach (var invitation in organization.Invitations)
-            {
-                var role = organization.Roles.FirstOrDefault(r => r.Id == invitation.RoleId);
-                
-                var invitationDto = new InvitationDto
+            var invitationDtos = organization.Invitations
+                .Where(i => i.Status == InvitationStatus.Pending) // Pobierz tylko oczekujące zaproszenia
+                .Select(i => new InvitationDto
                 {
-                    Id = invitation.Id,
-                    OrganizationId = organization.Id,
-                    Email = invitation.Email,
-                    Token = invitation.Token,
-                    Status = invitation.Status.ToString(),
-                    ExpiresAt = invitation.ExpiresAt,
-                    IsExpired = invitation.IsExpired,
-                    Role = role != null ? new RoleDto
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Description = role.Description,
-                        Color = role.Color,
-                        Permissions = role.Permissions.Select(p => p.Name).ToList()
-                    } : null
-                };
+                    Id = i.Id,
+                    Email = i.Email,
+                    CreatedAt = i.CreatedAt,
+                    ExpiresAt = i.ExpiresAt,
+                    Status = i.Status.ToString()
+                })
+                .ToList();
 
-                result.Add(invitationDto);
-            }
-
-            return Result<List<InvitationDto>>.Success(result);
+            return Result<List<InvitationDto>>.Success(invitationDtos);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas pobierania zaproszeń organizacji o ID {OrganizationId}", request.OrganizationId);
-            return Result<List<InvitationDto>>.Error("Wystąpił błąd podczas pobierania zaproszeń organizacji: " + ex.Message);
+            _logger.LogError(ex, "Błąd podczas pobierania zaproszeń dla organizacji o ID {OrganizationId}",
+                request.OrganizationId);
+            return Result<List<InvitationDto>>.Error("Wystąpił błąd podczas pobierania zaproszeń: " + ex.Message);
         }
     }
-} 
+}

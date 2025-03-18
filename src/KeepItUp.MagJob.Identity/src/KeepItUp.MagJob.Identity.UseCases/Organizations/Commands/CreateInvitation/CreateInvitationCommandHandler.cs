@@ -1,9 +1,7 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,8 +12,8 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateInvitat
 /// </summary>
 public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCommand, Result<Guid>>
 {
-    private readonly IRepository<Organization> _organizationRepository;
-    private readonly IReadRepository<User> _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<CreateInvitationCommandHandler> _logger;
 
     /// <summary>
@@ -25,8 +23,8 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
     /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public CreateInvitationCommandHandler(
-        IRepository<Organization> organizationRepository,
-        IReadRepository<User> userRepository,
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository,
         ILogger<CreateInvitationCommandHandler> logger)
     {
         _organizationRepository = organizationRepository;
@@ -45,8 +43,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _organizationRepository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _organizationRepository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -56,7 +53,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
             // Sprawdź, czy użytkownik ma uprawnienia do tworzenia zaproszeń
             if (organization.OwnerId != request.UserId)
             {
-                var isMember = organization.Members.Any(m => m.UserId == request.UserId && 
+                var isMember = organization.Members.Any(m => m.UserId == request.UserId &&
                     m.Roles.Any(r => r.Name == "Admin"));
 
                 if (!isMember)
@@ -73,8 +70,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
             }
 
             // Sprawdź, czy użytkownik o podanym adresie e-mail już istnieje
-            var existingUser = await _userRepository.FirstOrDefaultAsync(
-                new UserByEmailSpec(request.Email), cancellationToken);
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
 
             if (existingUser != null)
             {
@@ -88,7 +84,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
 
             // Sprawdź, czy istnieje aktywne zaproszenie dla tego adresu e-mail
             var existingInvitation = organization.Invitations
-                .FirstOrDefault(i => i.Email == request.Email && !i.IsExpired && 
+                .FirstOrDefault(i => i.Email == request.Email && !i.IsExpired &&
                                      i.Status == InvitationStatus.Pending);
 
             if (existingInvitation != null)
@@ -101,7 +97,6 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
 
             // Zapisz zmiany w repozytorium
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
-            await _organizationRepository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Utworzono zaproszenie o ID {InvitationId} dla adresu e-mail {Email} do organizacji {OrganizationId}",
                 invitation.Id, request.Email, organization.Id);
@@ -114,4 +109,4 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
             return Result<Guid>.Error("Wystąpił błąd podczas tworzenia zaproszenia: " + ex.Message);
         }
     }
-} 
+}

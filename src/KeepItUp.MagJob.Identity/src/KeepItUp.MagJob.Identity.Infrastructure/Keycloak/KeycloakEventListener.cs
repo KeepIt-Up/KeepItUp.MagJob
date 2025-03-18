@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Hosting;
-using System.Net.Http.Json;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using KeepItUp.MagJob.Identity.Core.Interfaces;
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.Keycloak;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
@@ -233,13 +232,18 @@ public class KeycloakEventListener : BackgroundService
 
   private async Task HandleUserLoginEventAsync(string userId, CancellationToken cancellationToken)
   {
+    if (string.IsNullOrEmpty(userId))
+    {
+      _logger.LogWarning("Próba obsługi zdarzenia logowania z pustym ID użytkownika");
+      return;
+    }
+
     using var scope = _serviceScopeFactory.CreateScope();
-    var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
+    var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
     try
     {
-      // Użyj specyfikacji UserByExternalIdSpec zamiast GetByIdAsync
-      var user = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+      var user = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
       if (user != null)
       {
         user.UpdateLastLoginDate(DateTime.UtcNow);
@@ -259,13 +263,18 @@ public class KeycloakEventListener : BackgroundService
 
   private async Task HandleUserDeleteEventAsync(string userId, CancellationToken cancellationToken)
   {
+    if (string.IsNullOrEmpty(userId))
+    {
+      _logger.LogWarning("Próba obsługi zdarzenia usunięcia z pustym ID użytkownika");
+      return;
+    }
+
     using var scope = _serviceScopeFactory.CreateScope();
-    var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
+    var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
     try
     {
-      // Użyj specyfikacji UserByExternalIdSpec zamiast GetByIdAsync
-      var user = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+      var user = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
       if (user != null)
       {
         // Możemy oznaczyć użytkownika jako nieaktywnego zamiast go usuwać
@@ -286,6 +295,12 @@ public class KeycloakEventListener : BackgroundService
 
   private async Task HandleRoleMappingEventAsync(string userId, CancellationToken cancellationToken)
   {
+    if (string.IsNullOrEmpty(userId))
+    {
+      _logger.LogWarning("Próba obsługi zdarzenia mapowania ról z pustym ID użytkownika");
+      return;
+    }
+
     using var scope = _serviceScopeFactory.CreateScope();
     var keycloakSyncService = scope.ServiceProvider.GetRequiredService<IKeycloakSyncService>();
 
@@ -295,14 +310,20 @@ public class KeycloakEventListener : BackgroundService
 
   private async Task HandleUserRegistrationEventAsync(string userId, CancellationToken cancellationToken)
   {
+    if (string.IsNullOrEmpty(userId))
+    {
+      _logger.LogWarning("Próba obsługi zdarzenia rejestracji z pustym ID użytkownika");
+      return;
+    }
+
     try
     {
       using var scope = _serviceScopeFactory.CreateScope();
       var keycloakSyncService = scope.ServiceProvider.GetRequiredService<IKeycloakSyncService>();
-      var userRepository = scope.ServiceProvider.GetRequiredService<IRepository<User>>();
+      var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
       // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
-      var existingUser = await userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+      var existingUser = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
 
       if (existingUser != null)
       {

@@ -9,6 +9,11 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitat
 public record RejectInvitationCommand : IRequest<Result>
 {
     /// <summary>
+    /// Identyfikator organizacji.
+    /// </summary>
+    public Guid OrganizationId { get; init; }
+
+    /// <summary>
     /// Identyfikator zaproszenia.
     /// </summary>
     public Guid InvitationId { get; init; }
@@ -22,4 +27,4 @@ public record RejectInvitationCommand : IRequest<Result>
     /// Identyfikator użytkownika odrzucającego zaproszenie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

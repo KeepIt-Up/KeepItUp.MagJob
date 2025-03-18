@@ -1,7 +1,7 @@
 using Ardalis.Result;
 using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByMemb
 /// </summary>
 public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberIdQuery, Result<List<RoleDto>>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetRolesByMemberIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +22,7 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetRolesByMemberIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetRolesByMemberIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +40,7 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithMembersAndRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -50,7 +49,7 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
 
             // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
             bool hasAccess = organization.OwnerId == request.RequestingUserId ||
-                             organization.Members.Any(m => m.UserId == request.RequestingUserId);
+                             await _repository.HasMemberAsync(request.OrganizationId, request.RequestingUserId, cancellationToken);
 
             if (!hasAccess)
             {
@@ -82,9 +81,9 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas pobierania ról członka o ID {MemberUserId} w organizacji o ID {OrganizationId}", 
+            _logger.LogError(ex, "Błąd podczas pobierania ról członka o ID {MemberUserId} w organizacji o ID {OrganizationId}",
                 request.MemberUserId, request.OrganizationId);
             return Result<List<RoleDto>>.Error("Wystąpił błąd podczas pobierania ról członka: " + ex.Message);
         }
     }
-} 
+}

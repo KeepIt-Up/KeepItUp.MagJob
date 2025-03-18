@@ -1,7 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 /// </summary>
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result>
 {
-    private readonly IRepository<User> _repository;
+    private readonly IUserRepository _repository;
     private readonly ILogger<UpdateUserCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +19,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
     /// <param name="repository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public UpdateUserCommandHandler(
-        IRepository<User> repository,
+        IUserRepository repository,
         ILogger<UpdateUserCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +37,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
         try
         {
             // Pobierz użytkownika z repozytorium
-            var user = await _repository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.Id), cancellationToken);
+            var user = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (user == null)
             {
@@ -58,7 +55,6 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(user, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Zaktualizowano użytkownika o ID {UserId}", user.Id);
 
@@ -70,4 +66,4 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
             return Result.Error("Wystąpił błąd podczas aktualizacji użytkownika: " + ex.Message);
         }
     }
-} 
+}

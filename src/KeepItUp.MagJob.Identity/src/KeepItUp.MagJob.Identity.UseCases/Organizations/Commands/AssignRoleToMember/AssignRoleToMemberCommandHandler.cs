@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToM
 /// </summary>
 public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemberCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<AssignRoleToMemberCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public AssignRoleToMemberCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<AssignRoleToMemberCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -78,11 +76,10 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
             }
 
             // Przypisz rolę członkowi organizacji
-            organization.AssignRoleToMember(request.MemberUserId, request.RoleId);
+            member.AssignRole(request.RoleId);
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Przypisano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",
                 request.RoleId, request.MemberUserId, organization.Id);
@@ -95,4 +92,4 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
             return Result.Error("Wystąpił błąd podczas przypisywania roli: " + ex.Message);
         }
     }
-} 
+}

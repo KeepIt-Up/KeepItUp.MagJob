@@ -1,8 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Users.Queries;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
 /// </summary>
 public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternalIdQuery, Result<UserDto>>
 {
-    private readonly IReadRepository<User> _repository;
+    private readonly IUserRepository _repository;
     private readonly ILogger<GetUserByExternalIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +19,7 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
     /// <param name="repository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public GetUserByExternalIdQueryHandler(
-        IReadRepository<User> repository,
+        IUserRepository repository,
         ILogger<GetUserByExternalIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +37,7 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
         try
         {
             // Pobierz użytkownika z repozytorium
-            var user = await _repository.FirstOrDefaultAsync(
-                new UserByExternalIdSpec(request.ExternalId), cancellationToken);
+            var user = await _repository.GetByExternalIdAsync(request.ExternalId, cancellationToken);
 
             if (user == null)
             {
@@ -67,7 +63,7 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
                 var phoneNumber = user.Profile?.PhoneNumber;
                 var address = user.Profile?.Address;
                 var profileImage = user.Profile?.ProfileImage;
-                
+
                 userDto.Profile = new UserProfileDto
                 {
                     PhoneNumber = phoneNumber ?? string.Empty,
@@ -94,4 +90,4 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
             return Result<UserDto>.Error("Wystąpił błąd podczas pobierania użytkownika: " + ex.Message);
         }
     }
-} 
+}

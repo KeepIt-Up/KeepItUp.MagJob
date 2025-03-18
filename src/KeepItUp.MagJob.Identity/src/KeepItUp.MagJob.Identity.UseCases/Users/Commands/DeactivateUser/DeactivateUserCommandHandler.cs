@@ -1,7 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.DeactivateUser;
 /// </summary>
 public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserCommand, Result>
 {
-    private readonly IRepository<User> _repository;
+    private readonly IUserRepository _repository;
     private readonly ILogger<DeactivateUserCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +19,7 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
     /// <param name="repository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public DeactivateUserCommandHandler(
-        IRepository<User> repository,
+        IUserRepository repository,
         ILogger<DeactivateUserCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +37,7 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
         try
         {
             // Pobierz użytkownika z repozytorium
-            var user = await _repository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.Id), cancellationToken);
+            var user = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (user == null)
             {
@@ -52,7 +49,6 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(user, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Dezaktywowano użytkownika o ID {UserId}", user.Id);
 
@@ -64,4 +60,4 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
             return Result.Error("Wystąpił błąd podczas dezaktywacji użytkownika: " + ex.Message);
         }
     }
-} 
+}

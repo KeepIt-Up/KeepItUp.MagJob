@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrg
 /// </summary>
 public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOrganizationCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<DeactivateOrganizationCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public DeactivateOrganizationCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<DeactivateOrganizationCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationByIdSpec(request.Id), cancellationToken);
+            var organization = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (organization == null)
             {
@@ -58,7 +56,6 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Dezaktywowano organizację o ID {OrganizationId}", organization.Id);
 
@@ -70,4 +67,4 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
             return Result.Error("Wystąpił błąd podczas dezaktywacji organizacji: " + ex.Message);
         }
     }
-} 
+}

@@ -1,9 +1,7 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,8 +13,8 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 /// </summary>
 public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizationsQuery, Result<List<OrganizationDto>>>
 {
-    private readonly IReadRepository<User> _userRepository;
-    private readonly IReadRepository<Organization> _organizationRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
     private readonly ILogger<GetUserOrganizationsQueryHandler> _logger;
 
     /// <summary>
@@ -26,8 +24,8 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
     /// <param name="organizationRepository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetUserOrganizationsQueryHandler(
-        IReadRepository<User> userRepository,
-        IReadRepository<Organization> organizationRepository,
+        IUserRepository userRepository,
+        IOrganizationRepository organizationRepository,
         ILogger<GetUserOrganizationsQueryHandler> logger)
     {
         _userRepository = userRepository;
@@ -46,8 +44,7 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
         try
         {
             // Sprawdź, czy użytkownik istnieje
-            var user = await _userRepository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.UserId), cancellationToken);
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
             if (user == null)
             {
@@ -55,8 +52,7 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
             }
 
             // Pobierz organizacje, w których użytkownik jest członkiem
-            var organizations = await _organizationRepository.ListAsync(
-                new OrganizationsWithMemberSpec(request.UserId), cancellationToken);
+            var organizations = await _organizationRepository.GetByUserIdAsync(request.UserId, cancellationToken);
 
             if (organizations.Count == 0)
             {
@@ -69,7 +65,7 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
             foreach (var organization in organizations)
             {
                 var member = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                
+
                 if (member != null)
                 {
                     var organizationDto = new OrganizationDto
@@ -94,4 +90,4 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
             return Result<List<OrganizationDto>>.Error("Wystąpił błąd podczas pobierania organizacji: " + ex.Message);
         }
     }
-} 
+}

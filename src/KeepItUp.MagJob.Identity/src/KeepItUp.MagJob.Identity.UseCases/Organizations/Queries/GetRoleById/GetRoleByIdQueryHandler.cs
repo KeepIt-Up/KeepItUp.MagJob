@@ -1,8 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRoleById;
 /// </summary>
 public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<RoleDto>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetRoleByIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +19,7 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetRoleByIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetRoleByIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +37,7 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -83,4 +79,4 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
             return Result<RoleDto>.Error("Wystąpił błąd podczas pobierania roli: " + ex.Message);
         }
     }
-} 
+}

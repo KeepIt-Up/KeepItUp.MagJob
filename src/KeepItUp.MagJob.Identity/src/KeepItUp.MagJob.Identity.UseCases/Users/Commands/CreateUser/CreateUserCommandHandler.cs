@@ -1,7 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 /// </summary>
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Guid>>
 {
-    private readonly IRepository<User> _repository;
+    private readonly IUserRepository _repository;
     private readonly ILogger<CreateUserCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +19,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     /// <param name="repository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public CreateUserCommandHandler(
-        IRepository<User> repository,
+        IUserRepository repository,
         ILogger<CreateUserCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +37,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         try
         {
             // Sprawdź, czy użytkownik o podanym adresie e-mail już istnieje
-            var existingUserByEmail = await _repository.FirstOrDefaultAsync(
-                new UserByEmailSpec(request.Email), cancellationToken);
+            var existingUserByEmail = await _repository.GetByEmailAsync(request.Email, cancellationToken);
 
             if (existingUserByEmail != null)
             {
@@ -48,8 +45,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             }
 
             // Sprawdź, czy użytkownik o podanym identyfikatorze zewnętrznym już istnieje
-            var existingUserByExternalId = await _repository.FirstOrDefaultAsync(
-                new UserByExternalIdSpec(request.ExternalId), cancellationToken);
+            var existingUserByExternalId = await _repository.GetByExternalIdAsync(request.ExternalId, cancellationToken);
 
             if (existingUserByExternalId != null)
             {
@@ -66,8 +62,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 true); // Domyślnie użytkownik jest aktywny
 
             // Aktualizuj profil użytkownika (jeśli podano dane profilu)
-            if (!string.IsNullOrEmpty(request.PhoneNumber) || 
-                !string.IsNullOrEmpty(request.Address) || 
+            if (!string.IsNullOrEmpty(request.PhoneNumber) ||
+                !string.IsNullOrEmpty(request.Address) ||
                 !string.IsNullOrEmpty(request.ProfileImageUrl))
             {
                 user.UpdateProfile(
@@ -78,7 +74,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
             // Zapisz użytkownika w repozytorium
             await _repository.AddAsync(user, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Utworzono nowego użytkownika o ID {UserId}", user.Id);
 
@@ -90,4 +85,4 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             return Result<Guid>.Error("Wystąpił błąd podczas tworzenia użytkownika: " + ex.Message);
         }
     }
-} 
+}

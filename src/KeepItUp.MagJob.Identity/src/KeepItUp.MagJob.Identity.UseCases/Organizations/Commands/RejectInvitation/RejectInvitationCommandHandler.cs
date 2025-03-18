@@ -1,9 +1,8 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,8 +13,8 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitat
 /// </summary>
 public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCommand, Result>
 {
-    private readonly IRepository<Organization> _organizationRepository;
-    private readonly IReadRepository<User> _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<RejectInvitationCommandHandler> _logger;
 
     /// <summary>
@@ -25,8 +24,8 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
     /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public RejectInvitationCommandHandler(
-        IRepository<Organization> organizationRepository,
-        IReadRepository<User> userRepository,
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository,
         ILogger<RejectInvitationCommandHandler> logger)
     {
         _organizationRepository = organizationRepository;
@@ -45,8 +44,7 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
         try
         {
             // Pobierz użytkownika
-            var user = await _userRepository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.UserId), cancellationToken);
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
             if (user == null)
             {
@@ -54,12 +52,11 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
             }
 
             // Pobierz organizację z zaproszeniem
-            var organization = await _organizationRepository.FirstOrDefaultAsync(
-                new OrganizationWithInvitationSpec(request.InvitationId), cancellationToken);
+            var organization = await _organizationRepository.GetByIdWithMembersAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
-                return Result.NotFound($"Nie znaleziono zaproszenia o ID {request.InvitationId}.");
+                return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
             // Znajdź zaproszenie
@@ -82,7 +79,7 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
             }
 
             // Sprawdź, czy adres e-mail użytkownika zgadza się z adresem e-mail zaproszenia
-            if (user.Email != invitation.Email)
+            if (!string.Equals(user.Email, invitation.Email, StringComparison.OrdinalIgnoreCase))
             {
                 return Result.Unauthorized("Adres e-mail użytkownika nie zgadza się z adresem e-mail zaproszenia.");
             }
@@ -92,7 +89,6 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
 
             // Zapisz zmiany w repozytorium
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
-            await _organizationRepository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Zaproszenie o ID {InvitationId} zostało odrzucone przez użytkownika o ID {UserId}",
                 invitation.Id, request.UserId);
@@ -105,4 +101,4 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
             return Result.Error("Wystąpił błąd podczas odrzucania zaproszenia: " + ex.Message);
         }
     }
-} 
+}

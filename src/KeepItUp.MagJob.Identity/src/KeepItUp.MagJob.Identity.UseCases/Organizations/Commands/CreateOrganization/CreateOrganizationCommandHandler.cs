@@ -1,9 +1,7 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
+using Ardalis.GuardClauses;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,8 +12,8 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganiz
 /// </summary>
 public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizationCommand, Result<Guid>>
 {
-    private readonly IRepository<Organization> _organizationRepository;
-    private readonly IReadRepository<User> _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<CreateOrganizationCommandHandler> _logger;
 
     /// <summary>
@@ -25,8 +23,8 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
     /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public CreateOrganizationCommandHandler(
-        IRepository<Organization> organizationRepository,
-        IReadRepository<User> userRepository,
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository,
         ILogger<CreateOrganizationCommandHandler> logger)
     {
         _organizationRepository = organizationRepository;
@@ -44,25 +42,21 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
     {
         try
         {
-            // Sprawdź, czy właściciel istnieje
-            var owner = await _userRepository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.OwnerId), cancellationToken);
-
-            if (owner == null)
+            // Sprawdź, czy użytkownik istnieje
+            var user = await _userRepository.GetByIdAsync(request.OwnerId, cancellationToken);
+            if (user == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono użytkownika o ID {request.OwnerId}.");
             }
 
-            // Sprawdź, czy organizacja o podanej nazwie już istnieje
-            var existingOrganization = await _organizationRepository.FirstOrDefaultAsync(
-                new OrganizationByNameSpec(request.Name), cancellationToken);
-
+            // Sprawdź, czy nazwa organizacji jest unikalna
+            var existingOrganization = await _organizationRepository.GetByNameAsync(request.Name, cancellationToken);
             if (existingOrganization != null)
             {
-                return Result<Guid>.Error("Organizacja o podanej nazwie już istnieje.");
+                return Result<Guid>.Error($"Organizacja o nazwie '{request.Name}' już istnieje.");
             }
 
-            // Utwórz nową organizację
+            // Utwórz nową organizację - metoda Create automatycznie tworzy role i dodaje właściciela
             var organization = Organization.Create(
                 request.Name,
                 request.OwnerId,
@@ -70,16 +64,16 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
 
             // Zapisz organizację w repozytorium
             await _organizationRepository.AddAsync(organization, cancellationToken);
-            await _organizationRepository.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Utworzono nową organizację o ID {OrganizationId}", organization.Id);
+            _logger.LogInformation("Utworzono nową organizację {OrganizationId} dla użytkownika {UserId}",
+                organization.Id, request.OwnerId);
 
             return Result<Guid>.Success(organization.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas tworzenia organizacji");
+            _logger.LogError(ex, "Błąd podczas tworzenia organizacji dla użytkownika {UserId}", request.OwnerId);
             return Result<Guid>.Error("Wystąpił błąd podczas tworzenia organizacji: " + ex.Message);
         }
     }
-} 
+}

@@ -1,9 +1,9 @@
 ﻿using Ardalis.Specification;
 using KeepItUp.MagJob.Identity.Core.Interfaces;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+using KeepItUp.MagJob.Identity.Infrastructure.Data;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
@@ -13,8 +13,8 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 public class KeycloakSyncService : IKeycloakSyncService
 {
   private readonly IKeycloakClient _keycloakClient;
-  private readonly IRepository<User> _userRepository;
-  private readonly IRepository<Organization> _organizationRepository;
+  private readonly IUserRepository _userRepository;
+  private readonly IOrganizationRepository _organizationRepository;
   private readonly ILogger<KeycloakSyncService> _logger;
 
   /// <summary>
@@ -23,12 +23,11 @@ public class KeycloakSyncService : IKeycloakSyncService
   /// <param name="keycloakClient">Klient Keycloak</param>
   /// <param name="userRepository">Repozytorium użytkowników</param>
   /// <param name="organizationRepository">Repozytorium organizacji</param>
-  /// <param name="roleRepository">Repozytorium ról</param>
   /// <param name="logger">Logger</param>
   public KeycloakSyncService(
       IKeycloakClient keycloakClient,
-      IRepository<User> userRepository,
-      IRepository<Organization> organizationRepository,
+      IUserRepository userRepository,
+      IOrganizationRepository organizationRepository,
       ILogger<KeycloakSyncService> logger)
   {
     _keycloakClient = keycloakClient ?? throw new ArgumentNullException(nameof(keycloakClient));
@@ -45,7 +44,7 @@ public class KeycloakSyncService : IKeycloakSyncService
       _logger.LogInformation("Rozpoczęto synchronizację ról użytkownika {UserId} z Keycloak", userId);
 
       // Pobierz użytkownika z naszej bazy danych
-      var user = await _userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+      var user = await _userRepository.GetByExternalIdAsync(userId, cancellationToken);
       if (user == null)
       {
         _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId} podczas synchronizacji ról", userId);
@@ -67,7 +66,7 @@ public class KeycloakSyncService : IKeycloakSyncService
       if (keycloakUser != null)
       {
         // Dodaj informacje o organizacjach użytkownika jako atrybuty
-        var organizations = await _organizationRepository.ListAsync(new OrganizationsByUserIdSpec(user.Id), cancellationToken);
+        var organizations = await _organizationRepository.GetByUserIdAsync(user.Id, cancellationToken);
         var organizationIds = organizations.Select(o => o.Id.ToString()).ToList();
 
         if (keycloakUser.Attributes == null)
@@ -106,7 +105,7 @@ public class KeycloakSyncService : IKeycloakSyncService
       }
 
       // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
-      var existingUser = await _userRepository.FirstOrDefaultAsync(new UserByExternalIdSpec(userId), cancellationToken);
+      var existingUser = await _userRepository.GetByExternalIdAsync(userId, cancellationToken);
 
       if (existingUser == null)
       {
@@ -193,9 +192,7 @@ public class KeycloakSyncService : IKeycloakSyncService
       }
 
       // Sprawdź, czy użytkownik już istnieje w module Identity
-      var existingUser = await _userRepository.FirstOrDefaultAsync(
-          new UserByExternalIdSpec(keycloakUserId),
-          cancellationToken);
+      var existingUser = await _userRepository.GetByExternalIdAsync(keycloakUserId, cancellationToken);
 
       if (existingUser != null)
       {
@@ -255,6 +252,7 @@ public class KeycloakSyncService : IKeycloakSyncService
         case "manager":
           permissions.Add("users.view");
           permissions.Add("organizations.view");
+          permissions.Add("organizations.create");
           permissions.Add("organizations.edit");
           break;
 

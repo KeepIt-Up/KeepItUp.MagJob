@@ -1,8 +1,5 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrga
 /// </summary>
 public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOrganizationIdQuery, Result<List<RoleDto>>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetRolesByOrganizationIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +19,7 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetRolesByOrganizationIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetRolesByOrganizationIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +37,7 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -75,4 +71,4 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
             return Result<List<RoleDto>>.Error("Wystąpił błąd podczas pobierania ról organizacji: " + ex.Message);
         }
     }
-} 
+}

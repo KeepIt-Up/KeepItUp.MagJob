@@ -1,7 +1,6 @@
 using Ardalis.Result;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 /// </summary>
 public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<RemoveMemberCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +20,7 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public RemoveMemberCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<RemoveMemberCommandHandler> logger)
     {
         _repository = repository;
@@ -39,8 +38,7 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithMembersSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -75,7 +73,6 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Użytkownik o ID {MemberUserId} został usunięty z organizacji o ID {OrganizationId}",
                 request.MemberUserId, request.OrganizationId);
@@ -88,4 +85,4 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
             return Result.Error("Wystąpił błąd podczas usuwania członka organizacji: " + ex.Message);
         }
     }
-} 
+}

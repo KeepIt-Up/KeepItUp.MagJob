@@ -66,4 +66,4 @@ public class KeycloakEvent
     /// </summary>
     [JsonPropertyName("details")]
     public Dictionary<string, string> Details { get; set; } = new Dictionary<string, string>();
-} 
+}

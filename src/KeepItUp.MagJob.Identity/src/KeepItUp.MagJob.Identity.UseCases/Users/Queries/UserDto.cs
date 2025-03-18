@@ -60,4 +60,4 @@ public class UserProfileDto
     /// URL do zdjęcia profilowego użytkownika.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
-} 
+}
