@@ -1,4 +1,3 @@
-
 namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
 
 /// <summary>
@@ -26,4 +25,8 @@ public interface IContributorRepository
   /// </summary>
   Task DeleteAsync(Contributor contributor, CancellationToken cancellationToken = default);
 
+  /// <summary>
+  /// Zwraca listę wszystkich kontrybutorów
+  /// </summary>
+  Task<List<Contributor>> ListAsync(CancellationToken cancellationToken = default);
 }

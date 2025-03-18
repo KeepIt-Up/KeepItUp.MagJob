@@ -19,6 +19,16 @@ public class Organization : BaseEntity, IAggregateRoot
   public string? Description { get; private set; }
 
   /// <summary>
+  /// URL do logo organizacji.
+  /// </summary>
+  public string? LogoUrl { get; private set; }
+
+  /// <summary>
+  /// URL do bannera organizacji.
+  /// </summary>
+  public string? BannerUrl { get; private set; }
+
+  /// <summary>
   /// Identyfikator właściciela organizacji.
   /// </summary>
   public Guid OwnerId { get; private set; }
@@ -67,8 +77,10 @@ public class Organization : BaseEntity, IAggregateRoot
   /// <param name="name">Nazwa organizacji.</param>
   /// <param name="ownerId">Identyfikator właściciela organizacji.</param>
   /// <param name="description">Opis organizacji.</param>
+  /// <param name="logoUrl">URL do logo organizacji.</param>
+  /// <param name="bannerUrl">URL do bannera organizacji.</param>
   /// <returns>Nowa organizacja.</returns>
-  public static Organization Create(string name, Guid ownerId, string? description = null)
+  public static Organization Create(string name, Guid ownerId, string? description = null, string? logoUrl = null, string? bannerUrl = null)
   {
     Guard.Against.NullOrEmpty(name, nameof(name));
     Guard.Against.Default(ownerId, nameof(ownerId));
@@ -77,7 +89,9 @@ public class Organization : BaseEntity, IAggregateRoot
     {
       Name = name,
       OwnerId = ownerId,
-      Description = description
+      Description = description,
+      LogoUrl = logoUrl,
+      BannerUrl = bannerUrl
     };
 
     // Dodaj domyślne role
@@ -103,17 +117,57 @@ public class Organization : BaseEntity, IAggregateRoot
   /// </summary>
   /// <param name="name">Nazwa organizacji.</param>
   /// <param name="description">Opis organizacji.</param>
-  public void Update(string name, string? description)
+  /// <param name="logoUrl">URL do logo organizacji.</param>
+  /// <param name="bannerUrl">URL do bannera organizacji.</param>
+  public void Update(string name, string? description, string? logoUrl = null, string? bannerUrl = null)
   {
     Guard.Against.NullOrEmpty(name, nameof(name));
 
     Name = name;
     Description = description;
 
+    if (logoUrl != null)
+    {
+      LogoUrl = logoUrl;
+    }
+
+    if (bannerUrl != null)
+    {
+      BannerUrl = bannerUrl;
+    }
+
     // Wywołanie metody Update z klasy bazowej
     base.Update();
 
     RegisterDomainEvent(new OrganizationUpdatedEvent(Id, Name, OwnerId));
+  }
+
+  /// <summary>
+  /// Aktualizuje logo organizacji.
+  /// </summary>
+  /// <param name="logoUrl">URL do logo organizacji.</param>
+  public void UpdateLogo(string? logoUrl)
+  {
+    LogoUrl = logoUrl;
+
+    // Wywołanie metody Update z klasy bazowej
+    base.Update();
+
+    RegisterDomainEvent(new OrganizationLogoUpdatedEvent(Id, LogoUrl));
+  }
+
+  /// <summary>
+  /// Aktualizuje banner organizacji.
+  /// </summary>
+  /// <param name="bannerUrl">URL do bannera organizacji.</param>
+  public void UpdateBanner(string? bannerUrl)
+  {
+    BannerUrl = bannerUrl;
+
+    // Wywołanie metody Update z klasy bazowej
+    base.Update();
+
+    RegisterDomainEvent(new OrganizationBannerUpdatedEvent(Id, BannerUrl));
   }
 
   /// <summary>

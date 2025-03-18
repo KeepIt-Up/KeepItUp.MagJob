@@ -12,6 +12,7 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FastEndpoints" Version="5.35.0" />
     <PackageVersion Include="FastEndpoints.ApiExplorer" Version="2.2.0" />
+    <PackageVersion Include="FastEndpoints.Security" Version="5.35.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="5.35.0" />
     <PackageVersion Include="FastEndpoints.Swagger.Swashbuckle" Version="2.2.0" />
     <PackageVersion Include="FluentAssertions" Version="8.1.1" />

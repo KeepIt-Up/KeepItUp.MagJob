@@ -1,5 +1,6 @@
 using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
 using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
@@ -47,5 +48,13 @@ public class ContributorRepository : IContributorRepository
   {
     _dbContext.Contributors.Remove(contributor);
     await _dbContext.SaveChangesAsync(cancellationToken);
+  }
+
+  /// <inheritdoc />
+  public async Task<List<Contributor>> ListAsync(CancellationToken cancellationToken = default)
+  {
+    return await _dbContext.Contributors
+        .AsNoTracking()
+        .ToListAsync(cancellationToken);
   }
 }

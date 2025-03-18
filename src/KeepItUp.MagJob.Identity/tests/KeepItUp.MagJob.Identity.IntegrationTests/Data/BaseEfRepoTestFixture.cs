@@ -1,5 +1,11 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
+using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
+using KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using KeepItUp.MagJob.Identity.Core.Interfaces;
 
 namespace KeepItUp.MagJob.Identity.IntegrationTests.Data;
 
@@ -32,8 +38,8 @@ public abstract class BaseEfRepoTestFixture
     return builder.Options;
   }
 
-  protected EfRepository<Contributor> GetRepository()
+  protected IContributorRepository GetRepository()
   {
-    return new EfRepository<Contributor>(_dbContext);
+    return new ContributorRepository(_dbContext);
   }
 }
