@@ -23,17 +23,17 @@ public class KeycloakAttributeMapper
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Email, user.Email)
         };
-        
+
         if (!string.IsNullOrEmpty(user.FirstName))
         {
             claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
         }
-        
+
         if (!string.IsNullOrEmpty(user.LastName))
         {
             claims.Add(new Claim(ClaimTypes.Surname, user.LastName));
         }
-        
+
         if (user.Attributes != null)
         {
             // Dodaj organizacje jako claim
@@ -41,7 +41,7 @@ public class KeycloakAttributeMapper
             {
                 claims.Add(new Claim("organizations", organizationsValue[0]));
             }
-            
+
             // Dodaj uprawnienia jako claim
             if (user.Attributes.TryGetValue("permissions", out var permissionsValue) && permissionsValue.Count > 0)
             {
@@ -51,10 +51,10 @@ public class KeycloakAttributeMapper
                 }
             }
         }
-        
+
         return claims;
     }
-    
+
     /// <summary>
     /// Rozszerza token JWT o dodatkowe informacje z Keycloak
     /// </summary>
@@ -64,12 +64,12 @@ public class KeycloakAttributeMapper
         public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
         {
             var claimsIdentity = principal.Identity as ClaimsIdentity;
-            
+
             if (claimsIdentity == null || !claimsIdentity.IsAuthenticated)
             {
                 return Task.FromResult(principal);
             }
-            
+
             // Pobierz organizacje z tokenu
             var organizationsClaim = claimsIdentity.FindFirst("organizations")?.Value;
             if (!string.IsNullOrEmpty(organizationsClaim))
@@ -83,13 +83,13 @@ public class KeycloakAttributeMapper
                         foreach (var org in organizations)
                         {
                             claimsIdentity.AddClaim(new Claim("organization", org.Id));
-                            
+
                             // Dodaj claim dla każdej roli w organizacji
                             foreach (var role in org.Roles)
                             {
                                 claimsIdentity.AddClaim(new Claim($"role_{org.Id}", role));
                             }
-                            
+
                             // Dodaj claim dla uprawnień w kontekście organizacji
                             var permissionsClaim = claimsIdentity.FindFirst("permissions")?.Value;
                             if (!string.IsNullOrEmpty(permissionsClaim))
@@ -120,8 +120,8 @@ public class KeycloakAttributeMapper
                     Console.WriteLine($"Błąd deserializacji organizacji: {ex.Message}");
                 }
             }
-            
+
             return Task.FromResult(principal);
         }
     }
-} 
+}

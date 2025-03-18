@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
@@ -22,4 +21,4 @@ public record DeleteRoleCommand : IRequest<Result>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

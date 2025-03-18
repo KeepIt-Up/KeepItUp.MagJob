@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
@@ -12,4 +11,4 @@ public record GetUserByExternalIdQuery : IRequest<Result<UserDto>>
     /// Identyfikator zewnętrzny użytkownika.
     /// </summary>
     public string ExternalId { get; init; } = string.Empty;
-} 
+}

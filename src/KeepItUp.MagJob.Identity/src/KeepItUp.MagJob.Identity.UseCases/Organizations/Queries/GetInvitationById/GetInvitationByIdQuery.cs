@@ -1,5 +1,3 @@
-using Ardalis.Result;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetInvitationById;
@@ -23,4 +21,4 @@ public record GetInvitationByIdQuery : IRequest<Result<InvitationDto>>
     /// Identyfikator użytkownika wykonującego zapytanie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

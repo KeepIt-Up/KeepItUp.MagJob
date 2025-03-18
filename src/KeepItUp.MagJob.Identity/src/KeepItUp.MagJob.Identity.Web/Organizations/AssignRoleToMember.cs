@@ -27,11 +27,13 @@ public class AssignRoleToMember(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Przypisuje rolę członkowi organizacji";
             s.Description = "Przypisuje rolę członkowi organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new AssignRoleToMemberRequest { 
-                OrganizationId = Guid.NewGuid(), 
+            s.ExampleRequest = new AssignRoleToMemberRequest
+            {
+                OrganizationId = Guid.NewGuid(),
                 MemberUserId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid()
             };

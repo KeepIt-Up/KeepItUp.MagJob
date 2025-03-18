@@ -8,8 +8,8 @@ namespace KeepItUp.MagJob.Identity.Web.Permissions;
 /// </summary>
 public class GetPermissionsResponse
 {
-  /// <summary>
-  /// Lista uprawnień.
-  /// </summary>
-  public List<PermissionDto> Permissions { get; set; } = new();
+    /// <summary>
+    /// Lista uprawnień.
+    /// </summary>
+    public List<PermissionDto> Permissions { get; set; } = new();
 }

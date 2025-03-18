@@ -1,5 +1,3 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>

@@ -26,7 +26,8 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera członków organizacji";
             s.Description = "Pobiera wszystkich członków organizacji o podanym identyfikatorze";
             s.ExampleRequest = new GetOrganizationMembersRequest { OrganizationId = Guid.NewGuid() };

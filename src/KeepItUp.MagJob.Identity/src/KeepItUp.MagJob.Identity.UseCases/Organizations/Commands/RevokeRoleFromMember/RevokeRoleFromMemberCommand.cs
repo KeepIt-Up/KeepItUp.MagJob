@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFromMember;
@@ -27,4 +26,4 @@ public record RevokeRoleFromMemberCommand : IRequest<Result>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid RequestingUserId { get; init; }
-} 
+}

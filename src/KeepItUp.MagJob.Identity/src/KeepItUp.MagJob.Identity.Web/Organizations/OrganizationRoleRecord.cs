@@ -24,4 +24,4 @@ public class OrganizationRoleRecord
     /// Kolor roli.
     /// </summary>
     public string? Color { get; set; }
-} 
+}

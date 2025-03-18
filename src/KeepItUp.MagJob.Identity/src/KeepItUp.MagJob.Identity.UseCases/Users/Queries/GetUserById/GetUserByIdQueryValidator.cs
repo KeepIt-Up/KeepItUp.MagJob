@@ -15,4 +15,4 @@ public class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

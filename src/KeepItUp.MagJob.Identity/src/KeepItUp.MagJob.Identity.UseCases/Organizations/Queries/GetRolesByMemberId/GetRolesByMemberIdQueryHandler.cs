@@ -1,8 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

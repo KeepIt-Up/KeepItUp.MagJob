@@ -85,7 +85,7 @@ public class Role : BaseEntity
         Name = name;
         Description = description;
         Color = color;
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
@@ -105,7 +105,7 @@ public class Role : BaseEntity
         }
 
         _permissions.Add(permission);
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
@@ -126,7 +126,7 @@ public class Role : BaseEntity
         }
 
         _permissions.Remove(permission);
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
@@ -149,8 +149,8 @@ public class Role : BaseEntity
     public void ClearPermissions()
     {
         _permissions.Clear();
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
-} 
+}

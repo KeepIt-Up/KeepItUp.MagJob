@@ -1,5 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
-using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
+﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Get;
 

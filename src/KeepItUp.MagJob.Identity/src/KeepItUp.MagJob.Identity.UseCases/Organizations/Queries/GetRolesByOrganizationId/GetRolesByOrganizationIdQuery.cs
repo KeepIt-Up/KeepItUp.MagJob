@@ -1,5 +1,3 @@
-using Ardalis.Result;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
@@ -18,4 +16,4 @@ public record GetRolesByOrganizationIdQuery : IRequest<Result<List<RoleDto>>>
     /// Identyfikator użytkownika wykonującego zapytanie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

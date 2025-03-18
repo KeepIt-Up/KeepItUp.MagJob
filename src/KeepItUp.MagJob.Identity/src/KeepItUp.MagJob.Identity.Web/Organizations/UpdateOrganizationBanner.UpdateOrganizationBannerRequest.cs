@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>

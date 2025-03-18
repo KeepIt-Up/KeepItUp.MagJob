@@ -1,6 +1,4 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -41,4 +39,4 @@ public class RoleConfiguration : BaseEntityConfiguration<Role>
     }
 
     protected override string GetTableName() => DataSchemaConstants.ROLES_TABLE;
-} 
+}

@@ -15,4 +15,4 @@ public class DeactivateUserCommandValidator : AbstractValidator<DeactivateUserCo
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

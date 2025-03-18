@@ -43,4 +43,4 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .WithMessage("URL zdjęcia profilowego musi być prawidłowym adresem URL.")
             .When(x => !string.IsNullOrEmpty(x.ProfileImageUrl));
     }
-} 
+}

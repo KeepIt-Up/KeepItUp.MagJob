@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -74,4 +73,4 @@ public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, R
             return Task.FromResult(Result<List<PermissionDto>>.Error("Wystąpił błąd podczas pobierania uprawnień: " + ex.Message));
         }
     }
-} 
+}

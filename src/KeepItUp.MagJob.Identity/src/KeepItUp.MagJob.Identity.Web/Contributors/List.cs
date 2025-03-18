@@ -14,19 +14,19 @@ namespace KeepItUp.MagJob.Identity.Web.Contributors;
 /// </remarks>
 public class List(IMediator _mediator) : Endpoint<RequestWithPagination, IPaginatedResponse<Contributor, ContributorDTO>>
 {
-  public override void Configure()
-  {
-    Get("/Contributors");
-    AllowAnonymous();
-  }
-
-  public override async Task HandleAsync(RequestWithPagination request, CancellationToken cancellationToken)
-  {
-    Result<IPaginatedResponse<Contributor, ContributorDTO>> result = await _mediator.Send(new ListContributorsQuery(request.Options), cancellationToken);
-
-    if (result.IsSuccess)
+    public override void Configure()
     {
-      Response = result.Value;
+        Get("/Contributors");
+        AllowAnonymous();
     }
-  }
+
+    public override async Task HandleAsync(RequestWithPagination request, CancellationToken cancellationToken)
+    {
+        Result<IPaginatedResponse<Contributor, ContributorDTO>> result = await _mediator.Send(new ListContributorsQuery(request.Options), cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            Response = result.Value;
+        }
+    }
 }

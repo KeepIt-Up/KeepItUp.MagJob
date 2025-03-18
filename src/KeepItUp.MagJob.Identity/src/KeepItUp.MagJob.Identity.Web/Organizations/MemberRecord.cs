@@ -44,4 +44,4 @@ public class MemberRecord
     /// Role przypisane do członka.
     /// </summary>
     public List<OrganizationRoleRecord> Roles { get; set; } = new List<OrganizationRoleRecord>();
-} 
+}

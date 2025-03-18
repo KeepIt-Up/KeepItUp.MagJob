@@ -1,6 +1,4 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -23,4 +21,4 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
         var standardPermissions = Permission.StandardPermissions.GetAll();
         builder.HasData(standardPermissions);
     }
-} 
+}

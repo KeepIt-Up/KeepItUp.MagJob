@@ -24,4 +24,4 @@ public class GetRolesByMemberIdQueryValidator : AbstractValidator<GetRolesByMemb
             .NotEmpty()
             .WithMessage("Identyfikator użytkownika wykonującego zapytanie jest wymagany.");
     }
-} 
+}

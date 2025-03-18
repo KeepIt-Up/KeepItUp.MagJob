@@ -11,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// </remarks>
 public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<RemoveMemberRequest>
-{ 
+{
     /// <summary>
     /// Konfiguruje endpoint.
     /// </summary>
@@ -27,7 +27,8 @@ public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAc
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Usuwa członka z organizacji";
             s.Description = "Usuwa członka z organizacji o podanym identyfikatorze";
             s.ExampleRequest = new RemoveMemberRequest { OrganizationId = Guid.NewGuid(), MemberUserId = Guid.NewGuid() };

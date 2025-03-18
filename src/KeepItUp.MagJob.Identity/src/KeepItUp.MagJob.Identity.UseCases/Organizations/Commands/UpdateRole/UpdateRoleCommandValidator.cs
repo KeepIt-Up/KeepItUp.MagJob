@@ -1,5 +1,5 @@
-using FluentValidation;
 using System.Text.RegularExpressions;
+using FluentValidation;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 
@@ -43,4 +43,4 @@ public class UpdateRoleCommandValidator : AbstractValidator<UpdateRoleCommand>
         // Sprawdź, czy kolor jest w formacie HEX (#RRGGBB lub #RGB)
         return Regex.IsMatch(color, @"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
     }
-} 
+}

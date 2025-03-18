@@ -12,16 +12,16 @@ public class KeycloakOrganization
     /// </summary>
     [JsonPropertyName("id")]
     public required string Id { get; set; }
-    
+
     /// <summary>
     /// Nazwa organizacji
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
-    
+
     /// <summary>
     /// Lista ról użytkownika w organizacji
     /// </summary>
     [JsonPropertyName("roles")]
     public required List<string> Roles { get; set; }
-} 
+}

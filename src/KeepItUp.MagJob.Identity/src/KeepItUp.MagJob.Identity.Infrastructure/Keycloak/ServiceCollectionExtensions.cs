@@ -1,5 +1,4 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
-using Microsoft.AspNetCore.Authentication;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
@@ -8,38 +7,38 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-  /// <summary>
-  /// Dodaje usługi związane z Keycloak do kontenera DI
-  /// </summary>
-  /// <param name="services">Kolekcja usług</param>
-  /// <param name="configuration">Konfiguracja</param>
-  /// <returns>Kolekcja usług</returns>
-  public static IServiceCollection AddKeycloakServices(this IServiceCollection services)
-  {
-    // Konfiguracja opcji Keycloak
-    var serviceProvider = services.BuildServiceProvider();
-    var keycloakAdminOptions = serviceProvider.GetRequiredService<IOptions<KeycloakAdminOptions>>().Value;
-
-    // Rejestracja klienta Keycloak
-    services.AddHttpClient<IKeycloakClient, KeycloakClient>((serviceProvider, client) =>
+    /// <summary>
+    /// Dodaje usługi związane z Keycloak do kontenera DI
+    /// </summary>
+    /// <param name="services">Kolekcja usług</param>
+    /// <param name="configuration">Konfiguracja</param>
+    /// <returns>Kolekcja usług</returns>
+    public static IServiceCollection AddKeycloakServices(this IServiceCollection services)
     {
-      client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
-      client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
-    });
+        // Konfiguracja opcji Keycloak
+        var serviceProvider = services.BuildServiceProvider();
+        var keycloakAdminOptions = serviceProvider.GetRequiredService<IOptions<KeycloakAdminOptions>>().Value;
 
-    // Rejestracja HttpClient dla zdarzeń Keycloak
-    services.AddHttpClient("KeycloakEvents", (serviceProvider, client) =>
-    {
-      client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
-      client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
-    });
+        // Rejestracja klienta Keycloak
+        services.AddHttpClient<IKeycloakClient, KeycloakClient>((serviceProvider, client) =>
+        {
+            client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
+            client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
+        });
 
-    // Rejestracja serwisu synchronizacji
-    services.AddScoped<IKeycloakSyncService, KeycloakSyncService>();
+        // Rejestracja HttpClient dla zdarzeń Keycloak
+        services.AddHttpClient("KeycloakEvents", (serviceProvider, client) =>
+        {
+            client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
+            client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
+        });
 
-    // Rejestracja nasłuchiwacza zdarzeń
-    services.AddHostedService<KeycloakEventListener>();
+        // Rejestracja serwisu synchronizacji
+        services.AddScoped<IKeycloakSyncService, KeycloakSyncService>();
 
-    return services;
-  }
+        // Rejestracja nasłuchiwacza zdarzeń
+        services.AddHostedService<KeycloakEventListener>();
+
+        return services;
+    }
 }

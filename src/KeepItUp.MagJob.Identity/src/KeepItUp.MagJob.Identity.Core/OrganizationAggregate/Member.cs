@@ -75,7 +75,7 @@ public class Member : BaseEntity
         if (!_roleIds.Contains(roleId))
         {
             _roleIds.Add(roleId);
-            
+
             // Wywołanie metody Update z klasy bazowej
             base.Update();
         }
@@ -97,13 +97,13 @@ public class Member : BaseEntity
         }
 
         bool removed = _roleIds.Remove(roleId);
-        
+
         if (removed)
         {
             // Wywołanie metody Update z klasy bazowej
             base.Update();
         }
-        
+
         return removed;
     }
 
@@ -116,4 +116,4 @@ public class Member : BaseEntity
     {
         return _roleIds.Contains(roleId);
     }
-} 
+}

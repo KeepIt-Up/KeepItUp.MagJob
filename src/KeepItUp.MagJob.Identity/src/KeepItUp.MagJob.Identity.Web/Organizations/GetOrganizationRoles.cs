@@ -27,7 +27,8 @@ public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor curre
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera role organizacji";
             s.Description = "Pobiera wszystkie role przypisane do organizacji o podanym identyfikatorze";
             s.ExampleRequest = new GetOrganizationRolesRequest { OrganizationId = Guid.NewGuid() };

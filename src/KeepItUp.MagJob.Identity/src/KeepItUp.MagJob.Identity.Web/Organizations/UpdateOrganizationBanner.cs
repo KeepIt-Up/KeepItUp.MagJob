@@ -2,8 +2,6 @@ using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationBanner;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationById;
 using KeepItUp.MagJob.Identity.Web.Services;
-using FastEndpoints.Security;
-using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 

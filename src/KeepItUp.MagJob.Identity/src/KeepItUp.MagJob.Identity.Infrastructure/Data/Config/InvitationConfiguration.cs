@@ -1,6 +1,4 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -37,4 +35,4 @@ public class InvitationConfiguration : BaseEntityConfiguration<Invitation>
     }
 
     protected override string GetTableName() => DataSchemaConstants.INVITATIONS_TABLE;
-} 
+}

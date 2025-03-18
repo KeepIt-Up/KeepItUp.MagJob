@@ -26,7 +26,8 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
             .ProducesProblem(401)
             .ProducesProblem(403)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera wszystkie dostępne uprawnienia w systemie";
             s.Description = "Zwraca listę wszystkich dostępnych uprawnień w systemie";
             s.ResponseExamples[200] = new GetPermissionsResponse

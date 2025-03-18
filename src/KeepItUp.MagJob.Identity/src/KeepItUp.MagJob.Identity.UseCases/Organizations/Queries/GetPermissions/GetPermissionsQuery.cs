@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
@@ -33,4 +32,4 @@ public record GetPermissionsQuery : IRequest<Result<List<PermissionDto>>>
     /// Identyfikator użytkownika wykonującego zapytanie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

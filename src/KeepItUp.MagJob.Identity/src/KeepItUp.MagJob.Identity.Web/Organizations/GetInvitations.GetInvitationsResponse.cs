@@ -6,8 +6,8 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// </summary>
 public class GetInvitationsResponse
 {
-  /// <summary>
-  /// Lista zaproszeń do organizacji.
-  /// </summary>
-  public List<OrganizationInvitationRecord> Invitations { get; set; } = new List<OrganizationInvitationRecord>();
+    /// <summary>
+    /// Lista zaproszeń do organizacji.
+    /// </summary>
+    public List<OrganizationInvitationRecord> Invitations { get; set; } = new List<OrganizationInvitationRecord>();
 }

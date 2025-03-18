@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
@@ -37,4 +36,4 @@ public record UpdateUserCommand : IRequest<Result>
     /// URL do zdjęcia profilowego użytkownika (opcjonalny).
     /// </summary>
     public string? ProfileImageUrl { get; init; }
-} 
+}

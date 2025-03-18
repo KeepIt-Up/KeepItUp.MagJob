@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using FastEndpoints;
 using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
-using MediatR;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
@@ -26,7 +23,8 @@ public class GetUserById(IMediator mediator)
             .Produces<GetUserByIdResponse>(200)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera użytkownika";
             s.Description = "Pobiera użytkownika o podanym identyfikatorze";
             s.ExampleRequest = new GetUserByIdRequest { Id = Guid.NewGuid() };
@@ -72,4 +70,4 @@ public class GetUserById(IMediator mediator)
 
         await SendOkAsync(response, ct);
     }
-} 
+}

@@ -1,6 +1,5 @@
-﻿using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
-using FastEndpoints;
-using FluentValidation;
+﻿using FluentValidation;
+using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
@@ -9,15 +8,15 @@ namespace KeepItUp.MagJob.Identity.Web.Contributors;
 /// </summary>
 public class UpdateContributorValidator : Validator<UpdateContributorRequest>
 {
-  public UpdateContributorValidator()
-  {
-    RuleFor(x => x.Name)
-      .NotEmpty()
-      .WithMessage("Name is required.")
-      .MinimumLength(2)
-      .MaximumLength(DataSchemaConstants.DEFAULT_NAME_LENGTH);
-    RuleFor(x => x.ContributorId)
-      .Must((args, contributorId) => args.Id == contributorId)
-      .WithMessage("Route and body Ids must match; cannot update Id of an existing resource.");
-  }
+    public UpdateContributorValidator()
+    {
+        RuleFor(x => x.Name)
+          .NotEmpty()
+          .WithMessage("Name is required.")
+          .MinimumLength(2)
+          .MaximumLength(DataSchemaConstants.DEFAULT_NAME_LENGTH);
+        RuleFor(x => x.ContributorId)
+          .Must((args, contributorId) => args.Id == contributorId)
+          .WithMessage("Route and body Ids must match; cannot update Id of an existing resource.");
+    }
 }

@@ -23,4 +23,4 @@ public class CreateOrganizationCommandValidator : AbstractValidator<CreateOrgani
         RuleFor(x => x.OwnerId)
             .NotEmpty().WithMessage("Identyfikator właściciela organizacji jest wymagany.");
     }
-} 
+}

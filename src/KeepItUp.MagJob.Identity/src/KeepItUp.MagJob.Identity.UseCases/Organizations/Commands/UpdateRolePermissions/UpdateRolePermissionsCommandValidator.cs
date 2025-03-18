@@ -28,4 +28,4 @@ public class UpdateRolePermissionsCommandValidator : AbstractValidator<UpdateRol
             .NotNull()
             .WithMessage("Lista uprawnień nie może być null.");
     }
-} 
+}

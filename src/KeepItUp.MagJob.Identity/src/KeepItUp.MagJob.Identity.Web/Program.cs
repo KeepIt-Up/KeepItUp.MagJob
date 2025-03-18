@@ -41,9 +41,9 @@ app.UseStaticFiles();
 // Dodaj dodatkową konfigurację dla katalogu uploads
 app.UseStaticFiles(new StaticFileOptions
 {
-  FileProvider = new PhysicalFileProvider(
+    FileProvider = new PhysicalFileProvider(
         Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads")),
-  RequestPath = "/uploads"
+    RequestPath = "/uploads"
 });
 
 app.Run();

@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
@@ -22,4 +21,4 @@ public record CreateOrganizationCommand : IRequest<Result<Guid>>
     /// Identyfikator właściciela organizacji.
     /// </summary>
     public Guid OwnerId { get; init; }
-} 
+}

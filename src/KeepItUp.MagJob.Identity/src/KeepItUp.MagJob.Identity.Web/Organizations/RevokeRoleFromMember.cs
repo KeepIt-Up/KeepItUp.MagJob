@@ -27,11 +27,13 @@ public class RevokeRoleFromMember(IMediator mediator, ICurrentUserAccessor curre
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Odbiera rolę członkowi organizacji";
             s.Description = "Odbiera rolę członkowi organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new RevokeRoleFromMemberRequest { 
-                OrganizationId = Guid.NewGuid(), 
+            s.ExampleRequest = new RevokeRoleFromMemberRequest
+            {
+                OrganizationId = Guid.NewGuid(),
                 MemberUserId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid()
             };

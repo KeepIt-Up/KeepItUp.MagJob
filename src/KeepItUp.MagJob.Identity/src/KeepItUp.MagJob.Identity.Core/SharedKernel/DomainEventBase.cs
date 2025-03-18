@@ -1,5 +1,3 @@
-using Ardalis.SharedKernel;
-
 namespace KeepItUp.MagJob.Identity.Core.SharedKernel;
 
 /// <summary>
@@ -9,4 +7,4 @@ public abstract class DomainEventBase : Ardalis.SharedKernel.DomainEventBase
 {
     // Klasa DomainEventBase z Ardalis.SharedKernel już implementuje INotification
     // i zawiera DateOccurred
-} 
+}

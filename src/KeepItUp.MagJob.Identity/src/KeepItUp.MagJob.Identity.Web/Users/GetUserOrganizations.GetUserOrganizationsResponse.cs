@@ -1,5 +1,3 @@
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
-
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
@@ -11,4 +9,4 @@ public class GetUserOrganizationsResponse
     /// Lista organizacji użytkownika.
     /// </summary>
     public List<UserOrganizationRecord> Organizations { get; set; } = new List<UserOrganizationRecord>();
-} 
+}

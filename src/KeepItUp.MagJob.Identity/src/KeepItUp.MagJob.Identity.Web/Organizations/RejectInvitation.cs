@@ -26,7 +26,8 @@ public class RejectInvitation(IMediator mediator, ICurrentUserAccessor currentUs
             .ProducesProblem(401)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Odrzuca zaproszenie do organizacji";
             s.Description = "Odrzuca zaproszenie do organizacji na podstawie identyfikatora i tokenu";
             s.ExampleRequest = new RejectInvitationRequest { InvitationId = Guid.NewGuid(), Token = "token" };

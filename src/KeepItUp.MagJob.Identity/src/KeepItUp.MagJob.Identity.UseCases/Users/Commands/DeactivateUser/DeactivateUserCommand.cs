@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.DeactivateUser;
@@ -12,4 +11,4 @@ public record DeactivateUserCommand : IRequest<Result>
     /// Identyfikator użytkownika.
     /// </summary>
     public Guid Id { get; init; }
-} 
+}

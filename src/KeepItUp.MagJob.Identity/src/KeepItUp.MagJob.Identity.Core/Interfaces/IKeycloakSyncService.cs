@@ -14,7 +14,7 @@ public interface IKeycloakSyncService
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task SyncUserRolesAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Synchronizuje dane użytkownika z Keycloak
     /// </summary>
@@ -22,14 +22,14 @@ public interface IKeycloakSyncService
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task SyncUserDataAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Synchronizuje wszystkich użytkowników z Keycloak
     /// </summary>
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task SyncAllUsersAsync(CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Importuje nowego użytkownika z Keycloak do modułu Identity
     /// </summary>
@@ -37,4 +37,4 @@ public interface IKeycloakSyncService
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Identyfikator utworzonego użytkownika w module Identity</returns>
     Task<Guid> ImportUserFromKeycloakAsync(string keycloakUserId, CancellationToken cancellationToken = default);
-} 
+}

@@ -34,4 +34,4 @@ public class UserOrganizationRecord
     /// Liczba członków organizacji.
     /// </summary>
     public int MemberCount { get; set; }
-} 
+}

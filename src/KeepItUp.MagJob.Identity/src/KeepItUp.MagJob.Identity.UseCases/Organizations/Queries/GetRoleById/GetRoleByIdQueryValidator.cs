@@ -21,4 +21,4 @@ public class GetRoleByIdQueryValidator : AbstractValidator<GetRoleByIdQuery>
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

@@ -1,8 +1,5 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -52,4 +49,4 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
     }
 
     protected override string GetTableName() => DataSchemaConstants.MEMBERS_TABLE;
-} 
+}

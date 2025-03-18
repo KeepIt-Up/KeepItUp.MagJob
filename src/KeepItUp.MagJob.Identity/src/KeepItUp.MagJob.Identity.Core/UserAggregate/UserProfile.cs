@@ -1,6 +1,3 @@
-using Ardalis.GuardClauses;
-using Ardalis.SharedKernel;
-
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
 
 /// <summary>
@@ -62,4 +59,4 @@ public class UserProfile : ValueObject
             profileImage ?? ProfileImage
         );
     }
-} 
+}

@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToMember;
@@ -27,4 +26,4 @@ public record AssignRoleToMemberCommand : IRequest<Result>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid RequestingUserId { get; init; }
-} 
+}

@@ -1,6 +1,3 @@
-using System.IO;
-using System.Threading.Tasks;
-
 namespace KeepItUp.MagJob.Identity.Core.Interfaces;
 
 /// <summary>

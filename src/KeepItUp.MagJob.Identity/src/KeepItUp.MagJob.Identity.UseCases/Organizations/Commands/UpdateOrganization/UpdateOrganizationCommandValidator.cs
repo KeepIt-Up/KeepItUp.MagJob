@@ -26,4 +26,4 @@ public class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrgani
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

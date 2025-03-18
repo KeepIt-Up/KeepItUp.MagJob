@@ -27,15 +27,17 @@ public class UpdateRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Aktualizuje rolę w organizacji";
             s.Description = "Aktualizuje rolę w organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new UpdateRoleRequest { 
-                OrganizationId = Guid.NewGuid(), 
+            s.ExampleRequest = new UpdateRoleRequest
+            {
+                OrganizationId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid(),
-                Name = "Administrator", 
-                Description = "Rola administratora organizacji", 
-                Color = "#FF0000" 
+                Name = "Administrator",
+                Description = "Rola administratora organizacji",
+                Color = "#FF0000"
             };
         });
     }

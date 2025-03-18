@@ -44,4 +44,4 @@ public class OrganizationInvitationRecord
     /// Rola, która zostanie przypisana po akceptacji zaproszenia.
     /// </summary>
     public OrganizationRoleRecord? Role { get; set; }
-} 
+}

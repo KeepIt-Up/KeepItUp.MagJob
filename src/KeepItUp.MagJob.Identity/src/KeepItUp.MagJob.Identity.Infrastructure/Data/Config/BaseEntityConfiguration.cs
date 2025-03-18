@@ -1,6 +1,4 @@
 using KeepItUp.MagJob.Identity.Core.SharedKernel;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -31,4 +29,4 @@ public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguratio
     /// </summary>
     /// <returns>Nazwa tabeli.</returns>
     protected abstract string GetTableName();
-} 
+}

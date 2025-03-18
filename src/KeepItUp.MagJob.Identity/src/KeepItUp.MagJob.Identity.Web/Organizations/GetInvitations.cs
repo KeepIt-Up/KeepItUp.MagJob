@@ -26,7 +26,8 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera zaproszenia do organizacji";
             s.Description = "Pobiera wszystkie zaproszenia do organizacji o podanym identyfikatorze";
             s.ExampleRequest = new GetInvitationsRequest { OrganizationId = Guid.NewGuid() };

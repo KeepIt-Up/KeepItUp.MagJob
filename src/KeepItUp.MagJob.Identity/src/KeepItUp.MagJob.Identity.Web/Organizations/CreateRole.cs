@@ -27,18 +27,21 @@ public class CreateRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Tworzy nową rolę w organizacji";
             s.Description = "Tworzy nową rolę w organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new CreateRoleRequest { 
-                OrganizationId = Guid.NewGuid(), 
-                Name = "Administrator", 
-                Description = "Rola administratora organizacji", 
-                Color = "#FF0000" 
+            s.ExampleRequest = new CreateRoleRequest
+            {
+                OrganizationId = Guid.NewGuid(),
+                Name = "Administrator",
+                Description = "Rola administratora organizacji",
+                Color = "#FF0000"
             };
-            s.ResponseExamples[201] = new CreateRoleResponse { 
-                Id = Guid.NewGuid(), 
-                Name = "Administrator" 
+            s.ResponseExamples[201] = new CreateRoleResponse
+            {
+                Id = Guid.NewGuid(),
+                Name = "Administrator"
             };
         });
     }

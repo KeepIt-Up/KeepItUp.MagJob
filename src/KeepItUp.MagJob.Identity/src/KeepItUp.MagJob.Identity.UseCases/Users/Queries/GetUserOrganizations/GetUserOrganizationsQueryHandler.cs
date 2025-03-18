@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using MediatR;

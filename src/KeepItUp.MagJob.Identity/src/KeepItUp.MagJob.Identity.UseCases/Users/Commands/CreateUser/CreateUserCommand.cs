@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
@@ -47,4 +46,4 @@ public record CreateUserCommand : IRequest<Result<Guid>>
     /// URL do zdjęcia profilowego użytkownika (opcjonalny).
     /// </summary>
     public string? ProfileImageUrl { get; init; }
-} 
+}

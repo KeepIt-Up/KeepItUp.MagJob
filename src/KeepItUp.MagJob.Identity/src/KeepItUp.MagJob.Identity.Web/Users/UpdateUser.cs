@@ -27,13 +27,15 @@ public class UpdateUser(IMediator mediator, ICurrentUserAccessor currentUserAcce
             .ProducesProblem(401)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Aktualizuje użytkownika";
             s.Description = "Aktualizuje użytkownika o podanym identyfikatorze";
-            s.ExampleRequest = new UpdateUserRequest { 
-                Id = Guid.NewGuid(), 
-                FirstName = "Jan", 
-                LastName = "Kowalski" 
+            s.ExampleRequest = new UpdateUserRequest
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Jan",
+                LastName = "Kowalski"
             };
         });
     }
@@ -106,4 +108,4 @@ public class UpdateUser(IMediator mediator, ICurrentUserAccessor currentUserAcce
 
         await SendOkAsync(response, ct);
     }
-} 
+}

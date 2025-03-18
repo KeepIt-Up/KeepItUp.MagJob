@@ -29,4 +29,4 @@ public class RoleDto
     /// Lista uprawnień przypisanych do roli.
     /// </summary>
     public List<string> Permissions { get; set; } = new List<string>();
-} 
+}

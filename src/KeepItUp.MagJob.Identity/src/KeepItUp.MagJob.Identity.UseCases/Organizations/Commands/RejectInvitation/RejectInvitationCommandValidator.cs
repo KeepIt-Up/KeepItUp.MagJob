@@ -21,4 +21,4 @@ public class RejectInvitationCommandValidator : AbstractValidator<RejectInvitati
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

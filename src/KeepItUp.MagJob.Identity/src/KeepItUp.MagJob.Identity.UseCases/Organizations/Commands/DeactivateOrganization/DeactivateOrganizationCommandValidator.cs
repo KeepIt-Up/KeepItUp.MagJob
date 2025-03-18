@@ -18,4 +18,4 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

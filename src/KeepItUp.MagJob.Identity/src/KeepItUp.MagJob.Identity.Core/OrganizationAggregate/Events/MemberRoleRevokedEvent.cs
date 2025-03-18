@@ -6,31 +6,31 @@ namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 /// </summary>
 public class MemberRoleRevokedEvent : DomainEventBase
 {
-  /// <summary>
-  /// Identyfikator organizacji.
-  /// </summary>
-  public Guid OrganizationId { get; }
+    /// <summary>
+    /// Identyfikator organizacji.
+    /// </summary>
+    public Guid OrganizationId { get; }
 
-  /// <summary>
-  /// Identyfikator użytkownika.
-  /// </summary>
-  public Guid UserId { get; }
+    /// <summary>
+    /// Identyfikator użytkownika.
+    /// </summary>
+    public Guid UserId { get; }
 
-  /// <summary>
-  /// Identyfikator roli.
-  /// </summary>
-  public Guid RoleId { get; }
+    /// <summary>
+    /// Identyfikator roli.
+    /// </summary>
+    public Guid RoleId { get; }
 
-  /// <summary>
-  /// Tworzy nowe zdarzenie informujące o usunięciu roli przypisanej do członka organizacji.
-  /// </summary>
-  /// <param name="organizationId">Identyfikator organizacji.</param>
-  /// <param name="userId">Identyfikator użytkownika.</param>
-  /// <param name="roleId">Identyfikator roli.</param>
-  public MemberRoleRevokedEvent(Guid organizationId, Guid userId, Guid roleId)
-  {
-    OrganizationId = organizationId;
-    UserId = userId;
-    RoleId = roleId;
-  }
+    /// <summary>
+    /// Tworzy nowe zdarzenie informujące o usunięciu roli przypisanej do członka organizacji.
+    /// </summary>
+    /// <param name="organizationId">Identyfikator organizacji.</param>
+    /// <param name="userId">Identyfikator użytkownika.</param>
+    /// <param name="roleId">Identyfikator roli.</param>
+    public MemberRoleRevokedEvent(Guid organizationId, Guid userId, Guid roleId)
+    {
+        OrganizationId = organizationId;
+        UserId = userId;
+        RoleId = roleId;
+    }
 }

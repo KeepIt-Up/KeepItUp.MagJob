@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateInvitation;
@@ -27,4 +26,4 @@ public record CreateInvitationCommand : IRequest<Result<Guid>>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

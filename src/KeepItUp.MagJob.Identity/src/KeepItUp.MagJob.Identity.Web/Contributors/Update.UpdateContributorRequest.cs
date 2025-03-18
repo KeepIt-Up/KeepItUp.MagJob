@@ -2,15 +2,37 @@
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
+/// <summary>
+/// Obiekt żądania do aktualizacji współpracownika.
+/// </summary>
 public class UpdateContributorRequest
 {
-  public const string Route = "/Contributors/{ContributorId:guid}";
-  public static string BuildRoute(Guid contributorId) => Route.Replace("{ContributorId:guid}", contributorId.ToString());
+    /// <summary>
+    /// Szablon ścieżki URL dla endpointu aktualizacji współpracownika.
+    /// </summary>
+    public const string Route = "/Contributors/{ContributorId:guid}";
 
-  public Guid ContributorId { get; set; }
+    /// <summary>
+    /// Buduje ścieżkę URL dla określonego identyfikatora współpracownika.
+    /// </summary>
+    /// <param name="contributorId">Identyfikator współpracownika.</param>
+    /// <returns>Ścieżka URL z uwzględnionym identyfikatorem.</returns>
+    public static string BuildRoute(Guid contributorId) => Route.Replace("{ContributorId:guid}", contributorId.ToString());
 
-  [Required]
-  public Guid Id { get; set; }
-  [Required]
-  public string? Name { get; set; }
+    /// <summary>
+    /// Identyfikator współpracownika do aktualizacji.
+    /// </summary>
+    public Guid ContributorId { get; set; }
+
+    /// <summary>
+    /// Główny identyfikator współpracownika.
+    /// </summary>
+    [Required]
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Nazwa współpracownika.
+    /// </summary>
+    [Required]
+    public string? Name { get; set; }
 }

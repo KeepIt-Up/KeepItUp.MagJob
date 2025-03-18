@@ -24,4 +24,4 @@ public class RevokeRoleFromMemberCommandValidator : AbstractValidator<RevokeRole
         RuleFor(x => x.RequestingUserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika wykonującego operację jest wymagany.");
     }
-} 
+}

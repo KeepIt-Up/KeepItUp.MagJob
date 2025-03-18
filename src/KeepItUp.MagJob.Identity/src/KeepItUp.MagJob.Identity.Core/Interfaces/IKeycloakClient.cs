@@ -14,7 +14,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Dane użytkownika lub null, jeśli użytkownik nie istnieje</returns>
     Task<KeycloakUser?> GetUserByIdAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera użytkownika z Keycloak na podstawie adresu email
     /// </summary>
@@ -22,7 +22,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Dane użytkownika lub null, jeśli użytkownik nie istnieje</returns>
     Task<KeycloakUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera listę użytkowników z Keycloak
     /// </summary>
@@ -32,7 +32,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Lista użytkowników</returns>
     Task<List<KeycloakUser>> GetUsersAsync(string? search = null, int first = 0, int max = 100, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Tworzy nowego użytkownika w Keycloak
     /// </summary>
@@ -40,7 +40,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Identyfikator utworzonego użytkownika</returns>
     Task<string> CreateUserAsync(KeycloakUser user, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Aktualizuje dane użytkownika w Keycloak
     /// </summary>
@@ -48,7 +48,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task UpdateUserAsync(KeycloakUser user, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Dezaktywuje użytkownika w Keycloak
     /// </summary>
@@ -56,7 +56,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task DeactivateUserAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Aktywuje użytkownika w Keycloak
     /// </summary>
@@ -64,7 +64,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task ActivateUserAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Aktualizuje atrybuty użytkownika w Keycloak
     /// </summary>
@@ -73,7 +73,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task UpdateUserAttributesAsync(string userId, Dictionary<string, List<string>> attributes, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera token dostępu do API Keycloak
     /// </summary>
@@ -88,7 +88,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Lista ról użytkownika</returns>
     Task<List<string>> GetUserRolesAsync(string userId, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Przypisuje rolę do użytkownika w Keycloak
     /// </summary>
@@ -97,7 +97,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task AssignRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Usuwa rolę użytkownika w Keycloak
     /// </summary>
@@ -106,14 +106,14 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task RemoveRoleFromUserAsync(string userId, string roleName, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera wszystkie dostępne role z Keycloak
     /// </summary>
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Lista dostępnych ról</returns>
     Task<List<KeycloakRole>> GetRolesAsync(CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Tworzy nową rolę w Keycloak
     /// </summary>
@@ -121,7 +121,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Identyfikator utworzonej roli</returns>
     Task<string> CreateRoleAsync(KeycloakRole role, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Aktualizuje rolę w Keycloak
     /// </summary>
@@ -130,7 +130,7 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task UpdateRoleAsync(string roleName, KeycloakRole role, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Usuwa rolę z Keycloak
     /// </summary>
@@ -147,11 +147,11 @@ public interface IKeycloakClient
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Task reprezentujący asynchroniczną operację</returns>
     Task UpdateUserEnabledStatusAsync(string userId, bool enabled, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Pobiera wszystkich użytkowników z Keycloak
     /// </summary>
     /// <param name="cancellationToken">Token anulowania</param>
     /// <returns>Lista użytkowników</returns>
     Task<List<KeycloakUser>> GetAllUsersAsync(CancellationToken cancellationToken = default);
-} 
+}

@@ -111,7 +111,7 @@ public class Invitation : BaseEntity
         }
 
         Status = InvitationStatus.Accepted;
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
@@ -132,7 +132,7 @@ public class Invitation : BaseEntity
         }
 
         Status = InvitationStatus.Rejected;
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
@@ -148,8 +148,8 @@ public class Invitation : BaseEntity
         }
 
         Status = InvitationStatus.Expired;
-        
+
         // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
-} 
+}

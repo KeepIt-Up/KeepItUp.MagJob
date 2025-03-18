@@ -26,7 +26,8 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera organizację";
             s.Description = "Pobiera organizację o podanym identyfikatorze";
         });
@@ -89,4 +90,4 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
             await SendErrorsAsync(401, ct);
         }
     }
-} 
+}

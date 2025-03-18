@@ -34,4 +34,4 @@ public class GetUserByIdResponse
     /// Czy użytkownik jest aktywny.
     /// </summary>
     public bool IsActive { get; set; }
-} 
+}

@@ -12,4 +12,4 @@ public class GetUserOrganizationsRequest
     /// Identyfikator użytkownika.
     /// </summary>
     public Guid Id { get; set; }
-} 
+}

@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;

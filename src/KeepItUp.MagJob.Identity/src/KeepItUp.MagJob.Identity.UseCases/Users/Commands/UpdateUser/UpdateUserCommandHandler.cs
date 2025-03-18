@@ -1,4 +1,3 @@
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;

@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Żądanie dla endpointu GetInvitationsEndpoint.
 /// </summary>
 public class GetInvitationsRequest
-{ 
+{
     public const string Route = "/Organizations/{OrganizationId:guid}/Invitations";
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 

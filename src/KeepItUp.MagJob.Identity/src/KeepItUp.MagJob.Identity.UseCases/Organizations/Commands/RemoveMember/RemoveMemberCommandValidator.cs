@@ -21,4 +21,4 @@ public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberComman
         RuleFor(x => x.RequestingUserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika wykonującego operację jest wymagany.");
     }
-} 
+}

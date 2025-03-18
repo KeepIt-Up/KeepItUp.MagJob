@@ -4,7 +4,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Żądanie dla endpointu DeleteOrganizationEndpoint.
 /// </summary>
 public class DeleteOrganizationRequest
-{ 
+{
     public const string Route = "/Organizations/{Id:guid}";
     public static string BuildRoute(Guid id) => Route.Replace("{Id:guid}", id.ToString());
 
@@ -12,4 +12,4 @@ public class DeleteOrganizationRequest
     /// Identyfikator organizacji.
     /// </summary>
     public Guid Id { get; set; }
-} 
+}

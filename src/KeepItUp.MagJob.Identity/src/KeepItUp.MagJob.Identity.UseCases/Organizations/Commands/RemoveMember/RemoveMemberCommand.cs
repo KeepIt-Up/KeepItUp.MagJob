@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
@@ -22,4 +21,4 @@ public record RemoveMemberCommand : IRequest<Result>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid RequestingUserId { get; init; }
-} 
+}

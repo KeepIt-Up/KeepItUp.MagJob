@@ -21,4 +21,4 @@ public class DeleteRoleCommandValidator : AbstractValidator<DeleteRoleCommand>
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

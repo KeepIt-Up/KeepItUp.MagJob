@@ -24,4 +24,4 @@ public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleTo
         RuleFor(x => x.RequestingUserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika wykonującego operację jest wymagany.");
     }
-} 
+}

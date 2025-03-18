@@ -7,9 +7,9 @@ namespace KeepItUp.MagJob.Identity.Web.Contributors;
 /// </summary>
 public class GetContributorValidator : Validator<GetContributorByIdRequest>
 {
-  public GetContributorValidator()
-  {
-    RuleFor(x => x.ContributorId)
-      .NotNull().WithMessage("Id is required");
-  }
+    public GetContributorValidator()
+    {
+        RuleFor(x => x.ContributorId)
+          .NotNull().WithMessage("Id is required");
+    }
 }

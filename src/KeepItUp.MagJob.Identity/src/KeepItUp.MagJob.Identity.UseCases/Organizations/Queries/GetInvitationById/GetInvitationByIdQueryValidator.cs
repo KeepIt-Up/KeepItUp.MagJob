@@ -24,4 +24,4 @@ public class GetInvitationByIdQueryValidator : AbstractValidator<GetInvitationBy
             .NotEmpty()
             .WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}
