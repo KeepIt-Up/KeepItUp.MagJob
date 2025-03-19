@@ -3,12 +3,12 @@
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
 /// <summary>
-/// Get a Contributor by integer ID.
+/// Endpoint to retrieve a contributor by ID
 /// </summary>
 /// <remarks>
 /// Takes a positive integer ID and returns a matching Contributor record.
 /// </remarks>
-public class GetById(IMediator _mediator)
+public class GetContributorById(IMediator _mediator)
   : Endpoint<GetContributorByIdRequest, ContributorRecord>
 {
     public override void Configure()

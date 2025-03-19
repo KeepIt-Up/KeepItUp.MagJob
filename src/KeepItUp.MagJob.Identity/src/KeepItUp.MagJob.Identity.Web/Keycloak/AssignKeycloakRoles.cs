@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace KeepItUp.MagJob.Identity.Web.KeycloakAdmin;
 
 [HttpPost("api/keycloak/users/{UserId}/roles"), AllowAnonymous]
-public class AssignRoles : Endpoint<AssignRolesRequest, AssignRolesResponse>
+public class AssignKeycloakRoles : Endpoint<AssignRolesRequest, AssignRolesResponse>
 {
     private readonly IKeycloakAdminService _keycloakService;
 
-    public AssignRoles(IKeycloakAdminService keycloakService)
+    public AssignKeycloakRoles(IKeycloakAdminService keycloakService)
     {
         _keycloakService = keycloakService;
     }
