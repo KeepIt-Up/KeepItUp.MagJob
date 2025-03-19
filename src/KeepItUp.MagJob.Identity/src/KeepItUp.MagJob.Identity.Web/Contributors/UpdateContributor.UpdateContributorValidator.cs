@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
+﻿using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 

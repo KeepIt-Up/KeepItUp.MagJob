@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
@@ -71,7 +71,13 @@ public class UserRepository : IUserRepository
     {
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-
     }
 
+    /// <inheritdoc />
+    public async Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Id == userId, cancellationToken);
+    }
 }

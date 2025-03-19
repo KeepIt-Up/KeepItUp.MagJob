@@ -1,4 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Create;
+﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.CreateContributor;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 

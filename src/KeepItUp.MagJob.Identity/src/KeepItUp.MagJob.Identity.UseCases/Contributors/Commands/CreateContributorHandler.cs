@@ -1,6 +1,6 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
 
-namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Create;
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.CreateContributor;
 
 public class CreateContributorHandler(IRepository<Contributor> _repository)
   : ICommandHandler<CreateContributorCommand, Result<Guid>>

@@ -1,6 +1,6 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
 
-namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Update;
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.UpdateContributor;
 
 public class UpdateContributorHandler(IRepository<Contributor> _repository)
   : ICommandHandler<UpdateContributorCommand, Result<ContributorDTO>>

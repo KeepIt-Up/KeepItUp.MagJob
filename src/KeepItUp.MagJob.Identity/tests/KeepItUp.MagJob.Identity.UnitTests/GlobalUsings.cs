@@ -2,7 +2,6 @@
 global using Ardalis.SharedKernel;
 global using FluentAssertions;
 global using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
-global using KeepItUp.MagJob.Identity.UseCases.Contributors.Create;
 global using MediatR;
 global using Microsoft.Extensions.Logging;
 global using NSubstitute;

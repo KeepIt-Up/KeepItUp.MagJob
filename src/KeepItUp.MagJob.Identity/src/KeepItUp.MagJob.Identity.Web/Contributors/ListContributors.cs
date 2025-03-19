@@ -1,7 +1,7 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
 using KeepItUp.MagJob.Identity.UseCases.Common;
 using KeepItUp.MagJob.Identity.UseCases.Contributors;
-using KeepItUp.MagJob.Identity.UseCases.Contributors.List;
+using KeepItUp.MagJob.Identity.UseCases.Contributors.Queries.ListContributors;
 using KeepItUp.MagJob.Identity.Web.Common;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;

@@ -60,6 +60,15 @@ public class OrganizationRepository : IOrganizationRepository
     }
 
     /// <inheritdoc />
+    public async Task<Organization?> GetByIdWithInvitationsAsync(Guid organizationId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .AsNoTracking()
+            .Include(o => o.Invitations)
+            .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<Organization?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Organizations
@@ -83,6 +92,22 @@ public class OrganizationRepository : IOrganizationRepository
             .AsNoTracking()
             .Where(o => o.Id == organizationId)
             .AnyAsync(o => o.Members.Any(m => m.UserId == userId), cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> ExistsAsync(Guid organizationId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .AsNoTracking()
+            .AnyAsync(o => o.Id == organizationId, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .AsNoTracking()
+            .AnyAsync(o => o.Name == name, cancellationToken);
     }
 
     /// <inheritdoc />

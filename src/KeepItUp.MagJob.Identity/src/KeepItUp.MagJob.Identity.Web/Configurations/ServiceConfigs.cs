@@ -23,7 +23,8 @@ public static class ServiceConfigs
         services.AddFastEndpoints();
 
         services.AddInfrastructureServices(builder.Configuration, logger)
-                .AddMediatrConfigs();
+                .AddMediatrConfigs()
+                .AddValidationConfig(logger);
 
         // Dodanie CORS
         services.AddCorsConfig(builder.Configuration);
@@ -57,7 +58,7 @@ public static class ServiceConfigs
         // Dodaj health checks
         builder.Services.AddHealthChecks();
 
-        logger.LogInformation("{Project} services registered", "FastEndpoints, Mediatr, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
+        logger.LogInformation("{Project} services registered", "FastEndpoints, Mediatr, Validation, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
 
         return services;
     }

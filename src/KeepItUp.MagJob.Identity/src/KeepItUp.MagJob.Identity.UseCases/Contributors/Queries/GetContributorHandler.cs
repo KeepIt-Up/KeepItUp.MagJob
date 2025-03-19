@@ -1,6 +1,6 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
 
-namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Get;
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Queries.GetContributor;
 
 /// <summary>
 /// Queries don't necessarily need to use repository methods, but they can if it's convenient

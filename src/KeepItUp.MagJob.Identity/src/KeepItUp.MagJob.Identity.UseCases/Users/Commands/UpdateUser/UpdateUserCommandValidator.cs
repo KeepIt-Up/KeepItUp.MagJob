@@ -1,19 +1,29 @@
 using FluentValidation;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 
 /// <summary>
 /// Walidator dla komendy UpdateUserCommand.
 /// </summary>
+/// <remarks>
+/// Implementuje walidację biznesową, sprawdzając istnienie użytkownika w bazie danych.
+/// </remarks>
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
+    private readonly IUserRepository _userRepository;
+
     /// <summary>
     /// Inicjalizuje nową instancję klasy <see cref="UpdateUserCommandValidator"/>.
     /// </summary>
-    public UpdateUserCommandValidator()
+    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    public UpdateUserCommandValidator(IUserRepository userRepository)
     {
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+
         RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
+            .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
+            .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
 
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("Imię jest wymagane.")
@@ -33,8 +43,18 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 
         RuleFor(x => x.ProfileImageUrl)
             .MaximumLength(1000).WithMessage("URL zdjęcia profilowego nie może być dłuższy niż 1000 znaków.")
-            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
-            .WithMessage("URL zdjęcia profilowego musi być prawidłowym adresem URL.")
-            .When(x => !string.IsNullOrEmpty(x.ProfileImageUrl));
+            .Must(uri => string.IsNullOrEmpty(uri) || Uri.TryCreate(uri, UriKind.Absolute, out _))
+            .WithMessage("URL zdjęcia profilowego musi być prawidłowym adresem URL.");
+    }
+
+    /// <summary>
+    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// </summary>
+    /// <param name="userId">Identyfikator użytkownika.</param>
+    /// <param name="cancellationToken">Token anulowania.</param>
+    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _userRepository.ExistsAsync(userId, cancellationToken);
     }
 }

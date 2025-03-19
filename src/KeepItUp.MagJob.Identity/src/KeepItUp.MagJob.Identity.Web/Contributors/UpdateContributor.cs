@@ -1,5 +1,5 @@
-﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Get;
-using KeepItUp.MagJob.Identity.UseCases.Contributors.Update;
+﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.UpdateContributor;
+using KeepItUp.MagJob.Identity.UseCases.Contributors.Queries.GetContributor;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 

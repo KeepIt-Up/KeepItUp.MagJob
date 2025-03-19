@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace KeepItUp.MagJob.Identity.Web.Contributors;
+﻿namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
 /// <summary>
 /// See: https://fast-endpoints.com/docs/validation

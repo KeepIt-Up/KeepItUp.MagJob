@@ -1,6 +1,6 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 
-namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Delete;
+namespace KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.DeleteContributor;
 
 public class DeleteContributorHandler(IDeleteContributorService _deleteContributorService)
   : ICommandHandler<DeleteContributorCommand, Result>

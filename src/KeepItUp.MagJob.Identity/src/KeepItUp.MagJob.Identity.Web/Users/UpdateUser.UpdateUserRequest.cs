@@ -23,11 +23,6 @@ public class UpdateUserRequest
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Adres email użytkownika.
-    /// </summary>
-    public string Email { get; set; } = string.Empty;
-
-    /// <summary>
     /// Imię użytkownika.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;

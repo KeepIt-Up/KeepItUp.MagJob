@@ -39,4 +39,12 @@ public interface IUserRepository
     /// Usuwa użytkownika
     /// </summary>
     Task DeleteAsync(User user, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sprawdza, czy użytkownik o podanym ID istnieje
+    /// </summary>
+    /// <param name="userId">ID użytkownika</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false</returns>
+    Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Delete;
+﻿using KeepItUp.MagJob.Identity.UseCases.Contributors.Commands.DeleteContributor;
 
 namespace KeepItUp.MagJob.Identity.Web.Contributors;
 
