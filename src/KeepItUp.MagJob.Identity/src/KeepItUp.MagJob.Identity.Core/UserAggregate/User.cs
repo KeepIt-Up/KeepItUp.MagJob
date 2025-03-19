@@ -56,7 +56,12 @@ public class User : BaseEntity, IAggregateRoot
     /// <summary>
     /// Lista uprawnień użytkownika.
     /// </summary>
-    public List<string> Permissions { get; private set; } = new List<string>();
+    private readonly List<string> _permissions = new();
+
+    /// <summary>
+    /// Lista uprawnień użytkownika (tylko do odczytu).
+    /// </summary>
+    public IReadOnlyCollection<string> Permissions => _permissions.AsReadOnly();
 
     /// <summary>
     /// Data ostatniego logowania użytkownika.
@@ -154,12 +159,78 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje uprawnienia użytkownika
+    /// Aktualizuje uprawnienia użytkownika.
     /// </summary>
-    /// <param name="permissions">Lista uprawnień</param>
+    /// <param name="permissions">Lista uprawnień.</param>
     public void UpdatePermissions(List<string> permissions)
     {
-        Permissions = permissions ?? new List<string>();
+        _permissions.Clear();
+        if (permissions != null)
+        {
+            _permissions.AddRange(permissions);
+        }
+
+        // Wywołanie metody Update z klasy bazowej
+        base.Update();
+
+        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+    }
+
+    /// <summary>
+    /// Dodaje uprawnienie użytkownikowi.
+    /// </summary>
+    /// <param name="permission">Uprawnienie do dodania.</param>
+    /// <returns>True, jeśli uprawnienie zostało dodane; false, jeśli już istnieje.</returns>
+    public bool AddPermission(string permission)
+    {
+        Guard.Against.NullOrEmpty(permission, nameof(permission));
+
+        if (_permissions.Contains(permission))
+        {
+            return false;
+        }
+
+        _permissions.Add(permission);
+
+        // Wywołanie metody Update z klasy bazowej
+        base.Update();
+
+        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+        return true;
+    }
+
+    /// <summary>
+    /// Usuwa uprawnienie użytkownikowi.
+    /// </summary>
+    /// <param name="permission">Uprawnienie do usunięcia.</param>
+    /// <returns>True, jeśli uprawnienie zostało usunięte; false, jeśli nie istnieje.</returns>
+    public bool RemovePermission(string permission)
+    {
+        Guard.Against.NullOrEmpty(permission, nameof(permission));
+
+        if (!_permissions.Contains(permission))
+        {
+            return false;
+        }
+
+        _permissions.Remove(permission);
+
+        // Wywołanie metody Update z klasy bazowej
+        base.Update();
+
+        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+        return true;
+    }
+
+    /// <summary>
+    /// Sprawdza, czy użytkownik posiada określone uprawnienie.
+    /// </summary>
+    /// <param name="permission">Uprawnienie do sprawdzenia.</param>
+    /// <returns>True, jeśli użytkownik posiada uprawnienie; w przeciwnym razie false.</returns>
+    public bool HasPermission(string permission)
+    {
+        Guard.Against.NullOrEmpty(permission, nameof(permission));
+        return _permissions.Contains(permission);
     }
 
     /// <summary>
@@ -254,7 +325,6 @@ public class User : BaseEntity, IAggregateRoot
         LastName = lastName;
         Email = email;
         Username = username;
-        LastModifiedDate = DateTime.UtcNow;
 
         // Aktualizacja statusu aktywności
         if (IsActive != isActive)
