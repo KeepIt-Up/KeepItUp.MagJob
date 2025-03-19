@@ -38,6 +38,7 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
             // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.Id}.");

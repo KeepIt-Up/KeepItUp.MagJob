@@ -37,22 +37,9 @@ public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrgani
         {
             // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdAsync(request.OrganizationId, cancellationToken);
-
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
-            }
-
-            // Sprawdź, czy użytkownik ma uprawnienia do aktualizacji organizacji
-            if (organization.OwnerId != request.UserId)
-            {
-                var isMember = organization.Members.Any(m => m.UserId == request.UserId &&
-                    m.Roles.Any(r => r.Name == "Admin"));
-
-                if (!isMember)
-                {
-                    return Result.Forbidden("Brak uprawnień do aktualizacji logo organizacji.");
-                }
             }
 
             // Aktualizuj logo organizacji

@@ -38,6 +38,7 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
             // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
@@ -53,8 +54,10 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
                 }
             }
 
-            // Sprawdź, czy użytkownik do usunięcia jest członkiem organizacji
+            // Pobranie członka do usunięcia
             var memberToRemove = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
+
+            // Walidator powinien zapewnić, że członek istnieje
             if (memberToRemove == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");

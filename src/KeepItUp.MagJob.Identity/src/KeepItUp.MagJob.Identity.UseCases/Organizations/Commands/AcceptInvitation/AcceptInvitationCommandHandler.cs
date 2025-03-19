@@ -1,6 +1,5 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,22 +11,18 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AcceptInvitat
 public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result<Guid>>
 {
     private readonly IOrganizationRepository _organizationRepository;
-    private readonly IUserRepository _userRepository;
     private readonly ILogger<AcceptInvitationCommandHandler> _logger;
 
     /// <summary>
     /// Inicjalizuje nową instancję klasy <see cref="AcceptInvitationCommandHandler"/>.
     /// </summary>
     /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public AcceptInvitationCommandHandler(
         IOrganizationRepository organizationRepository,
-        IUserRepository userRepository,
         ILogger<AcceptInvitationCommandHandler> logger)
     {
         _organizationRepository = organizationRepository;
-        _userRepository = userRepository;
         _logger = logger;
     }
 
@@ -42,52 +37,16 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
         try
         {
             // Pobierz organizację z zaproszeniami
-            var organization = await _organizationRepository.GetByIdWithMembersAsync(request.OrganizationId, cancellationToken);
+            var organization = await _organizationRepository.GetByIdWithInvitationsAsync(request.OrganizationId, cancellationToken);
+
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik istnieje
-            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
-            if (user == null)
-            {
-                return Result<Guid>.NotFound($"Nie znaleziono użytkownika o ID {request.UserId}.");
-            }
-
-            // Znajdź zaproszenie
-            var invitation = organization.Invitations.FirstOrDefault(i => i.Id == request.InvitationId);
-            if (invitation == null)
-            {
-                return Result<Guid>.NotFound($"Nie znaleziono zaproszenia o ID {request.InvitationId}.");
-            }
-
-            // Sprawdź, czy zaproszenie jest oczekujące
-            if (invitation.Status != InvitationStatus.Pending)
-            {
-                return Result<Guid>.Error($"Zaproszenie o ID {request.InvitationId} zostało już {invitation.Status.ToString().ToLower()}.");
-            }
-
-            // Sprawdź, czy zaproszenie nie wygasło
-            if (invitation.IsExpired)
-            {
-                return Result<Guid>.Error($"Zaproszenie o ID {request.InvitationId} wygasło.");
-            }
-
-            // Sprawdź, czy email zaproszenia pasuje do emaila użytkownika
-            if (!string.Equals(invitation.Email, user.Email, StringComparison.OrdinalIgnoreCase))
-            {
-                return Result<Guid>.Forbidden("Adres email użytkownika nie pasuje do adresu email zaproszenia.");
-            }
-
-            // Sprawdź, czy użytkownik nie jest już członkiem organizacji
-            if (organization.Members.Any(m => m.UserId == request.UserId))
-            {
-                return Result<Guid>.Error($"Użytkownik o ID {request.UserId} jest już członkiem organizacji.");
-            }
-
             // Zaakceptuj zaproszenie i dodaj użytkownika jako członka organizacji
-            var member = organization.AcceptInvitation(invitation.Id, request.UserId);
+            var member = organization.AcceptInvitation(request.InvitationId, request.UserId);
 
             // Zapisz zmiany
             await _organizationRepository.UpdateAsync(organization, cancellationToken);

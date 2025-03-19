@@ -66,31 +66,7 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
             return;
         }
 
-        if (req.BannerFile == null || req.BannerFile.Length == 0)
-        {
-            AddError("Nie przesłano pliku");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Sprawdzenie typu pliku (tylko obrazy)
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
-        if (!allowedTypes.Contains(req.BannerFile.ContentType.ToLower()))
-        {
-            AddError("Niedozwolony typ pliku. Dozwolone typy: JPEG, PNG, GIF");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Sprawdzenie rozmiaru pliku (np. max 5MB, bannery zazwyczaj są większe)
-        if (req.BannerFile.Length > 5 * 1024 * 1024)
-        {
-            AddError("Plik jest zbyt duży. Maksymalny rozmiar to 5MB");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia
+        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia i pobrać stary banner
         var getOrganizationQuery = new GetOrganizationByIdQuery
         {
             OrganizationId = req.OrganizationId,
@@ -129,7 +105,7 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
         {
             // Przesłanie pliku do usługi przechowywania
             string bannerUrl;
-            using (var stream = req.BannerFile.OpenReadStream())
+            using (var stream = req.BannerFile!.OpenReadStream())
             {
                 // Zapisz banner w podkatalogu "banners"
                 bannerUrl = await _fileStorageService.UploadFileAsync(

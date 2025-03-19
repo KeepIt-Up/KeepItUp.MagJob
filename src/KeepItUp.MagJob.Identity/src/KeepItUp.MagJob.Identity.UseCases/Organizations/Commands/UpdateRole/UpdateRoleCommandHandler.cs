@@ -38,6 +38,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
             // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
@@ -55,15 +56,11 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
 
             // Znajdź rolę do aktualizacji
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
-            }
-
-            // Sprawdź, czy nazwa roli nie jest już używana przez inną rolę
-            if (organization.Roles.Any(r => r.Name == request.Name && r.Id != request.RoleId))
-            {
-                return Result.Error($"Rola o nazwie '{request.Name}' już istnieje w organizacji.");
             }
 
             // Sprawdź, czy rola nie jest jedną z domyślnych ról systemowych

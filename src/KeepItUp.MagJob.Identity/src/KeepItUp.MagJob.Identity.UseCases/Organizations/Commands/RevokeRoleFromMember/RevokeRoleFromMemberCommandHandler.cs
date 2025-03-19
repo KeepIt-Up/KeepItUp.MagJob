@@ -38,6 +38,7 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
             // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
@@ -53,21 +54,25 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 }
             }
 
-            // Sprawdź, czy rola istnieje w organizacji
+            // Pobierz rolę z organizacji
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
             }
 
-            // Sprawdź, czy użytkownik jest członkiem organizacji
+            // Pobierz członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
+
+            // Walidator powinien zapewnić, że członek istnieje
             if (member == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
-            // Sprawdź, czy użytkownik ma przypisaną tę rolę
+            // Walidator powinien zapewnić, że użytkownik ma przypisaną tę rolę
             if (!member.HasRole(request.RoleId))
             {
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} nie ma przypisanej roli o ID {request.RoleId}.");

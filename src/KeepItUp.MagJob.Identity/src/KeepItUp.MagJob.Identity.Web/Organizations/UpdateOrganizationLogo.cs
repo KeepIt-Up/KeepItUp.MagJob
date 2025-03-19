@@ -66,31 +66,7 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
             return;
         }
 
-        if (req.LogoFile == null || req.LogoFile.Length == 0)
-        {
-            AddError("Nie przesłano pliku");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Sprawdzenie typu pliku (tylko obrazy)
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
-        if (!allowedTypes.Contains(req.LogoFile.ContentType.ToLower()))
-        {
-            AddError("Niedozwolony typ pliku. Dozwolone typy: JPEG, PNG, GIF");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Sprawdzenie rozmiaru pliku (np. max 2MB)
-        if (req.LogoFile.Length > 2 * 1024 * 1024)
-        {
-            AddError("Plik jest zbyt duży. Maksymalny rozmiar to 2MB");
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia
+        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia i pobrać stare logo
         var getOrganizationQuery = new GetOrganizationByIdQuery
         {
             OrganizationId = req.OrganizationId,
@@ -129,7 +105,7 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
         {
             // Przesłanie pliku do usługi przechowywania
             string logoUrl;
-            using (var stream = req.LogoFile.OpenReadStream())
+            using (var stream = req.LogoFile!.OpenReadStream())
             {
                 // Zapisz logo w podkatalogu "logos"
                 logoUrl = await _fileStorageService.UploadFileAsync(

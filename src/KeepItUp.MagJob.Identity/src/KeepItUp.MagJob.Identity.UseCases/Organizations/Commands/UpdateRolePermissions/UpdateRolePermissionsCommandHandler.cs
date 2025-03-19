@@ -26,12 +26,13 @@ public class UpdateRolePermissionsCommandHandler(
             // Pobieramy organizację wraz z rolami
             var organization = await organizationRepository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o identyfikatorze {request.OrganizationId}.");
             }
 
-            // Sprawdzamy, czy użytkownik ma dostęp do organizacji
+            // Sprawdzamy, czy użytkownik ma dostęp do organizacji (uprawnienia)
             if (!await organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken) &&
                 organization.OwnerId != request.UserId)
             {
@@ -40,6 +41,8 @@ public class UpdateRolePermissionsCommandHandler(
 
             // Pobieramy rolę
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o identyfikatorze {request.RoleId} w organizacji.");
