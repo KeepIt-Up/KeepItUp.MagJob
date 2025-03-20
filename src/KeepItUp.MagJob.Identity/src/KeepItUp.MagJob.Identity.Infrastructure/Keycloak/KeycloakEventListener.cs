@@ -1,4 +1,4 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.Keycloak;
@@ -243,7 +243,7 @@ public class KeycloakEventListener : BackgroundService
 
         try
         {
-            var user = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
+            var user = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
             if (user != null)
             {
                 user.UpdateLastLoginDate(DateTime.UtcNow);
@@ -274,7 +274,7 @@ public class KeycloakEventListener : BackgroundService
 
         try
         {
-            var user = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
+            var user = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
             if (user != null)
             {
                 // Możemy oznaczyć użytkownika jako nieaktywnego zamiast go usuwać
@@ -323,7 +323,7 @@ public class KeycloakEventListener : BackgroundService
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
             // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
-            var existingUser = await userRepository.GetByExternalIdAsync(userId, cancellationToken);
+            var existingUser = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
 
             if (existingUser != null)
             {

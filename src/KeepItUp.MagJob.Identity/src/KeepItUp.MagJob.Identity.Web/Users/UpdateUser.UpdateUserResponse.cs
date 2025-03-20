@@ -1,4 +1,4 @@
-namespace KeepItUp.MagJob.Identity.Web.Users;
+﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Odpowiedź dla endpointu UpdateUserEndpoint.
@@ -13,7 +13,7 @@ public class UpdateUserResponse
     /// <summary>
     /// Zewnętrzny identyfikator użytkownika (np. z Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres email użytkownika.

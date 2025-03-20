@@ -13,7 +13,7 @@ public class GetUserByExternalIdQueryValidator : AbstractValidator<GetUserByExte
     public GetUserByExternalIdQueryValidator()
     {
         RuleFor(x => x.ExternalId)
-            .NotEmpty().WithMessage("Identyfikator zewnętrzny użytkownika jest wymagany.")
-            .MaximumLength(100).WithMessage("Identyfikator zewnętrzny użytkownika nie może być dłuższy niż 100 znaków.");
+            .NotNull().WithMessage("Identyfikator zewnętrzny użytkownika jest wymagany.")
+            .NotEqual(Guid.Empty).WithMessage("Identyfikator zewnętrzny użytkownika nie może być pusty.");
     }
 }

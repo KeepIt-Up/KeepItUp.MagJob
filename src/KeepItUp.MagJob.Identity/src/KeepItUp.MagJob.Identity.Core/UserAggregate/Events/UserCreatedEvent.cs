@@ -14,7 +14,7 @@ public class UserCreatedEvent : DomainEventBase
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; }
+    public Guid ExternalId { get; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
@@ -27,7 +27,7 @@ public class UserCreatedEvent : DomainEventBase
     /// <param name="userId">Identyfikator użytkownika.</param>
     /// <param name="externalId">Identyfikator użytkownika w systemie zewnętrznym (Keycloak).</param>
     /// <param name="email">Adres e-mail użytkownika.</param>
-    public UserCreatedEvent(Guid userId, string externalId, string email)
+    public UserCreatedEvent(Guid userId, Guid externalId, string email)
     {
         UserId = userId;
         ExternalId = externalId;

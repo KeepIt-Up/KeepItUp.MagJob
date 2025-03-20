@@ -42,7 +42,7 @@ internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedE
             _logger.LogInformation("Obsługa zdarzenia aktualizacji użytkownika {UserId}", notification.UserId);
 
             // Jeśli użytkownik ma identyfikator zewnętrzny, synchronizujemy dane z Keycloak
-            if (!string.IsNullOrEmpty(notification.ExternalId))
+            if (notification.ExternalId != Guid.Empty)
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
                 if (user == null)
@@ -52,7 +52,7 @@ internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedE
                 }
 
                 // Pobierz dane użytkownika z Keycloak
-                await _keycloakSyncService.SyncUserDataAsync(notification.ExternalId, cancellationToken);
+                await _keycloakSyncService.SyncUserDataAsync(notification.ExternalId.ToString(), cancellationToken);
 
                 _logger.LogInformation("Zsynchronizowano dane użytkownika {UserId} z Keycloak", notification.UserId);
             }

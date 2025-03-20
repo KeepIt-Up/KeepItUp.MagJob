@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
@@ -42,7 +42,7 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
         try
         {
             // Sprawdź, czy użytkownik istnieje
-            var user = await _userRepository.GetByIdAsync(request.OwnerId, cancellationToken);
+            var user = await _userRepository.GetByExternalIdAsync(request.OwnerId, cancellationToken);
             if (user == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono użytkownika o ID {request.OwnerId}.");
@@ -55,17 +55,27 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
                 return Result<Guid>.Error($"Organizacja o nazwie '{request.Name}' już istnieje.");
             }
 
-            // Utwórz nową organizację - metoda Create automatycznie tworzy role i dodaje właściciela
+            // Utwórz nową organizację
             var organization = Organization.Create(
                 request.Name,
-                request.OwnerId,
-                request.Description);
+                user.Id, // użyj ID użytkownika zamiast ExternalId
+                request.Description,
+                logoUrl: null,
+                bannerUrl: null);
 
-            // Zapisz organizację w repozytorium
+            // Zapisz organizację w repozytorium, aby uzyskać prawidłowe ID
             await _organizationRepository.AddAsync(organization, cancellationToken);
 
+            // Inicjalizuj role i członkostwo właściciela i ponownie zapisz
+            organization.InitializeRoles();
+            await _organizationRepository.UpdateAsync(organization, cancellationToken);
+
+            // Inicjalizuj członkostwo właściciela
+            organization.InitializeOwner();
+            await _organizationRepository.UpdateAsync(organization, cancellationToken);
+
             _logger.LogInformation("Utworzono nową organizację {OrganizationId} dla użytkownika {UserId}",
-                organization.Id, request.OwnerId);
+                organization.Id, user.Id);
 
             return Result<Guid>.Success(organization.Id);
         }

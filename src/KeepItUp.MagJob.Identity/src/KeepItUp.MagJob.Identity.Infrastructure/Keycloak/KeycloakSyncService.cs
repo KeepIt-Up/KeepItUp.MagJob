@@ -43,7 +43,7 @@ public class KeycloakSyncService : IKeycloakSyncService
             _logger.LogInformation("Rozpoczęto synchronizację ról użytkownika {UserId} z Keycloak", userId);
 
             // Pobierz użytkownika z naszej bazy danych
-            var user = await _userRepository.GetByExternalIdAsync(userId, cancellationToken);
+            var user = await _userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
             if (user == null)
             {
                 _logger.LogWarning("Nie znaleziono użytkownika o identyfikatorze zewnętrznym {ExternalId} podczas synchronizacji ról", userId);
@@ -104,7 +104,7 @@ public class KeycloakSyncService : IKeycloakSyncService
             }
 
             // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
-            var existingUser = await _userRepository.GetByExternalIdAsync(userId, cancellationToken);
+            var existingUser = await _userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
 
             if (existingUser == null)
             {
@@ -114,7 +114,7 @@ public class KeycloakSyncService : IKeycloakSyncService
                     keycloakUser.LastName ?? string.Empty,
                     keycloakUser.Email,
                     keycloakUser.Username ?? keycloakUser.Email,
-                    userId,
+                    Guid.Parse(userId),
                     true
                 );
 
@@ -191,7 +191,7 @@ public class KeycloakSyncService : IKeycloakSyncService
             }
 
             // Sprawdź, czy użytkownik już istnieje w module Identity
-            var existingUser = await _userRepository.GetByExternalIdAsync(keycloakUserId, cancellationToken);
+            var existingUser = await _userRepository.GetByExternalIdAsync(Guid.Parse(keycloakUserId), cancellationToken);
 
             if (existingUser != null)
             {
@@ -205,7 +205,7 @@ public class KeycloakSyncService : IKeycloakSyncService
                 keycloakUser.LastName ?? string.Empty,
                 keycloakUser.Email,
                 keycloakUser.Username ?? keycloakUser.Email,
-                keycloakUserId,
+                Guid.Parse(keycloakUserId),
                 true
             );
 

@@ -10,5 +10,5 @@ public record GetUserByExternalIdQuery : IRequest<Result<UserDto>>
     /// <summary>
     /// Identyfikator zewnętrzny użytkownika.
     /// </summary>
-    public string ExternalId { get; init; } = string.Empty;
+    public Guid ExternalId { get; init; }
 }

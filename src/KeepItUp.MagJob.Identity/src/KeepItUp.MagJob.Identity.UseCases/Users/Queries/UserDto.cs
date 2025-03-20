@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres e-mail użytkownika.

@@ -115,6 +115,23 @@ public class OrganizationRepository : IOrganizationRepository
     /// <inheritdoc />
     public async Task<Organization> AddAsync(Organization organization, CancellationToken cancellationToken = default)
     {
+        // Ensure member-role relationships are tracked
+        foreach (var member in organization.Members)
+        {
+            // Make sure the Roles collection has references to actual Role entities
+            var roleIds = member.RoleIds.ToList();
+            member.Roles.Clear();
+
+            foreach (var roleId in roleIds)
+            {
+                var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
+                if (role != null)
+                {
+                    member.Roles.Add(role);
+                }
+            }
+        }
+
         await _dbContext.Organizations.AddAsync(organization, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -124,6 +141,23 @@ public class OrganizationRepository : IOrganizationRepository
     /// <inheritdoc />
     public async Task UpdateAsync(Organization organization, CancellationToken cancellationToken = default)
     {
+        // Ensure member-role relationships are tracked
+        foreach (var member in organization.Members)
+        {
+            // Make sure the Roles collection has references to actual Role entities
+            var roleIds = member.RoleIds.ToList();
+            member.Roles.Clear();
+
+            foreach (var roleId in roleIds)
+            {
+                var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
+                if (role != null)
+                {
+                    member.Roles.Add(role);
+                }
+            }
+        }
+
         _dbContext.Organizations.Update(organization);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

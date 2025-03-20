@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;

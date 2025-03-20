@@ -13,8 +13,8 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     public CreateUserCommandValidator()
     {
         RuleFor(x => x.ExternalId)
-            .NotEmpty().WithMessage("Identyfikator zewnętrzny jest wymagany.")
-            .MaximumLength(100).WithMessage("Identyfikator zewnętrzny nie może być dłuższy niż 100 znaków.");
+            .NotNull().WithMessage("Identyfikator zewnętrzny jest wymagany.")
+            .NotEqual(Guid.Empty).WithMessage("Identyfikator zewnętrzny nie może być pusty.");
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Adres e-mail jest wymagany.")

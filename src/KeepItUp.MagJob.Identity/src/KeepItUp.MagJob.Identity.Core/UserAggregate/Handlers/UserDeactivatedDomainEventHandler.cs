@@ -38,9 +38,9 @@ internal class UserDeactivatedDomainEventHandler : INotificationHandler<UserDeac
             _logger.LogInformation("Obsługa zdarzenia dezaktywacji użytkownika {UserId}", notification.UserId);
 
             // Jeśli użytkownik ma identyfikator zewnętrzny, dezaktywujemy go w Keycloak
-            if (!string.IsNullOrEmpty(notification.ExternalId))
+            if (notification.ExternalId != Guid.Empty)
             {
-                await _keycloakClient.UpdateUserEnabledStatusAsync(notification.ExternalId, false, cancellationToken);
+                await _keycloakClient.UpdateUserEnabledStatusAsync(notification.ExternalId.ToString(), false, cancellationToken);
                 _logger.LogInformation("Dezaktywowano użytkownika {UserId} w Keycloak", notification.UserId);
             }
 

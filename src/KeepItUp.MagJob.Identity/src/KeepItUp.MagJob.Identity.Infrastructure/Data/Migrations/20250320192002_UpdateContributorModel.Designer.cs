@@ -3,6 +3,7 @@ using System;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250320192002_UpdateContributorModel")]
+    partial class UpdateContributorModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,9 +287,10 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("ExternalId")
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("uuid");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

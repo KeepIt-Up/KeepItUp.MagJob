@@ -94,22 +94,61 @@ public class Organization : BaseEntity, IAggregateRoot
             BannerUrl = bannerUrl
         };
 
-        // Dodaj domyślne role
-        var adminRole = Role.Create("Admin", organization.Id, "Administrator organizacji", "#FF0000");
-        var memberRole = Role.Create("Member", organization.Id, "Członek organizacji", "#00FF00");
-        var guestRole = Role.Create("Guest", organization.Id, "Gość organizacji", "#0000FF");
-
-        organization._roles.Add(adminRole);
-        organization._roles.Add(memberRole);
-        organization._roles.Add(guestRole);
-
-        // Dodaj właściciela jako administratora
-        var ownerMember = Member.Create(ownerId, organization.Id, adminRole.Id);
-        organization._members.Add(ownerMember);
-
         organization.RegisterDomainEvent(new OrganizationCreatedEvent(organization.Id, organization.Name, organization.OwnerId));
 
         return organization;
+    }
+
+    /// <summary>
+    /// Inicjalizuje domyślne role i członkostwo dla właściciela.
+    /// Ta metoda powinna być wywołana po zapisaniu organizacji do bazy danych,
+    /// gdy organizacja ma już przypisane prawidłowe ID.
+    /// </summary>
+    /// <returns>Organizacja z zainicjalizowanymi rolami i członkostwem właściciela.</returns>
+    public Organization InitializeRoles()
+    {
+        // Upewnij się, że organizacja ma prawidłowe ID
+        Guard.Against.Default(Id, nameof(Id));
+
+        // Dodaj domyślne role
+        var adminRole = Role.Create("Admin", Id, "Administrator organizacji", "#FF0000");
+        var memberRole = Role.Create("Member", Id, "Członek organizacji", "#00FF00");
+        var guestRole = Role.Create("Guest", Id, "Gość organizacji", "#0000FF");
+
+        _roles.Add(adminRole);
+        _roles.Add(memberRole);
+        _roles.Add(guestRole);
+
+        return this;
+    }
+
+    /// <summary>
+    /// Inicjalizuje domyślne role i członkostwo dla właściciela.
+    /// Ta metoda powinna być wywołana po zapisaniu organizacji do bazy danych,
+    /// gdy organizacja ma już przypisane prawidłowe ID.
+    /// </summary>
+    /// <returns>Organizacja z zainicjalizowanymi rolami i członkostwem właściciela.</returns>
+    public Organization InitializeOwner()
+    {
+        // Upewnij się, że organizacja ma prawidłowe ID
+        Guard.Against.Default(Id, nameof(Id));
+
+        // Znajdź rolę Admina
+        var adminRole = _roles.FirstOrDefault(r => r.Name == "Admin");
+        if (adminRole == null)
+        {
+            throw new InvalidOperationException("Nie znaleziono roli 'Admin' w organizacji. Uruchom najpierw InitializeRoles().");
+        }
+
+        // Dodaj właściciela jako administratora
+        var ownerMember = Member.Create(OwnerId, Id, adminRole.Id);
+
+        // Ustaw jawnie referencje dla nawigacji między Member i Role
+        ownerMember.Roles.Add(adminRole);
+
+        _members.Add(ownerMember);
+
+        return this;
     }
 
     /// <summary>
@@ -213,12 +252,19 @@ public class Organization : BaseEntity, IAggregateRoot
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
+        // Sprawdź, czy rola istnieje w organizacji
+        var role = _roles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+        {
+            throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
+        }
+
         // Sprawdź, czy użytkownik już jest członkiem organizacji
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
             // Jeśli użytkownik już jest członkiem, dodaj mu nową rolę
-            existingMember.AssignRole(roleId);
+            existingMember.AssignRole(roleId, role);
 
             // Wywołanie metody Update z klasy bazowej
             base.Update();
@@ -227,13 +273,11 @@ public class Organization : BaseEntity, IAggregateRoot
             return existingMember;
         }
 
-        // Sprawdź, czy rola istnieje w organizacji
-        if (!_roles.Any(r => r.Id == roleId))
-        {
-            throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
-        }
-
         var member = Member.Create(userId, Id, roleId);
+
+        // Dodaj referencję do obiektu roli w członku
+        member.SyncRoles(_roles);
+
         _members.Add(member);
 
         // Wywołanie metody Update z klasy bazowej

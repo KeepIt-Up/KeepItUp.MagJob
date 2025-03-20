@@ -43,7 +43,7 @@ internal class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedE
 
             // Jeśli użytkownik został utworzony w naszym systemie, ale nie ma jeszcze konta w Keycloak,
             // możemy utworzyć je automatycznie
-            if (string.IsNullOrEmpty(notification.ExternalId))
+            if (notification.ExternalId != Guid.Empty)
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
                 if (user == null)

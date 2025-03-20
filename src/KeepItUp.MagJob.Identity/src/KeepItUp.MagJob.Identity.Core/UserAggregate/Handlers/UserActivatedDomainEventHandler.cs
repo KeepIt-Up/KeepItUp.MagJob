@@ -38,9 +38,9 @@ internal class UserActivatedDomainEventHandler : INotificationHandler<UserActiva
             _logger.LogInformation("Obsługa zdarzenia aktywacji użytkownika {UserId}", notification.UserId);
 
             // Jeśli użytkownik ma identyfikator zewnętrzny, aktywujemy go w Keycloak
-            if (!string.IsNullOrEmpty(notification.ExternalId))
+            if (notification.ExternalId != Guid.Empty)
             {
-                await _keycloakClient.UpdateUserEnabledStatusAsync(notification.ExternalId, true, cancellationToken);
+                await _keycloakClient.UpdateUserEnabledStatusAsync(notification.ExternalId.ToString(), true, cancellationToken);
                 _logger.LogInformation("Aktywowano użytkownika {UserId} w Keycloak", notification.UserId);
             }
 

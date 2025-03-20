@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc />
-    public async Task<User?> GetByExternalIdAsync(string externalId, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByExternalIdAsync(Guid externalId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Users
             .AsNoTracking()

@@ -14,7 +14,7 @@ public class UserPermissionsUpdatedEvent : DomainEventBase
     /// <summary>
     /// Identyfikator zewnętrzny użytkownika.
     /// </summary>
-    public string ExternalId { get; }
+    public Guid ExternalId { get; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
@@ -27,7 +27,7 @@ public class UserPermissionsUpdatedEvent : DomainEventBase
     /// <param name="userId">Identyfikator użytkownika.</param>
     /// <param name="externalId">Identyfikator zewnętrzny użytkownika.</param>
     /// <param name="email">Adres e-mail użytkownika.</param>
-    public UserPermissionsUpdatedEvent(Guid userId, string externalId, string email)
+    public UserPermissionsUpdatedEvent(Guid userId, Guid externalId, string email)
     {
         UserId = userId;
         ExternalId = externalId;

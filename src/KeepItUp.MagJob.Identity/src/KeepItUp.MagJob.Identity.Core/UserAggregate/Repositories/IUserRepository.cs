@@ -1,4 +1,4 @@
-namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+﻿namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 
 /// <summary>
 /// Repozytorium dla encji User
@@ -13,7 +13,7 @@ public interface IUserRepository
     /// <summary>
     /// Pobiera użytkownika po zewnętrznym ID (z systemu Keycloak)
     /// </summary>
-    Task<User?> GetByExternalIdAsync(string externalId, CancellationToken cancellationToken = default);
+    Task<User?> GetByExternalIdAsync(Guid externalId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Pobiera użytkownika po adresie email

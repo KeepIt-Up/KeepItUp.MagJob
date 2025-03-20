@@ -11,7 +11,7 @@ public class User : BaseEntity, IAggregateRoot
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; private set; } = string.Empty;
+    public Guid ExternalId { get; private set; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
@@ -81,7 +81,7 @@ public class User : BaseEntity, IAggregateRoot
     /// <param name="externalId">Identyfikator zewnętrzny</param>
     /// <param name="isActive">Czy użytkownik jest aktywny</param>
     /// <returns>Nowy użytkownik</returns>
-    public static User Create(string firstName, string lastName, string email, string username, string externalId, bool isActive)
+    public static User Create(string firstName, string lastName, string email, string username, Guid externalId, bool isActive)
     {
         var user = new User
         {

@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 
@@ -10,7 +10,7 @@ public record CreateUserCommand : IRequest<Result<Guid>>
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; init; } = string.Empty;
+    public required Guid ExternalId { get; init; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
