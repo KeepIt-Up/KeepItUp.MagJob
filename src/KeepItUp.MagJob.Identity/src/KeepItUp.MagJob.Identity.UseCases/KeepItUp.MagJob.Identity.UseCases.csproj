@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.Core\KeepItUp.MagJob.Identity.Core.csproj" />
+    <ProjectReference Include="..\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,10 +8,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B31B4797-1D9F-4288-808C-BE9A31A98C7D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.Web", "src\KeepItUp.MagJob.Identity.Web\KeepItUp.MagJob.Identity.Web.csproj", "{C9751CB7-4CD6-4633-A99A-4F6ADD525437}"
+	ProjectSection(ProjectDependencies) = postProject
+		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {577646FA-5A2A-4C48-ACE8-226044FF2007}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.Core", "src\KeepItUp.MagJob.Identity.Core\KeepItUp.MagJob.Identity.Core.csproj", "{4548EB20-1D1B-477B-AF6E-DD55653A6583}"
+	ProjectSection(ProjectDependencies) = postProject
+		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {577646FA-5A2A-4C48-ACE8-226044FF2007}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.Infrastructure", "src\KeepItUp.MagJob.Identity.Infrastructure\KeepItUp.MagJob.Identity.Infrastructure.csproj", "{220361D6-9C76-4E3F-BD34-3C7B50E2CA4D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {577646FA-5A2A-4C48-ACE8-226044FF2007}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{250F283E-FE2F-4BBD-9E63-A2265B84E23F}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,6 +43,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.UnitTests", "tests\KeepItUp.MagJob.Identity.UnitTests\KeepItUp.MagJob.Identity.UnitTests.csproj", "{1DC7F5A0-DDF7-4975-84EB-05F4FC1B6AB5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.UseCases", "src\KeepItUp.MagJob.Identity.UseCases\KeepItUp.MagJob.Identity.UseCases.csproj", "{B74A78FF-B79E-4C38-A9C7-084A90990CAD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {577646FA-5A2A-4C48-ACE8-226044FF2007}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepItUp.MagJob.SharedKernel", "src\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj", "{577646FA-5A2A-4C48-ACE8-226044FF2007}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,6 +143,18 @@ Global
 		{B74A78FF-B79E-4C38-A9C7-084A90990CAD}.Release|x64.Build.0 = Release|Any CPU
 		{B74A78FF-B79E-4C38-A9C7-084A90990CAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{B74A78FF-B79E-4C38-A9C7-084A90990CAD}.Release|x86.Build.0 = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|x64.Build.0 = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Debug|x86.Build.0 = Debug|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|x64.ActiveCfg = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|x64.Build.0 = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|x86.ActiveCfg = Release|Any CPU
+		{577646FA-5A2A-4C48-ACE8-226044FF2007}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +167,7 @@ Global
 		{0776DC14-9000-47A4-A3F4-ECBCF8CEBC17} = {B31B4797-1D9F-4288-808C-BE9A31A98C7D}
 		{1DC7F5A0-DDF7-4975-84EB-05F4FC1B6AB5} = {B31B4797-1D9F-4288-808C-BE9A31A98C7D}
 		{B74A78FF-B79E-4C38-A9C7-084A90990CAD} = {106AE906-5075-410A-B941-912F811848EE}
+		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {106AE906-5075-410A-B941-912F811848EE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B0F19343-8185-4A9F-9165-0EA8544BC925}

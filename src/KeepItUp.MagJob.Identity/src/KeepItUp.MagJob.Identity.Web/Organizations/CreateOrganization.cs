@@ -18,7 +18,6 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
     public override void Configure()
     {
         Post(CreateOrganizationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("CreateOrganization")
             .Produces<CreateOrganizationResponse>(201)

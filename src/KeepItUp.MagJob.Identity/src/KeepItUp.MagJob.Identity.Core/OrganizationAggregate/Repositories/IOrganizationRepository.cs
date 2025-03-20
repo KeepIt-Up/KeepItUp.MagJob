@@ -1,3 +1,6 @@
+using KeepItUp.MagJob.SharedKernel.Pagination;
+using System.Linq.Expressions;
+
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 
 /// <summary>
@@ -75,4 +78,39 @@ public interface IOrganizationRepository
     /// Usuwa organizację
     /// </summary>
     Task DeleteAsync(Organization organization, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera członków organizacji po ID organizacji.
+    /// </summary>
+    Task<List<Member>> GetMembersByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera zaproszenia do organizacji po ID organizacji.
+    /// </summary>
+    Task<List<Invitation>> GetInvitationsByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera zaproszenie po ID.
+    /// </summary>
+    Task<Invitation?> GetInvitationByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Dodaje nowe zaproszenie.
+    /// </summary>
+    Task<Invitation> AddInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Aktualizuje zaproszenie.
+    /// </summary>
+    Task UpdateInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Usuwa zaproszenie.
+    /// </summary>
+    Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera stronicowaną listę organizacji dla danego użytkownika.
+    /// </summary>
+    Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default);
 }

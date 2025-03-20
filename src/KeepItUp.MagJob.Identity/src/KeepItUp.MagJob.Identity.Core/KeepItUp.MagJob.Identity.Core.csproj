@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj" />
+  </ItemGroup>
+
 </Project>

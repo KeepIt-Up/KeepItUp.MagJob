@@ -1,6 +1,7 @@
+using System.Linq.Expressions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
-
+using KeepItUp.MagJob.SharedKernel.Pagination;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>
@@ -79,8 +80,9 @@ public class OrganizationRepository : IOrganizationRepository
     /// <inheritdoc />
     public async Task<List<Organization>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Organizations
-            .AsNoTracking()
+        return await _dbContext.Set<Organization>()
+            .Include(o => o.Members.Where(m => m.UserId == userId))
+                .ThenInclude(m => m.Roles)
             .Where(o => o.Members.Any(m => m.UserId == userId))
             .ToListAsync(cancellationToken);
     }
@@ -131,5 +133,56 @@ public class OrganizationRepository : IOrganizationRepository
     {
         _dbContext.Organizations.Remove(organization);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+
+    /// <inheritdoc />
+    public Task<List<Member>> GetMembersByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Set<Member>()
+            .Include(m => m.Roles)
+            .Where(m => m.OrganizationId == organizationId)
+            .ToListAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<List<Invitation>> GetInvitationsByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<Invitation?> GetInvitationByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task<Invitation> AddInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task UpdateInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Set<Organization>()
+            .Include(o => o.Members.Where(m => m.UserId == userId))
+                .ThenInclude(m => m.Roles)
+            .Where(o => o.Members.Any(m => m.UserId == userId))
+            .ToPaginationResultAsync(selector, parameters, cancellationToken);
+
+
     }
 }
