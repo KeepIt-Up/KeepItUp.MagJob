@@ -1,5 +1,7 @@
-﻿using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 using KeepItUp.MagJob.Identity.Web.Services;
+using KeepItUp.MagJob.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
@@ -12,7 +14,7 @@ namespace KeepItUp.MagJob.Identity.Web.Users;
 /// </remarks>
 [Authorize]
 public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetUserOrganizationsRequest, GetUserOrganizationsResponse>
+    : Endpoint<GetUserOrganizationsRequest, PaginationResult<OrganizationDto>>
 {
     /// <summary>
     /// Konfiguruje endpoint.
@@ -22,16 +24,16 @@ public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor curre
         Get(GetUserOrganizationsRequest.Route);
         Description(b => b
             .WithName("GetUserOrganizations")
-            .Produces<GetUserOrganizationsResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+            .Produces<PaginationResult<OrganizationDto>>(200));
         Summary(s =>
         {
             s.Summary = "Pobiera organizacje użytkownika";
             s.Description = "Pobiera wszystkie organizacje, do których należy użytkownik o podanym identyfikatorze";
-            s.ExampleRequest = new GetUserOrganizationsRequest { Id = Guid.NewGuid() };
+            s.ExampleRequest = new GetUserOrganizationsRequest
+            {
+                Id = Guid.NewGuid(),
+                PaginationParameters = PaginationParameters<OrganizationDto>.Create()
+            };
         });
     }
 
@@ -53,7 +55,8 @@ public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor curre
 
         var query = new GetUserOrganizationsQuery
         {
-            UserId = req.Id
+            UserId = req.Id,
+            PaginationParameters = req.PaginationParameters
         };
 
         var result = await mediator.Send(query, ct);
@@ -70,19 +73,6 @@ public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor curre
             return;
         }
 
-        var response = new GetUserOrganizationsResponse
-        {
-            Organizations = result.Value.Select(o => new UserOrganizationRecord
-            {
-                Id = o.Id,
-                Name = o.Name,
-                Description = o.Description,
-                OwnerId = o.OwnerId,
-                IsOwner = o.OwnerId == req.Id,
-                MemberCount = 0 // Tymczasowo ustawiam wartość domyślną
-            }).ToList()
-        };
-
-        await SendOkAsync(response, ct);
+        await SendOkAsync(result.Value, ct);
     }
 }

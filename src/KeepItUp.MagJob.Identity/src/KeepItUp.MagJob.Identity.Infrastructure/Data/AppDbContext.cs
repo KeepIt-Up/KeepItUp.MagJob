@@ -78,4 +78,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
             entity.Property("UpdatedAt").CurrentValue = now;
         }
     }
+
+    /// <summary>
+    /// Czyści śledzenie encji o określonym ID.
+    /// </summary>
+    /// <typeparam name="TEntity">Typ encji.</typeparam>
+    /// <param name="id">ID encji do usunięcia ze śledzenia.</param>
+    public void DetachEntityById<TEntity>(Guid id) where TEntity : class
+    {
+        var entry = ChangeTracker.Entries<TEntity>()
+            .FirstOrDefault(e => EF.Property<Guid>(e.Entity, "Id").Equals(id));
+
+        if (entry != null)
+        {
+            entry.State = EntityState.Detached;
+        }
+    }
+
+    /// <summary>
+    /// Czyści kontekst z wszystkich śledzonych encji.
+    /// </summary>
+    public void ClearChangeTracker()
+    {
+        ChangeTracker.Clear();
+    }
 }

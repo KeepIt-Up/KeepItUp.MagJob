@@ -15,8 +15,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity",
-          "Port": 80
+          "Host": "host.docker.internal",
+          "Port": 5002
         }
       ]
     }

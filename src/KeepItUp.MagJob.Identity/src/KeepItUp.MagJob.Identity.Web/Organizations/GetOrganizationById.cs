@@ -18,14 +18,9 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
     public override void Configure()
     {
         Get(GetOrganizationByIdRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("GetOrganization")
-            .Produces<GetOrganizationByIdResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+            .Produces<GetOrganizationByIdResponse>(200));
         Summary(s =>
         {
             s.Summary = "Pobiera organizację";

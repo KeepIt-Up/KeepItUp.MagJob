@@ -1,7 +1,7 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -11,7 +11,7 @@ RUN mkdir -p /app/wwwroot/uploads/logos /app/wwwroot/uploads/banners && \
     chmod -R 777 /app/wwwroot/uploads
 
 # This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy Directory.Build.props first
@@ -21,8 +21,9 @@ COPY ["src/KeepItUp.MagJob.Identity/Directory.Packages.props", "src/KeepItUp.Mag
 # Copy all csproj files
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web/KeepItUp.MagJob.Identity.Web.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web/"]
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Core/KeepItUp.MagJob.Identity.Core.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Core/"]
-COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/KeepItUp.MagJob.Identity.Infrastructure.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/"]
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.UseCases/KeepItUp.MagJob.Identity.UseCases.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.UseCases/"]
+COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/KeepItUp.MagJob.Identity.Infrastructure.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/"]
+COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.SharedKernel/KeepItUp.MagJob.SharedKernel.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.SharedKernel/"]
 
 
 # Restore dependencies

@@ -9,6 +9,7 @@ import {
 import { Invitation } from '../../invitations/models/invitation';
 import { BaseApiService } from '@shared/services/base-api.service';
 import { environment } from '@environments/environment';
+import { Member } from '@members/models/member';
 export interface CreateOrganizationPayload {
   name: string;
   description?: string;
@@ -33,6 +34,30 @@ export class OrganizationApiService extends BaseApiService<Organization> {
   ): Observable<PaginatedResponse<Invitation>> {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<Invitation>>(`${this.apiUrl}/invitations`, {
+      params: { ...query, ...options },
+    });
+  }
+
+  archiveMember(memberId: string) {
+    return this.http.put(`${this.apiUrl}/${memberId}/archive`, {});
+  }
+
+  getMembers(
+    query: Record<any, any>,
+    paginationOptions: PaginationOptions<Member>,
+  ): Observable<PaginatedResponse<Member>> {
+    const options = serializePaginationOptions(paginationOptions);
+    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/members`, {
+      params: { ...query, ...options },
+    });
+  }
+
+  searchMembers(
+    query: Record<any, any>,
+    paginationOptions: PaginationOptions<Member>,
+  ): Observable<PaginatedResponse<Member>> {
+    const options = serializePaginationOptions(paginationOptions);
+    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/members/search`, {
       params: { ...query, ...options },
     });
   }

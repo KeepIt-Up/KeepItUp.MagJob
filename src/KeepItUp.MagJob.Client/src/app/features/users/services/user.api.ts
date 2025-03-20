@@ -9,21 +9,23 @@ import {
 import { Observable } from 'rxjs';
 import { Organization } from '../../organizations/models/organization.model';
 import { Invitation } from '../../invitations/models/invitation';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserApiService {
-  private readonly apiUrl = '/api/users';
+  private readonly apiUrl = `${environment.apiUrl}/api/identity/users`;
   private http = inject(HttpClient);
 
   getUserOrganizations(
     query: Record<any, any>,
     paginationOptions: PaginationOptions<Organization>,
   ): Observable<PaginatedResponse<Organization>> {
+    const id = '0195b59c-39dc-7c7e-8f5a-66814c8f88b0';
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Organization>>(`${this.apiUrl}/organizations`, {
-      params: { ...query, ...options },
+    return this.http.get<PaginatedResponse<Organization>>(`${this.apiUrl}/${id}/organizations`, {
+      params: { ...options },
     });
   }
 

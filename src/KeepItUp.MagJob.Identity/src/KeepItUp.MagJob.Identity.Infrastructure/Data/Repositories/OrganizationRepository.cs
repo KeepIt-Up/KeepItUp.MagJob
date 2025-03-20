@@ -141,25 +141,69 @@ public class OrganizationRepository : IOrganizationRepository
     /// <inheritdoc />
     public async Task UpdateAsync(Organization organization, CancellationToken cancellationToken = default)
     {
-        // Ensure member-role relationships are tracked
+        // First check and detach any existing tracked entities with the same ID
+        var existingOrgEntry = _dbContext.ChangeTracker.Entries<Organization>()
+            .FirstOrDefault(e => e.Entity.Id == organization.Id);
+
+        if (existingOrgEntry != null)
+        {
+            existingOrgEntry.State = EntityState.Detached;
+        }
+
+        // Check and detach any members that might be tracked
         foreach (var member in organization.Members)
         {
-            // Make sure the Roles collection has references to actual Role entities
-            var roleIds = member.RoleIds.ToList();
-            member.Roles.Clear();
+            var existingMemberEntry = _dbContext.ChangeTracker.Entries<Member>()
+                .FirstOrDefault(e => e.Entity.Id == member.Id);
 
-            foreach (var roleId in roleIds)
+            if (existingMemberEntry != null)
             {
-                var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
-                if (role != null)
-                {
-                    member.Roles.Add(role);
-                }
+                existingMemberEntry.State = EntityState.Detached;
             }
         }
 
-        _dbContext.Organizations.Update(organization);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        // Check and detach any roles that might be tracked
+        foreach (var role in organization.Roles)
+        {
+            var existingRoleEntry = _dbContext.ChangeTracker.Entries<Role>()
+                .FirstOrDefault(e => e.Entity.Id == role.Id);
+
+            if (existingRoleEntry != null)
+            {
+                existingRoleEntry.State = EntityState.Detached;
+            }
+        }
+
+        // Handle member-role relationships within a transaction
+        using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            // Ensure member-role relationships are tracked
+            foreach (var member in organization.Members)
+            {
+                // Make sure the Roles collection has references to actual Role entities
+                var roleIds = member.RoleIds.ToList();
+                member.Roles.Clear();
+
+                foreach (var roleId in roleIds)
+                {
+                    var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
+                    if (role != null)
+                    {
+                        member.Roles.Add(role);
+                    }
+                }
+            }
+
+            _dbContext.Organizations.Update(organization);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     /// <inheritdoc />

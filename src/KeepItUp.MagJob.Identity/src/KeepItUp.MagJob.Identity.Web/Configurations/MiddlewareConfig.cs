@@ -41,7 +41,7 @@ public static class MiddlewareConfig
            // Jest to zgodne z konwencją .NET, ale różni się od standardu JSON (camelCase).
            // Uwaga: Jeśli klienci oczekują camelCase, należy zmienić to ustawienie na:
            // c.Serializer.Options.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
-           c.Serializer.Options.PropertyNamingPolicy = null;
+           c.Serializer.Options.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
        });
 
         app.UseHttpsRedirection();

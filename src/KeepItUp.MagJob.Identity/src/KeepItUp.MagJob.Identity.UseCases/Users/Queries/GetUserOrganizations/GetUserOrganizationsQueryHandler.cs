@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
@@ -9,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 /// <summary>
 /// Handler dla zapytania GetUserOrganizationsQuery.
 /// </summary>
-public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizationsQuery, Result<List<OrganizationDto>>>
+public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizationsQuery, Result<PaginationResult<OrganizationDto>>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IOrganizationRepository _organizationRepository;
@@ -37,7 +39,7 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
     /// <param name="request">Zapytanie GetUserOrganizationsQuery.</param>
     /// <param name="cancellationToken">Token anulowania.</param>
     /// <returns>Lista organizacji, do których należy użytkownik.</returns>
-    public async Task<Result<List<OrganizationDto>>> Handle(GetUserOrganizationsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResult<OrganizationDto>>> Handle(GetUserOrganizationsQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -46,46 +48,35 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
 
             if (user == null)
             {
-                return Result<List<OrganizationDto>>.NotFound($"Nie znaleziono użytkownika o ID {request.UserId}.");
+                return Result<PaginationResult<OrganizationDto>>.NotFound($"Nie znaleziono użytkownika o ID {request.UserId}.");
             }
 
-            // Pobierz organizacje, w których użytkownik jest członkiem
-            var organizations = await _organizationRepository.GetByUserIdAsync(request.UserId, cancellationToken);
 
-            if (organizations.Count == 0)
+            // Tworzymy wyrażenie do mapowania Organization na OrganizationDto
+            Expression<Func<Organization, OrganizationDto>> selector = org => new OrganizationDto
             {
-                return Result<List<OrganizationDto>>.Success(new List<OrganizationDto>());
-            }
+                Id = org.Id,
+                Name = org.Name,
+                Description = org.Description,
+                LogoUrl = org.LogoUrl,
+                BannerUrl = org.BannerUrl,
+                OwnerId = org.OwnerId,
+                IsActive = org.IsActive,
+                UserRoles = org.Members
+                    .Where(m => m.UserId == request.UserId)
+                    .SelectMany(m => m.Roles.Select(r => r.Name))
+                    .ToList()
+            };
 
-            var result = new List<OrganizationDto>();
+            // Używamy metody GetQueryableByUserId, która zwraca IQueryable<Organization>
+            var result = await _organizationRepository.GetOrganizationsByUserIdAsync(request.UserId, selector, request.PaginationParameters, cancellationToken);
 
-            // Mapuj organizacje na DTO
-            foreach (var organization in organizations)
-            {
-                var member = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-
-                if (member != null)
-                {
-                    var organizationDto = new OrganizationDto
-                    {
-                        Id = organization.Id,
-                        Name = organization.Name,
-                        Description = organization.Description,
-                        OwnerId = organization.OwnerId,
-                        IsActive = organization.IsActive,
-                        UserRoles = member.Roles.Select(r => r.Name).ToList()
-                    };
-
-                    result.Add(organizationDto);
-                }
-            }
-
-            return Result<List<OrganizationDto>>.Success(result);
+            return Result<PaginationResult<OrganizationDto>>.Success(result);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Błąd podczas pobierania organizacji dla użytkownika o ID {UserId}", request.UserId);
-            return Result<List<OrganizationDto>>.Error("Wystąpił błąd podczas pobierania organizacji: " + ex.Message);
+            return Result<PaginationResult<OrganizationDto>>.Error("Wystąpił błąd podczas pobierania organizacji: " + ex.Message);
         }
     }
 }

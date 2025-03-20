@@ -14,6 +14,9 @@ export interface Organization {
   updatedAt: Date;
   profileImage?: string;
   bannerImage?: string;
+  bannerUrl?: string;
+  userRoles?: string[];
+  isActive: boolean;
   invitations: Invitation[];
   members: Member[];
 }

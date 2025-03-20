@@ -63,16 +63,12 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
                 logoUrl: null,
                 bannerUrl: null);
 
-            // Zapisz organizację w repozytorium, aby uzyskać prawidłowe ID
-            await _organizationRepository.AddAsync(organization, cancellationToken);
-
-            // Inicjalizuj role i członkostwo właściciela i ponownie zapisz
+            // Inicjalizacja całej organizacji w jednym kroku przed zapisem
             organization.InitializeRoles();
-            await _organizationRepository.UpdateAsync(organization, cancellationToken);
-
-            // Inicjalizuj członkostwo właściciela
             organization.InitializeOwner();
-            await _organizationRepository.UpdateAsync(organization, cancellationToken);
+
+            // Zapis organizacji jednorazowo z wszystkimi zainicjowanymi danymi
+            await _organizationRepository.AddAsync(organization, cancellationToken);
 
             _logger.LogInformation("Utworzono nową organizację {OrganizationId} dla użytkownika {UserId}",
                 organization.Id, user.Id);

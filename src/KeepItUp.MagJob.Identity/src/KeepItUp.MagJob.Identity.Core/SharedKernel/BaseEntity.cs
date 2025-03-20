@@ -22,4 +22,9 @@ public abstract class BaseEntity : EntityBase<Guid>
     {
         UpdatedAt = DateTime.UtcNow;
     }
+
+    protected BaseEntity()
+    {
+        Id = Guid.NewGuid();
+    }
 }
