@@ -1,3 +1,4 @@
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
 using KeepItUp.MagJob.Identity.Web.Services;
 
@@ -10,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Pobiera wszystkich członków organizacji o podanym identyfikatorze.
 /// </remarks>
 public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetOrganizationMembersRequest, GetOrganizationMembersResponse>
+    : Endpoint<GetOrganizationMembersRequest, PaginationResult<MemberDto>>
 {
     /// <summary>
     /// Konfiguruje endpoint.
@@ -21,7 +22,7 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
         AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("GetOrganizationMembers")
-            .Produces<GetOrganizationMembersResponse>(200)
+            .Produces<PaginationResult<MemberDto>>(200)
             .ProducesProblem(401)
             .ProducesProblem(403)
             .ProducesProblem(404)
@@ -30,7 +31,11 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
         {
             s.Summary = "Pobiera członków organizacji";
             s.Description = "Pobiera wszystkich członków organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new GetOrganizationMembersRequest { OrganizationId = Guid.NewGuid() };
+            s.ExampleRequest = new GetOrganizationMembersRequest
+            {
+                OrganizationId = Guid.NewGuid(),
+                PaginationParameters = PaginationParameters<MemberDto>.Create()
+            };
         });
     }
 
@@ -39,7 +44,7 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
     /// </summary>
     /// <param name="req">Żądanie.</param>
     /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą członków organizacji.</returns>
+    /// <returns>Odpowiedź z listą członków organizacji z paginacją.</returns>
     public override async Task HandleAsync(GetOrganizationMembersRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
@@ -47,7 +52,8 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
         var query = new GetOrganizationMembersQuery
         {
             OrganizationId = req.OrganizationId,
-            UserId = userId
+            UserId = userId,
+            PaginationParameters = req.PaginationParameters
         };
 
         var result = await mediator.Send(query, ct);
@@ -70,12 +76,6 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
             return;
         }
 
-        Response = new GetOrganizationMembersResponse
-        {
-            OrganizationId = req.OrganizationId,
-            MembersList = result.Value.ToList()
-        };
-
-        await SendOkAsync(Response, ct);
+        await SendOkAsync(result.Value, ct);
     }
 }

@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
 using KeepItUp.MagJob.Identity.Web.Services;
 
 namespace KeepItUp.MagJob.Identity.Web.Permissions;
@@ -10,18 +10,18 @@ namespace KeepItUp.MagJob.Identity.Web.Permissions;
 /// Zwraca listę wszystkich dostępnych uprawnień w systemie.
 /// </remarks>
 public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : EndpointWithoutRequest<GetPermissionsResponse>
+    : Endpoint<GetPermissionsRequest, PaginationResult<PermissionDto>>
 {
     /// <summary>
     /// Konfiguruje endpoint.
     /// </summary>
     public override void Configure()
     {
-        Get("/Permissions");
+        Get(GetPermissionsRequest.Route);
         AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("GetPermissions")
-            .Produces<GetPermissionsResponse>(200)
+            .Produces<PaginationResult<PermissionDto>>(200)
             .ProducesProblem(400)
             .ProducesProblem(401)
             .ProducesProblem(403)
@@ -30,13 +30,9 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
         {
             s.Summary = "Pobiera wszystkie dostępne uprawnienia w systemie";
             s.Description = "Zwraca listę wszystkich dostępnych uprawnień w systemie";
-            s.ResponseExamples[200] = new GetPermissionsResponse
+            s.ExampleRequest = new GetPermissionsRequest
             {
-                Permissions = new List<PermissionDto>
-                {
-                    new() { Name = "organization.create", Description = "Tworzenie organizacji", Category = "Organization" },
-                    new() { Name = "organization.update", Description = "Aktualizacja organizacji", Category = "Organization" }
-                }
+                PaginationParameters = PaginationParameters<PermissionDto>.Create()
             };
         });
     }
@@ -44,15 +40,17 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
     /// <summary>
     /// Obsługuje żądanie GET /api/permissions.
     /// </summary>
+    /// <param name="req">Żądanie.</param>
     /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź zawierająca listę uprawnień.</returns>
-    public override async Task HandleAsync(CancellationToken ct)
+    /// <returns>Odpowiedź zawierająca listę uprawnień z paginacją.</returns>
+    public override async Task HandleAsync(GetPermissionsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
         var query = new GetPermissionsQuery
         {
-            UserId = userId
+            UserId = userId,
+            PaginationParameters = req.PaginationParameters
         };
 
         var result = await mediator.Send(query, ct);
@@ -79,11 +77,6 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
             return;
         }
 
-        Response = new GetPermissionsResponse
-        {
-            Permissions = result.Value
-        };
-
-        await SendOkAsync(Response, ct);
+        await SendOkAsync(result.Value, ct);
     }
 }

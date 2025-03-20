@@ -31,7 +31,10 @@ export class OrganizationSidebarComponent {
 
   settingsSection: NavSection = {
     title: 'Settings',
-    items: [{ path: 'settings', icon: 'heroCog', label: 'Settings' }],
+    items: [
+      { path: 'settings', icon: 'heroCog', label: 'Settings' },
+      { path: 'roles', icon: 'heroUserGroup', label: 'Roles' },
+    ],
   };
 
   footerItems: NavItem[] = [

@@ -1,5 +1,5 @@
+﻿using System.Linq.Expressions;
 using KeepItUp.MagJob.SharedKernel.Pagination;
-using System.Linq.Expressions;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 
@@ -113,4 +113,81 @@ public interface IOrganizationRepository
     /// Pobiera stronicowaną listę organizacji dla danego użytkownika.
     /// </summary>
     Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera stronicowaną listę członków organizacji.
+    /// </summary>
+    /// <typeparam name="TDestination">Typ docelowy</typeparam>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="selector">Selektor mapujący z Member na TDestination</param>
+    /// <param name="parameters">Parametry paginacji</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Wynik paginacji</returns>
+    Task<PaginationResult<TDestination>> GetMembersByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Member, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera stronicowaną listę zaproszeń do organizacji.
+    /// </summary>
+    /// <typeparam name="TDestination">Typ docelowy</typeparam>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="selector">Selektor mapujący z Invitation na TDestination</param>
+    /// <param name="parameters">Parametry paginacji</param>
+    /// <param name="filter">Opcjonalny filtr dla zaproszeń (np. tylko oczekujące)</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Wynik paginacji</returns>
+    Task<PaginationResult<TDestination>> GetInvitationsByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Invitation, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        Expression<Func<Invitation, bool>>? filter = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera listę uprawnień z paginacją.
+    /// </summary>
+    /// <typeparam name="TDestination">Typ docelowy, na który mapowane są uprawnienia.</typeparam>
+    /// <param name="selector">Selektor określający mapowanie z Permission na typ docelowy.</param>
+    /// <param name="parameters">Parametry paginacji.</param>
+    /// <param name="cancellationToken">Token anulowania.</param>
+    /// <returns>Spaginowany wynik uprawnień.</returns>
+    Task<PaginationResult<TDestination>> GetPermissionsWithPaginationAsync<TDestination>(
+        Expression<Func<Permission, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera stronicowaną listę ról dla organizacji.
+    /// </summary>
+    /// <typeparam name="TDestination">Typ docelowy</typeparam>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="selector">Selektor mapujący z Role na TDestination</param>
+    /// <param name="parameters">Parametry paginacji</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Wynik paginacji</returns>
+    Task<PaginationResult<TDestination>> GetRolesByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Role, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera stronicowaną listę ról dla członka organizacji.
+    /// </summary>
+    /// <typeparam name="TDestination">Typ docelowy</typeparam>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="memberUserId">Identyfikator użytkownika członka</param>
+    /// <param name="selector">Selektor mapujący z Role na TDestination</param>
+    /// <param name="parameters">Parametry paginacji</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Wynik paginacji</returns>
+    Task<PaginationResult<TDestination>> GetRolesByMemberIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Guid memberUserId,
+        Expression<Func<Role, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default);
 }

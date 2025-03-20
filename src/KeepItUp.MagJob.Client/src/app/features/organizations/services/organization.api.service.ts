@@ -29,25 +29,30 @@ export class OrganizationApiService extends BaseApiService<Organization> {
   override readonly apiUrl = `${environment.apiUrl}/api/identity/Organizations`;
 
   getInvitations(
+    organizationId: string,
     query: Record<any, any>,
     paginationOptions: PaginationOptions<Invitation>,
   ): Observable<PaginatedResponse<Invitation>> {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Invitation>>(`${this.apiUrl}/invitations`, {
-      params: { ...query, ...options },
-    });
+    return this.http.get<PaginatedResponse<Invitation>>(
+      `${this.apiUrl}/${organizationId}/invitations`,
+      {
+        params: { ...query, ...options },
+      },
+    );
   }
 
-  archiveMember(memberId: string) {
-    return this.http.put(`${this.apiUrl}/${memberId}/archive`, {});
+  archiveMember(organizationId: string, memberId: string) {
+    return this.http.put(`${this.apiUrl}/${organizationId}/members/${memberId}/archive`, {});
   }
 
   getMembers(
+    organizationId: string,
     query: Record<any, any>,
     paginationOptions: PaginationOptions<Member>,
   ): Observable<PaginatedResponse<Member>> {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/members`, {
+    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/${organizationId}/members`, {
       params: { ...query, ...options },
     });
   }

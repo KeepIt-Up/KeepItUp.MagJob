@@ -1,3 +1,4 @@
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationInvitations;
 using KeepItUp.MagJob.Identity.Web.Services;
 
@@ -10,7 +11,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Pobiera wszystkie zaproszenia do organizacji o podanym identyfikatorze.
 /// </remarks>
 public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetInvitationsRequest, GetInvitationsResponse>
+    : Endpoint<GetInvitationsRequest, PaginationResult<InvitationDto>>
 {
     /// <summary>
     /// Konfiguruje endpoint.
@@ -21,7 +22,7 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
         AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("GetInvitations")
-            .Produces<GetInvitationsResponse>(200)
+            .Produces<PaginationResult<InvitationDto>>(200)
             .ProducesProblem(401)
             .ProducesProblem(403)
             .ProducesProblem(404)
@@ -30,7 +31,11 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
         {
             s.Summary = "Pobiera zaproszenia do organizacji";
             s.Description = "Pobiera wszystkie zaproszenia do organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new GetInvitationsRequest { OrganizationId = Guid.NewGuid() };
+            s.ExampleRequest = new GetInvitationsRequest
+            {
+                OrganizationId = Guid.NewGuid(),
+                PaginationParameters = PaginationParameters<InvitationDto>.Create()
+            };
         });
     }
 
@@ -39,7 +44,7 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
     /// </summary>
     /// <param name="req">Żądanie.</param>
     /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą zaproszeń do organizacji.</returns>
+    /// <returns>Odpowiedź z listą zaproszeń do organizacji z paginacją.</returns>
     public override async Task HandleAsync(GetInvitationsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
@@ -47,7 +52,8 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
         var query = new GetOrganizationInvitationsQuery
         {
             OrganizationId = req.OrganizationId,
-            UserId = userId
+            UserId = userId,
+            PaginationParameters = req.PaginationParameters
         };
 
         var result = await mediator.Send(query, ct);
@@ -70,27 +76,6 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
             return;
         }
 
-        var response = new GetInvitationsResponse
-        {
-            Invitations = result.Value.Select(i => new OrganizationInvitationRecord
-            {
-                Id = i.Id,
-                Email = i.Email,
-                Status = i.Status,
-                ExpiresAt = i.ExpiresAt,
-                IsExpired = i.IsExpired,
-                CreatedAt = i.CreatedAt,
-                CreatedBy = i.CreatedBy,
-                Role = i.Role != null ? new OrganizationRoleRecord
-                {
-                    Id = i.Role.Id,
-                    Name = i.Role.Name,
-                    Description = i.Role.Description,
-                    Color = i.Role.Color
-                } : null
-            }).ToList()
-        };
-
-        await SendOkAsync(response, ct);
+        await SendOkAsync(result.Value, ct);
     }
 }

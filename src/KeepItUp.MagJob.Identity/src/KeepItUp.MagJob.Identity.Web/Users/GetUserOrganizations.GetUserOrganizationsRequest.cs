@@ -1,5 +1,4 @@
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
-using KeepItUp.MagJob.SharedKernel.Pagination;
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
 

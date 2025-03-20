@@ -9,6 +9,7 @@ import { PermissionService } from '../models/permission.service';
 import { ListStateService } from '@shared/services/list-state.service';
 import { RoleApiService } from './role.api.service';
 import { Role } from '../models/role.model';
+import { OrganizationService } from '@organizations/services/organization.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +19,12 @@ export class RoleService {
   private readonly notificationService = inject(NotificationService);
   private readonly permissionService = inject(PermissionService);
   private readonly roleStateService = new ListStateService<Role, { endOfData: boolean }>();
+  private readonly organizationService = inject(OrganizationService);
 
   permissions$ = this.permissionService.permissionState$;
   roles$ = this.roleStateService.state$;
+
+  $organization = this.organizationService.state$;
 
   paginationOptions$ = signal<PaginationOptions<Role>>({
     pageNumber: 1,
@@ -36,7 +40,7 @@ export class RoleService {
 
   getRoles(organizationId: string) {
     const query = { id: organizationId };
-    return this.apiService.getAllRoles(query, this.paginationOptions$()).pipe(
+    return this.apiService.getAllRoles(organizationId, query, this.paginationOptions$()).pipe(
       tap((response: PaginatedResponse<Role>) => {
         response.items.forEach(role => this.roleStateService.add(role));
         this.roleStateService.setMetadata({ endOfData: !response.hasNextPage });
@@ -89,19 +93,21 @@ export class RoleService {
   }
 
   updateRolePermissions(roleId: string, permissionIds: number[]) {
-    return this.apiService.updateRolePermissions(roleId, permissionIds).pipe(
-      tap(() => {
-        this.notificationService.show('Permissions updated successfully', 'success');
-      }),
-      catchError(error => {
-        this.notificationService.show('Failed to update permissions', 'error');
-        return throwError(() => error);
-      }),
-    );
+    return this.apiService
+      .updateRolePermissions(this.$organization().data!.id, roleId, permissionIds)
+      .pipe(
+        tap(() => {
+          this.notificationService.show('Permissions updated successfully', 'success');
+        }),
+        catchError(error => {
+          this.notificationService.show('Failed to update permissions', 'error');
+          return throwError(() => error);
+        }),
+      );
   }
 
   addMembersToRole(roleId: string, memberIds: string[]) {
-    return this.apiService.addMembersToRole(roleId, memberIds).pipe(
+    return this.apiService.addMembersToRole(this.$organization().data!.id, roleId, memberIds).pipe(
       tap(() => {
         this.notificationService.show('Members assigned successfully', 'success');
       }),
@@ -113,14 +119,16 @@ export class RoleService {
   }
 
   removeMembersFromRole(roleId: string, memberIds: string[]) {
-    return this.apiService.removeMembersFromRole(roleId, memberIds).pipe(
-      tap(() => {
-        this.notificationService.show('Members removed successfully', 'success');
-      }),
-      catchError(error => {
-        this.notificationService.show('Failed to remove members', 'error');
-        return throwError(() => error);
-      }),
-    );
+    return this.apiService
+      .removeMembersFromRole(this.$organization().data!.id, roleId, memberIds)
+      .pipe(
+        tap(() => {
+          this.notificationService.show('Members removed successfully', 'success');
+        }),
+        catchError(error => {
+          this.notificationService.show('Failed to remove members', 'error');
+          return throwError(() => error);
+        }),
+      );
   }
 }

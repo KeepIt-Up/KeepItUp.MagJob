@@ -1,11 +1,9 @@
-using MediatR;
-
-namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
+﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
 
 /// <summary>
 /// Zapytanie o członków organizacji.
 /// </summary>
-public record GetOrganizationMembersQuery : IRequest<Result<List<MemberDto>>>
+public class GetOrganizationMembersQuery : PaginationQuery<MemberDto>
 {
     /// <summary>
     /// Identyfikator organizacji.

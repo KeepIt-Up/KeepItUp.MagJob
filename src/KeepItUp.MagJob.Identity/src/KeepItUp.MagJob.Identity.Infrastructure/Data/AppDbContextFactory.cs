@@ -1,10 +1,5 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
-using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
-using Microsoft.EntityFrameworkCore;
+﻿using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.Reflection;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data;
 

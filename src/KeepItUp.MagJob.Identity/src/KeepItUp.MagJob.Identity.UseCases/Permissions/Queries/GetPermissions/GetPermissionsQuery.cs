@@ -1,11 +1,9 @@
-using MediatR;
-
-namespace KeepItUp.MagJob.Identity.UseCases.Permissions.Queries.GetPermissions;
+﻿namespace KeepItUp.MagJob.Identity.UseCases.Permissions.Queries.GetPermissions;
 
 /// <summary>
 /// Zapytanie o wszystkie dostępne uprawnienia w systemie.
 /// </summary>
-public record GetPermissionsQuery : IRequest<Result<List<PermissionDto>>>
+public class GetPermissionsQuery : PaginationQuery<PermissionDto>
 {
     /// <summary>
     /// Identyfikator użytkownika wykonującego zapytanie.

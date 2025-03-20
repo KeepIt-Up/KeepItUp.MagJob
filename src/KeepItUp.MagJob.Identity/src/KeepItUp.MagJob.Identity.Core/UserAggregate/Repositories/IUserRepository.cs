@@ -26,6 +26,14 @@ public interface IUserRepository
     Task<List<User>> GetActiveUsersAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Pobiera użytkowników po liście identyfikatorów
+    /// </summary>
+    /// <param name="userIds">Lista identyfikatorów użytkowników</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Lista użytkowników</returns>
+    Task<List<User>> GetByIdsAsync(IEnumerable<Guid> userIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Pobiera użytkowników po ID organizacji
     /// </summary>
     Task<User> AddAsync(User user, CancellationToken cancellationToken = default);

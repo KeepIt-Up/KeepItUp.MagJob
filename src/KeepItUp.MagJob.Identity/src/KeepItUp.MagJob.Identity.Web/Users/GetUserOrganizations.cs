@@ -1,7 +1,6 @@
 ﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 using KeepItUp.MagJob.Identity.Web.Services;
-using KeepItUp.MagJob.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;

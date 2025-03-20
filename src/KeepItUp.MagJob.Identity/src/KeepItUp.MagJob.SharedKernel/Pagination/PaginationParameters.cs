@@ -1,6 +1,4 @@
-using System;
-
-namespace KeepItUp.MagJob.SharedKernel.Pagination;
+﻿namespace KeepItUp.MagJob.SharedKernel.Pagination;
 
 /// <summary>
 /// Parametry paginacji.

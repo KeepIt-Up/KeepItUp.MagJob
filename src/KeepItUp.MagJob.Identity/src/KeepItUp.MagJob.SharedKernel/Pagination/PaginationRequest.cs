@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.SharedKernel.Pagination;
-
-namespace KeepItUp.MagJob.SharedKernel.Pagination;
+﻿namespace KeepItUp.MagJob.SharedKernel.Pagination;
 
 /// <summary>
 /// Interfejs dla zapytań obsługujących paginację, kompatybilny z MediatR.

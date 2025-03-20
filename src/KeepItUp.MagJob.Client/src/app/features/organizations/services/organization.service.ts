@@ -78,18 +78,20 @@ export class OrganizationService {
 
   getInvitations(): Observable<any> {
     const query = { id: this.$organization()?.id };
-    return this.apiService.getInvitations(query, this.invitationsPaginationOptions$()).pipe(
-      tap((response: PaginatedResponse<Invitation>) => {
-        if (response.items.length === 0) {
-          throw new Error('No invitations found');
-        }
-        this.invitationStateService.setData(response);
-      }),
-      catchError(error => {
-        console.log(error);
-        this.invitationStateService.setError(error);
-        throw error;
-      }),
-    );
+    return this.apiService
+      .getInvitations(this.$organization()?.id ?? '', query, this.invitationsPaginationOptions$())
+      .pipe(
+        tap((response: PaginatedResponse<Invitation>) => {
+          if (response.items.length === 0) {
+            throw new Error('No invitations found');
+          }
+          this.invitationStateService.setData(response);
+        }),
+        catchError(error => {
+          console.log(error);
+          this.invitationStateService.setError(error);
+          throw error;
+        }),
+      );
   }
 }

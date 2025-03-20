@@ -1,4 +1,3 @@
-
 namespace KeepItUp.MagJob.SharedKernel.Pagination;
 
 /// <summary>
@@ -94,5 +93,20 @@ public class PaginationResult<T>
             parameters.PageSize,
             parameters.SortField,
             parameters.Ascending);
+    }
+
+    /// <summary>
+    /// Tworzy pusty stronicowany wynik.
+    /// </summary>
+    /// <returns>Pusty obiekt PagedResult</returns>
+    public static PaginationResult<T> Empty()
+    {
+        return new PaginationResult<T>(
+            new List<T>(),
+            0,
+            1,
+            10,
+            "Id",
+            true);
     }
 }

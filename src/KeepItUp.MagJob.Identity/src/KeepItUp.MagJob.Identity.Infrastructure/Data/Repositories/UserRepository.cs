@@ -52,6 +52,15 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc />
+    public async Task<List<User>> GetByIdsAsync(IEnumerable<Guid> userIds, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync(cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<User> AddAsync(User user, CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);

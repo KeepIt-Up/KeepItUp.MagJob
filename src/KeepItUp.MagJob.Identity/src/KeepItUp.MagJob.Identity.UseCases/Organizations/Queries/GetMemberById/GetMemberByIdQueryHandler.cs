@@ -43,14 +43,14 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
                 return Result<MemberDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.RequestingUserId ||
-                             await _repository.HasMemberAsync(request.OrganizationId, request.RequestingUserId, cancellationToken);
+            // // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
+            // bool hasAccess = organization.OwnerId == request.RequestingUserId ||
+            //                  await _repository.HasMemberAsync(request.OrganizationId, request.RequestingUserId, cancellationToken);
 
-            if (!hasAccess)
-            {
-                return Result<MemberDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            // if (!hasAccess)
+            // {
+            //     return Result<MemberDto>.Forbidden("Brak dostępu do organizacji.");
+            // }
 
             // Znajdź członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);

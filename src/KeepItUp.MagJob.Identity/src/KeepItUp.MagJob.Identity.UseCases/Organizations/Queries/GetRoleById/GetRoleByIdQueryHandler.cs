@@ -44,13 +44,13 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
             }
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.UserId ||
-                             organization.Members.Any(m => m.UserId == request.UserId);
+            // bool hasAccess = organization.OwnerId == request.UserId ||
+            //                  organization.Members.Any(m => m.UserId == request.UserId);
 
-            if (!hasAccess)
-            {
-                return Result<RoleDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            // if (!hasAccess)
+            // {
+            //     return Result<RoleDto>.Forbidden("Brak dostępu do organizacji.");
+            // }
 
             // Znajdź rolę
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);

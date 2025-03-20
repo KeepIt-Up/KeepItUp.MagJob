@@ -43,14 +43,14 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
                 return Result<InvitationDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.UserId ||
-                             await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
+            // // Sprawdź, czy użytkownik ma dostęp do organizacji
+            // bool hasAccess = organization.OwnerId == request.UserId ||
+            //                  await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
-            if (!hasAccess)
-            {
-                return Result<InvitationDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            // if (!hasAccess)
+            // {
+            //     return Result<InvitationDto>.Forbidden("Brak dostępu do organizacji.");
+            // }
 
             // Znajdź zaproszenie
             var invitation = organization.Invitations.FirstOrDefault(i => i.Id == request.InvitationId);

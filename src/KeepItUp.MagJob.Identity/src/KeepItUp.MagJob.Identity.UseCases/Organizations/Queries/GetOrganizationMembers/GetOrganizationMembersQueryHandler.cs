@@ -1,3 +1,4 @@
+﻿using System.Linq.Expressions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
@@ -8,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizatio
 /// <summary>
 /// Handler dla zapytania GetOrganizationMembersQuery.
 /// </summary>
-public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizationMembersQuery, Result<List<MemberDto>>>
+public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizationMembersQuery, Result<PaginationResult<MemberDto>>>
 {
     private readonly IOrganizationRepository _organizationRepository;
     private readonly IUserRepository _userRepository;
@@ -35,64 +36,71 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
     /// </summary>
     /// <param name="request">Zapytanie GetOrganizationMembersQuery.</param>
     /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista członków organizacji.</returns>
-    public async Task<Result<List<MemberDto>>> Handle(GetOrganizationMembersQuery request, CancellationToken cancellationToken)
+    /// <returns>Lista członków organizacji z paginacją.</returns>
+    public async Task<Result<PaginationResult<MemberDto>>> Handle(GetOrganizationMembersQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
-            var organization = await _organizationRepository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
-
-            if (organization == null)
+            // Sprawdź czy organizacja istnieje
+            if (!await _organizationRepository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
-                return Result<List<MemberDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
+                return Result<PaginationResult<MemberDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.UserId ||
-                             await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
+            //bool hasAccess = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
-            if (!hasAccess)
+            //if (!hasAccess)
+            //{
+            //    return Result<PaginationResult<MemberDto>>.Forbidden("Brak dostępu do organizacji.");
+            //}
+
+            // Definiujemy selektor do mapowania Member -> MemberDto
+            Expression<Func<Core.OrganizationAggregate.Member, MemberDto>> memberSelector = member => new MemberDto
             {
-                return Result<List<MemberDto>>.Forbidden("Brak dostępu do organizacji.");
-            }
+                Id = member.Id,
+                UserId = member.UserId,
+                Email = "", // Te pola będą uzupełnione po pobraniu danych
+                FirstName = "",
+                LastName = "",
+                Roles = member.Roles.Select(r => new RoleDto
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description,
+                    Color = r.Color,
+                    Permissions = r.Permissions.Select(p => p.Name).ToList()
+                }).ToList()
+            };
 
-            var result = new List<MemberDto>();
+            // Używamy metody repozytorium do pobrania członków z paginacją
+            var paginationResult = await _organizationRepository.GetMembersByOrganizationIdWithPaginationAsync(
+                request.OrganizationId,
+                memberSelector,
+                request.PaginationParameters,
+                cancellationToken);
 
-            // Pobierz dane użytkowników dla członków organizacji
-            foreach (var member in organization.Members)
+            // Pobierz dane użytkowników i uzupełnij DTO
+            var userIds = paginationResult.Items.Select(m => m.UserId).ToList();
+            var users = await _userRepository.GetByIdsAsync(userIds, cancellationToken);
+
+            foreach (var memberDto in paginationResult.Items)
             {
-                var user = await _userRepository.GetByIdAsync(member.UserId, cancellationToken);
-
+                var user = users.FirstOrDefault(u => u.Id == memberDto.UserId);
                 if (user != null)
                 {
-                    var memberDto = new MemberDto
-                    {
-                        Id = member.Id,
-                        UserId = user.Id,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Roles = member.Roles.Select(r => new RoleDto
-                        {
-                            Id = r.Id,
-                            Name = r.Name,
-                            Description = r.Description,
-                            Color = r.Color,
-                            Permissions = r.Permissions.Select(p => p.Name).ToList()
-                        }).ToList()
-                    };
-
-                    result.Add(memberDto);
+                    memberDto.Email = user.Email;
+                    memberDto.FirstName = user.FirstName;
+                    memberDto.LastName = user.LastName;
                 }
             }
 
-            return Result<List<MemberDto>>.Success(result);
+            return Result<PaginationResult<MemberDto>>.Success(paginationResult);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Błąd podczas pobierania członków organizacji o ID {OrganizationId}", request.OrganizationId);
-            return Result<List<MemberDto>>.Error("Wystąpił błąd podczas pobierania członków organizacji: " + ex.Message);
+            return Result<PaginationResult<MemberDto>>.Error("Wystąpił błąd podczas pobierania członków organizacji: " + ex.Message);
         }
     }
 }

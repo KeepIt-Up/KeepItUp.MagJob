@@ -260,7 +260,110 @@ public class OrganizationRepository : IOrganizationRepository
                 .ThenInclude(m => m.Roles)
             .Where(o => o.Members.Any(m => m.UserId == userId))
             .ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
 
+    /// <inheritdoc />
+    public async Task<PaginationResult<TDestination>> GetMembersByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Member, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default)
+    {
+        // Pobierz najpierw IQueryable dla członków danej organizacji
+        var membersQuery = _dbContext.Set<Member>()
+            .Where(m => m.OrganizationId == organizationId)
+            .Include(m => m.Roles)
+                .ThenInclude(r => r.Permissions);
 
+        // Zastosuj paginację używając rozszerzenia PagedQueryableExtensions
+        return await membersQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<PaginationResult<TDestination>> GetInvitationsByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Invitation, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        Expression<Func<Invitation, bool>>? filter = null,
+        CancellationToken cancellationToken = default)
+    {
+        // Pobierz IQueryable dla zaproszeń danej organizacji
+        var invitationsQuery = _dbContext.Set<Invitation>()
+            .AsNoTracking()
+            .Where(i => i.OrganizationId == organizationId);
+
+        // Jeśli podano filtr, zastosuj go
+        if (filter != null)
+        {
+            invitationsQuery = invitationsQuery.Where(filter);
+        }
+
+        // Zastosuj paginację używając rozszerzenia PagedQueryableExtensions
+        return await invitationsQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<PaginationResult<TDestination>> GetPermissionsWithPaginationAsync<TDestination>(
+        Expression<Func<Permission, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default)
+    {
+        // Pobieramy IQueryable dla uprawnień
+        var query = _dbContext.Permissions.AsNoTracking();
+
+        // Zwracamy spaginowany wynik
+        return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<PaginationResult<TDestination>> GetRolesByOrganizationIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Expression<Func<Role, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default)
+    {
+        // Pobieramy IQueryable dla ról organizacji
+        var query = _dbContext.Set<Role>()
+            .AsNoTracking()
+            .Include(r => r.Permissions)
+            .Where(r => r.OrganizationId == organizationId);
+
+        // Zwracamy spaginowany wynik
+        return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<PaginationResult<TDestination>> GetRolesByMemberIdWithPaginationAsync<TDestination>(
+        Guid organizationId,
+        Guid memberUserId,
+        Expression<Func<Role, TDestination>> selector,
+        PaginationParameters<TDestination> parameters,
+        CancellationToken cancellationToken = default)
+    {
+        // Najpierw pobieramy członka organizacji aby uzyskać jego identyfikatory ról
+        var member = await _dbContext.Set<Member>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.OrganizationId == organizationId && m.UserId == memberUserId, cancellationToken);
+
+        if (member == null)
+        {
+            // Jeśli członek nie istnieje, zwracamy pustą stronicowaną kolekcję
+            return PaginationResult<TDestination>.Create(
+                new List<TDestination>(),
+                0,
+                parameters);
+        }
+
+        // Pobieramy identyfikatory ról członka
+        var roleIds = member.RoleIds;
+
+        // Tworzymy zapytanie dla ról członka
+        var query = _dbContext.Set<Role>()
+            .AsNoTracking()
+            .Include(r => r.Permissions)
+            .Where(r => r.OrganizationId == organizationId && roleIds.Contains(r.Id));
+
+        // Zwracamy spaginowany wynik
+        return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 }

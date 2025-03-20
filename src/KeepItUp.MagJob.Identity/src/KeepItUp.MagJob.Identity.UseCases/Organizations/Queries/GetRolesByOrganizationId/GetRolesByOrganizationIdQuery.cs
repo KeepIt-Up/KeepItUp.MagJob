@@ -1,11 +1,9 @@
-using MediatR;
-
-namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
+﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
 
 /// <summary>
 /// Zapytanie o role w organizacji.
 /// </summary>
-public record GetRolesByOrganizationIdQuery : IRequest<Result<List<RoleDto>>>
+public class GetRolesByOrganizationIdQuery : PaginationQuery<RoleDto>
 {
     /// <summary>
     /// Identyfikator organizacji.

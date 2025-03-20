@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -44,13 +44,13 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
             }
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.UserId ||
-                             organization.Members.Any(m => m.UserId == request.UserId);
+            //bool hasAccess = organization.OwnerId == request.UserId ||
+            //                 organization.Members.Any(m => m.UserId == request.UserId);
 
-            if (!hasAccess)
-            {
-                return Result<OrganizationDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            //if (!hasAccess)
+            //{
+            //    return Result<OrganizationDto>.Forbidden("Brak dostępu do organizacji.");
+            //}
 
             // Pobierz role użytkownika w organizacji
             var userRoles = new List<string>();
