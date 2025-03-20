@@ -39,6 +39,15 @@ public class OrganizationConfiguration : BaseEntityConfiguration<Organization>
 
         // Indeksy
         builder.HasIndex(o => o.Name);
+
+        // Indeks dla szybkiego wyszukiwania po OwnerId
+        builder.HasIndex(o => o.OwnerId);
+
+        // Indeks dla filtrowania po IsActive
+        builder.HasIndex(o => o.IsActive);
+
+        // Indeks wspierający sortowanie po Id DESC, które jest często używane w paginacji
+        builder.HasIndex(o => o.Id).IsDescending();
     }
 
     protected override string GetTableName() => DataSchemaConstants.ORGANIZATIONS_TABLE;

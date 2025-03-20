@@ -32,10 +32,20 @@ public class RoleConfiguration : BaseEntityConfiguration<Role>
                 {
                     j.HasKey("RoleId", "PermissionId");
                     j.ToTable(DataSchemaConstants.ROLE_PERMISSIONS_TABLE, DataSchemaConstants.IDENTITY_SCHEMA);
+
+                    // Add indexes for join table
+                    j.HasIndex("RoleId");
+                    j.HasIndex("PermissionId");
                 });
 
         // Indeksy
         builder.HasIndex(r => new { r.Name, r.OrganizationId }).IsUnique();
+
+        // Indeks dla szybkiego wyszukiwania po OrganizationId
+        builder.HasIndex(r => r.OrganizationId);
+
+        // Indeks dla wyszukiwania ról po nazwie
+        builder.HasIndex(r => r.Name);
     }
 
     protected override string GetTableName() => DataSchemaConstants.ROLES_TABLE;
