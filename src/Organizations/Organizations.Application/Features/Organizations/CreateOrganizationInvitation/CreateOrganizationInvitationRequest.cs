@@ -1,0 +1,3 @@
+namespace Organizations.Application.Features.Organizations.CreateOrganizationInvitation;
+
+public sealed record CreateOrganizationInvitationRequest(Guid UserId, Guid OrganizationId) : IRequest<CreateOrganizationInvitationResponse>;

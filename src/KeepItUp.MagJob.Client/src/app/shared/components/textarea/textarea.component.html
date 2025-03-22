@@ -1,0 +1,33 @@
+<div [class]="containerClasses">
+  @if (label) {
+    <label [for]="id" class="app-textarea__label">
+      {{ label }}
+      @if (required) {
+        <span class="app-textarea__required">*</span>
+      }
+    </label>
+  }
+
+  <textarea
+    [id]="id"
+    [attr.rows]="rows"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [class]="textareaClasses"
+    [(ngModel)]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur($event)"
+  ></textarea>
+
+  @if (helperText && !hasErrorState) {
+    <div class="app-textarea__helper-text">
+      {{ helperText }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="app-textarea__error-text">
+      {{ errorMessage }}
+    </div>
+  }
+</div>

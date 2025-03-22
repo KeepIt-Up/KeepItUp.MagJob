@@ -1,0 +1,11 @@
+@if (_state.isLoading) {
+  <app-spinner></app-spinner>
+}
+
+@if (_state.error) {
+  <app-http-error-response-alert [error]="_state.error"></app-http-error-response-alert>
+}
+
+@if (!_state.isLoading && !_state.error && (_state.data || _state.data === null)) {
+  <ng-content></ng-content>
+}

@@ -1,78 +1,78 @@
 services:
-  magjob.api:
-    image: magjob.api:latest
-    container_name: magjob.api
+  # Frontend
+  client:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.client
     build:
-      context: src/MagJob.API/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/KeepItUp.MagJob.Client/Dockerfile
     ports:
-      - "5001:5001"
+      - "80:80"
+
+  # API Gateway
+  apigateway:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.apigateway
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.APIGateway/Dockerfile
+    ports:
+      - "5000:80"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://magjob.database:5433/magjob
+      - ASPNETCORE_HTTP_PORTS=80
+      # Wyłączenie HTTPS
+      - ASPNETCORE_URLS=http://+:80
+
+  # Mikrousługi
+  identity:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.identity
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.Identity/Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_HTTP_PORTS=80
+      # Wyłączenie HTTPS
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Docker
     depends_on:
-      - keycloak
       - magjob.database
+      - keycloak
 
-  magjob.database:
-    image: postgres:latest
-    container_name: magjob.database
-    environment:
-      POSTGRES_DB: magjob
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
-    volumes:
-      - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data
-
-  magjob.web:
-    image: magjob.web:latest
-    container_name: magjob.web
-    build:
-      context: src/Client.Web/
-      dockerfile: Dockerfile
-    ports:
-      - "8080:4200"
-    depends_on:
-      - magjob.api
-
+  # Keycloak (Identity Server)
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.1
     command: start-dev --import-realm
-    environment:
-      KC_HEALTH_ENABLED: true
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    volumes:
-      - ${APPDATA}/MagJob2.0/db/keycloak:/opt/keycloak/data
-      - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
       - "18080:8080"
-
-  pgadmin.web:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin.web
-    ports:
-      - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=keycloak.database
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
     volumes:
-      - ${APPDATA}/MagJob2.0/data/pgadmin:/var/lib/pgadmin
-
-  prometheus:
-    image: keepitup2023/magjob-prometheus:0.0.1
-    container_name: prometheus
-    ports:
-      - "9090:9090"
+      - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     depends_on:
-      - magjob.web
+      - keycloak.database
 
-  grafana:
-    image: keepitup2023/magjob-grafana:0.0.1
-    container_name: grafana
+  keycloak.database:
+    image: postgres:17.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: keycloak
+    volumes:
+      - ${APPDATA}/MagJob2.0/db/keycloak:/var/lib/postgresql/data
+
+  # PostgreSQL (baza danych)
+  magjob.database:
+    image: postgres:15
     ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: magjob
+    volumes:
+      - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data

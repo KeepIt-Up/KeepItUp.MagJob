@@ -1,0 +1,91 @@
+# Development Environment Setup
+
+This guide provides instructions for setting up a development environment for the MagJob project.
+
+## Prerequisites
+
+- [.NET SDK](https://dotnet.microsoft.com/download) (version X.X or higher)
+- [Docker](https://www.docker.com/products/docker-desktop) (version X.X or higher)
+- [Node.js](https://nodejs.org/) (version X.X or higher)
+- [npm](https://www.npmjs.com/) (version X.X or higher)
+- IDE of your choice (Visual Studio, VS Code, Rider, etc.)
+
+## Getting the Source Code
+
+```bash
+git clone https://github.com/your-organization/magjob.git
+cd magjob
+```
+
+## Environment Configuration
+
+1. Copy the example environment file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Update the `.env` file with your local configuration values.
+
+## Running with Docker Compose
+
+The easiest way to run the entire application stack is using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start all the necessary services:
+
+- Client Web Application
+- API Gateway
+- Identity API
+- Keycloak
+- Database
+- Other dependencies
+
+## Running Individual Components
+
+### Client Web Application
+
+```bash
+cd src/KeepItUp.MagJob.Client
+npm install
+npm start
+```
+
+### API Gateway
+
+```bash
+cd src/KeepItUp.MagJob.APIGateway
+dotnet run
+```
+
+### Identity API
+
+```bash
+cd src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web
+dotnet run
+```
+
+## Database Setup
+
+_[Instructions for setting up and migrating the database]_
+
+## Authentication Setup
+
+_[Instructions for configuring Keycloak for local development]_
+
+## Running Tests
+
+```bash
+dotnet test
+```
+
+## Debugging
+
+_[Instructions for debugging different components]_
+
+## Common Issues
+
+_[List of common setup issues and their solutions]_

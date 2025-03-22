@@ -1,0 +1,15 @@
+<app-search-modal
+  [isOpen]="isOpen"
+  [title]="'Search Members'"
+  [searchPlaceholder]="'Search members...'"
+  [paginationOptions$]="paginationOptions$()"
+  [state$]="state$()"
+  [selectedItems]="selectedMembers"
+  [displayFn]="memberDisplayFn"
+  [compareFn]="memberCompareFn"
+  (close)="handleClose()"
+  (search)="handleSearch($event)"
+  (selectionChange)="memberToggled.emit($event)"
+  (onLoad)="loadMore.emit()"
+>
+</app-search-modal>
