@@ -1,2 +1,0 @@
-- [ ] Improve dropdown menu
-- [ ] Implement landing page
