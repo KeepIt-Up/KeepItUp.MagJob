@@ -38,6 +38,42 @@ services:
       - magjob.database
       - keycloak
 
+  # chat:
+  #   image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
+  #   build:
+  #     context: .
+  #     dockerfile: src/KeepItUp.MagJob.Chat/Dockerfile
+  #   ports:
+  #     - "5004:80"
+  #   environment:
+  #   depends_on:
+  #     - magjob.database
+  #     - keycloak
+
+  # calendar:
+  #   image: ${DOCKER_REGISTRY-}keepitup.magjob.calendar
+  #   build:
+  #     context: .
+  #     dockerfile: src/KeepItUp.MagJob.Calendar/Dockerfile
+  #   ports:
+  #     - "5006:80"
+  #   environment:
+  #   depends_on:
+  #     - magjob.database
+  #     - keycloak
+
+  # timeEvidence:
+  #   image: ${DOCKER_REGISTRY-}keepitup.magjob.timeEvidence
+  #   build:
+  #     context: .
+  #     dockerfile: src/KeepItUp.MagJob.TimeEvidence/Dockerfile
+  #   ports:
+  #     - "5008:80"
+  #   environment:
+  #   depends_on:
+  #     - magjob.database
+  #     - keycloak
+
   # Keycloak (Identity Server)
   keycloak:
     image: quay.io/keycloak/keycloak:26.1
