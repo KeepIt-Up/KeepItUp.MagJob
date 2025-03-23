@@ -87,6 +87,7 @@ services:
       - KC_DB_PASSWORD=postgres
     volumes:
       - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./src/Keycloak/themes/magjob:/opt/keycloak/themes/magjob
     depends_on:
       - keycloak.database
 
