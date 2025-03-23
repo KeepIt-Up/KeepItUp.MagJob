@@ -4,8 +4,8 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data;
 
 public static class SeedData
 {
-    public static readonly Contributor Contributor1 = new("Ardalis");
-    public static readonly Contributor Contributor2 = new("Snowfrog");
+    public static readonly Contributor Contributor1 = Contributor.Create("Ardalis");
+    public static readonly Contributor Contributor2 = Contributor.Create("Snowfrog");
 
     public static async Task InitializeAsync(AppDbContext dbContext)
     {

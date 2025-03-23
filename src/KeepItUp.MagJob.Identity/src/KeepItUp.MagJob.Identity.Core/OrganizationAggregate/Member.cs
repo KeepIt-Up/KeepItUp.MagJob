@@ -1,4 +1,5 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
+using KeepItUp.MagJob.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
@@ -37,7 +38,9 @@ public class Member : BaseEntity
     /// </summary>
     public DateTime JoinedAt { get; private set; } = DateTime.UtcNow;
 
-    // Prywatny konstruktor dla EF Core
+    /// <summary>
+    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// </summary>
     private Member() { }
 
     /// <summary>
@@ -60,6 +63,7 @@ public class Member : BaseEntity
         };
 
         member._roleIds.Add(roleId);
+        member.RegisterDomainEventAndUpdate(new MemberCreatedEvent(member.Id, organizationId, userId, roleId));
 
         return member;
     }
@@ -102,8 +106,7 @@ public class Member : BaseEntity
                 Roles.Add(role);
             }
 
-            // Wywołanie metody Update z klasy bazowej
-            base.Update();
+            RegisterDomainEventAndUpdate(new RoleAssignedToMemberEvent(Id, OrganizationId, UserId, roleId));
         }
     }
 
@@ -133,8 +136,7 @@ public class Member : BaseEntity
                 Roles.Remove(roleToRemove);
             }
 
-            // Wywołanie metody Update z klasy bazowej
-            base.Update();
+            RegisterDomainEventAndUpdate(new RoleRevokedFromMemberEvent(Id, OrganizationId, UserId, roleId));
         }
 
         return removed;

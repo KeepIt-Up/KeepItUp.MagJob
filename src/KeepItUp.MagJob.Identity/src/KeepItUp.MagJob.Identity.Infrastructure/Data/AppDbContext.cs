@@ -1,8 +1,8 @@
 ﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
+using KeepItUp.MagJob.SharedKernel;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data;

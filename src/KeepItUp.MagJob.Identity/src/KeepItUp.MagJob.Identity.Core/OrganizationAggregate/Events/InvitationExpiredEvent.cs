@@ -3,9 +3,9 @@ using KeepItUp.MagJob.SharedKernel;
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie domenowe informujące o odrzuceniu zaproszenia do organizacji.
+/// Zdarzenie domenowe informujące o wygaśnięciu zaproszenia do organizacji.
 /// </summary>
-public class InvitationRejectedEvent : DomainEventBase
+public class InvitationExpiredEvent : DomainEventBase
 {
     /// <summary>
     /// Identyfikator zaproszenia.
@@ -23,12 +23,12 @@ public class InvitationRejectedEvent : DomainEventBase
     public string Email { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie InvitationRejectedEvent.
+    /// Tworzy nowe zdarzenie InvitationExpiredEvent.
     /// </summary>
     /// <param name="invitationId">Identyfikator zaproszenia.</param>
     /// <param name="organizationId">Identyfikator organizacji.</param>
     /// <param name="email">Adres e-mail osoby zapraszanej.</param>
-    public InvitationRejectedEvent(Guid invitationId, Guid organizationId, string email)
+    public InvitationExpiredEvent(Guid invitationId, Guid organizationId, string email)
     {
         InvitationId = invitationId;
         OrganizationId = organizationId;

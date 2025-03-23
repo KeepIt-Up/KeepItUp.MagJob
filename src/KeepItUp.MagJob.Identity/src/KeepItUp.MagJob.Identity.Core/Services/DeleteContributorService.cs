@@ -16,7 +16,7 @@ public class DeleteContributorService(IRepository<Contributor> _repository,
   IMediator _mediator,
   ILogger<DeleteContributorService> _logger) : IDeleteContributorService
 {
-    public async Task<Result> DeleteContributor(int contributorId)
+    public async Task<Result> DeleteContributor(Guid contributorId)
     {
         _logger.LogInformation("Deleting Contributor {contributorId}", contributorId);
         Contributor? aggregateToDelete = await _repository.GetByIdAsync(contributorId);

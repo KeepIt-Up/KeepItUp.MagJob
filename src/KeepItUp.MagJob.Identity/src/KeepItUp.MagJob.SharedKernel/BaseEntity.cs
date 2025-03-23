@@ -1,4 +1,4 @@
-﻿namespace KeepItUp.MagJob.Identity.Core.SharedKernel;
+﻿namespace KeepItUp.MagJob.SharedKernel;
 
 /// <summary>
 /// Klasa bazowa dla wszystkich encji w systemie.
@@ -23,8 +23,21 @@ public abstract class BaseEntity : EntityBase<Guid>
         UpdatedAt = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Konstruktor bazowy dla wszystkich encji.
+    /// </summary>
     protected BaseEntity()
     {
         Id = Guid.NewGuid();
+    }
+
+    /// <summary>
+    /// Rejestruje zdarzenie domenowe i aktualizuje datę modyfikacji encji.
+    /// </summary>
+    /// <param name="domainEvent">Zdarzenie domenowe do zarejestrowania.</param>
+    protected void RegisterDomainEventAndUpdate(DomainEventBase domainEvent)
+    {
+        RegisterDomainEvent(domainEvent);
+        Update();
     }
 }

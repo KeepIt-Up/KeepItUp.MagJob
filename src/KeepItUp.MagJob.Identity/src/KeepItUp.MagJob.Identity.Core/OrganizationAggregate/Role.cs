@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
+
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 

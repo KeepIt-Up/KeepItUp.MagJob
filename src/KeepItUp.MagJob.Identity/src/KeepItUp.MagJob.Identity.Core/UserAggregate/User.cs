@@ -1,4 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.Core.SharedKernel;
+﻿using KeepItUp.MagJob.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
@@ -39,16 +39,6 @@ public class User : BaseEntity, IAggregateRoot
     public bool IsActive { get; private set; } = true;
 
     /// <summary>
-    /// Data utworzenia użytkownika.
-    /// </summary>
-    public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
-
-    /// <summary>
-    /// Data ostatniej modyfikacji użytkownika.
-    /// </summary>
-    public DateTime LastModifiedDate { get; private set; } = DateTime.UtcNow;
-
-    /// <summary>
     /// Nazwa użytkownika.
     /// </summary>
     public string Username { get; private set; } = string.Empty;
@@ -68,7 +58,9 @@ public class User : BaseEntity, IAggregateRoot
     /// </summary>
     public DateTime LastLoginDate { get; private set; } = DateTime.MinValue;
 
-    // Prywatny konstruktor dla EF Core
+    /// <summary>
+    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// </summary>
     private User() { }
 
     /// <summary>
@@ -81,8 +73,14 @@ public class User : BaseEntity, IAggregateRoot
     /// <param name="externalId">Identyfikator zewnętrzny</param>
     /// <param name="isActive">Czy użytkownik jest aktywny</param>
     /// <returns>Nowy użytkownik</returns>
-    public static User Create(string firstName, string lastName, string email, string username, Guid externalId, bool isActive)
+    public static User Create(string firstName, string lastName, string email, string username, Guid externalId, bool isActive = true)
     {
+        Guard.Against.NullOrEmpty(firstName, nameof(firstName));
+        Guard.Against.NullOrEmpty(lastName, nameof(lastName));
+        Guard.Against.NullOrEmpty(email, nameof(email));
+        Guard.Against.NullOrEmpty(username, nameof(username));
+        Guard.Against.Default(externalId, nameof(externalId));
+
         var user = new User
         {
             FirstName = firstName,
@@ -91,9 +89,9 @@ public class User : BaseEntity, IAggregateRoot
             Username = username,
             ExternalId = externalId,
             IsActive = isActive,
-            CreatedDate = DateTime.UtcNow,
-            LastModifiedDate = DateTime.UtcNow
         };
+
+        user.RegisterDomainEventAndUpdate(new UserCreatedEvent(user.Id, user.ExternalId, user.Email));
 
         return user;
     }
@@ -111,10 +109,7 @@ public class User : BaseEntity, IAggregateRoot
         FirstName = firstName;
         LastName = lastName;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -127,10 +122,7 @@ public class User : BaseEntity, IAggregateRoot
     {
         Profile = new UserProfile(phoneNumber, address, profileImage);
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -152,10 +144,7 @@ public class User : BaseEntity, IAggregateRoot
             Profile = Profile.WithUpdates(phoneNumber, address, profileImage);
         }
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -170,10 +159,7 @@ public class User : BaseEntity, IAggregateRoot
             _permissions.AddRange(permissions);
         }
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -192,10 +178,7 @@ public class User : BaseEntity, IAggregateRoot
 
         _permissions.Add(permission);
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
         return true;
     }
 
@@ -215,10 +198,7 @@ public class User : BaseEntity, IAggregateRoot
 
         _permissions.Remove(permission);
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserPermissionsUpdatedEvent(Id, ExternalId, Email));
         return true;
     }
 
@@ -240,6 +220,7 @@ public class User : BaseEntity, IAggregateRoot
     public void UpdateLastLoginDate(DateTime lastLoginDate)
     {
         LastLoginDate = lastLoginDate;
+        RegisterDomainEventAndUpdate(new UserLastLoginUpdatedEvent(Id, ExternalId, Email, lastLoginDate));
     }
 
     /// <summary>
@@ -252,10 +233,8 @@ public class User : BaseEntity, IAggregateRoot
 
         IsActive = false;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
 
-        RegisterDomainEvent(new UserDeactivatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserDeactivatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -268,10 +247,8 @@ public class User : BaseEntity, IAggregateRoot
 
         IsActive = true;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
 
-        RegisterDomainEvent(new UserActivatedEvent(Id, ExternalId, Email));
+        RegisterDomainEventAndUpdate(new UserActivatedEvent(Id, ExternalId, Email));
     }
 
     /// <summary>
@@ -292,18 +269,17 @@ public class User : BaseEntity, IAggregateRoot
 
             if (isActive)
             {
-                RegisterDomainEvent(new UserActivatedEvent(Id, ExternalId, Email));
+                RegisterDomainEventAndUpdate(new UserActivatedEvent(Id, ExternalId, Email));
             }
             else
             {
-                RegisterDomainEvent(new UserDeactivatedEvent(Id, ExternalId, Email));
+                RegisterDomainEventAndUpdate(new UserDeactivatedEvent(Id, ExternalId, Email));
             }
         }
-
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserUpdatedEvent(Id, ExternalId, Email));
+        else
+        {
+            RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+        }
     }
 
     /// <summary>
@@ -333,17 +309,16 @@ public class User : BaseEntity, IAggregateRoot
 
             if (isActive)
             {
-                RegisterDomainEvent(new UserActivatedEvent(Id, ExternalId, Email));
+                RegisterDomainEventAndUpdate(new UserActivatedEvent(Id, ExternalId, Email));
             }
             else
             {
-                RegisterDomainEvent(new UserDeactivatedEvent(Id, ExternalId, Email));
+                RegisterDomainEventAndUpdate(new UserDeactivatedEvent(Id, ExternalId, Email));
             }
         }
-
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new UserUpdatedEvent(Id, ExternalId, Email));
+        else
+        {
+            RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+        }
     }
 }

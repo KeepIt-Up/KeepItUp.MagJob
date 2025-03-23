@@ -1,5 +1,4 @@
 ﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
@@ -467,10 +466,7 @@ public class Organization : BaseEntity, IAggregateRoot
         var invitation = Invitation.Create(Id, email, roleId, expiresAt);
         _invitations.Add(invitation);
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new InvitationCreatedEvent(Id, invitation.Id, email));
+        RegisterDomainEventAndUpdate(new InvitationCreatedEvent(Id, invitation.Id, email, roleId));
 
         return invitation;
     }
@@ -512,8 +508,8 @@ public class Organization : BaseEntity, IAggregateRoot
             // Wywołanie metody Update z klasy bazowej
             base.Update();
 
-            RegisterDomainEvent(new InvitationAcceptedEvent(Id, invitationId, userId));
-            RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, invitation.RoleId));
+            RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
+            RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, invitation.RoleId));
 
             return existingMember;
         }
@@ -528,8 +524,8 @@ public class Organization : BaseEntity, IAggregateRoot
         // Wywołanie metody Update z klasy bazowej
         base.Update();
 
-        RegisterDomainEvent(new InvitationAcceptedEvent(Id, invitationId, userId));
-        RegisterDomainEvent(new MemberAddedEvent(Id, userId, invitation.RoleId));
+        RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
+        RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, invitation.RoleId));
 
         return member;
     }
@@ -558,10 +554,7 @@ public class Organization : BaseEntity, IAggregateRoot
         // Odrzuć zaproszenie
         invitation.Reject();
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
-
-        RegisterDomainEvent(new InvitationRejectedEvent(Id, invitationId));
+        RegisterDomainEventAndUpdate(new InvitationRejectedEvent(invitationId, Id, invitation.Email));
     }
 
     /// <summary>

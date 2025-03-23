@@ -7,7 +7,7 @@ public class ContributorConstructor
 
     private Contributor CreateContributor()
     {
-        return new Contributor(_testName);
+        return Contributor.Create(_testName);
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
+using KeepItUp.MagJob.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 

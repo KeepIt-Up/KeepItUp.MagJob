@@ -8,7 +8,7 @@ public class CreateContributorHandler(IRepository<Contributor> _repository)
     public async Task<Result<Guid>> Handle(CreateContributorCommand request,
       CancellationToken cancellationToken)
     {
-        var newContributor = new Contributor(request.Name);
+        var newContributor = Contributor.Create(request.Name);
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             newContributor.SetPhoneNumber(request.PhoneNumber);

@@ -1,4 +1,5 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
+
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
@@ -68,7 +69,9 @@ public class Invitation : BaseEntity
     /// </summary>
     public bool IsExpired => Status == InvitationStatus.Expired || DateTime.UtcNow > ExpiresAt;
 
-    // Prywatny konstruktor dla EF Core
+    /// <summary>
+    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// </summary>
     private Invitation() { }
 
     /// <summary>
@@ -85,7 +88,7 @@ public class Invitation : BaseEntity
         Guard.Against.NullOrEmpty(email, nameof(email));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        return new Invitation
+        var invitation = new Invitation
         {
             OrganizationId = organizationId,
             Email = email,
@@ -93,6 +96,10 @@ public class Invitation : BaseEntity
             RoleId = roleId,
             ExpiresAt = expiresAt ?? DateTime.UtcNow.AddDays(7)
         };
+
+        invitation.RegisterDomainEventAndUpdate(new InvitationCreatedEvent(invitation.Id, organizationId, email, roleId));
+
+        return invitation;
     }
 
     /// <summary>
@@ -100,20 +107,19 @@ public class Invitation : BaseEntity
     /// </summary>
     public void Accept()
     {
+        if (Status != InvitationStatus.Pending)
+        {
+            throw new InvalidOperationException("Tylko oczekujące zaproszenia mogą zostać zaakceptowane.");
+        }
+
         if (IsExpired)
         {
             throw new InvalidOperationException("Nie można zaakceptować wygasłego zaproszenia.");
         }
 
-        if (Status != InvitationStatus.Pending)
-        {
-            throw new InvalidOperationException("Zaproszenie zostało już zaakceptowane lub odrzucone.");
-        }
-
         Status = InvitationStatus.Accepted;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
+        RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(Id, OrganizationId, Email, RoleId));
     }
 
     /// <summary>
@@ -121,20 +127,19 @@ public class Invitation : BaseEntity
     /// </summary>
     public void Reject()
     {
+        if (Status != InvitationStatus.Pending)
+        {
+            throw new InvalidOperationException("Tylko oczekujące zaproszenia mogą zostać odrzucone.");
+        }
+
         if (IsExpired)
         {
             throw new InvalidOperationException("Nie można odrzucić wygasłego zaproszenia.");
         }
 
-        if (Status != InvitationStatus.Pending)
-        {
-            throw new InvalidOperationException("Zaproszenie zostało już zaakceptowane lub odrzucone.");
-        }
-
         Status = InvitationStatus.Rejected;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
+        RegisterDomainEventAndUpdate(new InvitationRejectedEvent(Id, OrganizationId, Email));
     }
 
     /// <summary>
@@ -149,7 +154,6 @@ public class Invitation : BaseEntity
 
         Status = InvitationStatus.Expired;
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
+        RegisterDomainEventAndUpdate(new InvitationExpiredEvent(Id, OrganizationId, Email));
     }
 }

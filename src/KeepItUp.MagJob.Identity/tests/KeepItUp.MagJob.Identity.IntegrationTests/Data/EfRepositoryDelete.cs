@@ -10,11 +10,11 @@ public class EfRepositoryDelete : BaseEfRepoTestFixture
         // add a Contributor
         var repository = GetRepository();
         var initialName = Guid.NewGuid().ToString();
-        var Contributor = new Contributor(initialName);
-        await repository.AddAsync(Contributor);
+        var contributor = Contributor.Create(initialName);
+        await repository.AddAsync(contributor);
 
         // delete the item
-        await repository.DeleteAsync(Contributor);
+        await repository.DeleteAsync(contributor);
 
         // verify it's no longer there
         Assert.DoesNotContain(await repository.ListAsync(),

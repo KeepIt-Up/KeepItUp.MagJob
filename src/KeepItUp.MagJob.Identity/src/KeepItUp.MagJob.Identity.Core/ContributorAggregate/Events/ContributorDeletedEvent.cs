@@ -1,10 +1,23 @@
-﻿namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Events;
+﻿using KeepItUp.MagJob.SharedKernel;
+
+namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Events;
 
 /// <summary>
-/// A domain event that is dispatched whenever a contributor is deleted.
-/// The DeleteContributorService is used to dispatch this event.
+/// Zdarzenie domenowe informujące o usunięciu kontrybutora.
 /// </summary>
-internal sealed class ContributorDeletedEvent(int contributorId) : DomainEventBase
+public class ContributorDeletedEvent : DomainEventBase
 {
-    public int ContributorId { get; init; } = contributorId;
+    /// <summary>
+    /// Identyfikator kontrybutora.
+    /// </summary>
+    public Guid ContributorId { get; }
+
+    /// <summary>
+    /// Tworzy nowe zdarzenie ContributorDeletedEvent.
+    /// </summary>
+    /// <param name="contributorId">Identyfikator kontrybutora.</param>
+    public ContributorDeletedEvent(Guid contributorId)
+    {
+        ContributorId = contributorId;
+    }
 }

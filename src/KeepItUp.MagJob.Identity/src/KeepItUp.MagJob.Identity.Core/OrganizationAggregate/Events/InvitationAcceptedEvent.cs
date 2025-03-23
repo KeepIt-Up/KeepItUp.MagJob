@@ -1,36 +1,44 @@
+using KeepItUp.MagJob.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o akceptacji zaproszenia do organizacji.
+/// Zdarzenie domenowe informujące o zaakceptowaniu zaproszenia do organizacji.
 /// </summary>
 public class InvitationAcceptedEvent : DomainEventBase
 {
-    /// <summary>
-    /// Identyfikator organizacji.
-    /// </summary>
-    public Guid OrganizationId { get; }
-
     /// <summary>
     /// Identyfikator zaproszenia.
     /// </summary>
     public Guid InvitationId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika, który zaakceptował zaproszenie.
+    /// Identyfikator organizacji.
     /// </summary>
-    public Guid UserId { get; }
+    public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o akceptacji zaproszenia do organizacji.
+    /// Adres e-mail osoby zapraszanej.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
+    public string Email { get; }
+
+    /// <summary>
+    /// Identyfikator roli, która zostanie przypisana.
+    /// </summary>
+    public Guid RoleId { get; }
+
+    /// <summary>
+    /// Tworzy nowe zdarzenie InvitationAcceptedEvent.
+    /// </summary>
     /// <param name="invitationId">Identyfikator zaproszenia.</param>
-    /// <param name="userId">Identyfikator użytkownika, który zaakceptował zaproszenie.</param>
-    public InvitationAcceptedEvent(Guid organizationId, Guid invitationId, Guid userId)
+    /// <param name="organizationId">Identyfikator organizacji.</param>
+    /// <param name="email">Adres e-mail osoby zapraszanej.</param>
+    /// <param name="roleId">Identyfikator roli, która zostanie przypisana.</param>
+    public InvitationAcceptedEvent(Guid invitationId, Guid organizationId, string email, Guid roleId)
     {
-        OrganizationId = organizationId;
         InvitationId = invitationId;
-        UserId = userId;
+        OrganizationId = organizationId;
+        Email = email;
+        RoleId = roleId;
     }
 }
