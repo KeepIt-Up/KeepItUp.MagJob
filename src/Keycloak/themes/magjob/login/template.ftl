@@ -1,4 +1,4 @@
-<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true>
+<#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true displayRequiredFields=false displayWide=false showAnotherWayIfPresent=true templateType="">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" class="${properties.kcHtmlClass!}">
 
@@ -58,42 +58,68 @@
                 </div>
             </div>
 
-            <div class="card-pf">
-                <header class="login-pf-header">
-                    <#if realm.internationalizationEnabled && locale.supported?size gt 1>
-                        <div class="language-selector">
-                            <div class="kc-dropdown" id="kc-locale-dropdown">
-                                <a href="#" id="kc-current-locale-link">${locale.current}</a>
-                                <ul>
-                                    <#list locale.supported as l>
-                                        <li class="kc-dropdown-item"><a href="${l.url}">${l.label}</a></li>
-                                    </#list>
-                                </ul>
-                            </div>
+            <div class="split-card">
+                <#if templateType??>
+                    <div class="card-image card-image-${templateType}">
+                        <div class="card-image-overlay">
+                            <h2 class="card-image-title">
+                                <#if templateType == "login">
+                                    Welcome Back
+                                <#elseif templateType == "register">
+                                    Join MagJob
+                                <#elseif templateType == "reset">
+                                    Reset Password
+                                </#if>
+                            </h2>
+                            <p class="card-image-text">
+                                <#if templateType == "login">
+                                    Log in to your account to continue
+                                <#elseif templateType == "register">
+                                    Create an account to start your journey
+                                <#elseif templateType == "reset">
+                                    Restore access to your account
+                                </#if>
+                            </p>
                         </div>
-                    </#if>
-                    <h1 id="kc-page-title"><#nested "header"></h1>
-                </header>
-
-                <div id="kc-content">
-                    <div id="kc-content-wrapper">
-                        <#-- App-initiated actions should not see warning messages about the need to complete the action -->
-                        <#-- during login.                                                                               -->
-                        <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
-                            <div class="alert alert-${message.type}">
-                                <span class="message-text">${kcSanitize(message.summary)?no_esc}</span>
-                            </div>
-                        </#if>
-
-                        <#nested "form">
-
-                        <#if displayInfo>
-                            <div id="kc-info" class="${properties.kcInfoAreaClass!}">
-                                <div id="kc-info-wrapper" class="${properties.kcInfoAreaWrapperClass!}">
-                                    <#nested "info">
+                    </div>
+                </#if>
+                <div class="card-content">
+                    <header class="login-pf-header">
+                        <#if realm.internationalizationEnabled && locale.supported?size gt 1>
+                            <div class="language-selector">
+                                <div class="kc-dropdown" id="kc-locale-dropdown">
+                                    <a href="#" id="kc-current-locale-link">${locale.current}</a>
+                                    <ul>
+                                        <#list locale.supported as l>
+                                            <li class="kc-dropdown-item"><a href="${l.url}">${l.label}</a></li>
+                                        </#list>
+                                    </ul>
                                 </div>
                             </div>
                         </#if>
+                        <h1 id="kc-page-title"><#nested "header"></h1>
+                    </header>
+
+                    <div id="kc-content">
+                        <div id="kc-content-wrapper">
+                            <#-- App-initiated actions should not see warning messages about the need to complete the action -->
+                            <#-- during login.                                                                               -->
+                            <#if displayMessage && message?has_content && (message.type != 'warning' || !isAppInitiatedAction??)>
+                                <div class="alert alert-${message.type}">
+                                    <span class="message-text">${kcSanitize(message.summary)?no_esc}</span>
+                                </div>
+                            </#if>
+
+                            <#nested "form">
+
+                            <#if displayInfo>
+                                <div id="kc-info" class="${properties.kcInfoAreaClass!}">
+                                    <div id="kc-info-wrapper" class="${properties.kcInfoAreaWrapperClass!}">
+                                        <#nested "info">
+                                    </div>
+                                </div>
+                            </#if>
+                        </div>
                     </div>
                 </div>
             </div>

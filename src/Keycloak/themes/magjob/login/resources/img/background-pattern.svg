@@ -1,0 +1,173 @@
+<svg width="2000" height="2000" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- USER ICON -->
+    <symbol id="icon-user" viewBox="0 0 24 24">
+      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM3 20a9 9 0 0 1 18 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- BRIEFCASE ICON -->
+    <symbol id="icon-briefcase" viewBox="0 0 24 24">
+      <path d="M4 9V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M4 9h16M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- MAIL ICON -->
+    <symbol id="icon-mail" viewBox="0 0 24 24">
+      <path d="M21 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m3 7 9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- BUILDING ICON -->
+    <symbol id="icon-building" viewBox="0 0 24 24">
+      <path d="M4 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 21V9h6v12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 14h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- CALENDAR ICON -->
+    <symbol id="icon-calendar" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="16" y1="2" x2="16" y2="6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="8" y1="2" x2="8" y2="6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="3" y1="10" x2="21" y2="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- CHART ICON -->
+    <symbol id="icon-chart" viewBox="0 0 24 24">
+      <path d="M21 21H5a2 2 0 0 1-2-2V3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 9h1v9H9zM14 13h1v5h-1zM19 6h1v12h-1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- BELL ICON -->
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- DOCUMENT ICON -->
+    <symbol id="icon-document" viewBox="0 0 24 24">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="9" y1="13" x2="15" y2="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="9" y1="17" x2="15" y2="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- CHECK ICON -->
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+
+  <!-- PATTERN BACKGROUND WITH RANDOMLY POSITIONED AND ROTATED ICONS -->
+  <g fill="#44BBA4">
+    <!-- FIRST ROW -->
+    <use href="#icon-user" x="100" y="100" width="40" height="40" transform="rotate(15, 100, 100)" opacity="0.8"/>
+    <use href="#icon-briefcase" x="300" y="80" width="45" height="45" transform="rotate(-10, 300, 80)" opacity="0.7"/>
+    <use href="#icon-mail" x="500" y="120" width="38" height="38" transform="rotate(5, 500, 120)" opacity="0.6"/>
+    <use href="#icon-building" x="700" y="90" width="42" height="42" transform="rotate(-5, 700, 90)" opacity="0.8"/>
+    <use href="#icon-calendar" x="900" y="110" width="40" height="40" transform="rotate(8, 900, 110)" opacity="0.7"/>
+    <use href="#icon-chart" x="1100" y="130" width="44" height="44" transform="rotate(-12, 1100, 130)" opacity="0.6"/>
+    <use href="#icon-bell" x="1300" y="70" width="36" height="36" transform="rotate(20, 1300, 70)" opacity="0.8"/>
+    <use href="#icon-document" x="1500" y="150" width="42" height="42" transform="rotate(-8, 1500, 150)" opacity="0.7"/>
+    <use href="#icon-check" x="1700" y="120" width="38" height="38" transform="rotate(15, 1700, 120)" opacity="0.6"/>
+    <use href="#icon-user" x="1900" y="90" width="40" height="40" transform="rotate(-15, 1900, 90)" opacity="0.8"/>
+
+    <!-- SECOND ROW -->
+    <use href="#icon-bell" x="150" y="300" width="38" height="38" transform="rotate(-15, 150, 300)" opacity="0.6"/>
+    <use href="#icon-document" x="350" y="280" width="44" height="44" transform="rotate(10, 350, 280)" opacity="0.7"/>
+    <use href="#icon-user" x="550" y="320" width="40" height="40" transform="rotate(-8, 550, 320)" opacity="0.8"/>
+    <use href="#icon-briefcase" x="750" y="290" width="42" height="42" transform="rotate(12, 750, 290)" opacity="0.6"/>
+    <use href="#icon-mail" x="950" y="310" width="36" height="36" transform="rotate(-5, 950, 310)" opacity="0.7"/>
+    <use href="#icon-building" x="1150" y="330" width="46" height="46" transform="rotate(8, 1150, 330)" opacity="0.8"/>
+    <use href="#icon-calendar" x="1350" y="270" width="40" height="40" transform="rotate(-20, 1350, 270)" opacity="0.6"/>
+    <use href="#icon-chart" x="1550" y="350" width="42" height="42" transform="rotate(5, 1550, 350)" opacity="0.7"/>
+    <use href="#icon-check" x="1750" y="320" width="38" height="38" transform="rotate(-10, 1750, 320)" opacity="0.8"/>
+    <use href="#icon-bell" x="1950" y="290" width="40" height="40" transform="rotate(15, 1950, 290)" opacity="0.6"/>
+
+    <!-- MORE ROWS CONTINUE WITH DIFFERENT POSITIONS AND ROTATIONS -->
+    <!-- ROW 3 -->
+    <use href="#icon-chart" x="100" y="500" width="44" height="44" transform="rotate(8, 100, 500)" opacity="0.7"/>
+    <use href="#icon-user" x="300" y="480" width="40" height="40" transform="rotate(-5, 300, 480)" opacity="0.8"/>
+    <use href="#icon-briefcase" x="500" y="520" width="42" height="42" transform="rotate(10, 500, 520)" opacity="0.6"/>
+    <use href="#icon-mail" x="700" y="490" width="38" height="38" transform="rotate(-15, 700, 490)" opacity="0.7"/>
+    <use href="#icon-building" x="900" y="510" width="46" height="46" transform="rotate(20, 900, 510)" opacity="0.8"/>
+    <use href="#icon-calendar" x="1100" y="530" width="40" height="40" transform="rotate(-10, 1100, 530)" opacity="0.6"/>
+    <use href="#icon-document" x="1300" y="470" width="42" height="42" transform="rotate(15, 1300, 470)" opacity="0.7"/>
+    <use href="#icon-check" x="1500" y="550" width="38" height="38" transform="rotate(-8, 1500, 550)" opacity="0.8"/>
+    <use href="#icon-bell" x="1700" y="520" width="40" height="40" transform="rotate(5, 1700, 520)" opacity="0.6"/>
+    <use href="#icon-chart" x="1900" y="490" width="44" height="44" transform="rotate(-20, 1900, 490)" opacity="0.7"/>
+
+    <!-- ROW 4 -->
+    <use href="#icon-document" x="150" y="700" width="42" height="42" transform="rotate(-12, 150, 700)" opacity="0.8"/>
+    <use href="#icon-bell" x="350" y="680" width="38" height="38" transform="rotate(18, 350, 680)" opacity="0.6"/>
+    <use href="#icon-check" x="550" y="720" width="40" height="40" transform="rotate(-5, 550, 720)" opacity="0.7"/>
+    <use href="#icon-user" x="750" y="690" width="44" height="44" transform="rotate(10, 750, 690)" opacity="0.8"/>
+    <use href="#icon-briefcase" x="950" y="710" width="42" height="42" transform="rotate(-15, 950, 710)" opacity="0.6"/>
+    <use href="#icon-mail" x="1150" y="730" width="36" height="36" transform="rotate(8, 1150, 730)" opacity="0.7"/>
+    <use href="#icon-building" x="1350" y="670" width="46" height="46" transform="rotate(-10, 1350, 670)" opacity="0.8"/>
+    <use href="#icon-calendar" x="1550" y="750" width="40" height="40" transform="rotate(15, 1550, 750)" opacity="0.6"/>
+    <use href="#icon-chart" x="1750" y="720" width="42" height="42" transform="rotate(-8, 1750, 720)" opacity="0.7"/>
+    <use href="#icon-document" x="1950" y="690" width="38" height="38" transform="rotate(20, 1950, 690)" opacity="0.8"/>
+
+    <!-- ROW 5 -->
+    <use href="#icon-calendar" x="100" y="900" width="40" height="40" transform="rotate(15, 100, 900)" opacity="0.6"/>
+    <use href="#icon-chart" x="300" y="880" width="44" height="44" transform="rotate(-10, 300, 880)" opacity="0.7"/>
+    <use href="#icon-document" x="500" y="920" width="42" height="42" transform="rotate(5, 500, 920)" opacity="0.8"/>
+    <use href="#icon-bell" x="700" y="890" width="38" height="38" transform="rotate(-5, 700, 890)" opacity="0.6"/>
+    <use href="#icon-check" x="900" y="910" width="40" height="40" transform="rotate(10, 900, 910)" opacity="0.7"/>
+    <use href="#icon-user" x="1100" y="930" width="44" height="44" transform="rotate(-15, 1100, 930)" opacity="0.8"/>
+    <use href="#icon-briefcase" x="1300" y="870" width="42" height="42" transform="rotate(20, 1300, 870)" opacity="0.6"/>
+    <use href="#icon-mail" x="1500" y="950" width="36" height="36" transform="rotate(-8, 1500, 950)" opacity="0.7"/>
+    <use href="#icon-building" x="1700" y="920" width="46" height="46" transform="rotate(15, 1700, 920)" opacity="0.8"/>
+    <use href="#icon-calendar" x="1900" y="890" width="40" height="40" transform="rotate(-10, 1900, 890)" opacity="0.6"/>
+
+    <!-- ROW 6 -->
+    <use href="#icon-briefcase" x="150" y="1100" width="42" height="42" transform="rotate(-15, 150, 1100)" opacity="0.7"/>
+    <use href="#icon-mail" x="350" y="1080" width="38" height="38" transform="rotate(10, 350, 1080)" opacity="0.8"/>
+    <use href="#icon-building" x="550" y="1120" width="46" height="46" transform="rotate(-5, 550, 1120)" opacity="0.6"/>
+    <use href="#icon-calendar" x="750" y="1090" width="40" height="40" transform="rotate(15, 750, 1090)" opacity="0.7"/>
+    <use href="#icon-chart" x="950" y="1110" width="44" height="44" transform="rotate(-10, 950, 1110)" opacity="0.8"/>
+    <use href="#icon-document" x="1150" y="1130" width="42" height="42" transform="rotate(5, 1150, 1130)" opacity="0.6"/>
+    <use href="#icon-bell" x="1350" y="1070" width="38" height="38" transform="rotate(-20, 1350, 1070)" opacity="0.7"/>
+    <use href="#icon-check" x="1550" y="1150" width="40" height="40" transform="rotate(10, 1550, 1150)" opacity="0.8"/>
+    <use href="#icon-user" x="1750" y="1120" width="44" height="44" transform="rotate(-5, 1750, 1120)" opacity="0.6"/>
+    <use href="#icon-briefcase" x="1950" y="1090" width="42" height="42" transform="rotate(15, 1950, 1090)" opacity="0.7"/>
+
+    <!-- ADD MORE ROWS TO COVER THE ENTIRE AREA -->
+    <!-- ROW 7 -->
+    <use href="#icon-mail" x="100" y="1300" width="36" height="36" transform="rotate(8, 100, 1300)" opacity="0.8"/>
+    <use href="#icon-building" x="300" y="1280" width="46" height="46" transform="rotate(-15, 300, 1280)" opacity="0.6"/>
+    <use href="#icon-calendar" x="500" y="1320" width="40" height="40" transform="rotate(10, 500, 1320)" opacity="0.7"/>
+    <use href="#icon-chart" x="700" y="1290" width="44" height="44" transform="rotate(-5, 700, 1290)" opacity="0.8"/>
+    <use href="#icon-document" x="900" y="1310" width="42" height="42" transform="rotate(15, 900, 1310)" opacity="0.6"/>
+    <use href="#icon-bell" x="1100" y="1330" width="38" height="38" transform="rotate(-10, 1100, 1330)" opacity="0.7"/>
+    <use href="#icon-check" x="1300" y="1270" width="40" height="40" transform="rotate(20, 1300, 1270)" opacity="0.8"/>
+    <use href="#icon-user" x="1500" y="1350" width="44" height="44" transform="rotate(-8, 1500, 1350)" opacity="0.6"/>
+    <use href="#icon-briefcase" x="1700" y="1320" width="42" height="42" transform="rotate(5, 1700, 1320)" opacity="0.7"/>
+    <use href="#icon-mail" x="1900" y="1290" width="36" height="36" transform="rotate(-15, 1900, 1290)" opacity="0.8"/>
+
+    <!-- ROW 8 -->
+    <use href="#icon-check" x="150" y="1500" width="40" height="40" transform="rotate(-10, 150, 1500)" opacity="0.6"/>
+    <use href="#icon-user" x="350" y="1480" width="44" height="44" transform="rotate(15, 350, 1480)" opacity="0.7"/>
+    <use href="#icon-briefcase" x="550" y="1520" width="42" height="42" transform="rotate(-5, 550, 1520)" opacity="0.8"/>
+    <use href="#icon-mail" x="750" y="1490" width="36" height="36" transform="rotate(10, 750, 1490)" opacity="0.6"/>
+    <use href="#icon-building" x="950" y="1510" width="46" height="46" transform="rotate(-15, 950, 1510)" opacity="0.7"/>
+    <use href="#icon-calendar" x="1150" y="1530" width="40" height="40" transform="rotate(8, 1150, 1530)" opacity="0.8"/>
+    <use href="#icon-chart" x="1350" y="1470" width="44" height="44" transform="rotate(-20, 1350, 1470)" opacity="0.6"/>
+    <use href="#icon-document" x="1550" y="1550" width="42" height="42" transform="rotate(15, 1550, 1550)" opacity="0.7"/>
+    <use href="#icon-bell" x="1750" y="1520" width="38" height="38" transform="rotate(-8, 1750, 1520)" opacity="0.8"/>
+    <use href="#icon-check" x="1950" y="1490" width="40" height="40" transform="rotate(10, 1950, 1490)" opacity="0.6"/>
+
+    <!-- ROW 9 -->
+    <use href="#icon-building" x="100" y="1700" width="46" height="46" transform="rotate(20, 100, 1700)" opacity="0.7"/>
+    <use href="#icon-calendar" x="300" y="1680" width="40" height="40" transform="rotate(-5, 300, 1680)" opacity="0.8"/>
+    <use href="#icon-chart" x="500" y="1720" width="44" height="44" transform="rotate(10, 500, 1720)" opacity="0.6"/>
+    <use href="#icon-document" x="700" y="1690" width="42" height="42" transform="rotate(-15, 700, 1690)" opacity="0.7"/>
+    <use href="#icon-bell" x="900" y="1710" width="38" height="38" transform="rotate(8, 900, 1710)" opacity="0.8"/>
+    <use href="#icon-check" x="1100" y="1730" width="40" height="40" transform="rotate(-10, 1100, 1730)" opacity="0.6"/>
+    <use href="#icon-user" x="1300" y="1670" width="44" height="44" transform="rotate(15, 1300, 1670)" opacity="0.7"/>
+    <use href="#icon-briefcase" x="1500" y="1750" width="42" height="42" transform="rotate(-8, 1500, 1750)" opacity="0.8"/>
+    <use href="#icon-mail" x="1700" y="1720" width="36" height="36" transform="rotate(5, 1700, 1720)" opacity="0.6"/>
+    <use href="#icon-building" x="1900" y="1690" width="46" height="46" transform="rotate(-20, 1900, 1690)" opacity="0.7"/>
+  </g>
+</svg>

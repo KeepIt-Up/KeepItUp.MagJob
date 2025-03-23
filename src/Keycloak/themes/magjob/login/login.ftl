@@ -1,5 +1,5 @@
 <#import "template.ftl" as layout>
-<@layout.registrationLayout displayInfo=social.displayInfo displayWide=(realm.password && social.providers??); section>
+<@layout.registrationLayout displayInfo=social.displayInfo displayWide=(realm.password && social.providers??) templateType="login"; section>
     <#if section = "header">
         ${msg("doLogIn")}
     <#elseif section = "form">
@@ -9,13 +9,13 @@
                     <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="${url.loginAction}" method="post">
                         <div class="form-group">
                             <label for="username" class="control-label">${msg("username")}</label>
-                            <input tabindex="1" id="username" class="form-control" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="off" />
+                            <input tabindex="1" id="username" class="form-control" name="username" value="${(login.username!'')}" type="text" autofocus autocomplete="username" />
                         </div>
 
                         <div class="form-group">
                             <label for="password" class="control-label">${msg("password")}</label>
                             <div class="password-input-wrapper">
-                                <input tabindex="2" id="password" class="form-control" name="password" type="password" autocomplete="off" />
+                                <input tabindex="2" id="password" class="form-control" name="password" type="password" autocomplete="current-password" />
                                 <div class="password-toggle-icon" onclick="togglePassword('password', 'togglePasswordIcon')">
                                     <svg id="togglePasswordIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
