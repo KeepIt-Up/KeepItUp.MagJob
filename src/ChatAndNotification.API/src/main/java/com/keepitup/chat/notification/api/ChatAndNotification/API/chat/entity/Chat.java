@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,10 +20,15 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Entity
+@Table(name = "Chats")
 public class Chat {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chatSequenceGenerator")
-    @SequenceGenerator(name = "chatSequenceGenerator")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "date_of_creation")

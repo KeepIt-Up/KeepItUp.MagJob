@@ -5,9 +5,10 @@ import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.ent
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,11 +20,15 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "chat_messages")
+@Table(name = "ChatMessages")
 public class ChatMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chatMessageSequenceGenerator")
-    @SequenceGenerator(name = "chatMessageSequenceGenerator")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "content")
@@ -36,6 +41,7 @@ public class ChatMessage {
     private List<String> viewedBy;
 
     @Lob
+    @Column(name = "attachment")
     private byte[] attachment;
 
     @ManyToOne

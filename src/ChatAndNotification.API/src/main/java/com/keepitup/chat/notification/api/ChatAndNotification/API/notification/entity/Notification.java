@@ -3,7 +3,7 @@ package com.keepitup.chat.notification.api.ChatAndNotification.API.notification.
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
+import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,10 +15,15 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "notifications")
+@Table(name = "Notifications")
 public class Notification {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notificationSequenceGenerator")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "date_of_creation")

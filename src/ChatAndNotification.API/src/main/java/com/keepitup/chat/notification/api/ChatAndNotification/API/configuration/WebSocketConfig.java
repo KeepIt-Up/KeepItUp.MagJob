@@ -24,17 +24,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chats").setAllowedOrigins("*").withSockJS();
-        registry.addEndpoint("/notifications").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/chats", "/notifications")
+               .setAllowedOrigins("*")
+               .withSockJS();
     }
 
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-        DefaultContentTypeResolver resolver = new DefaultContentTypeResolver();
+        var resolver = new DefaultContentTypeResolver();
         resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        
+        var converter = new MappingJackson2MessageConverter();
         converter.setObjectMapper(new ObjectMapper());
         converter.setContentTypeResolver(resolver);
+        
         messageConverters.add(converter);
         return false;
     }
