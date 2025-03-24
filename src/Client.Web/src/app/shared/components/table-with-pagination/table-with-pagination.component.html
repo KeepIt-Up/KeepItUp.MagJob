@@ -1,9 +1,0 @@
-<app-statefull-container [state$]="state()" class="w-full h-full">
-    @if (state().data; as data) {
-    <app-table [rows]="data.items" [columnsConfig]="columnsConfig()" (sortBy)="onSortByChange($event)"></app-table>
-    <app-pagination [items]="data.items" [defaultPageSize]="paginationOptions().pageSize"
-        [currentPage]="data.pageNumber" [totalItems]="data.totalCount" (pageChange)="onPageChange($event)"
-        (pageSizeChange)="onPageSizeChange($event)">
-    </app-pagination>
-    }
-</app-statefull-container>

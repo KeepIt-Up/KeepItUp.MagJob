@@ -1,0 +1,1 @@
+global using Organizations.Domain.Common;

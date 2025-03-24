@@ -1,0 +1,217 @@
+<div class="h-full flex flex-col">
+  <div class="grid grid-cols-12 gap-4 h-full overflow-hidden">
+    <!-- Left sidebar with roles list -->
+    <div
+      class="col-span-3 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex flex-col overflow-hidden"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl text-gray-900 dark:text-white font-semibold">Roles</h2>
+        <button type="button" class="mg-btn mg-btn-md mg-btn-primary" (click)="addNewRole()">
+          <i class="bi bi-plus-lg"></i>
+          <span>Add Role</span>
+        </button>
+      </div>
+      <app-infinite-list
+        [paginationOptions$]="paginationOptions$()"
+        [state$]="state$()"
+        (onLoad)="loadMoreRoles()"
+      >
+        @if (state$().data) {
+          <div class="overflow-y-auto flex-1">
+            <app-roles-list
+              [roles$]="state$().data!"
+              [selectedRole$]="selectedRole$()"
+              (onRoleSelect)="selectRole($event)"
+            >
+            </app-roles-list>
+          </div>
+        }
+      </app-infinite-list>
+    </div>
+
+    <!-- Right side content -->
+    @if (selectedRole$(); as role) {
+      <div
+        class="col-span-9 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex flex-col overflow-hidden"
+      >
+        <h2 class="text-xl text-gray-900 dark:text-white font-semibold mb-4">{{ role.name }}</h2>
+
+        <!-- Tabs -->
+        <app-tabs [tabs]="tabs" [activeTab]="activeTab" (tabChange)="setActiveTab($event)">
+        </app-tabs>
+
+        <!-- Tab content -->
+        <div class="overflow-y-auto flex-1">
+          @switch (activeTab) {
+            @case ('appearance') {
+              <!-- Appearance tab content -->
+              <div class="space-y-4">
+                <div>
+                  <label
+                    for="roleName"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Role Name
+                  </label>
+                  <input
+                    type="text"
+                    id="roleName"
+                    [(ngModel)]="role.name"
+                    class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                </div>
+
+                <!-- Add color picker -->
+                <div>
+                  <label
+                    for="roleColor"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Role Color
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="color"
+                      id="roleColor"
+                      [(ngModel)]="role.color"
+                      class="h-10 w-16 bg-white dark:bg-gray-700 border-0 rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      [(ngModel)]="role.color"
+                      class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-28 p-2.5"
+                      placeholder="#000000"
+                    />
+                  </div>
+                </div>
+
+                <!-- Delete Role Button -->
+                <div class="pt-4">
+                  <button
+                    (click)="deleteRole()"
+                    class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium"
+                  >
+                    Delete Role
+                  </button>
+                </div>
+                <div>
+                  <button
+                    (click)="updateRole()"
+                    class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-white border border-blue-600 hover:bg-blue-600 rounded-lg transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            }
+            @case ('permissions') {
+              <form (ngSubmit)="updateRolePermissions()">
+                <div class="space-y-6 px-4">
+                  @for (permission of selectedRolePermission$(); track permission.permission.id) {
+                    <div
+                      class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
+                    >
+                      <div class="flex-1">
+                        <label
+                          [for]="'permission_' + permission.permission.id"
+                          class="flex flex-col"
+                        >
+                          <span class="text-sm font-medium text-gray-900 dark:text-white">
+                            {{ permission.permission.name }}
+                          </span>
+                          <span class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ permission.permission.description }}
+                          </span>
+                        </label>
+                      </div>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          [id]="'permission_' + permission.permission.id"
+                          [checked]="permission.value"
+                          (change)="togglePermission(permission.permission.id)"
+                          class="sr-only peer"
+                        />
+                        <div
+                          class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                        ></div>
+                      </label>
+                    </div>
+                  }
+                </div>
+                <div class="flex justify-center mt-6">
+                  <button
+                    type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                  >
+                    Save Permissions
+                  </button>
+                </div>
+              </form>
+            }
+            @case ('assignments') {
+              <!-- Current assigned members -->
+              <div class="mb-6">
+                <div class="m-2 flex justify-between items-center">
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                    Current Members
+                  </h3>
+                  <!-- Search members -->
+                  <button
+                    (click)="showMemberSearchModal = true"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                  >
+                    Add Members
+                  </button>
+                </div>
+                <div class="space-y-2">
+                  @for (member of role.members; track member.id) {
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
+                    >
+                      <div class="flex items-center">
+                        <div class="ml-3">
+                          <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            {{ member.firstName }} {{ member.lastName }}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        (click)="toggleMemberRole(member)"
+                        class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  }
+
+                  @if (role.members.length === 0) {
+                    <div
+                      class="p-3 text-sm text-gray-600 dark:text-gray-400 text-center bg-gray-50 dark:bg-gray-800 rounded-lg"
+                    >
+                      No members assigned to this role
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            @default {}
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (selectedRole$(); as role) {
+  <app-member-search-modal
+    [isOpen]="showMemberSearchModal"
+    [filteredMembers]="memberSearchState$().data ?? []"
+    [selectedMembers]="role.members"
+    (closeModal)="showMemberSearchModal = false"
+    (searchMembers)="searchMembers($event)"
+    (memberToggled)="toggleMemberRole($event)"
+    (loadMore)="loadMoreMembers()"
+  >
+  </app-member-search-modal>
+}

@@ -1,0 +1,71 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4">
+  <div class="max-w-3xl w-full bg-white rounded-lg shadow-md p-8">
+    <div class="flex items-center mb-6">
+      <button
+        type="button"
+        class="mr-4 text-gray-600 hover:text-gray-900 focus:outline-none"
+        [routerLink]="['/user/organizations']"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+      </button>
+      <h1 class="text-2xl font-bold">Create New Organization</h1>
+    </div>
+
+    <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div>
+        <app-input
+          label="Organization Name"
+          formControlName="name"
+          [required]="true"
+          [error]="
+            organizationForm.get('name')?.invalid && organizationForm.get('name')?.touched
+              ? 'Organization name is required and must be less than 100 characters'
+              : ''
+          "
+        ></app-input>
+      </div>
+
+      <div>
+        <app-textarea
+          label="Description"
+          formControlName="description"
+          [error]="
+            organizationForm.get('description')?.invalid &&
+            organizationForm.get('description')?.touched
+              ? 'Description must be less than 500 characters'
+              : ''
+          "
+          placeholder="Describe your organization..."
+          rows="4"
+        ></app-textarea>
+      </div>
+
+      <div class="flex justify-end space-x-4 pt-4">
+        <app-button type="button" variant="outline" [routerLink]="['/user/organizations']">
+          Cancel
+        </app-button>
+
+        <app-button
+          type="submit"
+          [disabled]="organizationForm.invalid || isSubmitting"
+          [loading]="isSubmitting"
+        >
+          Create Organization
+        </app-button>
+      </div>
+    </form>
+  </div>
+</div>

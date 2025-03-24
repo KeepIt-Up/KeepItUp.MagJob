@@ -1,0 +1,10 @@
+<app-statefull-container [state$]="state$()" class="w-full h-full">
+  @if (state$().data; as data) {
+    <app-infinite-scroll
+      (scrolled)="onScroll()"
+      [endOfScroll]="state$().metadata?.endOfData ?? false"
+    >
+      <ng-content></ng-content>
+    </app-infinite-scroll>
+  }
+</app-statefull-container>
