@@ -42,6 +42,6 @@ public class TimeEntryTemplate {
     private Integer endDayOffset;
 
     @ManyToOne
-    @JoinColumn(name = "availability_template_id")
+    @JoinColumn(name = "availability_template", referencedColumnName = "id", columnDefinition = "uuid")
     private AvailabilityTemplate availabilityTemplate;
 }

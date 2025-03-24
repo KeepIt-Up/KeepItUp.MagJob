@@ -43,7 +43,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
     private final AvailabilityTemplateToResponseFunction availabilityTemplateToResponse;
     private final RequestToAvailabilityTemplateFunction requestToAvailabilityTemplate;
     private final UpdateAvailabilityTemplateWithRequestFunction updateAvailabilityTemplateWithRequest;
-    private final PostCreateAndPopulateGraphic postCreateAndPopulateGraphic;
     private final PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction;
     private final GraphicToResponseFunction graphicToResponseFunction;
 
@@ -55,7 +54,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
             AvailabilityTemplateToResponseFunction availabilityTemplateToResponse,
             RequestToAvailabilityTemplateFunction requestToAvailabilityTemplate,
             UpdateAvailabilityTemplateWithRequestFunction updateAvailabilityTemplateWithRequest,
-            PostCreateAndPopulateGraphic postCreateAndPopulateGraphic,
             PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction,
             TimeEntryService timeEntryService,
             GraphicService graphicService,
@@ -68,7 +66,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
         this.availabilityTemplateToResponse = availabilityTemplateToResponse;
         this.requestToAvailabilityTemplate = requestToAvailabilityTemplate;
         this.updateAvailabilityTemplateWithRequest = updateAvailabilityTemplateWithRequest;
-        this.postCreateAndPopulateGraphic = postCreateAndPopulateGraphic;
         this.postCreateAndPopulateGraphicToResponseFunction = postCreateAndPopulateGraphicToResponseFunction;
         this.graphicService = graphicService;
         this.graphicToResponseFunction = graphicToResponseFunction;
@@ -87,10 +84,17 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
     public GetAvailabilityTemplateResponse createAvailabilityTemplates(PostAvailabilityTemplateRequest postAvailabilityTemplateRequest) {
         UUID id = UUID.randomUUID();
         postAvailabilityTemplateRequest.setId(id);
-        service.create(requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest));
-        return service.find(id)
-                .map(availabilityTemplateToResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
+        AvailabilityTemplate availabilityTemplate = requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest);
+
+        for(TimeEntryTemplate timeEntryTemplate: postAvailabilityTemplateRequest.getTimeEntryTemplates()){
+            UUID timeEntryTemplateId = UUID.randomUUID();
+            timeEntryTemplate.setId(timeEntryTemplateId);
+            timeEntryTemplate.setAvailabilityTemplate(availabilityTemplate);
+        }
+        availabilityTemplate = requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest);
+        service.create(availabilityTemplate);
+
+        return availabilityTemplateToResponse.apply(availabilityTemplate);
     }
 
     @Override

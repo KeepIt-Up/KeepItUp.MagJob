@@ -39,6 +39,7 @@ public class AvailabilityTemplateDefaultService implements AvailabilityTemplateS
 
     @Override
     public Optional<AvailabilityTemplate> find(UUID id) {
+        System.out.println(timeEntryTemplateRepository.findById(id));
         return timeEntryTemplateRepository.findById(id);
     }
 

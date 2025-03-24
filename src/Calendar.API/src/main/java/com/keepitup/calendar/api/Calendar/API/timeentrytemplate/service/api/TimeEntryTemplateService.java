@@ -20,7 +20,6 @@ public interface TimeEntryTemplateService {
     Optional<TimeEntryTemplate> find(UUID id);
 
     void create(TimeEntryTemplate timeEntryTemplate);
-
     void delete(UUID id);
 
     void update(TimeEntryTemplate timeEntryTemplate);
