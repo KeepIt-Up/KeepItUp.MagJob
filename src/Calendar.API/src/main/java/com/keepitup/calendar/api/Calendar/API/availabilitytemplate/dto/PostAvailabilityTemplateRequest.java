@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto;
 
 
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.PostTimeEntryTemplateRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;

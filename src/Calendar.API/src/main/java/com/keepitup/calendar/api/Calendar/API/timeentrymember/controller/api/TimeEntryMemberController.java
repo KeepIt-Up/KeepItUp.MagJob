@@ -19,7 +19,7 @@ public interface TimeEntryMemberController {
     PageConfig pageConfig = new PageConfig();
 
     @Operation(summary = "Get all Time Entry")
-    @PostMapping("api/gettimeentrymember.s")
+    @PostMapping("api/gettimeentrymembers")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     GetTimeEntryMembersResponse getTimeEntryMembers(
@@ -50,7 +50,7 @@ public interface TimeEntryMemberController {
     );
 
     @Operation(summary = "Get TimeEntrys")
-    @GetMapping("api/timeentrymember.s/{id}")
+    @GetMapping("api/timeentrymembers/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     GetTimeEntryMemberResponse getTimeEntryMember(
@@ -64,7 +64,7 @@ public interface TimeEntryMemberController {
     );
 
     @Operation(summary = "Create TimeEntrys")
-    @PostMapping("api/timeentrymember.s")
+    @PostMapping("api/timeentrymembers")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     GetTimeEntryMemberResponse createTimeEntryMembers(
@@ -79,7 +79,7 @@ public interface TimeEntryMemberController {
     );
 
     @Operation(summary = "Update TimeEntrys")
-    @PatchMapping("api/timeentrymember.s/{id}")
+    @PatchMapping("api/timeentrymembers/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     GetTimeEntryMemberResponse updateTimeEntryMember(
@@ -101,7 +101,7 @@ public interface TimeEntryMemberController {
     );
 
     @Operation(summary = "Delete TimeEntrys")
-    @DeleteMapping("/api/timeentrymember.s/{id}")
+    @DeleteMapping("/api/timeentrymembers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteTimeEntryMember(
             @Parameter(
@@ -114,7 +114,7 @@ public interface TimeEntryMemberController {
     );
 
     @Operation(summary = "Get TimeEntryMembers by User")
-    @PostMapping("api/timeentrymember.s/{userId}")
+    @PostMapping("api/timeentrymembers/{userId}")
     @ResponseStatus(HttpStatus.OK)
     GetTimeEntryMembersResponse getTimeEntryMembersByUser(
             @Parameter(

@@ -21,8 +21,7 @@ import java.util.UUID;
 @Entity
 public class AvailabilityTemplate {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
-    @SequenceGenerator(name = "memberSequenceGenerator")
+    @Column(length = 254, unique = true, nullable = false, updatable = false)
     private UUID id;
 
     @NotNull
@@ -41,6 +40,10 @@ public class AvailabilityTemplate {
     @Column(name = "numberOfDays", nullable = false)
     private Integer numberOfDays;
 
-    @OneToMany(mappedBy = "AvailabilityTemplate")
+    @OneToMany(
+            mappedBy = "availabilityTemplate",
+            cascade = CascadeType.ALL, // Cascade ALL operations to children
+            orphanRemoval = true
+    )
     private List<TimeEntryTemplate> timeEntryTemplates;
 }
