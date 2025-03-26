@@ -351,4 +351,50 @@ public class KeycloakUserClient : BaseKeycloakClient
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<string?> GetUserProfilePictureUrlAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await SetAuthorizationHeaderAsync(cancellationToken);
+
+            var user = await GetByIdAsync(userId, cancellationToken);
+            if (user == null)
+            {
+                return null;
+            }
+
+            // Sprawdź, czy użytkownik ma atrybut picture
+            if (user.Attributes != null && user.Attributes.TryGetValue("picture", out var pictures) && pictures.Count > 0)
+            {
+                return pictures[0];
+            }
+
+            // Sprawdź, czy użytkownik ma atrybut avatar_url (często używany przez GitHub)
+            if (user.Attributes != null && user.Attributes.TryGetValue("avatar_url", out var avatarUrls) && avatarUrls.Count > 0)
+            {
+                return avatarUrls[0];
+            }
+
+            // Sprawdź, czy użytkownik ma atrybut profile_picture (używany przez niektóre IDP)
+            if (user.Attributes != null && user.Attributes.TryGetValue("profile_picture", out var profilePictures) && profilePictures.Count > 0)
+            {
+                return profilePictures[0];
+            }
+
+            // Sprawdź, czy użytkownik ma atrybut photo_url (używany przez niektóre IDP)
+            if (user.Attributes != null && user.Attributes.TryGetValue("photo_url", out var photoUrls) && photoUrls.Count > 0)
+            {
+                return photoUrls[0];
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Wystąpił błąd podczas pobierania zdjęcia profilowego użytkownika z Keycloak");
+            return null;
+        }
+    }
 }

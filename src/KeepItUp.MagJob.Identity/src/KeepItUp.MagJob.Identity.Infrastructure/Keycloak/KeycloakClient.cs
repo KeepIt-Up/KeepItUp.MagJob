@@ -191,4 +191,10 @@ public class KeycloakClient : IKeycloakClient
     {
         return await _userClient.GetAllUsersAsync(cancellationToken);
     }
+
+    /// <inheritdoc />
+    public async Task<string?> GetUserProfilePictureUrlAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        return await _userClient.GetUserProfilePictureUrlAsync(userId, cancellationToken);
+    }
 }

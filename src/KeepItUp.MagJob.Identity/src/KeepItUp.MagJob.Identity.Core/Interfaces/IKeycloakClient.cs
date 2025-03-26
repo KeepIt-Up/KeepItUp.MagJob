@@ -145,4 +145,12 @@ public interface IKeycloakClient
     /// <param name="roleName">Nazwa roli do usunięcia</param>
     /// <param name="cancellationToken">Token anulowania</param>
     Task DeleteRoleAsync(string roleName, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pobiera URL zdjęcia profilowego użytkownika z Keycloak/IDP
+    /// </summary>
+    /// <param name="userId">Identyfikator użytkownika w Keycloak</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>URL zdjęcia profilowego lub null, jeśli użytkownik nie ma zdjęcia</returns>
+    Task<string?> GetUserProfilePictureUrlAsync(string userId, CancellationToken cancellationToken = default);
 }

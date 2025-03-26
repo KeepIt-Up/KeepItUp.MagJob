@@ -34,4 +34,9 @@ public class GetUserByIdResponse
     /// Czy użytkownik jest aktywny.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// URL do zdjęcia profilowego użytkownika.
+    /// </summary>
+    public string? ProfileImageUrl { get; set; }
 }

@@ -1,3 +1,4 @@
+using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
@@ -8,9 +9,28 @@ namespace KeepItUp.MagJob.Identity.Web.Users;
 /// <remarks>
 /// Pobiera użytkownika o podanym identyfikatorze.
 /// </remarks>
-public class GetUserById(IMediator mediator)
-    : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
+public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
 {
+    private readonly IMediator _mediator;
+    private readonly IUserProfilePictureService _profilePictureService;
+    private readonly ILogger<GetUserById> _logger;
+
+    /// <summary>
+    /// Inicjalizuje nową instancję klasy <see cref="GetUserById"/>.
+    /// </summary>
+    /// <param name="mediator">Mediator.</param>
+    /// <param name="profilePictureService">Serwis zdjęć profilowych.</param>
+    /// <param name="logger">Logger.</param>
+    public GetUserById(
+        IMediator mediator,
+        IUserProfilePictureService profilePictureService,
+        ILogger<GetUserById> logger)
+    {
+        _mediator = mediator;
+        _profilePictureService = profilePictureService;
+        _logger = logger;
+    }
+
     /// <summary>
     /// Konfiguruje endpoint.
     /// </summary>
@@ -44,7 +64,7 @@ public class GetUserById(IMediator mediator)
             Id = req.Id
         };
 
-        var result = await mediator.Send(query, ct);
+        var result = await _mediator.Send(query, ct);
 
         if (result.Status == ResultStatus.NotFound)
         {
@@ -58,6 +78,26 @@ public class GetUserById(IMediator mediator)
             return;
         }
 
+        string? profileImageUrl = result.Value.ProfileImageUrl();
+
+        // Jeśli użytkownik nie ma zdjęcia profilowego, spróbuj je pobrać z IDP
+        if (string.IsNullOrEmpty(profileImageUrl))
+        {
+            try
+            {
+                profileImageUrl = await _profilePictureService.GetProfilePictureUrlAsync(
+                    result.Value.Id,
+                    result.Value.ExternalId,
+                    false,
+                    ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Nie udało się pobrać zdjęcia profilowego użytkownika {UserId} z IDP", req.Id);
+                // Kontynuuj, nawet jeśli nie udało się pobrać zdjęcia
+            }
+        }
+
         var response = new GetUserByIdResponse
         {
             Id = result.Value.Id,
@@ -65,7 +105,8 @@ public class GetUserById(IMediator mediator)
             Email = result.Value.Email,
             FirstName = result.Value.FirstName,
             LastName = result.Value.LastName,
-            IsActive = result.Value.IsActive
+            IsActive = result.Value.IsActive,
+            ProfileImageUrl = profileImageUrl
         };
 
         await SendOkAsync(response, ct);
