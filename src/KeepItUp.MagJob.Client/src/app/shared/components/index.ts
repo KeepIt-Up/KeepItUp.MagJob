@@ -6,3 +6,6 @@ export * from './input/input.component';
 
 // Textarea
 export * from './textarea/textarea.component';
+
+// Footer
+export * from './footer/footer.component';

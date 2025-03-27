@@ -14,7 +14,7 @@
             Streamline your organization's workflow, manage members, and handle job assignments all
             in one place.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex flex-col items-center sm:flex-row gap-4">
             <app-button
               variant="primary"
               size="lg"
@@ -23,12 +23,7 @@
             >
               Sign In
             </app-button>
-            <app-button
-              variant="outline"
-              size="lg"
-              (clicked)="authService.initRegistrationFlow()"
-              iconRight="heroUserPlus"
-            >
+            <app-button variant="outline" size="lg" (clicked)="authService.initRegistrationFlow()">
               Register
             </app-button>
           </div>
@@ -127,9 +122,9 @@
             variant="outline"
             size="lg"
             (clicked)="authService.initRegistrationFlow()"
-            iconRight="heroUserPlus"
+            iconLeft="heroUserPlus"
           >
-            Register
+            Register now
           </app-button>
         </div>
       </div>
@@ -137,29 +132,5 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-8 px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-      <div class="mb-4 md:mb-0">
-        <span class="text-xl font-semibold text-gray-900 dark:text-white">MagJob</span>
-        <p class="text-gray-600 dark:text-gray-300 mt-2">© 2025 MagJob. All rights reserved.</p>
-      </div>
-      <div class="flex space-x-6">
-        <a
-          href="#"
-          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
-          >Terms</a
-        >
-        <a
-          href="#"
-          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
-          >Privacy</a
-        >
-        <a
-          routerLink="/help"
-          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
-          >Help</a
-        >
-      </div>
-    </div>
-  </footer>
+  <app-footer></app-footer>
 </div>
