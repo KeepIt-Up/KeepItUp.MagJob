@@ -10,7 +10,7 @@ import { NgIcon } from '@ng-icons/core';
   imports: [CommonModule, NgIcon],
 })
 export class ButtonComponent {
-  @Input() variant: 'primary' | 'outline' | 'text' = 'primary';
+  @Input() variant: 'primary' | 'outline' | 'text' | 'link' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';

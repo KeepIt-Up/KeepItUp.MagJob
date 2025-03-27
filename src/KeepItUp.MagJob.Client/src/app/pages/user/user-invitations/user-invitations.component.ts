@@ -12,10 +12,7 @@ import { InvitationService } from '../../../features/invitations/services/invita
   templateUrl: './user-invitations.component.html',
 })
 export class UserInvitationsComponent {
-  queryParams = computed(() => ({ userId: this.userState$().data?.id }));
-
   private userService = inject(UserService);
-  userState$ = this.userService.userState$;
 
   invitationService = inject(InvitationService);
   invitationState$ = this.userService.invitationState$;
@@ -30,6 +27,6 @@ export class UserInvitationsComponent {
   }
 
   loadMore(): void {
-    this.userService.getUserInvitations(this.queryParams()).subscribe();
+    this.userService.getUserInvitations().subscribe();
   }
 }

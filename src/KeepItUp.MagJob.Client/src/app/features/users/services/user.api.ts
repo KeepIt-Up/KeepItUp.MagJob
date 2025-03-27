@@ -1,15 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { UserBase } from '@core/models/user-base.model';
+import { User } from '@users/models/user.model';
 import {
   PaginatedResponse,
   PaginationOptions,
   serializePaginationOptions,
 } from '@shared/components/pagination/pagination.component';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Organization } from '../../organizations/models/organization.model';
 import { Invitation } from '../../invitations/models/invitation';
 import { environment } from '@environments/environment';
+import { CurrentUser } from '@users/models/current-user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,10 +40,22 @@ export class UserApiService {
     });
   }
 
-  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<UserBase>) {
+  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<User>) {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<UserBase>>(`${this.apiUrl}`, {
+    return this.http.get<PaginatedResponse<User>>(`${this.apiUrl}`, {
       params: { ...query, ...options },
     });
+  }
+
+  getCurrentUser(): Observable<CurrentUser> {
+    return this.http
+      .get<CurrentUser>(`${this.apiUrl}/me`)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(() => new Error(error.message))));
+  }
+
+  getUserById(id: string): Observable<CurrentUser> {
+    return this.http
+      .get<CurrentUser>(`${this.apiUrl}/${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(() => new Error(error.message))));
   }
 }

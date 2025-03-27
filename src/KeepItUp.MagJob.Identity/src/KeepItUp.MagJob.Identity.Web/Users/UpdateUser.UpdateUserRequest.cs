@@ -31,4 +31,14 @@ public class UpdateUserRequest
     /// Nazwisko użytkownika.
     /// </summary>
     public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Numer telefonu użytkownika.
+    /// </summary>
+    public string? PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Adres użytkownika.
+    /// </summary>
+    public string? Address { get; set; }
 }

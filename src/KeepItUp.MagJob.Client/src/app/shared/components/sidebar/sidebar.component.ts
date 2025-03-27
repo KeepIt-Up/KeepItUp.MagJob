@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ImageService } from '@shared/services/image.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { NgIcon } from '@ng-icons/core';
 import { AuthService } from '@core/services/auth.service';
@@ -33,19 +32,10 @@ export class SidebarComponent {
   @Input() sidebarExpanded = true;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
 
-  private imageService = inject(ImageService);
-  private authService = inject(AuthService);
+  readonly authService = inject(AuthService);
 
   toggle() {
     this.sidebarExpanded = !this.sidebarExpanded;
     this.sidebarExpandedChange.emit(this.sidebarExpanded);
-  }
-
-  getSafeImageUrl(base64String: string | undefined): SafeUrl | undefined {
-    return this.imageService.getSafeImageUrl(base64String);
-  }
-
-  logOut() {
-    this.authService.logout();
   }
 }

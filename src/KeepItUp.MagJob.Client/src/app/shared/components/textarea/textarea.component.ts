@@ -22,16 +22,16 @@ import {
   ],
 })
 export class TextareaComponent implements ControlValueAccessor {
-  @Input() label: string = '';
-  @Input() placeholder: string = '';
-  @Input() rows: string = '3';
-  @Input() required: boolean = false;
-  @Input() disabled: boolean = false;
-  @Input() helperText: string = '';
-  @Input() fullWidth: boolean = true;
+  @Input() label = '';
+  @Input() placeholder = '';
+  @Input() rows = 3;
+  @Input() required = false;
+  @Input() disabled = false;
+  @Input() helperText = '';
+  @Input() fullWidth = true;
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
-  @Input() errorText: string = '';
-  @Input() hasError: boolean = false;
+  @Input() errorText = '';
+  @Input() hasError = false;
   @Input() set error(value: string) {
     this.errorText = value;
     this.hasError = !!value;
@@ -39,9 +39,9 @@ export class TextareaComponent implements ControlValueAccessor {
   @Output() valueChanged = new EventEmitter<string>();
   @Output() blurred = new EventEmitter<FocusEvent>();
 
-  value: string = '';
-  touched: boolean = false;
-  id: string = `textarea-${Math.random().toString(36).substring(2, 9)}`;
+  value = '';
+  touched = false;
+  id = `textarea-${Math.random().toString(36).substring(2, 9)}`;
 
   onChange: (value: string) => void = (_: string) => {
     /* This is intentionally empty */

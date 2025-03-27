@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '@shared/components/header/header.component';
@@ -22,13 +22,10 @@ import { ErrorAlertComponent } from '../../../shared/components/error-alert/erro
 export class UserOrganizationsComponent {
   private userService = inject(UserService);
 
-  private userState$ = this.userService.userState$;
   organizationState$ = this.userService.organizationState$;
   paginationOptions$ = this.userService.organizationsPaginationOptions$;
 
-  queryParams = computed(() => ({ id: this.userState$().data?.id }));
-
   loadMore(): void {
-    this.userService.getUserOrganizations(this.queryParams()).subscribe();
+    this.userService.getUserOrganizations().subscribe();
   }
 }

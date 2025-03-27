@@ -19,9 +19,28 @@ public class LocalFileStorageService : IFileStorageService
     /// <param name="logger">Logger</param>
     public LocalFileStorageService(IConfiguration configuration, ILogger<LocalFileStorageService> logger)
     {
-        _basePath = configuration["FileStorage:BasePath"] ?? "/app/wwwroot/uploads";
+        _basePath = configuration["FileStorage:BasePath"] ?? "./wwwroot/uploads";
         _baseUrl = configuration["FileStorage:BaseUrl"] ?? "http://localhost:5000/uploads";
         _logger = logger;
+
+        // Ensure base directory exists
+        EnsureBaseDirectoryExists();
+    }
+
+    private void EnsureBaseDirectoryExists()
+    {
+        try
+        {
+            if (!Directory.Exists(_basePath))
+            {
+                _logger.LogInformation("Creating base directory: {BasePath}", _basePath);
+                Directory.CreateDirectory(_basePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create base directory: {BasePath}", _basePath);
+        }
     }
 
     /// <inheritdoc />

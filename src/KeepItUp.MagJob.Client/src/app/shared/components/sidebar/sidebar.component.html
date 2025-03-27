@@ -55,7 +55,7 @@
             @for (item of footerItems; track item.path) {
               <a
                 [routerLink]="item.path === 'logout' ? null : [item.path]"
-                (click)="item.path === 'logout' ? logOut() : null"
+                (click)="item.path === 'logout' ? authService.logOut() : null"
                 class="flex items-center p-2 text-gray-900 dark:text-gray-300 rounded-lg hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700 group"
                 [class.hover:bg-red-800]="item.path === 'logout'"
                 [class.dark:hover:bg-red-900]="item.path === 'logout'"
@@ -107,7 +107,7 @@
             @for (item of footerItems; track item.path) {
               <a
                 [routerLink]="item.path === 'logout' ? null : [item.path]"
-                (click)="item.path === 'logout' ? logOut() : null"
+                (click)="item.path === 'logout' ? authService.logOut() : null"
                 class="w-10 h-10 flex items-center justify-center rounded-lg text-gray-900 dark:text-gray-300 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-700"
                 [class.hover:bg-red-800]="item.path === 'logout'"
                 [class.dark:hover:bg-red-900]="item.path === 'logout'"

@@ -106,6 +106,12 @@ public class User : BaseEntity, IAggregateRoot
         Guard.Against.NullOrEmpty(firstName, nameof(firstName));
         Guard.Against.NullOrEmpty(lastName, nameof(lastName));
 
+        // Sprawdź, czy wartości faktycznie się zmieniły
+        if (firstName == FirstName && lastName == LastName)
+        {
+            return; // Brak zmian, nie aktualizuj i nie emituj zdarzeń
+        }
+
         FirstName = firstName;
         LastName = lastName;
 
@@ -120,6 +126,15 @@ public class User : BaseEntity, IAggregateRoot
     /// <param name="profileImage">URL do zdjęcia profilowego.</param>
     public void UpdateProfile(string? phoneNumber, string? address, string? profileImage)
     {
+        // Sprawdź, czy wartości faktycznie się zmieniły
+        if (Profile is not null &&
+            string.Equals(phoneNumber, Profile.PhoneNumber) &&
+            string.Equals(address, Profile.Address) &&
+            string.Equals(profileImage, Profile.ProfileImage))
+        {
+            return; // Brak zmian, nie aktualizuj i nie emituj zdarzeń
+        }
+
         Profile = new UserProfile(phoneNumber, address, profileImage);
 
         RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
@@ -133,18 +148,31 @@ public class User : BaseEntity, IAggregateRoot
     /// <param name="profileImage">Nowy URL do zdjęcia profilowego lub null, aby zachować obecny.</param>
     public void UpdateProfileProperties(string? phoneNumber = null, string? address = null, string? profileImage = null)
     {
-        // Jeśli profil nie istnieje, tworzymy nowy
+        // Jeśli profil nie istnieje, tworzymy nowy tylko jeśli podano jakieś wartości
         if (Profile is null)
         {
+            // Nie twórz profilu, jeśli wszystkie wartości są puste
+            if (string.IsNullOrEmpty(phoneNumber) &&
+                string.IsNullOrEmpty(address) &&
+                string.IsNullOrEmpty(profileImage))
+            {
+                return; // Brak profilu i brak danych do ustawienia, więc nie ma zmian
+            }
+
             Profile = new UserProfile(phoneNumber, address, profileImage);
-        }
-        else
-        {
-            // W przeciwnym razie tworzymy nowy obiekt z zaktualizowanymi właściwościami
-            Profile = Profile.WithUpdates(phoneNumber, address, profileImage);
+            RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+            return;
         }
 
-        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+        // Aktualizuj profil i sprawdź, czy faktycznie wystąpiły zmiany
+        var updatedProfile = Profile.WithUpdates(phoneNumber, address, profileImage);
+
+        // Jeśli profile się zmienił (na podstawie wartości)
+        if (!updatedProfile.Equals(Profile))
+        {
+            Profile = updatedProfile;
+            RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+        }
     }
 
     /// <summary>

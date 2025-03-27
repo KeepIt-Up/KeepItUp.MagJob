@@ -4,8 +4,8 @@ import {
   NavSection,
   NavItem,
 } from '@shared/components/sidebar/sidebar.component';
-import { AuthService } from '@core/services/auth.service';
 import { AsyncPipe } from '@angular/common';
+import { UserContextService } from '@users/services/user-context.service';
 
 @Component({
   selector: 'app-user-sidebar',
@@ -17,9 +17,7 @@ export class UserSidebarComponent {
   @Input() sidebarExpanded = true;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
 
-  private authService = inject(AuthService);
-
-  userProfile$ = this.authService.getUserProfile();
+  readonly userContextService = inject(UserContextService);
 
   mainSection: NavSection = {
     title: 'Main',

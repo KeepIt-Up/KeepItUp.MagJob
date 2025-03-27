@@ -39,10 +39,16 @@ app.UseSwaggerConfig(appLogger);
 app.UseStaticFiles();
 
 // Dodaj dodatkową konfigurację dla katalogu uploads
+var uploadPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads");
+// Ensure directory exists
+if (!Directory.Exists(uploadPath))
+{
+    Directory.CreateDirectory(uploadPath);
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads")),
+    FileProvider = new PhysicalFileProvider(uploadPath),
     RequestPath = "/uploads"
 });
 

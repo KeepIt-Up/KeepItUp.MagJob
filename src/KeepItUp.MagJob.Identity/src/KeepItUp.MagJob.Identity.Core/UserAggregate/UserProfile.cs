@@ -50,13 +50,21 @@ public class UserProfile : ValueObject
     /// <param name="phoneNumber">Nowy numer telefonu lub null, aby zachować obecny.</param>
     /// <param name="address">Nowy adres lub null, aby zachować obecny.</param>
     /// <param name="profileImage">Nowy URL do zdjęcia profilowego lub null, aby zachować obecny.</param>
-    /// <returns>Nowy obiekt UserProfile z zaktualizowanymi właściwościami.</returns>
+    /// <returns>Nowy obiekt UserProfile z zaktualizowanymi właściwościami lub ten sam obiekt, jeśli nic się nie zmieniło.</returns>
     public UserProfile WithUpdates(string? phoneNumber = null, string? address = null, string? profileImage = null)
     {
-        return new UserProfile(
-            phoneNumber ?? PhoneNumber,
-            address ?? Address,
-            profileImage ?? ProfileImage
-        );
+        var newPhoneNumber = phoneNumber ?? PhoneNumber;
+        var newAddress = address ?? Address;
+        var newProfileImage = profileImage ?? ProfileImage;
+
+        // Sprawdź czy coś się zmieniło
+        if (string.Equals(newPhoneNumber, PhoneNumber) &&
+            string.Equals(newAddress, Address) &&
+            string.Equals(newProfileImage, ProfileImage))
+        {
+            return this; // Zwracamy ten sam obiekt jeśli nic się nie zmieniło
+        }
+
+        return new UserProfile(newPhoneNumber, newAddress, newProfileImage);
     }
 }

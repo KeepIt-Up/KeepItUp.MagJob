@@ -30,7 +30,7 @@ import {
   heroCalendar,
 } from '@ng-icons/heroicons/outline';
 
-export const heroIcons = provideIcons({
+export const heroIconsProvider = provideIcons({
   heroArrowRight,
   heroMagnifyingGlass,
   heroEnvelope,

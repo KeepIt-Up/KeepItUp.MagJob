@@ -1,16 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { NgIcon } from '@ng-icons/core';
-import { AuthService } from '@core/services/auth.service';
 
 @Component({
-  selector: 'app-landing',
+  selector: 'app-not-found',
   imports: [RouterLink, NavbarComponent, ButtonComponent, NgIcon],
-  templateUrl: './landing.component.html',
-  styleUrl: './landing.component.scss',
+  templateUrl: './not-found.component.html',
 })
-export class LandingComponent {
-  readonly authService = inject(AuthService);
-}
+export class NotFoundComponent {}

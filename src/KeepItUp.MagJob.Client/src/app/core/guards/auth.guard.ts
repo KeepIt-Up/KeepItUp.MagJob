@@ -1,18 +1,17 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthService } from '@core/services/auth.service';
 
 /**
- * Guard sprawdzający, czy użytkownik jest zalogowany
- * @param state - Obiekt reprezentujący bieżący stan ścieżki
- * @returns true jeśli użytkownik jest zalogowany, w przeciwnym razie przekierowuje do strony logowania
+ * Guard checking if user is authenticated
+ * @returns true if user is authenticated, otherwise redirects to unauthorized page
  */
-export const authGuard: CanActivateFn = state => {
-  const oauthService = inject(OAuthService);
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!oauthService.hasValidAccessToken()) {
-    return router.createUrlTree(['/login']);
+  if (!authService.hasValidAccessToken()) {
+    return router.createUrlTree(['/unauthorized']);
   }
 
   return true;

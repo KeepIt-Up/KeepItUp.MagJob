@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation -->
+  <app-navbar></app-navbar>
+
+  <!-- Unauthorized Content -->
+  <main
+    class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[80vh]"
+  >
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Access Denied</h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+        Sorry, you don't have permission to access this page. Please log in with an account that has
+        the required permissions.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <app-button variant="primary" size="lg" routerLink="/landing" iconLeft="heroHome">
+          Go to Home
+        </app-button>
+        <app-button
+          variant="outline"
+          size="lg"
+          routerLink="/help"
+          iconLeft="heroQuestionMarkCircle"
+        >
+          Help Center
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="mt-16 max-w-3xl w-full">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+        What you can do
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Suggestion 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
+            >
+              <ng-icon name="heroArrowRightOnRectangle" class="h-5 w-5 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Log in again</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300">
+            Try logging out and logging back in with the correct account credentials.
+          </p>
+        </div>
+
+        <!-- Suggestion 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
+            >
+              <ng-icon name="heroEnvelope" class="h-5 w-5 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Contact admin</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300">
+            Reach out to your organization's administrator to request the necessary permissions.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link Button Demonstration -->
+    <div class="mt-10 text-center">
+      <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+        Need to register a new account? Visit our sign-up page.
+      </p>
+      <app-button
+        variant="link"
+        (clicked)="authService.initRegistrationFlow()"
+        iconRight="heroArrowRight"
+      >
+        Register now
+      </app-button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer
+    class="py-8 px-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto"
+  >
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <span class="text-xl font-semibold text-gray-900 dark:text-white">MagJob</span>
+        <p class="text-gray-600 dark:text-gray-300 mt-2">© 2025 MagJob. All rights reserved.</p>
+      </div>
+      <div class="flex space-x-6">
+        <a
+          href="#"
+          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+          >Terms</a
+        >
+        <a
+          href="#"
+          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+          >Privacy</a
+        >
+        <a
+          routerLink="/help"
+          class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+          >Help</a
+        >
+      </div>
+    </div>
+  </footer>
+</div>

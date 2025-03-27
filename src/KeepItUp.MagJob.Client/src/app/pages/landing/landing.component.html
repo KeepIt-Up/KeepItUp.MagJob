@@ -18,12 +18,19 @@
             <app-button
               variant="primary"
               size="lg"
-              (clicked)="onLogin()"
+              (clicked)="authService.initLoginFlow()"
               iconRight="heroArrowRight"
             >
-              Get Started
+              Sign In
             </app-button>
-            <app-button variant="outline" size="lg"> Learn More </app-button>
+            <app-button
+              variant="outline"
+              size="lg"
+              (clicked)="authService.initRegistrationFlow()"
+              iconRight="heroUserPlus"
+            >
+              Register
+            </app-button>
           </div>
         </div>
         <div class="hidden md:block">
@@ -107,9 +114,24 @@
         <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
           Join thousands of organizations already using MagJob to manage their teams effectively.
         </p>
-        <app-button variant="primary" size="lg" (clicked)="onLogin()" iconRight="heroArrowRight">
-          Get Started Now
-        </app-button>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <app-button
+            variant="primary"
+            size="lg"
+            (clicked)="authService.initLoginFlow()"
+            iconRight="heroArrowRight"
+          >
+            Sign In
+          </app-button>
+          <app-button
+            variant="outline"
+            size="lg"
+            (clicked)="authService.initRegistrationFlow()"
+            iconRight="heroUserPlus"
+          >
+            Register
+          </app-button>
+        </div>
       </div>
     </div>
   </section>

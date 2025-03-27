@@ -12,6 +12,8 @@ import { MembersTableComponent } from '@pages/organization/members-table/member-
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { OrganizationComponent } from '@pages/organization/organization.component';
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
+import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.component';
+import { NotFoundComponent } from '@pages/not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -53,5 +55,13 @@ export const routes: Routes = [
     path: 'help',
     component: HelpComponent,
   },
-  { path: '**', redirectTo: 'landing' },
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
+  },
+  {
+    path: '404',
+    component: NotFoundComponent,
+  },
+  { path: '**', redirectTo: '404' },
 ];

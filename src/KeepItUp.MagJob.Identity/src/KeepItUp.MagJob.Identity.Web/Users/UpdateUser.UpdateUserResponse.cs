@@ -34,4 +34,19 @@ public class UpdateUserResponse
     /// Czy użytkownik jest aktywny.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// URL do zdjęcia profilowego użytkownika.
+    /// </summary>
+    public string? ProfileImageUrl { get; set; }
+
+    /// <summary>
+    /// Numer telefonu użytkownika.
+    /// </summary>
+    public string? PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Adres użytkownika.
+    /// </summary>
+    public string? Address { get; set; }
 }

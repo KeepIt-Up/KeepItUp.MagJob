@@ -51,11 +51,35 @@ public class UpdateUser(IMediator mediator, ICurrentUserAccessor currentUserAcce
         // Pobierz identyfikator bieżącego użytkownika
         var currentUserId = currentUserAccessor.GetRequiredCurrentUserId();
 
+        // Pobierz użytkownika, aby uzyskać aktualne dane
+        var getUserQuery = new GetUserByIdQuery
+        {
+            Id = req.Id
+        };
+
+        var userResult = await mediator.Send(getUserQuery, ct);
+
+        if (userResult.Status != ResultStatus.Ok)
+        {
+            if (userResult.Status == ResultStatus.NotFound)
+            {
+                await SendNotFoundAsync(ct);
+                return;
+            }
+
+            await SendErrorsAsync(500, ct);
+            return;
+        }
+
         var command = new UpdateUserCommand
         {
             Id = req.Id,
             FirstName = req.FirstName,
-            LastName = req.LastName
+            LastName = req.LastName,
+            // Zachowaj istniejące dane profilu
+            PhoneNumber = req.PhoneNumber ?? userResult.Value.PhoneNumber(),
+            Address = req.Address ?? userResult.Value.Address(),
+            ProfileImageUrl = userResult.Value.ProfileImageUrl()
         };
 
         var result = await mediator.Send(command, ct);
@@ -83,14 +107,14 @@ public class UpdateUser(IMediator mediator, ICurrentUserAccessor currentUserAcce
         }
 
         // Pobierz zaktualizowanego użytkownika
-        var getUserQuery = new GetUserByIdQuery
+        var updatedUserQuery = new GetUserByIdQuery
         {
             Id = req.Id
         };
 
-        var userResult = await mediator.Send(getUserQuery, ct);
+        var updatedUserResult = await mediator.Send(updatedUserQuery, ct);
 
-        if (userResult.Status != ResultStatus.Ok)
+        if (updatedUserResult.Status != ResultStatus.Ok)
         {
             await SendErrorsAsync(500, ct);
             return;
@@ -98,12 +122,15 @@ public class UpdateUser(IMediator mediator, ICurrentUserAccessor currentUserAcce
 
         var response = new UpdateUserResponse
         {
-            Id = userResult.Value.Id,
-            ExternalId = userResult.Value.ExternalId,
-            Email = userResult.Value.Email,
-            FirstName = userResult.Value.FirstName,
-            LastName = userResult.Value.LastName,
-            IsActive = userResult.Value.IsActive
+            Id = updatedUserResult.Value.Id,
+            ExternalId = updatedUserResult.Value.ExternalId,
+            Email = updatedUserResult.Value.Email,
+            FirstName = updatedUserResult.Value.FirstName,
+            LastName = updatedUserResult.Value.LastName,
+            IsActive = updatedUserResult.Value.IsActive,
+            ProfileImageUrl = updatedUserResult.Value.ProfileImageUrl(),
+            PhoneNumber = updatedUserResult.Value.PhoneNumber(),
+            Address = updatedUserResult.Value.Address()
         };
 
         await SendOkAsync(response, ct);
