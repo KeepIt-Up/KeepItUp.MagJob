@@ -44,20 +44,6 @@
       <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div
-      *ngIf="successMessage"
-      class="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200"
-    >
-      {{ successMessage }}
-    </div>
-    <div
-      *ngIf="errorMessage"
-      class="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200"
-    >
-      {{ errorMessage }}
-    </div>
-
     <!-- Email (Read-only) -->
     <app-input
       type="email"

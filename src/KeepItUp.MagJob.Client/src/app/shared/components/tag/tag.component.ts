@@ -1,26 +1,65 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, input } from '@angular/core';
+
+export type TagColor =
+  | 'primary'
+  | 'info'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'dark'
+  | 'blue'
+  | 'purple'
+  | 'yellow'
+  | 'green'
+  | 'red'
+  | 'gray';
+export type TagSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'app-tag',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, NgClass],
   template: `
-    <span [ngClass]="colorClasses" class="px-3 py-1 rounded-full text-sm font-medium">
-      {{ text }}
+    <span
+      class="app-tag"
+      [ngClass]="[
+        'app-tag--' + variant(),
+        'app-tag--' + size(),
+        rounded() ? 'app-tag--rounded' : '',
+        customClass(),
+      ]"
+    >
+      <ng-content></ng-content>
+      {{ text() }}
     </span>
   `,
+  styleUrl: './tag.component.scss',
 })
 export class TagComponent {
-  @Input() variant: 'yellow' | 'green' | 'red' | 'gray' = 'gray';
-  @Input() text = '';
+  /**
+   * @description The text content of the tag
+   */
+  text = input<string>('');
 
-  get colorClasses(): string {
-    const classes = {
-      yellow: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-      green: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-      red: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-      gray: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-    };
-    return classes[this.variant];
-  }
+  /**
+   * @description The color variant of the tag
+   * @default 'dark'
+   */
+  variant = input<TagColor>('dark');
+
+  /**
+   * @description The size of the tag
+   */
+  size = input<TagSize>('md');
+
+  /**
+   * @description Whether the tag should have full rounded corners
+   */
+  rounded = input<boolean>(true);
+
+  /**
+   * @description Custom CSS class for the tag
+   */
+  customClass = input<string>('');
 }

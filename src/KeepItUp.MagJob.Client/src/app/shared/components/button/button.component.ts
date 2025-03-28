@@ -2,6 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon } from '@ng-icons/core';
 
+export type ButtonStyle = 'primary' | 'outline' | 'text' | 'link';
+export type ButtonColor = 'primary' | 'info' | 'success' | 'danger' | 'warning' | 'dark';
+
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
@@ -10,7 +13,8 @@ import { NgIcon } from '@ng-icons/core';
   imports: [CommonModule, NgIcon],
 })
 export class ButtonComponent {
-  @Input() variant: 'primary' | 'outline' | 'text' | 'link' = 'primary';
+  @Input() variant: ButtonStyle = 'primary';
+  @Input() color: ButtonColor = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() disabled = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
@@ -23,11 +27,17 @@ export class ButtonComponent {
 
   get buttonClasses(): string {
     const baseClasses = 'app-button';
-    const variantClass = `app-button--${this.variant}`;
     const sizeClass = `app-button--${this.size}`;
     const fullWidthClass = this.fullWidth ? 'app-button--full-width' : '';
 
-    return [baseClasses, variantClass, sizeClass, fullWidthClass].filter(Boolean).join(' ');
+    let variantColorClass = '';
+    if (this.variant === 'primary') {
+      variantColorClass = `app-button--${this.color}`;
+    } else {
+      variantColorClass = `app-button--${this.variant} app-button--${this.variant}-${this.color}`;
+    }
+
+    return [baseClasses, variantColorClass, sizeClass, fullWidthClass].filter(Boolean).join(' ');
   }
 
   onClick(event: Event): void {
