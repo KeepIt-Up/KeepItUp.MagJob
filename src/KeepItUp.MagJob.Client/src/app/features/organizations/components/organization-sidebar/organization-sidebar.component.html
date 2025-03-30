@@ -1,7 +1,7 @@
 <app-sidebar
   [title]="organization.name"
   titlePath="dashboard"
-  [logoUrl]="getLogoUrl()"
+  [logoUrl]="organization.logoUrl ?? 'assets/images/default-organization-logo.svg'"
   [sections]="[mainSection, settingsSection]"
   [footerItems]="footerItems"
   [sidebarExpanded]="sidebarExpanded"

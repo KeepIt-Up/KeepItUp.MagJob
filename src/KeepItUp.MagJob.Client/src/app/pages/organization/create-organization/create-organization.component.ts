@@ -5,12 +5,17 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { TextareaComponent } from '../../../shared/components/textarea/textarea.component';
+import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { NgIcon } from '@ng-icons/core';
 import { OrganizationService } from '../../../features/organizations/services/organization.service';
 import { CreateOrganizationPayload } from '../../../features/organizations/services/organization.api.service';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-create-organization',
   templateUrl: './create-organization.component.html',
+  styleUrl: './create-organization.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -19,6 +24,9 @@ import { CreateOrganizationPayload } from '../../../features/organizations/servi
     InputComponent,
     TextareaComponent,
     RouterModule,
+    NavbarComponent,
+    FooterComponent,
+    NgIcon,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -29,6 +37,7 @@ export class CreateOrganizationComponent {
   private fb = inject(FormBuilder);
   private organizationService = inject(OrganizationService);
   private router = inject(Router);
+  readonly authService = inject(AuthService);
 
   constructor() {
     this.organizationForm = this.fb.group({
@@ -37,7 +46,7 @@ export class CreateOrganizationComponent {
     });
   }
 
-  onSubmit(): void {
+  onSubmit = (): void => {
     if (this.organizationForm.invalid || this.isSubmitting) {
       return;
     }
@@ -59,5 +68,5 @@ export class CreateOrganizationComponent {
         this.isSubmitting = false;
       },
     });
-  }
+  };
 }

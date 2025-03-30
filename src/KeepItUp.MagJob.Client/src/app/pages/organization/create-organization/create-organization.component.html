@@ -1,71 +1,132 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4">
-  <div class="max-w-3xl w-full bg-white rounded-lg shadow-md p-8">
-    <div class="flex items-center mb-6">
-      <button
-        type="button"
-        class="mr-4 text-gray-600 hover:text-gray-900 focus:outline-none"
-        [routerLink]="['/user/organizations']"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
-      </button>
-      <h1 class="text-2xl font-bold">Create New Organization</h1>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation -->
+  <app-navbar></app-navbar>
+
+  <!-- Main Content -->
+  <div class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+      <!-- Hero Section -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+          Create Your <span class="text-primary">Organization</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Set up your organization to streamline workflow, collaborate with team members, and manage
+          tasks efficiently.
+        </p>
+      </div>
+
+      <!-- Form Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 md:p-10">
+        <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div>
+            <app-input
+              label="Organization Name"
+              formControlName="name"
+              [required]="true"
+              [error]="
+                organizationForm.get('name')?.invalid && organizationForm.get('name')?.touched
+                  ? 'Organization name is required and must be less than 100 characters'
+                  : ''
+              "
+              placeholder="Enter a memorable name for your organization"
+            ></app-input>
+          </div>
+
+          <div>
+            <app-textarea
+              label="Description"
+              formControlName="description"
+              [error]="
+                organizationForm.get('description')?.invalid &&
+                organizationForm.get('description')?.touched
+                  ? 'Description must be less than 500 characters'
+                  : ''
+              "
+              placeholder="Describe your organization's purpose, goals, and mission..."
+              [rows]="4"
+            ></app-textarea>
+          </div>
+
+          <div class="flex flex-col md:flex-row justify-end gap-4 pt-6">
+            <app-button
+              type="button"
+              variant="outline"
+              [routerLink]="['/user/organizations']"
+              iconLeft="heroArrowLeft"
+            >
+              Back to Organizations
+            </app-button>
+
+            <app-button
+              type="submit"
+              variant="primary"
+              [disabled]="organizationForm.invalid || isSubmitting"
+              [loading]="isSubmitting"
+              iconRight="heroArrowRight"
+            >
+              Create Organization
+            </app-button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Benefits Section -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+          Benefits of Creating an Organization
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Benefit 1 -->
+          <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+            <div
+              class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+            >
+              <ng-icon name="heroUserGroup" class="h-6 w-6 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Team Collaboration
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Invite team members to join your organization and collaborate effectively on projects.
+            </p>
+          </div>
+
+          <!-- Benefit 2 -->
+          <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+            <div
+              class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+            >
+              <ng-icon name="heroClipboardDocument" class="h-6 w-6 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Task Management
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Create, assign and track tasks to ensure your team stays productive and organized.
+            </p>
+          </div>
+
+          <!-- Benefit 3 -->
+          <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+            <div
+              class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+            >
+              <ng-icon name="heroChartBar" class="h-6 w-6 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Progress Insights
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              Get insights into your organization's performance with detailed analytics and reports.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()" class="space-y-6">
-      <div>
-        <app-input
-          label="Organization Name"
-          formControlName="name"
-          [required]="true"
-          [error]="
-            organizationForm.get('name')?.invalid && organizationForm.get('name')?.touched
-              ? 'Organization name is required and must be less than 100 characters'
-              : ''
-          "
-        ></app-input>
-      </div>
-
-      <div>
-        <app-textarea
-          label="Description"
-          formControlName="description"
-          [error]="
-            organizationForm.get('description')?.invalid &&
-            organizationForm.get('description')?.touched
-              ? 'Description must be less than 500 characters'
-              : ''
-          "
-          placeholder="Describe your organization..."
-          [rows]="4"
-        ></app-textarea>
-      </div>
-
-      <div class="flex justify-end space-x-4 pt-4">
-        <app-button type="button" variant="outline" [routerLink]="['/user/organizations']">
-          Cancel
-        </app-button>
-
-        <app-button
-          type="submit"
-          [disabled]="organizationForm.invalid || isSubmitting"
-          [loading]="isSubmitting"
-        >
-          Create Organization
-        </app-button>
-      </div>
-    </form>
   </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
 </div>

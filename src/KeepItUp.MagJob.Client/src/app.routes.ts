@@ -18,11 +18,6 @@ import { NotFoundComponent } from '@pages/not-found/not-found.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
   {
-    path: 'organization/create',
-    component: CreateOrganizationComponent,
-    canActivate: [authGuard],
-  },
-  {
     path: 'organization/:organizationId',
     component: OrganizationComponent,
     canActivate: [authGuard],
@@ -50,6 +45,11 @@ export const routes: Routes = [
   {
     path: 'landing',
     component: LandingComponent,
+  },
+  {
+    path: 'create-organization',
+    component: CreateOrganizationComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'help',

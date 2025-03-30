@@ -1,6 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ImageService } from '@shared/services/image.service';
-import { SafeUrl } from '@angular/platform-browser';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Organization } from '@organizations/models/organization.model';
 import {
   SidebarComponent,
@@ -18,8 +16,6 @@ export class OrganizationSidebarComponent {
   @Input() organization!: Organization;
   @Input() sidebarExpanded = true;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
-
-  private imageService = inject(ImageService);
 
   mainSection: NavSection = {
     title: 'Main',
@@ -41,12 +37,4 @@ export class OrganizationSidebarComponent {
     { path: 'help', icon: 'heroQuestionMarkCircle', label: 'Help' },
     { path: 'logout', icon: 'heroArrowRightOnRectangle', label: 'Sign Out' },
   ];
-
-  getSafeImageUrl(base64String: string | undefined): SafeUrl | undefined {
-    return this.imageService.getSafeImageUrl(base64String);
-  }
-
-  getLogoUrl(): SafeUrl | undefined {
-    return this.getSafeImageUrl(this.organization?.logoUrl ?? this.organization?.profileImage);
-  }
 }

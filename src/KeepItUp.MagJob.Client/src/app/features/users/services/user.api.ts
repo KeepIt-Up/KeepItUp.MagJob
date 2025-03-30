@@ -20,10 +20,9 @@ export class UserApiService {
   private http = inject(HttpClient);
 
   getUserOrganizations(
-    query: Record<any, any>,
+    id: string,
     paginationOptions: PaginationOptions<Organization>,
   ): Observable<PaginatedResponse<Organization>> {
-    const id = '0195b59c-39dc-7c7e-8f5a-66814c8f88b0';
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<Organization>>(`${this.apiUrl}/${id}/organizations`, {
       params: { ...options },

@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { UserApiService } from './user.api';
-import { catchError, Observable, tap } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 import {
   PaginatedResponse,
   PaginationOptions,
@@ -63,23 +63,22 @@ export class UserService {
   });
 
   getUserOrganizations(): Observable<PaginatedResponse<Organization>> {
-    const query = {
-      id: this.userContext?.id,
-    };
-    return this.api.getUserOrganizations(query, this.organizationsPaginationOptions$()).pipe(
-      tap((response: PaginatedResponse<Organization>) => {
-        if (response.items.length > 0) {
-          this.organizationStateService.add(response.items);
-          this.organizationStateService.setMetadata({ endOfData: !response.hasNextPage });
-        } else {
-          this.organizationStateService.setError(new Error('You have no organizations'));
-        }
-      }),
-      catchError(error => {
-        this.organizationStateService.setError(error as HttpErrorResponse);
-        throw error;
-      }),
-    );
+    return this.api
+      .getUserOrganizations(this.userContext!.id, this.organizationsPaginationOptions$())
+      .pipe(
+        tap((response: PaginatedResponse<Organization>) => {
+          if (response.items.length > 0) {
+            this.organizationStateService.add(response.items);
+            this.organizationStateService.setMetadata({ endOfData: !response.hasNextPage });
+          } else {
+            this.organizationStateService.setError(new Error('You have no organizations'));
+          }
+        }),
+        catchError(error => {
+          this.organizationStateService.setError(error as HttpErrorResponse);
+          throw error;
+        }),
+      );
   }
 
   getUserInvitations(): Observable<PaginatedResponse<Invitation>> {
