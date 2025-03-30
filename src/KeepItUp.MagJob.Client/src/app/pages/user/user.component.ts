@@ -22,7 +22,7 @@ import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.
 export class UserComponent {
   private userContextService = inject(UserContextService);
   userContext$ = this.userContextService.userContext$;
-  sidebarExpanded = true;
+  sidebarExpanded = false;
 
   sidebarExpandedChange(expanded: boolean) {
     this.sidebarExpanded = expanded;

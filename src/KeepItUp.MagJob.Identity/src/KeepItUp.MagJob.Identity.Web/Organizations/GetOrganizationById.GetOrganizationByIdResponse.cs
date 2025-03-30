@@ -34,4 +34,15 @@ public class GetOrganizationByIdResponse
     /// Liczba członków organizacji.
     /// </summary>
     public int MemberCount { get; set; }
+
+    /// <summary>
+    /// URL logo organizacji.
+    /// </summary>
+    public string? LogoUrl { get; set; }
+
+    /// <summary>
+    /// URL banneru organizacji.
+    /// </summary>
+    public string? BannerUrl { get; set; }
+
 }

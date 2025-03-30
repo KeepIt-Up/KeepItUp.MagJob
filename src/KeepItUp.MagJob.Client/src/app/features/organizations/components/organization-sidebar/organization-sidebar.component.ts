@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Organization } from '@organizations/models/organization.model';
+import { CurrentOrganization } from '@organizations/models/current-organization.model';
 import {
   SidebarComponent,
   NavSection,
@@ -13,8 +13,8 @@ import {
   standalone: true,
 })
 export class OrganizationSidebarComponent {
-  @Input() organization!: Organization;
-  @Input() sidebarExpanded = true;
+  @Input() organization!: CurrentOrganization;
+  @Input() sidebarExpanded = false;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
 
   mainSection: NavSection = {

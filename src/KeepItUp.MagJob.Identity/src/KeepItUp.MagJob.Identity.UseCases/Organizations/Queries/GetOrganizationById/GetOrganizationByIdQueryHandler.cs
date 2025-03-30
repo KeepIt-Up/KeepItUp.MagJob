@@ -73,7 +73,9 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
                 Description = organization.Description,
                 OwnerId = organization.OwnerId,
                 IsActive = organization.IsActive,
-                UserRoles = userRoles
+                UserRoles = userRoles,
+                BannerUrl = organization.BannerUrl,
+                LogoUrl = organization.LogoUrl
             };
 
             return Result<OrganizationDto>.Success(organizationDto);

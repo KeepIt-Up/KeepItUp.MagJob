@@ -14,7 +14,7 @@ import { UserContextService } from '@users/services/user-context.service';
   imports: [SidebarComponent, AsyncPipe],
 })
 export class UserSidebarComponent {
-  @Input() sidebarExpanded = true;
+  @Input() sidebarExpanded = false;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
 
   readonly userContextService = inject(UserContextService);

@@ -11,7 +11,7 @@ export type ErrorMessages = Record<number, string>;
   standalone: true,
 })
 export class ErrorAlertComponent {
-  error = input.required<HttpErrorResponse | Error | undefined>();
+  error = input.required<HttpErrorResponse | Error | string | undefined>();
   errorMessages = input<ErrorMessages>({
     0: 'The server is unavailable',
     400: 'Bad Request: The server cannot process the request due to invalid syntax.',

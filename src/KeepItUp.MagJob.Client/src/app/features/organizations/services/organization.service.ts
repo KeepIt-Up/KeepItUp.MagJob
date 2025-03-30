@@ -62,6 +62,52 @@ export class OrganizationService {
     );
   }
 
+  /**
+   * Update organization logo with file upload
+   */
+  updateLogo(organizationId: string, logoFile: File): Observable<{ logoUrl: string }> {
+    this.stateService.setLoading(true);
+    return this.apiService.updateLogo(organizationId, logoFile).pipe(
+      tap(response => {
+        // Get current organization and update its logo URL
+        const currentOrg = this.$organization();
+        if (currentOrg) {
+          const updatedOrg = { ...currentOrg, logoUrl: response.logoUrl };
+          this.stateService.setData(updatedOrg);
+        }
+        this.notificationService.show('Organization logo updated successfully', 'success');
+      }),
+      catchError(error => {
+        this.stateService.setError(error);
+        this.notificationService.show('Failed to update organization logo', 'error');
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  /**
+   * Update organization banner with file upload
+   */
+  updateBanner(organizationId: string, bannerFile: File): Observable<{ bannerUrl: string }> {
+    this.stateService.setLoading(true);
+    return this.apiService.updateBanner(organizationId, bannerFile).pipe(
+      tap(response => {
+        // Get current organization and update its banner URL
+        const currentOrg = this.$organization();
+        if (currentOrg) {
+          const updatedOrg = { ...currentOrg, bannerUrl: response.bannerUrl };
+          this.stateService.setData(updatedOrg);
+        }
+        this.notificationService.show('Organization banner updated successfully', 'success');
+      }),
+      catchError(error => {
+        this.stateService.setError(error);
+        this.notificationService.show('Failed to update organization banner', 'error');
+        return throwError(() => error);
+      }),
+    );
+  }
+
   createOrganization(payload: CreateOrganizationPayload): Observable<any> {
     return this.apiService.create(payload).pipe(
       tap(organization => {

@@ -74,7 +74,9 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
                 Description = result.Value.Description,
                 OwnerId = result.Value.OwnerId,
                 IsOwner = result.Value.OwnerId == userGuid,
-                MemberCount = 0 // Tymczasowo ustawiamy na 0
+                MemberCount = 0, // Tymczasowo ustawiamy na 0
+                LogoUrl = result.Value.LogoUrl,
+                BannerUrl = result.Value.BannerUrl
             };
 
             await SendOkAsync(Response, ct);

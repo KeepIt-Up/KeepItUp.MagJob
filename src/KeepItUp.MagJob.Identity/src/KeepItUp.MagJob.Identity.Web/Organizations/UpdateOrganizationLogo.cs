@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationById;
 using KeepItUp.MagJob.Identity.Web.Services;
@@ -40,7 +40,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
         Put(UpdateOrganizationLogoRequest.Route);
         AllowFileUploads();
         AllowFormData();
-        Permissions(OrganizationPermissions.UpdateOrganization);
         Description(d =>
         {
             d.WithName("UpdateOrganizationLogo");
