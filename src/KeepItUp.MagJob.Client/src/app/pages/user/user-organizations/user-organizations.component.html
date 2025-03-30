@@ -1,27 +1,32 @@
-<app-header title="Your Organizations">
-  <button
+<app-header [title]="'Your Organizations'">
+  <app-button
     type="button"
     [routerLink]="['/create-organization']"
-    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800"
+    variant="primary"
+    color="success"
   >
     Create Organization
-  </button>
+  </app-button>
 </app-header>
 
-<app-infinite-list
-  [paginationOptions$]="paginationOptions$()"
-  [state$]="organizationState$()"
-  (onLoad)="loadMore()"
->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (organization of organizationState$().data; track organization.id) {
-      <app-organization-card [organization]="organization" />
+<div class="max-w-7xl mx-auto p-4">
+  <app-infinite-list
+    [paginationOptions$]="paginationOptions$()"
+    [state$]="organizationState$()"
+    (onLoad)="loadMore()"
+  >
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (organization of organizationState$().data; track organization.id) {
+        <app-organization-card [organization]="organization" />
+      }
+    </div>
+    @if (organizationState$().error) {
+      <div class="mt-8">
+        <app-error-alert
+          title="You have no organizations"
+          [error]="organizationState$().error"
+        ></app-error-alert>
+      </div>
     }
-  </div>
-  @if (organizationState$().error) {
-    <app-error-alert
-      title="You have no organizations"
-      [error]="organizationState$().error"
-    ></app-error-alert>
-  }
-</app-infinite-list>
+  </app-infinite-list>
+</div>
