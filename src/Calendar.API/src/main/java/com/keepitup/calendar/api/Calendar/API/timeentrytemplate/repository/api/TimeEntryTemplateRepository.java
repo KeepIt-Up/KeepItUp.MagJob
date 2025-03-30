@@ -1,5 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.repository.api;
 
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,5 +17,5 @@ import java.util.UUID;
 public interface TimeEntryTemplateRepository extends JpaRepository<TimeEntryTemplate, BigInteger> {
     Optional<TimeEntryTemplate> findById(UUID uuid);
 
-    Optional<List<TimeEntryTemplate>> findByAvailabilityTemplateId(UUID availabityTemplateId);
+    Optional<List<TimeEntryTemplate>> findByAvailabilityTemplate(AvailabilityTemplate availabilityTemplate);
 }

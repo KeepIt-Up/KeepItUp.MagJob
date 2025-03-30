@@ -12,6 +12,7 @@ public class GraphicToResponseFunction implements Function<Graphic, GetGraphicRe
     @Override
     public GetGraphicResponse apply(Graphic graphic) {
         return GetGraphicResponse.builder()
+                .id(graphic.getId())
                 .name(graphic.getName())
                 .managerId(graphic.getManagerId())
                 .timeEntryMembers(graphic.getTimeEntryMembers())

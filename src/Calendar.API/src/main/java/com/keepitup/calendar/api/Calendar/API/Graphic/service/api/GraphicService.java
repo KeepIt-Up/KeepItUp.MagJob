@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.service.api;
 
 import com.keepitup.calendar.api.Calendar.API.Graphic.entity.Graphic;
+import org.hibernate.graph.Graph;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,7 @@ public interface GraphicService {
 
     Optional<Graphic> find(UUID id);
 
-    void create(Graphic graphic);
+    Graphic create(Graphic graphic);
 
     void delete(UUID id);
 

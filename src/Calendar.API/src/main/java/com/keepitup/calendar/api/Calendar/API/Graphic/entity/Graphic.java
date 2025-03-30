@@ -1,6 +1,4 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.entity;
-
-import com.fasterxml.jackson.core.JsonToken;
 import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import jakarta.persistence.*;
@@ -19,6 +17,7 @@ import java.util.UUID;
 public class Graphic {
     @Id
     @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     @NonNull
@@ -32,6 +31,10 @@ public class Graphic {
     @OneToMany
     private List<TimeEntryMember> timeEntryMembers;
 
-    @OneToMany
+    @OneToMany(
+      mappedBy = "graphic",
+      cascade = CascadeType.ALL, // Cascade ALL operations to children
+      orphanRemoval = true
+    )
     private List<TimeEntry> timeEntries;
 }

@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface AvailabilityTemplateRepository extends JpaRepository<AvailabilityTemplate, BigInteger> {
-    Optional<AvailabilityTemplate> findById(UUID uuid);
+   Optional<AvailabilityTemplate> findById(UUID id);
 }

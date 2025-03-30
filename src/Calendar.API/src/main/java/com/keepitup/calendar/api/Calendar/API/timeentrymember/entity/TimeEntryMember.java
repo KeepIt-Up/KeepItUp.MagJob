@@ -22,6 +22,7 @@ import java.util.UUID;
 public class TimeEntryMember {
     @Id
     @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     @NotNull

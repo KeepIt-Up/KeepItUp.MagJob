@@ -1,5 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.service.impl;
 
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.repository.api.TimeEntryTemplateRepository;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.service.api.TimeEntryTemplateService;
@@ -60,7 +61,7 @@ public class TimeEntryTemplateDefaultService implements TimeEntryTemplateService
     }
 
     @Override
-    public Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplateId(UUID availabityTemplateId) {
-        return timeEntryTemplateRepository.findByAvailabilityTemplateId(availabityTemplateId);
+    public Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplate(AvailabilityTemplate availabityTemplate) {
+        return timeEntryTemplateRepository.findByAvailabilityTemplate(availabityTemplate);
     }
 }

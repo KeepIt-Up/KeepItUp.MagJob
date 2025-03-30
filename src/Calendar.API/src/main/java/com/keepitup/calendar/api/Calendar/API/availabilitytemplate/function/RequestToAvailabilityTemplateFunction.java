@@ -11,7 +11,6 @@ public class RequestToAvailabilityTemplateFunction implements Function<PostAvail
     @Override
     public AvailabilityTemplate apply(PostAvailabilityTemplateRequest request) {
         return AvailabilityTemplate.builder()
-                .id(request.getId())
                 .name(request.getName())
                 .startDayOfWeek(request.getStartDayOfWeek())
                 .organizationId(request.getOrganizationId())

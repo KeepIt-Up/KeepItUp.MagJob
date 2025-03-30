@@ -20,9 +20,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Schema(description = "GetTimeEntryResponses DTO")
 public class PostGraphicRequest {
-    @Schema(description = "id")
-    private UUID id;
-
     @Schema(description = "GetGraphicRequest name value")
     private String name;
 

@@ -1,17 +1,17 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.controller.impl;
 
 import com.keepitup.calendar.api.Calendar.API.Graphic.controller.api.GraphicController;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.GetGraphicResponse;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.GetGraphicsResponse;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.PatchGraphicRequest;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.PostGraphicRequest;
+import com.keepitup.calendar.api.Calendar.API.Graphic.dto.*;
 import com.keepitup.calendar.api.Calendar.API.Graphic.entity.Graphic;
-import com.keepitup.calendar.api.Calendar.API.Graphic.function.GraphicToResponseFunction;
-import com.keepitup.calendar.api.Calendar.API.Graphic.function.GraphicsToResponseFunction;
-import com.keepitup.calendar.api.Calendar.API.Graphic.function.RequestToGraphicFunction;
-import com.keepitup.calendar.api.Calendar.API.Graphic.function.UpdateGraphicWithRequestFunction;
+import com.keepitup.calendar.api.Calendar.API.Graphic.function.*;
 import com.keepitup.calendar.api.Calendar.API.Graphic.service.api.GraphicService;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.service.api.AvailabilityTemplateService;
 import com.keepitup.calendar.api.Calendar.API.jwt.CustomJwt;
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
+import com.keepitup.calendar.api.Calendar.API.timeentry.service.api.TimeEntryService;
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.service.api.TimeEntryTemplateService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,31 +22,43 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 @Log
 public class GraphicDefaultController implements GraphicController {
     private final GraphicService service;
     private final GraphicsToResponseFunction GraphicsToResponse;
-    private final GraphicToResponseFunction availabilityTemplateToResponse;
+    private final GraphicToResponseFunction graphicToResponseFunction;
     private final RequestToGraphicFunction requestToGraphic;
     private final UpdateGraphicWithRequestFunction updateGraphicWithRequest;
+    private final TimeEntryTemplateService timeEntryTemplateService;
+    private final TimeEntryService timeEntryService;
+    private final PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction;
+    private final AvailabilityTemplateService availabilityTemplateService;
 
     @Autowired
     public GraphicDefaultController(
             GraphicService service,
             GraphicsToResponseFunction GraphicsToResponse,
-            GraphicToResponseFunction availabilityTemplateToResponse,
+            GraphicToResponseFunction graphicToResponseFunction,
             RequestToGraphicFunction requestToGraphic,
-            UpdateGraphicWithRequestFunction updateGraphicWithRequest
+            UpdateGraphicWithRequestFunction updateGraphicWithRequest,
+            TimeEntryTemplateService timeEntryTemplateService,
+            TimeEntryService timeEntryService,
+            PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction,
+            AvailabilityTemplateService availabilityTemplateService
     ) {
         this.service = service;
         this.GraphicsToResponse = GraphicsToResponse;
-        this.availabilityTemplateToResponse = availabilityTemplateToResponse;
+        this.graphicToResponseFunction = graphicToResponseFunction;
         this.requestToGraphic = requestToGraphic;
         this.updateGraphicWithRequest = updateGraphicWithRequest;
+        this.timeEntryTemplateService = timeEntryTemplateService;
+        this.timeEntryService = timeEntryService;
+        this.postCreateAndPopulateGraphicToResponseFunction = postCreateAndPopulateGraphicToResponseFunction;
+        this.availabilityTemplateService = availabilityTemplateService;
     }
 
     @Override
@@ -61,17 +73,16 @@ public class GraphicDefaultController implements GraphicController {
     @Override
     public GetGraphicResponse createGraphics(PostGraphicRequest postGraphicRequest) {
         UUID id = UUID.randomUUID();
-        postGraphicRequest.setId(id);
         service.create(requestToGraphic.apply(postGraphicRequest));
         return service.find(id)
-                .map(availabilityTemplateToResponse)
+                .map(graphicToResponseFunction)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
     }
 
     @Override
     public GetGraphicResponse getGraphic(UUID id) {
         return service.find(id)
-                .map(availabilityTemplateToResponse)
+                .map(graphicToResponseFunction)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -118,5 +129,48 @@ public class GraphicDefaultController implements GraphicController {
 
         service.update(updateGraphicWithRequest.apply(availabilityTemplate.get(), patchGraphicRequest));
         return getGraphic(id);
+    }
+
+    @Override
+    public GetGraphicResponse createAndPopulateGraphic(PostCreateAndPopulateGraphic graphicPost) {
+        AvailabilityTemplate avt = availabilityTemplateService.find(graphicPost.getAvailabilityTemplateId()).
+          orElseThrow(() -> new RuntimeException("Availability Template doesn't exist")
+          );
+//        avt.setTimeEntryTemplates(null);
+        System.out.println(avt);
+        List<TimeEntryTemplate> timeEntryTemplates = timeEntryTemplateService
+            .findAllTimeEntryTemplatesByAvailabilityTemplate(avt)
+            .orElse(Collections.emptyList());
+        System.out.println("TETA: " + timeEntryTemplates);
+        List<TimeEntry> timeEntries = new ArrayList<>();
+        if (!timeEntryTemplates.isEmpty()) {
+            for (TimeEntryTemplate template : timeEntryTemplates) {
+                LocalDateTime startDateTime = graphicPost.getStartDate()
+                  .plusDays(template.getStartDayOffset())
+                  .atTime(template.getStartTime());
+
+                LocalDateTime endDateTime =  graphicPost.getStartDate()
+                  .plusDays(template.getEndDayOffset())
+                  .atTime(template.getEndTime());
+
+                TimeEntry timeEntry = TimeEntry.builder()
+                  .startDateTime(startDateTime)
+                  .endDateTime(endDateTime)
+                  .build();
+
+                System.out.println("TE:" +timeEntry.getStartDateTime());
+//                timeEntryService.create(timeEntry);
+                timeEntries.add(timeEntry);
+            }
+        }
+
+        Graphic graphic = postCreateAndPopulateGraphicToResponseFunction.apply(graphicPost);
+        graphic.setTimeEntries(timeEntries);
+        Graphic createdGraphic = service.create(graphic);
+        System.out.println(timeEntries);
+        return graphicToResponseFunction.apply(
+            service.find(createdGraphic.getId())
+               .orElseThrow(() -> new RuntimeException("Graphic not found with ID: " + createdGraphic.getId()))
+        );
     }
 }

@@ -1,9 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.controller.api;
 
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.GetGraphicResponse;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.GetGraphicsResponse;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.PatchGraphicRequest;
-import com.keepitup.calendar.api.Calendar.API.Graphic.dto.PostGraphicRequest;
+import com.keepitup.calendar.api.Calendar.API.Graphic.dto.*;
 import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Tag(name="Graphic Controller")
@@ -137,5 +135,16 @@ public interface GraphicController {
             )
             @PathVariable("userId")
             UUID userId
+    );
+
+    @Operation(summary = "Create graphic")
+    @PostMapping("api/createGraphic")
+    @ResponseStatus(HttpStatus.OK)
+    GetGraphicResponse createAndPopulateGraphic(
+        @Parameter(
+            name = "Graphic",
+            description = "Graphic containing managerId and Name of the Graphic"
+        )
+        @RequestBody PostCreateAndPopulateGraphic graphic
     );
 }

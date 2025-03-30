@@ -1,5 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class TimeEntryTemplate {
     @Id
     @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     @NotNull
@@ -41,6 +44,7 @@ public class TimeEntryTemplate {
     @Column(name = "endDayOffset", nullable = false)
     private Integer endDayOffset;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "availability_template", referencedColumnName = "id", columnDefinition = "uuid")
     private AvailabilityTemplate availabilityTemplate;

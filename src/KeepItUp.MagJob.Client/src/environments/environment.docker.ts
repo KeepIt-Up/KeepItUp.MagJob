@@ -6,6 +6,6 @@ export const environment = {
     realm: 'magjob-realm',
     clientId: 'client.web',
     redirectUri: `${window.location.origin}/user`,
-    dummyClientSecret: 'zLvcsyGzuY2BLDAhG3WGBnLxBsWxdmfd',
+    dummyClientSecret: 'eMjDFA1xoE707xOyYXxO6Odr5INxalW6',
   },
 };

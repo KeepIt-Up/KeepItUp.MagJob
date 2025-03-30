@@ -40,12 +40,13 @@ public class GraphicDefaultService implements GraphicService {
 
     @Override
     public Optional<Graphic> find(UUID id) {
-        return graphicRepository.findById(id);
+
+      return graphicRepository.findById(id);
     }
 
     @Override
-    public void create(Graphic graphic) {
-        graphicRepository.save(graphic);
+    public Graphic create(Graphic graphic) {
+        return graphicRepository.save(graphic);
     }
 
     @Override

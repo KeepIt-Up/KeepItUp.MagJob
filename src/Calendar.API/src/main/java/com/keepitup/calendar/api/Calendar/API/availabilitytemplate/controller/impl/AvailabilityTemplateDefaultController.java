@@ -43,7 +43,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
     private final AvailabilityTemplateToResponseFunction availabilityTemplateToResponse;
     private final RequestToAvailabilityTemplateFunction requestToAvailabilityTemplate;
     private final UpdateAvailabilityTemplateWithRequestFunction updateAvailabilityTemplateWithRequest;
-    private final PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction;
     private final GraphicToResponseFunction graphicToResponseFunction;
 
     @Autowired
@@ -54,7 +53,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
             AvailabilityTemplateToResponseFunction availabilityTemplateToResponse,
             RequestToAvailabilityTemplateFunction requestToAvailabilityTemplate,
             UpdateAvailabilityTemplateWithRequestFunction updateAvailabilityTemplateWithRequest,
-            PostCreateAndPopulateGraphicToResponseFunction postCreateAndPopulateGraphicToResponseFunction,
             TimeEntryService timeEntryService,
             GraphicService graphicService,
             GraphicToResponseFunction graphicToResponseFunction
@@ -66,7 +64,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
         this.availabilityTemplateToResponse = availabilityTemplateToResponse;
         this.requestToAvailabilityTemplate = requestToAvailabilityTemplate;
         this.updateAvailabilityTemplateWithRequest = updateAvailabilityTemplateWithRequest;
-        this.postCreateAndPopulateGraphicToResponseFunction = postCreateAndPopulateGraphicToResponseFunction;
         this.graphicService = graphicService;
         this.graphicToResponseFunction = graphicToResponseFunction;
     }
@@ -82,19 +79,15 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
 
     @Override
     public GetAvailabilityTemplateResponse createAvailabilityTemplates(PostAvailabilityTemplateRequest postAvailabilityTemplateRequest) {
-        UUID id = UUID.randomUUID();
-        postAvailabilityTemplateRequest.setId(id);
         AvailabilityTemplate availabilityTemplate = requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest);
+        AvailabilityTemplate availabilityTemplateCreated = service.create(availabilityTemplate);
 
         for(TimeEntryTemplate timeEntryTemplate: postAvailabilityTemplateRequest.getTimeEntryTemplates()){
-            UUID timeEntryTemplateId = UUID.randomUUID();
-            timeEntryTemplate.setId(timeEntryTemplateId);
-            timeEntryTemplate.setAvailabilityTemplate(availabilityTemplate);
+              timeEntryTemplate.setAvailabilityTemplate(availabilityTemplateCreated);
+              timeEntryTemplateService.update(timeEntryTemplate);
         }
-        availabilityTemplate = requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest);
-        service.create(availabilityTemplate);
 
-        return availabilityTemplateToResponse.apply(availabilityTemplate);
+        return availabilityTemplateToResponse.apply(availabilityTemplateCreated);
     }
 
     @Override
@@ -106,9 +99,9 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
 
     @Override
     public void deleteAvailabilityTemplate(UUID id) {
-        Optional<AvailabilityTemplate> availabilityTemplateTemplate = service.find(id);
+        Optional<AvailabilityTemplate> availabilityTemplate = service.find(id);
 
-        if (availabilityTemplateTemplate.isEmpty()) {
+        if (availabilityTemplate.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         service.delete(id);
@@ -137,40 +130,7 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
         return availabilityTemplatesToResponse.apply(availabilityTemplates, count);
     }
 
-    @Override
-    public GetGraphicResponse createAndPopulateGraphic(UUID availabilityTemplateId, LocalDate startDate, PostGraphicRequest graphicPost) {
-        List<TimeEntryTemplate> timeEntryTemplates = timeEntryTemplateService
-                .findAllTimeEntryTemplatesByAvailabilityTemplateId(availabilityTemplateId)
-                .orElse(Collections.emptyList());
 
-        List<TimeEntry> timeEntries = new ArrayList<>();
-        if (!timeEntryTemplates.isEmpty()) {
-            for (TimeEntryTemplate template : timeEntryTemplates) {
-                LocalDateTime startDateTime = startDate
-                        .plusDays(template.getStartDayOffset())
-                        .atTime(template.getStartTime());
-
-                LocalDateTime endDateTime = startDate
-                        .plusDays(template.getEndDayOffset())
-                        .atTime(template.getEndTime());
-
-                TimeEntry timeEntry = TimeEntry.builder()
-                        .startDateTime(startDateTime)
-                        .endDateTime(endDateTime)
-                        .build();
-
-                timeEntryService.create(timeEntry);
-                timeEntries.add(timeEntry);
-            }
-        }
-        Graphic newGraphic = new Graphic();
-        Graphic graphic = postCreateAndPopulateGraphicToResponseFunction.apply(newGraphic, graphicPost);
-        graphicService.create(graphic);
-        return graphicToResponseFunction.apply(
-                graphicService.find(graphic.getId())
-                        .orElseThrow(() -> new RuntimeException("Graphic not found with ID: " + graphic.getId()))
-        );
-    }
 
 
     @Override

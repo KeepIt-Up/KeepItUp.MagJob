@@ -3,6 +3,7 @@ package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.service.impl
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.repository.api.AvailabilityTemplateRepository;
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.service.api.AvailabilityTemplateService;
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,11 +16,11 @@ import java.util.UUID;
 
 @Service
 public class AvailabilityTemplateDefaultService implements AvailabilityTemplateService {
-    private final AvailabilityTemplateRepository timeEntryTemplateRepository;
+    private final AvailabilityTemplateRepository availabilityTemplateRepository;
 
     @Autowired
-    public AvailabilityTemplateDefaultService(AvailabilityTemplateRepository timeEntryTemplateRepository) {
-        this.timeEntryTemplateRepository = timeEntryTemplateRepository;
+    public AvailabilityTemplateDefaultService(AvailabilityTemplateRepository availabilityTemplateRepository) {
+        this.availabilityTemplateRepository = availabilityTemplateRepository;
     }
 
     @Override
@@ -29,32 +30,34 @@ public class AvailabilityTemplateDefaultService implements AvailabilityTemplateS
 
     @Override
     public List<AvailabilityTemplate> findAll() {
-        return timeEntryTemplateRepository.findAll();
+        return availabilityTemplateRepository.findAll();
     }
 
     @Override
     public Page<AvailabilityTemplate> findAll(Pageable pageable) {
-        return timeEntryTemplateRepository.findAll(pageable);
+        return availabilityTemplateRepository.findAll(pageable);
     }
 
     @Override
     public Optional<AvailabilityTemplate> find(UUID id) {
-        System.out.println(timeEntryTemplateRepository.findById(id));
-        return timeEntryTemplateRepository.findById(id);
+        System.out.println("there there");
+      System.out.println(availabilityTemplateRepository.findById(id).isPresent());
+      System.out.println(availabilityTemplateRepository.findById(id).get().getName());
+        return availabilityTemplateRepository.findById(id);
     }
 
-    @Override
-    public void create(AvailabilityTemplate timeEntryTemplate) {
-        timeEntryTemplateRepository.save(timeEntryTemplate);
-    }
+  @Override
+  public AvailabilityTemplate create(AvailabilityTemplate availabilityTemplate) {
+    return availabilityTemplateRepository.save(availabilityTemplate);
+  }
 
-    @Override
+  @Override
     public void delete(UUID id) {
-        timeEntryTemplateRepository.findById(id).ifPresent(timeEntryTemplateRepository::delete);
+        availabilityTemplateRepository.findById(id).ifPresent(availabilityTemplateRepository::delete);
     }
 
     @Override
-    public void update(AvailabilityTemplate timeEntryTemplate) {
-        timeEntryTemplateRepository.save(timeEntryTemplate);
+    public void update(AvailabilityTemplate availabilityTemplate) {
+        availabilityTemplateRepository.save(availabilityTemplate);
     }
 }

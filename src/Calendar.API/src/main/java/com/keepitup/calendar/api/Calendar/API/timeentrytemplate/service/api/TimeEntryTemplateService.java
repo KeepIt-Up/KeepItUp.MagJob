@@ -1,5 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrytemplate.service.api;
 
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,5 +25,5 @@ public interface TimeEntryTemplateService {
 
     void update(TimeEntryTemplate timeEntryTemplate);
 
-    Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplateId(UUID availabityTemplateId);
+    Optional<List<TimeEntryTemplate>> findAllTimeEntryTemplatesByAvailabilityTemplate(AvailabilityTemplate availabityTemplateId);
 }

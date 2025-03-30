@@ -76,3 +76,22 @@ services:
       POSTGRES_DB: magjob
     volumes:
       - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data
+
+  calendar:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.calendar
+    build:
+      context: .
+      dockerfile: src/Calendar.API/Dockerfile
+    ports:
+      - "5007:80"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://magjob.database:5432/magjob
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://host.docker.internal:18080/realms/magjob-realm
+      - SERVER_URL=http://host.docker.internal:18080/
+      - PORT=80
+      - REALM=magjob-realm
+    depends_on:
+      - magjob.database
+      - keycloak

@@ -22,9 +22,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Schema(description = "GetTimeEntryResponses DTO")
 public class PostAvailabilityTemplateRequest {
-    @Schema(description = "id")
-    private UUID id;
-
     @Schema(description = "PostAvailabilityTemplateRequest name value")
     private String name;
 

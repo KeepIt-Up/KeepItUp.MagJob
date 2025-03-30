@@ -141,24 +141,5 @@ public interface AvailabilityTemplateController {
             UUID userId
     );
 
-    @Operation(summary = "Create graphic")
-    @PostMapping("api/createGraphicFromAvailabilityTemplate")
-    @ResponseStatus(HttpStatus.OK)
-    GetGraphicResponse createAndPopulateGraphic(
-        @Parameter(
-                name = "ScheduleTemplate Id",
-                description = "Id of the ScheduleTemplate the Graphic is created from"
-        )
-        UUID availabityTemplateId,
-        @Parameter(
-            name = "startDate",
-            description = "startDate of the Graphic"
-        )
-        LocalDate startDate,
-        @Parameter(
-                name = "Name",
-                description = "Name of the graphic"
-        )
-        PostGraphicRequest name
-    );
+
 }
