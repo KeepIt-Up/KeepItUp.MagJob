@@ -29,7 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.Infrastructure\KeepItUp.MagJob.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.UseCases\KeepItUp.MagJob.Identity.UseCases.csproj" />
-    <ProjectReference Include="..\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj" />
+    <ProjectReference Include="..\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

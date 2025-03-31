@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using KeepItUp.MagJob.SharedKernel.Pagination;
+using KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 

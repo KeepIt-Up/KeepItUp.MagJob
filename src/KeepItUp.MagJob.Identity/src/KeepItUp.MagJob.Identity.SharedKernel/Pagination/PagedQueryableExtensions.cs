@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
-namespace KeepItUp.MagJob.SharedKernel.Pagination;
+namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
 /// <summary>
 /// Rozszerzenia dla IQueryable do obsługi paginacji i sortowania.

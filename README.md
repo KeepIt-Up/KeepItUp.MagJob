@@ -37,8 +37,8 @@ The application is built using a microservices architecture with the following c
 1. Clone the repository:
 
    ```
-   git clone https://github.com/KeepIt-Up/MagJob2.0.git
-   cd MagJob2.0
+   git clone https://github.com/KeepIt-Up/KeepItUp.MagJob.git
+   cd KeepItUp.MagJob
    ```
 
 2. Start the application using Docker Compose:

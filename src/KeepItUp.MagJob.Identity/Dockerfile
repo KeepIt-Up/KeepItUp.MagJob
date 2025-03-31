@@ -23,7 +23,7 @@ COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Web/KeepItUp.Ma
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Core/KeepItUp.MagJob.Identity.Core.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Core/"]
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.UseCases/KeepItUp.MagJob.Identity.UseCases.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.UseCases/"]
 COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/KeepItUp.MagJob.Identity.Infrastructure.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.Infrastructure/"]
-COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.SharedKernel/KeepItUp.MagJob.SharedKernel.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.SharedKernel/"]
+COPY ["src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.SharedKernel/KeepItUp.MagJob.Identity.SharedKernel.csproj", "src/KeepItUp.MagJob.Identity/src/KeepItUp.MagJob.Identity.SharedKernel/"]
 
 
 # Restore dependencies

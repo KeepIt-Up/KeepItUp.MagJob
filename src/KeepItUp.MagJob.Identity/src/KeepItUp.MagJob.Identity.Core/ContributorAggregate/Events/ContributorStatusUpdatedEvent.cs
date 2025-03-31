@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.SharedKernel;
+using KeepItUp.MagJob.Identity.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Events;
 

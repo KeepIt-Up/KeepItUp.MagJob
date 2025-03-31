@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeepItUp.MagJob.Identity.Us
 		{577646FA-5A2A-4C48-ACE8-226044FF2007} = {577646FA-5A2A-4C48-ACE8-226044FF2007}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepItUp.MagJob.SharedKernel", "src\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj", "{577646FA-5A2A-4C48-ACE8-226044FF2007}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeepItUp.MagJob.Identity.SharedKernel", "src\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj", "{577646FA-5A2A-4C48-ACE8-226044FF2007}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

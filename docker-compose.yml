@@ -99,7 +99,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: keycloak
     volumes:
-      - ${APPDATA}/MagJob2.0/db/keycloak:/var/lib/postgresql/data
+      - ${APPDATA}/KeepItUp.MagJob/db/keycloak:/var/lib/postgresql/data
 
   magjob.database:
     image: postgres:15
@@ -108,6 +108,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: magjob
+      POSTGRES_DB: KeepItUp.MagJob
     volumes:
-      - ${APPDATA}/MagJob2.0/db/magjob:/var/lib/postgresql/data
+      - ${APPDATA}/KeepItUp.MagJob/db/magjob:/var/lib/postgresql/data

@@ -1,4 +1,4 @@
-﻿namespace KeepItUp.MagJob.SharedKernel;
+﻿namespace KeepItUp.MagJob.Identity.SharedKernel;
 
 /// <summary>
 /// Klasa bazowa dla wszystkich encji w systemie.

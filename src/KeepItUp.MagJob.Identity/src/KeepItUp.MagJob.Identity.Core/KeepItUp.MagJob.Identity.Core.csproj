@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KeepItUp.MagJob.SharedKernel\KeepItUp.MagJob.SharedKernel.csproj" />
+    <ProjectReference Include="..\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>
