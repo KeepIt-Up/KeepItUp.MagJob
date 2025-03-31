@@ -1,6 +1,4 @@
-using FluentValidation;
-
-namespace KeepItUp.MagJob.Identity.Web.Users;
+﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Walidator dla żądania aktualizacji zdjęcia profilowego użytkownika.

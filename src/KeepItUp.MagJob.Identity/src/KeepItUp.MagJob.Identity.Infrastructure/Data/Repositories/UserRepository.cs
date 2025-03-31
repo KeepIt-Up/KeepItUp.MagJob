@@ -1,5 +1,7 @@
 ﻿using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+using Microsoft.EntityFrameworkCore;
+using KeepItUp.MagJob.Identity.Core.Exceptions;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
@@ -71,8 +73,45 @@ public class UserRepository : IUserRepository
     /// <inheritdoc />
     public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
     {
-        _dbContext.Users.Update(user);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            // Pobierz aktualną wersję użytkownika z bazy danych
+            var existingUser = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
+
+            if (existingUser == null)
+            {
+                throw new EntityNotFoundException($"User with ID {user.Id} not found.");
+            }
+
+            // Aktualizacja daty logowania
+            if (user.LastLoginDate != existingUser.LastLoginDate)
+            {
+                existingUser.UpdateLastLoginDate(user.LastLoginDate);
+            }
+
+            // Aktualizacja statusu aktywności
+            if (user.IsActive != existingUser.IsActive)
+            {
+                if (user.IsActive)
+                {
+                    existingUser.Activate();
+                }
+                else
+                {
+                    existingUser.Deactivate();
+                }
+            }
+
+            // Pozostałe aktualizacje mogą być dodane tutaj w zależności od potrzeb
+            // np. UpdateProfile, UpdatePermissions, itp.
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ConcurrencyException($"User with ID {user.Id} has been modified by another user.");
+        }
     }
 
     /// <inheritdoc />

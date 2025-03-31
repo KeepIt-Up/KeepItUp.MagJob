@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -32,12 +32,6 @@ public class UpdateRolePermissionsCommandHandler(
                 return Result.NotFound($"Nie znaleziono organizacji o identyfikatorze {request.OrganizationId}.");
             }
 
-            // Sprawdzamy, czy użytkownik ma dostęp do organizacji (uprawnienia)
-            if (!await organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken) &&
-                organization.OwnerId != request.UserId)
-            {
-                return Result.Forbidden("Brak dostępu do organizacji.");
-            }
 
             // Pobieramy rolę
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
@@ -48,15 +42,8 @@ public class UpdateRolePermissionsCommandHandler(
                 return Result.NotFound($"Nie znaleziono roli o identyfikatorze {request.RoleId} w organizacji.");
             }
 
-            // Aktualizujemy uprawnienia roli
-            role.ClearPermissions();
-            foreach (var permissionName in request.Permissions)
-            {
-                role.AddPermission(new Permission(permissionName));
-            }
-
-            // Zapisujemy zmiany
-            await organizationRepository.UpdateAsync(organization, cancellationToken);
+            // Aktualizujemy uprawnienia roli przy użyciu nowej metody
+            await organizationRepository.UpdateRolePermissionsAsync(request.RoleId, request.Permissions, cancellationToken);
 
             return Result.Success();
         }

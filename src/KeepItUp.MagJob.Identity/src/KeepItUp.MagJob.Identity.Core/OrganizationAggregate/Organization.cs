@@ -393,18 +393,14 @@ public class Organization : BaseEntity, IAggregateRoot
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
 
-        // Sprawdź, czy rola o takiej nazwie już istnieje
-        if (_roles.Any(r => r.Name == name))
-        {
-            throw new InvalidOperationException($"Rola o nazwie {name} już istnieje w organizacji.");
-        }
 
         var role = Role.Create(name, Id, description, color);
         _roles.Add(role);
 
-        // Wywołanie metody Update z klasy bazowej
-        base.Update();
+        // Aktualizuj wersję encji
+        Update();
 
+        // Rejestruj zdarzenie domeny
         RegisterDomainEvent(new RoleCreatedEvent(Id, role.Id, role.Name));
 
         return role;

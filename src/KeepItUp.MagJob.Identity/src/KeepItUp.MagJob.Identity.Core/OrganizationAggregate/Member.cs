@@ -1,5 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
-using KeepItUp.MagJob.SharedKernel;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 

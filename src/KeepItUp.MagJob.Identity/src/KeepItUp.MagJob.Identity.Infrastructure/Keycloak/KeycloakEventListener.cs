@@ -247,8 +247,18 @@ public class KeycloakEventListener : BackgroundService
             if (user != null)
             {
                 user.UpdateLastLoginDate(DateTime.UtcNow);
-                await userRepository.UpdateAsync(user, cancellationToken);
-                _logger.LogInformation("Zaktualizowano datę ostatniego logowania dla użytkownika {UserId}", userId);
+
+                try
+                {
+                    await userRepository.UpdateAsync(user, cancellationToken);
+                    _logger.LogInformation("Zaktualizowano datę ostatniego logowania dla użytkownika {UserId}", userId);
+                }
+                catch (KeepItUp.MagJob.Identity.Core.Exceptions.ConcurrencyException)
+                {
+                    // W przypadku konfliktu współbieżności możemy spróbować ponownie
+                    _logger.LogWarning("Wystąpił konflikt współbieżności podczas aktualizacji daty logowania dla użytkownika {UserId}, ignorowanie", userId);
+                    // Ignorujemy błąd współbieżności - data logowania nie jest krytyczną informacją
+                }
             }
             else
             {
@@ -279,8 +289,26 @@ public class KeycloakEventListener : BackgroundService
             {
                 // Możemy oznaczyć użytkownika jako nieaktywnego zamiast go usuwać
                 user.Deactivate();
-                await userRepository.UpdateAsync(user, cancellationToken);
-                _logger.LogInformation("Użytkownik {UserId} został dezaktywowany po usunięciu konta w Keycloak", userId);
+
+                try
+                {
+                    await userRepository.UpdateAsync(user, cancellationToken);
+                    _logger.LogInformation("Użytkownik {UserId} został dezaktywowany po usunięciu konta w Keycloak", userId);
+                }
+                catch (KeepItUp.MagJob.Identity.Core.Exceptions.ConcurrencyException ex)
+                {
+                    // W przypadku konfliktu współbieżności, odczytaj ponownie użytkownika i spróbuj jeszcze raz
+                    _logger.LogWarning(ex, "Wystąpił konflikt współbieżności podczas dezaktywacji użytkownika {UserId}, próba ponowna", userId);
+
+                    // Pobierz użytkownika ponownie i spróbuj zaktualizować
+                    var refreshedUser = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
+                    if (refreshedUser != null && refreshedUser.IsActive)
+                    {
+                        refreshedUser.Deactivate();
+                        await userRepository.UpdateAsync(refreshedUser, cancellationToken);
+                        _logger.LogInformation("Użytkownik {UserId} został dezaktywowany po ponownej próbie", userId);
+                    }
+                }
             }
             else
             {

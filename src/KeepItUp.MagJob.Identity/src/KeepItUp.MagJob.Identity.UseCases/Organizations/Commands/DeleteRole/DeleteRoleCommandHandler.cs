@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -43,15 +43,6 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do usuwania ról
-            if (organization.OwnerId != request.UserId)
-            {
-                var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                if (requestingMember == null || !requestingMember.Roles.Any(r => r.Name == "Admin"))
-                {
-                    return Result.Forbidden("Brak uprawnień do usuwania ról w organizacji.");
-                }
-            }
 
             // Znajdź rolę do usunięcia
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
@@ -73,14 +64,11 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
                 return Result.Error("Nie można usunąć roli, która jest przypisana do członków organizacji.");
             }
 
-            // Usuń rolę
-            organization.RemoveRole(request.RoleId);
-
-            // Zapisz zmiany w repozytorium
-            await _repository.UpdateAsync(organization, cancellationToken);
+            // Usuń rolę używając nowej metody repozytorium
+            await _repository.DeleteRoleAsync(request.OrganizationId, request.RoleId, cancellationToken);
 
             _logger.LogInformation("Usunięto rolę o ID {RoleId} z organizacji o ID {OrganizationId}",
-                request.RoleId, organization.Id);
+                request.RoleId, request.OrganizationId);
 
             return Result.Success();
         }

@@ -12,37 +12,37 @@ using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 public static class InfrastructureServiceExtensions
 {
-  public static IServiceCollection AddInfrastructureServices(
-    this IServiceCollection services,
-    ConfigurationManager config,
-    ILogger logger)
-  {
-    string? connectionString = config.GetConnectionString("DefaultConnection");
-    Guard.Against.Null(connectionString);
+    public static IServiceCollection AddInfrastructureServices(
+      this IServiceCollection services,
+      ConfigurationManager config,
+      ILogger logger)
+    {
+        string? connectionString = config.GetConnectionString("DefaultConnection");
+        Guard.Against.Null(connectionString);
 
-    // Konfiguracja DbContext dla PostgreSQL
-    services.AddDbContext<AppDbContext>(options =>
-      options.UseNpgsql(connectionString, npgsqlOptions =>
-      {
-        npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", DataSchemaConstants.IDENTITY_SCHEMA);
-      }));
+        // Konfiguracja DbContext dla PostgreSQL
+        services.AddDbContext<AppDbContext>(options =>
+          options.UseNpgsql(connectionString, npgsqlOptions =>
+          {
+              npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", DataSchemaConstants.IDENTITY_SCHEMA);
+          }));
 
-    services
-        .AddSingleton<IFileStorageService, LocalFileStorageService>()
-        .AddSingleton<IUserProfilePictureService, UserProfilePictureService>()
-        .AddScoped<IOrganizationRepository, OrganizationRepository>()
-        .AddScoped<IUserRepository, UserRepository>()
-        .AddScoped<IContributorRepository, ContributorRepository>()
-        .AddScoped<IDeleteContributorService, DeleteContributorService>();
+        services
+            .AddSingleton<IFileStorageService, LocalFileStorageService>()
+            .AddSingleton<IUserProfilePictureService, UserProfilePictureService>()
+            .AddScoped<IOrganizationRepository, OrganizationRepository>()
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IContributorRepository, ContributorRepository>()
+            .AddScoped<IDeleteContributorService, DeleteContributorService>();
 
-    // Dodanie usług związanych z Keycloak
-    services.AddKeycloakServices();
+        // Dodanie usług związanych z Keycloak
+        services.AddKeycloakServices();
 
-    // Dodanie konfiguracji Mapster
-    services.AddMapsterConfiguration();
+        // Dodanie konfiguracji Mapster
+        services.AddMapsterConfiguration();
 
-    logger.LogInformation("{Project} services registered", "Infrastructure");
+        logger.LogInformation("{Project} services registered", "Infrastructure");
 
-    return services;
-  }
+        return services;
+    }
 }

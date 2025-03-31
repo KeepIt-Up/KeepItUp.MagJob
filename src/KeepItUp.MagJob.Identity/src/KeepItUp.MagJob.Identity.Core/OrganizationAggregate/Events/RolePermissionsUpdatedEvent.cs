@@ -1,4 +1,4 @@
-namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
+﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
 /// Zdarzenie informujące o aktualizacji uprawnień roli w organizacji.

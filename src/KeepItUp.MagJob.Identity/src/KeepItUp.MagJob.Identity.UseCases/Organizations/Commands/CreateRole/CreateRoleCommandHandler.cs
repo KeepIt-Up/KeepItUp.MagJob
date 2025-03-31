@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -43,21 +43,6 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Resul
                 return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do tworzenia ról
-            if (organization.OwnerId != request.UserId)
-            {
-                var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                if (requestingMember == null || !requestingMember.Roles.Any(r => r.Name == "Admin"))
-                {
-                    return Result<Guid>.Forbidden("Brak uprawnień do tworzenia ról w organizacji.");
-                }
-            }
-
-            // Sprawdź, czy rola o podanej nazwie już istnieje w organizacji
-            if (organization.Roles.Any(r => r.Name == request.Name))
-            {
-                return Result<Guid>.Error($"Rola o nazwie '{request.Name}' już istnieje w organizacji.");
-            }
 
             // Utwórz nową rolę
             var role = organization.AddRole(

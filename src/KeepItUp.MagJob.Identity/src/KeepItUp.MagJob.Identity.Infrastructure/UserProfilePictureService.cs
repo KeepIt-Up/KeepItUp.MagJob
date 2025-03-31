@@ -1,6 +1,5 @@
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
-using Microsoft.Extensions.Logging;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 

@@ -22,6 +22,10 @@ public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguratio
 
         builder.Property(e => e.UpdatedAt)
             .IsRequired(false);
+
+        // Konfiguracja optymistycznej współbieżności
+        builder.Property(e => e.RowVersion)
+            .IsRowVersion();
     }
 
     /// <summary>

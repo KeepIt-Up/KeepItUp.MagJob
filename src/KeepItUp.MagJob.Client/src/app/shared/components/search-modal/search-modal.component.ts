@@ -4,11 +4,18 @@ import { PaginationOptions } from '../pagination/pagination.component';
 import { InfiniteListComponent } from '../infinite-list/infinite-list.component';
 import { ModalComponent } from '../modal/modal.component';
 import { SearchInputComponent } from '../search-input/search-input.component';
-import { NgClass } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-search-modal',
-  imports: [ModalComponent, InfiniteListComponent, SearchInputComponent, NgClass],
+  imports: [
+    ModalComponent,
+    InfiniteListComponent,
+    SearchInputComponent,
+    ButtonComponent,
+    NgTemplateOutlet,
+  ],
   template: `
     <app-modal [isOpen]="isOpen()" [title]="title()" (onCloseClick)="close.emit($event)">
       <div class="p-4 md:p-5">
@@ -40,24 +47,28 @@ import { NgClass } from '@angular/common';
     <ng-template #itemsList>
       <div class="space-y-2 max-h-60 overflow-y-auto">
         @for (item of state$().data; track item.id) {
-          <div class="flex items-center justify-between p-3" [ngClass]="itemContainerClass">
-            <div class="flex items-center">
-              <div class="ml-3">
-                <p class="text-sm font-medium" [ngClass]="textClass">
+          <div
+            class="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+          >
+            <div class="flex items-center overflow-hidden">
+              <div class="ml-2 overflow-hidden">
+                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                   {{ displayFn()(item) }}
                 </p>
               </div>
             </div>
-            <button
-              (click)="selectItem(item)"
-              class="px-4 py-2 text-sm font-medium rounded-lg"
-              [ngClass]="getButtonClasses(item)"
+            <app-button
+              [size]="'sm'"
+              [color]="isSelected(item) ? 'danger' : 'primary'"
+              (clicked)="selectItem(item)"
             >
               {{ isSelected(item) ? 'Remove' : 'Add' }}
-            </button>
+            </app-button>
           </div>
         } @empty {
-          <div class="p-3 text-sm text-center rounded-lg" [ngClass]="emptyStateClass">
+          <div
+            class="p-3 text-sm text-center rounded-lg text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800"
+          >
             No results found
           </div>
         }
@@ -82,12 +93,6 @@ export class SearchModalComponent<T extends { id: string }> {
   selectionChange = output<T>();
   loadMore = output<void>();
 
-  // Add computed classes
-  protected readonly itemContainerClass = 'bg-gray-50 dark:bg-gray-700 rounded-lg';
-  protected readonly textClass = 'text-gray-900 dark:text-white';
-  protected readonly emptyStateClass =
-    'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800';
-
   onSearch(query: string): void {
     this.search.emit(query);
   }
@@ -102,12 +107,5 @@ export class SearchModalComponent<T extends { id: string }> {
 
   onLoad(): void {
     this.loadMore.emit();
-  }
-
-  protected getButtonClasses(item: T): string {
-    const isItemSelected = this.isSelected(item);
-    return isItemSelected
-      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-      : 'bg-gray-200 hover:bg-gray-300';
   }
 }

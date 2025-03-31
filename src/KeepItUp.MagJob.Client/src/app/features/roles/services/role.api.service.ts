@@ -26,15 +26,18 @@ export class RoleApiService extends BaseApiService<Role> {
     });
   }
 
+  createRole(organizationId: string, name: string) {
+    return this.http.post<Role>(`${this.apiUrl}/${organizationId}/roles`, { name });
+  }
+
   updateRolePermissions(
     organizationId: string,
     roleId: string,
-    permissionIds: number[],
+    permissionNames: string[],
   ): Observable<void> {
-    return this.http.post<void>(
-      `${this.apiUrl}/${organizationId}/roles/${roleId}/permissions`,
-      permissionIds,
-    );
+    return this.http.put<void>(`${this.apiUrl}/${organizationId}/roles/${roleId}/permissions`, {
+      permissions: permissionNames,
+    });
   }
 
   addMembersToRole(organizationId: string, roleId: string, memberIds: string[]): Observable<void> {
@@ -52,5 +55,13 @@ export class RoleApiService extends BaseApiService<Role> {
     return this.http.delete<void>(`${this.apiUrl}/${organizationId}/roles/${roleId}/members`, {
       body: memberIds,
     });
+  }
+
+  override delete(id: string, organizationId?: string): Observable<void> {
+    if (organizationId) {
+      return this.http.delete<void>(`${this.apiUrl}/${organizationId}/roles/${id}`);
+    } else {
+      return super.delete(id);
+    }
   }
 }

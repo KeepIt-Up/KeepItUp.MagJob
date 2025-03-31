@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.SharedKernel;
-
-namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Events;
+﻿namespace KeepItUp.MagJob.Identity.Core.ContributorAggregate.Events;
 
 /// <summary>
 /// Zdarzenie domenowe informujące o utworzeniu nowego kontrybutora.

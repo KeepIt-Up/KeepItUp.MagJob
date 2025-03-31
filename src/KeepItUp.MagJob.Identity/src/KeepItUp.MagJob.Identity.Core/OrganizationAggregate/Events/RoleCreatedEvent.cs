@@ -1,4 +1,4 @@
-
+﻿
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>

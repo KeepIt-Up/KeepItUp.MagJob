@@ -110,6 +110,24 @@ public interface IOrganizationRepository
     Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Aktualizuje uprawnienia roli.
+    /// </summary>
+    /// <param name="roleId">Identyfikator roli</param>
+    /// <param name="permissionNames">Lista nazw uprawnień do przypisania</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Task</returns>
+    Task UpdateRolePermissionsAsync(Guid roleId, IEnumerable<string> permissionNames, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Usuwa rolę z organizacji.
+    /// </summary>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="roleId">Identyfikator roli</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Task</returns>
+    Task DeleteRoleAsync(Guid organizationId, Guid roleId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Pobiera stronicowaną listę organizacji dla danego użytkownika.
     /// </summary>
     Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default);

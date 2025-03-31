@@ -30,9 +30,11 @@ import {
   heroCalendar,
   heroUserPlus,
   heroArrowLeft,
+  heroPlus,
 } from '@ng-icons/heroicons/outline';
 
 export const heroIconsProvider = provideIcons({
+  heroPlus,
   heroArrowRight,
   heroMagnifyingGlass,
   heroEnvelope,

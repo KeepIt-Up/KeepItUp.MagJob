@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.SharedKernel;
-
-namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
+﻿namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 /// <summary>
 /// Zdarzenie domenowe informujące o aktualizacji daty ostatniego logowania użytkownika.

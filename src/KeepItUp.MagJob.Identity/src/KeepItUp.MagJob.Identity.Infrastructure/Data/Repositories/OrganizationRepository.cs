@@ -1,7 +1,8 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.SharedKernel.Pagination;
+using KeepItUp.MagJob.Identity.Core.Exceptions;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>
@@ -31,7 +32,6 @@ public class OrganizationRepository : IOrganizationRepository
     public async Task<Organization?> GetByIdWithRolesAsync(Guid organizationId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Organizations
-            .AsNoTracking()
             .Include(o => o.Roles)
                 .ThenInclude(r => r.Permissions)
             .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
@@ -141,68 +141,77 @@ public class OrganizationRepository : IOrganizationRepository
     /// <inheritdoc />
     public async Task UpdateAsync(Organization organization, CancellationToken cancellationToken = default)
     {
-        // First check and detach any existing tracked entities with the same ID
-        var existingOrgEntry = _dbContext.ChangeTracker.Entries<Organization>()
-            .FirstOrDefault(e => e.Entity.Id == organization.Id);
-
-        if (existingOrgEntry != null)
-        {
-            existingOrgEntry.State = EntityState.Detached;
-        }
-
-        // Check and detach any members that might be tracked
-        foreach (var member in organization.Members)
-        {
-            var existingMemberEntry = _dbContext.ChangeTracker.Entries<Member>()
-                .FirstOrDefault(e => e.Entity.Id == member.Id);
-
-            if (existingMemberEntry != null)
-            {
-                existingMemberEntry.State = EntityState.Detached;
-            }
-        }
-
-        // Check and detach any roles that might be tracked
-        foreach (var role in organization.Roles)
-        {
-            var existingRoleEntry = _dbContext.ChangeTracker.Entries<Role>()
-                .FirstOrDefault(e => e.Entity.Id == role.Id);
-
-            if (existingRoleEntry != null)
-            {
-                existingRoleEntry.State = EntityState.Detached;
-            }
-        }
-
-        // Handle member-role relationships within a transaction
-        using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            // Ensure member-role relationships are tracked
-            foreach (var member in organization.Members)
+            // Jeśli mamy do czynienia tylko z dodawaniem nowych ról, użyjmy bardziej bezpośredniego podejścia
+            var addedRoles = organization.Roles.ToList();
+            if (addedRoles.Any())
             {
-                // Make sure the Roles collection has references to actual Role entities
-                var roleIds = member.RoleIds.ToList();
-                member.Roles.Clear();
-
-                foreach (var roleId in roleIds)
+                using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+                try
                 {
-                    var role = organization.Roles.FirstOrDefault(r => r.Id == roleId);
-                    if (role != null)
+                    // Pobierz istniejące ID ról dla tej organizacji
+                    var existingRoleIds = await _dbContext.Set<Role>()
+                        .Where(r => r.OrganizationId == organization.Id)
+                        .Select(r => r.Id)
+                        .ToListAsync(cancellationToken);
+
+                    // Znajdź nowe role, które nie istnieją jeszcze w bazie danych
+                    var newRoles = addedRoles.Where(r => !existingRoleIds.Contains(r.Id)).ToList();
+                    if (newRoles.Any())
                     {
-                        member.Roles.Add(role);
+                        // Dodaj nowe role bezpośrednio do tabeli Roles
+                        await _dbContext.Set<Role>().AddRangeAsync(newRoles, cancellationToken);
+
+                        // Zaktualizuj bazową encję organizacji bez naruszania systemu optymistycznej współbieżności
+                        var existingOrg = await _dbContext.Organizations.FindAsync(new object[] { organization.Id }, cancellationToken);
+                        if (existingOrg != null)
+                        {
+                            // Ustaw znacznik czasu aktualizacji
+                            existingOrg.Update(
+                                existingOrg.Name,
+                                existingOrg.Description,
+                                existingOrg.LogoUrl,
+                                existingOrg.BannerUrl);
+                        }
+
+                        await _dbContext.SaveChangesAsync(cancellationToken);
                     }
+
+                    await transaction.CommitAsync(cancellationToken);
                 }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    throw;
+                }
+
+                return;
             }
 
-            _dbContext.Organizations.Update(organization);
+            // Standardowa aktualizacja dla innych przypadków
+            // Pobierz aktualną wersję organizacji z bazy danych z dołączonymi rolami
+            var existingOrganization = await _dbContext.Organizations
+                .Include(o => o.Roles)
+                .FirstOrDefaultAsync(o => o.Id == organization.Id, cancellationToken);
+
+            if (existingOrganization == null)
+            {
+                throw new EntityNotFoundException($"Organization with ID {organization.Id} not found.");
+            }
+
+            // Aktualizuj podstawowe właściwości organizacji
+            existingOrganization.Update(
+                organization.Name,
+                organization.Description,
+                organization.LogoUrl,
+                organization.BannerUrl);
+
             await _dbContext.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
         }
-        catch
+        catch (DbUpdateConcurrencyException)
         {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
+            throw new ConcurrencyException($"Organization with ID {organization.Id} has been modified by another user.");
         }
     }
 
@@ -365,5 +374,65 @@ public class OrganizationRepository : IOrganizationRepository
 
         // Zwracamy spaginowany wynik
         return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateRolePermissionsAsync(Guid roleId, IEnumerable<string> permissionNames, CancellationToken cancellationToken = default)
+    {
+        // Znajdź rolę w bazie danych
+        var role = await _dbContext.Set<Role>()
+            .Include(r => r.Permissions)
+            .FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken);
+
+        if (role == null)
+        {
+            throw new EntityNotFoundException($"Role with ID {roleId} not found.");
+        }
+
+        // Wyczyść obecne uprawnienia
+        role.ClearPermissions();
+
+        // Pobierz uprawnienia na podstawie ich nazw
+        var permissionsList = permissionNames.ToList();
+        var permissions = await _dbContext.Permissions
+            .Where(p => permissionsList.Contains(p.Name))
+            .ToListAsync(cancellationToken);
+
+        // Dodaj nowe uprawnienia
+        foreach (var permission in permissions)
+        {
+            role.AddPermission(permission);
+        }
+
+        // Zapisz zmiany
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Usuwa rolę z organizacji.
+    /// </summary>
+    /// <param name="organizationId">Identyfikator organizacji</param>
+    /// <param name="roleId">Identyfikator roli</param>
+    /// <param name="cancellationToken">Token anulowania</param>
+    /// <returns>Task</returns>
+    public async Task DeleteRoleAsync(Guid organizationId, Guid roleId, CancellationToken cancellationToken = default)
+    {
+        // Pobierz organizację z rolami i członkami
+        var organization = await _dbContext.Organizations
+            .Include(o => o.Roles)
+            .Include(o => o.Members)
+                .ThenInclude(m => m.Roles)
+            .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
+
+        if (organization == null)
+        {
+            throw new EntityNotFoundException($"Organization with ID {organizationId} not found.");
+        }
+
+        // Usuń rolę z organizacji przy użyciu metody domenowej
+        organization.RemoveRole(roleId);
+
+        // Zapisz zmiany
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

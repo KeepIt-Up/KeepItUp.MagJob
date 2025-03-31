@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Http;
-
-namespace KeepItUp.MagJob.Identity.Web.Users;
+﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Żądanie aktualizacji zdjęcia profilowego użytkownika.

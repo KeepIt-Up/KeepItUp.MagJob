@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.SharedKernel;
-
-namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
+﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
 /// Zdarzenie informujące o inicjalizacji właściciela organizacji.

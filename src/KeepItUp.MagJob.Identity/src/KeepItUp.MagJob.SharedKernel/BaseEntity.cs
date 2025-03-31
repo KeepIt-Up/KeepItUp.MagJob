@@ -16,11 +16,17 @@ public abstract class BaseEntity : EntityBase<Guid>
     public DateTime? UpdatedAt { get; protected set; }
 
     /// <summary>
+    /// Wersja encji do optymistycznej współbieżności.
+    /// </summary>
+    public byte[] RowVersion { get; protected set; } = Array.Empty<byte>();
+
+    /// <summary>
     /// Aktualizuje datę ostatniej modyfikacji encji.
     /// </summary>
     protected void Update()
     {
         UpdatedAt = DateTime.UtcNow;
+        RowVersion = Guid.NewGuid().ToByteArray();
     }
 
     /// <summary>
@@ -29,6 +35,7 @@ public abstract class BaseEntity : EntityBase<Guid>
     protected BaseEntity()
     {
         Id = Guid.NewGuid();
+        RowVersion = Guid.NewGuid().ToByteArray();
     }
 
     /// <summary>

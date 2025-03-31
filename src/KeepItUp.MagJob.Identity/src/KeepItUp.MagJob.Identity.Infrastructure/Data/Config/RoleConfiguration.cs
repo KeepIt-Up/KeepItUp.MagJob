@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -39,7 +39,7 @@ public class RoleConfiguration : BaseEntityConfiguration<Role>
                 });
 
         // Indeksy
-        builder.HasIndex(r => new { r.Name, r.OrganizationId }).IsUnique();
+        builder.HasIndex(r => new { r.Id, r.OrganizationId }).IsUnique();
 
         // Indeks dla szybkiego wyszukiwania po OrganizationId
         builder.HasIndex(r => r.OrganizationId);
