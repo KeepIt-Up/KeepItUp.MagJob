@@ -104,7 +104,7 @@ public static class AuthenticationConfig
           {
           keycloakOptions.ClientId,
           "account",
-          "client.web"
+          "Client-keycloakClient"
             },
 
                 // Ustaw typy claims dla ról i nazwy użytkownika

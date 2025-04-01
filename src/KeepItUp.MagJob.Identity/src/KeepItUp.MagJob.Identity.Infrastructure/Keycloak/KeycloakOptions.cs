@@ -34,6 +34,11 @@ public class KeycloakOptions
     public required string ClientId { get; set; }
 
     /// <summary>
+    /// Sekret klienta (client_secret) używany do uwierzytelniania
+    /// </summary>
+    public required string ClientSecret { get; set; } = string.Empty;
+
+    /// <summary>
     /// Adres URL do pobrania metadanych OpenID Connect
     /// </summary>
     public string MetadataUrl => $"{ServerUrl}/realms/{Realm}/.well-known/openid-configuration";

@@ -1,6 +1,6 @@
 {
   "id": "f4ef7b75-8588-48e1-afcc-72f3d4dce1e7",
-  "realm": "magjob-realm",
+  "realm": "KeepItUp.MagJob.Realm",
   "displayName": "MagJob",
   "displayNameHtml": "",
   "notBefore": 0,
@@ -321,7 +321,6 @@
           "attributes": {}
         }
       ],
-      "client.web": [],
       "security-admin-console": [],
       "admin-cli": [],
       "account-console": [],
@@ -336,7 +335,6 @@
           "attributes": {}
         }
       ],
-      "MagJob.Identity": [],
       "account": [
         {
           "id": "0e31969b-a821-4759-846e-8b6bebd1e5d5",
@@ -424,7 +422,9 @@
           "containerId": "a40fc7e8-b3ff-414f-aa17-61fe54627626",
           "attributes": {}
         }
-      ]
+      ],
+      "Client-keycloakClient": [],
+      "Identity-keycloakClient": []
     }
   },
   "groups": [],
@@ -484,12 +484,12 @@
   "users": [
     {
       "id": "818ee6cb-3d08-420d-a480-08c70db4a3b4",
-      "username": "service-account-magjob.identity",
+      "username": "service-account-identity-keycloakclient",
       "emailVerified": false,
       "createdTimestamp": 1741733096569,
       "enabled": true,
       "totp": false,
-      "serviceAccountClientId": "MagJob.Identity",
+      "serviceAccountClientId": "Identity-keycloakClient",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
@@ -534,13 +534,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/magjob-realm/account/",
+      "baseUrl": "/realms/KeepItUp.MagJob.Realm/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/magjob-realm/account/*"
+        "/realms/KeepItUp.MagJob.Realm/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -581,13 +581,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/magjob-realm/account/",
+      "baseUrl": "/realms/KeepItUp.MagJob.Realm/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/magjob-realm/account/*"
+        "/realms/KeepItUp.MagJob.Realm/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -723,8 +723,8 @@
     },
     {
       "id": "24e9914b-1f09-479a-838a-5009f3272149",
-      "clientId": "client.web",
-      "name": "MagJob Client Web",
+      "clientId": "Client-keycloakClient",
+      "name": "KeepItUp.MagJob.Client Client",
       "description": "",
       "rootUrl": "http://localhost:4200/",
       "adminUrl": "",
@@ -840,8 +840,8 @@
     },
     {
       "id": "1116dc03-3ec4-44d6-be7b-b9c28296a74e",
-      "clientId": "MagJob.Identity",
-      "name": "MagJob.Identity",
+      "clientId": "Identity-keycloakClient",
+      "name": "KeepItUp.MagJob.Identity Client",
       "description": "Identity Microservice",
       "rootUrl": "https://localhost:57679",
       "adminUrl": "https://localhost:57679",
@@ -870,7 +870,7 @@
       "attributes": {
         "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1743537675",
+        "client.secret.creation.time": "1743546886",
         "backchannel.logout.session.required": "true",
         "login_theme": "magjob",
         "frontchannel.logout.session.required": "true",
@@ -948,13 +948,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/magjob-realm/console/",
+      "baseUrl": "/admin/KeepItUp.MagJob.Realm/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/magjob-realm/console/*"
+        "/admin/KeepItUp.MagJob.Realm/console/*"
       ],
       "webOrigins": [
         "+"
