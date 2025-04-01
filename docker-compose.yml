@@ -31,9 +31,9 @@ services:
     environment:
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_URLS=http://+:80
-      - KeycloakAdmin__ClientSecret=pGKFGTy8hVmKubkeGOeOvNu3dsFTKJQO
+      - KeycloakAdmin__ClientSecret=${KEYCLOAK_ADMIN_CLIENT_SECRET}
       - KeycloakAdmin__ServerUrl=http://keycloak:8080
-      - ConnectionStrings__DefaultConnection=Host=magjob.database;Database=magjob;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection=${MAGJOB_DB_CONNECTION}
     depends_on:
       - magjob.database
       - keycloak
@@ -81,12 +81,12 @@ services:
     ports:
       - "18080:8080"
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
       - KC_DB=postgres
       - KC_DB_URL_HOST=keycloak.database
-      - KC_DB_USERNAME=postgres
-      - KC_DB_PASSWORD=postgres
+      - KC_DB_USERNAME=${KEYCLOAK_DB_USERNAME}
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
     volumes:
       - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
       - ./src/Keycloak/themes/magjob:/opt/keycloak/themes/magjob
@@ -97,9 +97,9 @@ services:
   keycloak.database:
     image: postgres:17.2
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${KEYCLOAK_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
     volumes:
       - ${APPDATA}/KeepItUp.MagJob/db/keycloak:/var/lib/postgresql/data
 
@@ -108,8 +108,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: KeepItUp.MagJob
+      POSTGRES_USER: ${MAGJOB_DB_USERNAME}
+      POSTGRES_PASSWORD: ${MAGJOB_DB_PASSWORD}
+      POSTGRES_DB: ${MAGJOB_DB_NAME}
     volumes:
       - ${APPDATA}/KeepItUp.MagJob/db/magjob:/var/lib/postgresql/data
