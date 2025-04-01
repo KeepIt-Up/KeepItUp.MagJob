@@ -35,8 +35,11 @@ services:
       - KeycloakAdmin__ServerUrl=http://keycloak:8080
       - ConnectionStrings__DefaultConnection=${MAGJOB_DB_CONNECTION}
     depends_on:
-      - magjob.database
-      - keycloak
+      magjob.database:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      
 
   # chat:
   #   image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
@@ -91,7 +94,14 @@ services:
       - ./src/Keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
       - ./src/Keycloak/themes/magjob:/opt/keycloak/themes/magjob
     depends_on:
-      - keycloak.database
+      keycloak.database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # Databases
   keycloak.database:
@@ -102,6 +112,12 @@ services:
       POSTGRES_DB: ${KEYCLOAK_DB_NAME}
     volumes:
       - ${APPDATA}/KeepItUp.MagJob/db/keycloak:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USERNAME} -d ${KEYCLOAK_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   magjob.database:
     image: postgres:15
@@ -113,3 +129,9 @@ services:
       POSTGRES_DB: ${MAGJOB_DB_NAME}
     volumes:
       - ${APPDATA}/KeepItUp.MagJob/db/magjob:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${MAGJOB_DB_USERNAME} -d ${MAGJOB_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
