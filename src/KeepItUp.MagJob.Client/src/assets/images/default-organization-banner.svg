@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300">
+  <!-- Organization banner based on default avatar style -->
+  <rect width="1200" height="300" fill="#45b0a1" />
+  <circle cx="1050" cy="150" r="90" fill="#2a7d73" opacity="0.4" />
+  <circle cx="150" cy="150" r="90" fill="#2a7d73" opacity="0.4" />
+  <circle cx="600" cy="150" r="60" fill="#2a7d73" opacity="0.3" />
+  <rect x="300" y="160" width="600" height="40" rx="20" ry="20" fill="#2a7d73" opacity="0.4" />
+  <rect x="400" y="100" width="400" height="30" rx="15" ry="15" fill="#2a7d73" opacity="0.4" />
+</svg>

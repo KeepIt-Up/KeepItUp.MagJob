@@ -1,0 +1,135 @@
+<div class="max-w-2xl mx-auto p-4">
+  <form class="space-y-6" [formGroup]="organizationForm" (ngSubmit)="onSubmit()">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Organization Profile</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Update your organization's information and profile images
+      </p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div
+      *ngIf="successMessage"
+      class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+    >
+      {{ successMessage }}
+    </div>
+
+    <div
+      *ngIf="errorMessage"
+      class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="flex justify-center mb-4">
+      <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
+    </div>
+
+    <!-- Profile Image Section -->
+    <div
+      class="flex flex-col md:flex-row gap-6 items-center bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 mb-6"
+    >
+      <div class="relative group">
+        <img
+          [src]="organization.logoUrl || 'assets/images/default-organization-logo.svg'"
+          alt="Organization logo"
+          class="w-32 h-32 rounded-full object-cover border-2 border-primary-500"
+        />
+        <button
+          type="button"
+          class="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          (click)="openProfileDialog()"
+          aria-label="Change profile picture"
+        >
+          <span class="text-white text-xs">Change</span>
+        </button>
+      </div>
+      <div class="flex flex-col">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Profile Photo</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          File must be JPEG, PNG or GIF, maximum size of 10 MB
+        </p>
+        <app-button type="button" variant="primary" class="mt-3" (clicked)="openProfileDialog()">
+          Update Profile Photo
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Banner Image Section -->
+    <div
+      class="flex flex-col gap-6 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 mb-6"
+    >
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Profile Banner</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          File format: JPEG, PNG or GIF (recommended 1200 x 480 pixels, max 10 MB)
+        </p>
+      </div>
+
+      <img
+        class="w-full h-40 md:h-60 object-cover rounded-lg"
+        [src]="organization.bannerUrl || 'assets/images/default-organization-banner.svg'"
+        alt="Organization banner"
+      />
+
+      <div class="flex justify-end">
+        <app-button type="button" variant="primary" (clicked)="openBannerDialog()">
+          Update Banner
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Organization Name -->
+    <app-input
+      type="text"
+      label="Organization Name"
+      formControlName="organizationName"
+      [required]="true"
+      [error]="getErrorMessage('organizationName')"
+      [fullWidth]="true"
+      placeholder="Enter organization name"
+    ></app-input>
+
+    <!-- Organization Description -->
+    <app-textarea
+      label="Organization Description"
+      formControlName="organizationDescription"
+      [fullWidth]="true"
+      placeholder="Here you can write something about your organization"
+      [rows]="4"
+    ></app-textarea>
+
+    <!-- Submit Buttons -->
+    <div class="flex justify-end mt-6">
+      <app-button type="button" variant="outline" class="mr-3" (clicked)="resetForm()">
+        Cancel
+      </app-button>
+      <app-button
+        type="submit"
+        [disabled]="organizationForm.invalid || loading || !organizationForm.dirty"
+      >
+        Save Changes
+      </app-button>
+    </div>
+  </form>
+</div>
+
+<app-image-upload-modal
+  [isOpen]="isProfileModalOpen"
+  [title]="'Upload Profile Image'"
+  [maxFileSize]="10 * 1024 * 1024"
+  [acceptedFileTypes]="['image/jpeg', 'image/png', 'image/gif']"
+  (closeModal)="isProfileModalOpen = false"
+  (imageUpload)="handleProfileUpload($event)"
+></app-image-upload-modal>
+
+<app-image-upload-modal
+  [isOpen]="isBannerModalOpen"
+  [title]="'Upload Banner Image'"
+  [maxFileSize]="10 * 1024 * 1024"
+  [acceptedFileTypes]="['image/jpeg', 'image/png', 'image/gif']"
+  (closeModal)="isBannerModalOpen = false"
+  (imageUpload)="handleBannerUpload($event)"
+></app-image-upload-modal>

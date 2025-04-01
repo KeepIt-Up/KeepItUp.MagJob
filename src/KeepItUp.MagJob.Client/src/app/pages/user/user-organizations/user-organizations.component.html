@@ -1,0 +1,32 @@
+<app-header [title]="'Your Organizations'">
+  <app-button
+    type="button"
+    [routerLink]="['/create-organization']"
+    variant="primary"
+    color="success"
+  >
+    Create Organization
+  </app-button>
+</app-header>
+
+<div class="max-w-7xl mx-auto p-4">
+  <app-infinite-list
+    [paginationOptions$]="paginationOptions$()"
+    [state$]="organizationState$()"
+    (onLoad)="loadMore()"
+  >
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (organization of organizationState$().data; track organization.id) {
+        <app-organization-card [organization]="organization" />
+      }
+    </div>
+    @if (organizationState$().error) {
+      <div class="mt-8">
+        <app-error-alert
+          title="You have no organizations"
+          [error]="organizationState$().error"
+        ></app-error-alert>
+      </div>
+    }
+  </app-infinite-list>
+</div>

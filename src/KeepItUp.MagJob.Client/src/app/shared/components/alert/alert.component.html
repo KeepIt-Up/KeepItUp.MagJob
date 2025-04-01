@@ -1,0 +1,67 @@
+@if (alertVisible()) {
+  <div
+    id="alert-content"
+    class="app-alert {{ customClass() }}"
+    role="alert"
+    [ngClass]="{
+      'app-alert--info': alertType() === 'info',
+      'app-alert--danger': alertType() === 'danger',
+      'app-alert--success': alertType() === 'success',
+      'app-alert--warning': alertType() === 'warning',
+      'app-alert--dark': alertType() === 'dark',
+    }"
+  >
+    <div class="app-alert__header">
+      @if (showDefaultIcon() && !iconName()) {
+        <svg
+          class="app-alert__icon"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+          />
+        </svg>
+      }
+      @if (iconName()) {
+        <ng-icon [name]="iconName()" class="app-alert__icon"></ng-icon>
+      }
+      <span class="sr-only">{{ alertType() }}</span>
+      <h3 class="app-alert__title">{{ title() }}</h3>
+    </div>
+    <div class="app-alert__description">
+      {{ description() }}
+    </div>
+    @if (showActionButtons()) {
+      <div class="app-alert__actions">
+        @if (showDismissButton()) {
+          <app-button
+            type="button"
+            size="md"
+            variant="outline"
+            [color]="alertType()"
+            [iconLeft]="'heroXMark'"
+            (clicked)="dismissClick.emit()"
+            [ariaLabel]="'Close'"
+          >
+            {{ dismissText() }}
+          </app-button>
+        }
+        @if (showViewMoreButton()) {
+          <app-button
+            type="button"
+            size="md"
+            variant="primary"
+            [color]="alertType()"
+            [iconLeft]="'heroEye'"
+            (clicked)="viewMoreClick.emit()"
+          >
+            {{ viewMoreText() }}
+          </app-button>
+        }
+      </div>
+    }
+  </div>
+}

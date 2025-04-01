@@ -1,0 +1,12 @@
+@if (userContextService.user$ | async; as user) {
+  @if (user) {
+    <app-sidebar
+      [title]="user.firstName + ' ' + user.lastName"
+      titlePath=""
+      [sections]="[mainSection, settingsSection]"
+      [footerItems]="footerItems"
+      [sidebarExpanded]="sidebarExpanded"
+      (sidebarExpandedChange)="sidebarExpandedChange.emit($event)"
+    ></app-sidebar>
+  }
+}

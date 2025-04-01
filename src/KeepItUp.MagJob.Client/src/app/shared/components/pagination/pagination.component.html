@@ -1,0 +1,51 @@
+<div class="paginated-list p-4 rounded-lg">
+  <ng-content></ng-content>
+  <nav aria-label="Pagination" class="pagination">
+    @if (showStartEnd) {
+      <button (click)="onPageChange(1)" class="btn">Start</button>
+    }
+    <ul class="inline-flex -space-x-px text-sm">
+      <li>
+        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="prev">
+          Previous
+        </button>
+      </li>
+      @for (number of pagesNumbers; track $index) {
+        <li>
+          <button
+            [disabled]="number === currentPage"
+            (click)="onPageChange(number)"
+            class="{{ number === currentPage ? 'item-active' : 'item' }}"
+          >
+            {{ number }}
+          </button>
+        </li>
+      }
+
+      <li>
+        <button
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+          class="next"
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+    @if (showStartEnd) {
+      <button (click)="onPageChange(totalPages)" class="btn">End</button>
+    }
+    @if (showPageSizeSelector) {
+      <select
+        #pageSizeSelect
+        [(ngModel)]="pageSize"
+        (change)="onPageSizeChange(pageSizeSelect.value)"
+      >
+        <option [value]="10">10 per page</option>
+        <option [value]="25">25 per page</option>
+        <option [value]="50">50 per page</option>
+        <option [value]="100">100 per page</option>
+      </select>
+    }
+  </nav>
+</div>

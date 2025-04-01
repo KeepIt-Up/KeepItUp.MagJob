@@ -1,0 +1,105 @@
+<div class="max-w-2xl mx-auto p-4">
+  <form class="space-y-6" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Update your personal information and profile picture
+      </p>
+    </div>
+
+    <!-- Profile Picture -->
+    <div class="flex flex-col items-center mb-6">
+      <div class="relative group">
+        <img
+          [src]="user?.profileImageUrl || 'assets/images/default-avatar.png'"
+          alt="Profile picture"
+          class="w-32 h-32 rounded-full object-cover border-2 border-primary-500"
+        />
+        <button
+          type="button"
+          class="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          (click)="fileInput.click()"
+          (keydown.enter)="fileInput.click()"
+          (keydown.space)="$event.preventDefault(); fileInput.click()"
+          aria-label="Change profile picture"
+          tabindex="0"
+        >
+          <span class="text-white text-xs">Change</span>
+        </button>
+      </div>
+      <input
+        #fileInput
+        type="file"
+        class="hidden"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+      />
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+        Click on the image to upload a new profile picture
+      </p>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="flex justify-center mb-4">
+      <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
+    </div>
+
+    <!-- Email (Read-only) -->
+    <app-input
+      type="email"
+      label="Email"
+      formControlName="email"
+      [readonly]="true"
+      helperText="Your email address is managed by your identity provider"
+      [fullWidth]="true"
+    ></app-input>
+
+    <!-- First Name -->
+    <app-input
+      type="text"
+      label="First Name"
+      formControlName="firstName"
+      [required]="true"
+      [error]="getErrorMessage('firstName')"
+      [fullWidth]="true"
+    ></app-input>
+
+    <!-- Last Name -->
+    <app-input
+      type="text"
+      label="Last Name"
+      formControlName="lastName"
+      [required]="true"
+      [error]="getErrorMessage('lastName')"
+      [fullWidth]="true"
+    ></app-input>
+
+    <!-- Phone Number -->
+    <app-input
+      type="tel"
+      label="Phone Number"
+      formControlName="phoneNumber"
+      [error]="getErrorMessage('phoneNumber')"
+      [fullWidth]="true"
+    ></app-input>
+
+    <!-- Address -->
+    <app-input
+      type="text"
+      label="Address"
+      formControlName="address"
+      [error]="getErrorMessage('address')"
+      [fullWidth]="true"
+    ></app-input>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end mt-6">
+      <app-button type="button" variant="outline" class="mr-3" (clicked)="resetForm()">
+        Cancel
+      </app-button>
+      <app-button type="submit" [disabled]="userForm.invalid || loading || !userForm.dirty">
+        Save Changes
+      </app-button>
+    </div>
+  </form>
+</div>
