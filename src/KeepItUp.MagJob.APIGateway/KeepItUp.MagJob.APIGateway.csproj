@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+    <Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.1.3" />
 
-  <PropertyGroup>
-    <UserSecretsId>00c58daa-8aac-45ce-be85-f517bb9c8780</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <OutputType>Exe</OutputType>
+        <WebProjectMode>true</WebProjectMode>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />

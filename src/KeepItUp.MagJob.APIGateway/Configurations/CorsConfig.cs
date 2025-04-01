@@ -1,9 +1,9 @@
-namespace KeepItUp.MagJob.APIGateway.Extensions;
+﻿namespace KeepItUp.MagJob.APIGateway;
 
 /// <summary>
 /// Konfiguracja CORS dla aplikacji
 /// </summary>
-public static class IServiceCollectionExtensions
+internal static class CorsConfig
 {
     /// <summary>
     /// Nazwa polityki CORS
@@ -24,13 +24,13 @@ public static class IServiceCollectionExtensions
         services.AddCors(options =>
         {
             options.AddPolicy(CorsPolicyName, builder =>
-            {
-                builder
-                    .WithOrigins(allowedOrigins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
-            });
+        {
+            builder
+          .WithOrigins(allowedOrigins)
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .AllowCredentials();
+        });
         });
 
         return services;
