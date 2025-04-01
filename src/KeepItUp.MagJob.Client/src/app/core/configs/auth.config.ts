@@ -23,5 +23,4 @@ export const authCodeFlowConfig: AuthConfig = {
   clearHashAfterLogin: true,
   nonceStateSeparator: 'semicolon',
   skipIssuerCheck: true,
-  dummyClientSecret: environment.keycloakConfig.dummyClientSecret,
 };
