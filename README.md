@@ -61,6 +61,7 @@ The application is built using a microservices architecture with the following c
    - Keycloak Admin: http://localhost:18080
 
 ## Architecture
+
 ![Architecture Diagram](docs/img/architecture-v1.png)
 
 ## Development
@@ -68,7 +69,6 @@ The application is built using a microservices architecture with the following c
 ### Project Structure
 
 - `docs/` - Contains all the documentation for the project
-- `resources/` - Contains all the resources for the project
 - `src/` - Contains all the source code for the microservices
   - `KeepItUp.MagJob.Client/` - Angular frontend application
   - `KeepItUp.MagJob.APIGateway/` - API Gateway service
