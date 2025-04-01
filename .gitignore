@@ -365,3 +365,11 @@ FodyWeavers.xsd
 # Environment files
 .env
 environment.local.ts
+
+# IntelliJ IDEA
+.idea/
+
+# VSCode
+.vscode/
+
+
