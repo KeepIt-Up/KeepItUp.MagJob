@@ -72,7 +72,6 @@ public abstract class BaseKeycloakClient
             var clientContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("client_id", Options.ClientId),
-                new KeyValuePair<string, string>("client_secret", Options.ClientSecret),
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             });
 

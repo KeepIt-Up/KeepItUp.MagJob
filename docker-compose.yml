@@ -31,7 +31,9 @@ services:
     environment:
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_URLS=http://+:80
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - KeycloakAdmin__ClientSecret=pGKFGTy8hVmKubkeGOeOvNu3dsFTKJQO
+      - KeycloakAdmin__ServerUrl=http://keycloak:8080
+      - ConnectionStrings__DefaultConnection=Host=magjob.database;Database=magjob;Username=postgres;Password=postgres
     depends_on:
       - magjob.database
       - keycloak
