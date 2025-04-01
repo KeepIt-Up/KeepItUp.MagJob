@@ -80,7 +80,6 @@ public static class SwaggerConfig
                 c.OAuth2Client = new OAuth2ClientSettings
                 {
                     ClientId = keycloakClientWeb.ClientId,
-                    ClientSecret = keycloakClientWeb.ClientSecret,
                     AppName = "MagJob Identity API",
                     Realm = keycloakClientWeb.Realm,
                     UsePkceWithAuthorizationCodeGrant = true
@@ -88,7 +87,16 @@ public static class SwaggerConfig
 
                 // Add the redirect URL for Keycloak
                 var configuration = app.ApplicationServices.GetRequiredService<IConfiguration>();
-                var applicationUrl = configuration["ApplicationUrl"];
+                var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
+
+                // Dynamiczne pobieranie adresu URL z aktualnego żądania
+                var request = httpContextAccessor?.HttpContext?.Request;
+                if (request == null)
+                {
+                    throw new InvalidOperationException("HttpContextAccessor nie zwrócił prawidłowego żądania");
+                }
+
+                var applicationUrl = $"{request.Scheme}://{request.Host}";
 
                 var redirectUrl = $"{applicationUrl}/swagger/oauth2-redirect.html";
                 logger.LogInformation("OAuth2 redirect URL: {RedirectUrl}", redirectUrl);

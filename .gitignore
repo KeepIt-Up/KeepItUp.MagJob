@@ -366,10 +366,12 @@ FodyWeavers.xsd
 .env
 environment.local.ts
 
+# Example files
+appsettings.Local.json
+
 # IntelliJ IDEA
 .idea/
 
 # VSCode
 .vscode/
-
 

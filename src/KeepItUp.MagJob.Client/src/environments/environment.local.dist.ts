@@ -8,8 +8,8 @@ export const environment = {
   apiUrl: 'http://localhost:5000',
   keycloakConfig: {
     url: 'http://localhost:18080',
-    realm: 'magjob-realm',
-    clientId: 'client.web',
+    realm: 'KeepItUp.MagJob.Realm',
+    clientId: 'MagJob.Client',
     redirectUri: `${window.location.origin}/user`,
   },
 };
