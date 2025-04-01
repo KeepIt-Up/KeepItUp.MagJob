@@ -1,11 +1,8 @@
+﻿using KeepItUp.MagJob.APIGateway;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using KeepItUp.MagJob.APIGateway.Extensions;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using System.Text.Json;
-using System.Net.Mime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +33,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseCors(IServiceCollectionExtensions.CorsPolicyName);
+app.UseCors(CorsConfig.CorsPolicyName);
 
 app.UseHttpsRedirection();
 
