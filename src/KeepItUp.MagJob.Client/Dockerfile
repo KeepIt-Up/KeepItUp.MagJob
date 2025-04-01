@@ -15,7 +15,7 @@ COPY src/KeepItUp.MagJob.Client/ ./
 
 
 # Build the application
-RUN npm run build:docker
+RUN npm run build:local
 
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine
