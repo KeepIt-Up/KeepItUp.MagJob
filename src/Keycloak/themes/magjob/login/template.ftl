@@ -125,7 +125,7 @@
             </div>
 
             <div class="footer">
-                <p>&copy; ${.now?string('yyyy')} MagJob 2.0. All rights reserved.</p>
+                <p>&copy; ${.now?string('yyyy')} KeepItUp.MagJob. All rights reserved.</p>
             </div>
         </div>
     </div>
