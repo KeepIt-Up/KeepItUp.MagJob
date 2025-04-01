@@ -1,6 +1,6 @@
-# MagJob 2.0
+# KeepItUp.MagJob
 
-MagJob 2.0 is a microservices-based job management platform designed to help businesses manage their workflow, team communications, and time tracking effectively.
+KeepItUp.MagJob is a microservices-based job management platform designed to help businesses manage their workflow, team communications, and time tracking effectively.
 
 ## Architecture
 
