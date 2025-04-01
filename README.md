@@ -41,13 +41,21 @@ The application is built using a microservices architecture with the following c
    cd KeepItUp.MagJob
    ```
 
-2. Start the application using Docker Compose:
+2. Create a `.env` file based on the example:
+
+   ```
+   cp .env.example .env
+   ```
+
+   Edit the `.env` file to set your environment variables. These are used by Docker Compose to configure the services.
+
+3. Start the application using Docker Compose:
 
    ```
    docker-compose up
    ```
 
-3. Access the application:
+4. Access the application:
    - Frontend: http://localhost:80
    - API Gateway: http://localhost:5000
    - Keycloak Admin: http://localhost:18080
