@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
+using KeepItUp.MagJob.Identity.Core.Exceptions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.SharedKernel.Pagination;
-using KeepItUp.MagJob.Identity.Core.Exceptions;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>

@@ -1,5 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using KeepItUp.MagJob.Identity.SharedKernel;
@@ -11,7 +10,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 {
     private readonly IDomainEventDispatcher? _dispatcher = dispatcher;
 
-    public DbSet<Contributor> Contributors => Set<Contributor>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<Member> Members => Set<Member>();

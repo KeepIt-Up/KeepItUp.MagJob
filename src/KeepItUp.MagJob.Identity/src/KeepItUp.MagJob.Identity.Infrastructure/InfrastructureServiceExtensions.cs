@@ -1,7 +1,6 @@
-﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
+﻿
 using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
-using KeepItUp.MagJob.Identity.Core.Services;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
@@ -31,9 +30,7 @@ public static class InfrastructureServiceExtensions
             .AddSingleton<IFileStorageService, LocalFileStorageService>()
             .AddSingleton<IUserProfilePictureService, UserProfilePictureService>()
             .AddScoped<IOrganizationRepository, OrganizationRepository>()
-            .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IContributorRepository, ContributorRepository>()
-            .AddScoped<IDeleteContributorService, DeleteContributorService>();
+            .AddScoped<IUserRepository, UserRepository>();
 
         // Dodanie usług związanych z Keycloak
         services.AddKeycloakServices();

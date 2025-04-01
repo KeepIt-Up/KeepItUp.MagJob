@@ -1,7 +1,6 @@
-﻿using KeepItUp.MagJob.Identity.Core.UserAggregate;
+﻿using KeepItUp.MagJob.Identity.Core.Exceptions;
+using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
-using Microsoft.EntityFrameworkCore;
-using KeepItUp.MagJob.Identity.Core.Exceptions;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 

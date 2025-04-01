@@ -1,6 +1,4 @@
-﻿using KeepItUp.MagJob.Identity.Core.ContributorAggregate.Repositories;
-using KeepItUp.MagJob.Identity.Infrastructure.Data;
-using KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
+﻿using KeepItUp.MagJob.Identity.Infrastructure.Data;
 
 namespace KeepItUp.MagJob.Identity.IntegrationTests.Data;
 
@@ -31,10 +29,5 @@ public abstract class BaseEfRepoTestFixture
                .UseInternalServiceProvider(serviceProvider);
 
         return builder.Options;
-    }
-
-    protected IContributorRepository GetRepository()
-    {
-        return new ContributorRepository(_dbContext);
     }
 }

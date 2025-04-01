@@ -1,8 +1,7 @@
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
 using KeepItUp.MagJob.Identity.Web.Services;
-using Microsoft.Extensions.Logging;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
