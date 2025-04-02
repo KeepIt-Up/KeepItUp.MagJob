@@ -104,7 +104,7 @@ public static class AuthenticationConfig
           {
           keycloakOptions.ClientId,
           "account",
-          "Client-keycloakClient"
+          "keepitup-magjob-client"
             },
 
                 // Ustaw typy claims dla ról i nazwy użytkownika
