@@ -364,7 +364,6 @@ FodyWeavers.xsd
 
 # Environment files
 .env
-environment.local.ts
 
 # Example files
 appsettings.Local.json
