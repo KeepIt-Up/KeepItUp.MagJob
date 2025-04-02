@@ -1,6 +1,6 @@
 {
   "id": "f4ef7b75-8588-48e1-afcc-72f3d4dce1e7",
-  "realm": "KeepItUp.MagJob.Realm",
+  "realm": "keepitup-magjob",
   "displayName": "MagJob",
   "displayNameHtml": "",
   "notBefore": 0,
@@ -109,6 +109,7 @@
       }
     ],
     "client": {
+      "keepitup-magjob-identity": [],
       "realm-management": [
         {
           "id": "a99876b4-1e16-4dd3-9bb5-8f378192433b",
@@ -323,6 +324,7 @@
       ],
       "security-admin-console": [],
       "admin-cli": [],
+      "keepitup-magjob-client": [],
       "account-console": [],
       "broker": [
         {
@@ -422,9 +424,7 @@
           "containerId": "a40fc7e8-b3ff-414f-aa17-61fe54627626",
           "attributes": {}
         }
-      ],
-      "Client-keycloakClient": [],
-      "Identity-keycloakClient": []
+      ]
     }
   },
   "groups": [],
@@ -484,12 +484,12 @@
   "users": [
     {
       "id": "818ee6cb-3d08-420d-a480-08c70db4a3b4",
-      "username": "service-account-identity-keycloakclient",
+      "username": "service-account-keepitup-magjob-identity",
       "emailVerified": false,
       "createdTimestamp": 1741733096569,
       "enabled": true,
       "totp": false,
-      "serviceAccountClientId": "Identity-keycloakClient",
+      "serviceAccountClientId": "keepitup-magjob-identity",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
@@ -534,13 +534,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/KeepItUp.MagJob.Realm/account/",
+      "baseUrl": "/realms/keepitup-magjob/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/KeepItUp.MagJob.Realm/account/*"
+        "/realms/keepitup-magjob/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -581,13 +581,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/KeepItUp.MagJob.Realm/account/",
+      "baseUrl": "/realms/keepitup-magjob/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/KeepItUp.MagJob.Realm/account/*"
+        "/realms/keepitup-magjob/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -723,7 +723,7 @@
     },
     {
       "id": "24e9914b-1f09-479a-838a-5009f3272149",
-      "clientId": "Client-keycloakClient",
+      "clientId": "keepitup-magjob-client",
       "name": "KeepItUp.MagJob.Client Client",
       "description": "",
       "rootUrl": "http://localhost:4200/",
@@ -840,7 +840,7 @@
     },
     {
       "id": "1116dc03-3ec4-44d6-be7b-b9c28296a74e",
-      "clientId": "Identity-keycloakClient",
+      "clientId": "keepitup-magjob-identity",
       "name": "KeepItUp.MagJob.Identity Client",
       "description": "Identity Microservice",
       "rootUrl": "https://localhost:57679",
@@ -870,7 +870,7 @@
       "attributes": {
         "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1743546886",
+        "client.secret.creation.time": "1743614958",
         "backchannel.logout.session.required": "true",
         "login_theme": "magjob",
         "frontchannel.logout.session.required": "true",
@@ -948,13 +948,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/KeepItUp.MagJob.Realm/console/",
+      "baseUrl": "/admin/keepitup-magjob/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/KeepItUp.MagJob.Realm/console/*"
+        "/admin/keepitup-magjob/console/*"
       ],
       "webOrigins": [
         "+"
@@ -1443,8 +1443,8 @@
           "protocolMapper": "oidc-allowed-origins-mapper",
           "consentRequired": false,
           "config": {
-            "introspection.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
           }
         }
       ]
@@ -1692,8 +1692,8 @@
           "consentRequired": false,
           "config": {
             "id.token.claim": "true",
-            "introspection.token.claim": "true",
             "access.token.claim": "true",
+            "introspection.token.claim": "true",
             "userinfo.token.claim": "true"
           }
         }
@@ -1921,14 +1921,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-sha256-pairwise-sub-mapper",
-            "saml-user-property-mapper",
-            "oidc-usermodel-property-mapper",
             "oidc-full-name-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "saml-user-attribute-mapper",
+            "oidc-usermodel-property-mapper",
             "saml-role-list-mapper",
-            "oidc-full-name-mapper"
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-full-name-mapper",
+            "saml-user-property-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-user-attribute-mapper"
           ]
         }
       },
@@ -1967,14 +1967,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-usermodel-attribute-mapper",
             "oidc-address-mapper",
-            "saml-user-attribute-mapper",
-            "oidc-full-name-mapper",
+            "saml-role-list-mapper",
             "saml-user-property-mapper",
             "oidc-usermodel-property-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "saml-role-list-mapper"
+            "oidc-full-name-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "saml-user-attribute-mapper"
           ]
         }
       }
