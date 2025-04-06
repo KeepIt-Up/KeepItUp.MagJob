@@ -44,34 +44,53 @@
 
 // Calendar event styles
 .cal-event {
-  background-color: #3b82f6;
-  color: white;
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  margin: 0.125rem;
+  @apply bg-primary text-white p-1 rounded m-0.5 cursor-pointer transition-colors duration-200 overflow-hidden;
   
   &:hover {
-    background-color: #2563eb;
+    @apply bg-primary-600;
+  }
+
+  &.cal-draggable {
+    @apply cursor-move;
+  }
+
+  &.cal-drag-over {
+    @apply bg-primary-700;
   }
 }
 
 .cal-event-title {
-  font-weight: bold;
+  @apply font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap;
 }
 
 .cal-day-badge {
-  margin-top: 18px;
-  margin-left: 10px;
-  background-color: #b94a48;
-  display: inline-block;
-  min-width: 10px;
-  padding: 3px 7px;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  color: white;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  border-radius: 10px;
+  @apply mt-[18px] ml-[10px] bg-red-600 inline-block min-w-[10px] px-2 py-1 text-xs font-bold leading-none text-white text-center whitespace-nowrap align-middle rounded-full;
+}
+
+// Day view styles
+.cal-day-view {
+  .cal-time-events {
+    @apply border-r border-gray-200 dark:border-gray-700;
+  }
+
+  .cal-hour-segment {
+    @apply border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .cal-event-container {
+    @apply relative;
+  }
+}
+
+// Drag and drop styles
+.cal-drag-over {
+  @apply bg-primary-700;
+}
+
+.cal-draggable {
+  @apply cursor-move;
+}
+
+.cal-drag-active {
+  @apply opacity-50;
 } 
