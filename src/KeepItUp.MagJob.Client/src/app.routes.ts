@@ -12,6 +12,7 @@ import { MembersTableComponent } from '@pages/organization/members-table/member-
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { OrganizationComponent } from '@pages/organization/organization.component';
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
+import { CalendarPageComponent } from './app/pages/calendar-page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -42,6 +43,7 @@ export const routes: Routes = [
       { path: 'organizations', component: UserOrganizationsComponent },
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
+      { path: 'calendar', component: CalendarPageComponent },
       { path: '**', redirectTo: 'organizations' },
     ],
   },
