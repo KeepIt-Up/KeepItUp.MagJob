@@ -8,14 +8,20 @@
           [view]="view"
           [(viewDate)]="viewDate"
         >
-          Previous
+          <span class="flex items-center gap-2">
+            <i class="bi bi-chevron-left"></i>
+            <span>Previous</span>
+          </span>
         </button>
         <button
           class="btn-nav"
           mwlCalendarToday
           [(viewDate)]="viewDate"
         >
-          Today
+          <span class="flex items-center gap-2">
+            <i class="bi bi-calendar-event"></i>
+            <span>Today</span>
+          </span>
         </button>
         <button
           class="btn-nav"
@@ -23,7 +29,10 @@
           [view]="view"
           [(viewDate)]="viewDate"
         >
-          Next
+          <span class="flex items-center gap-2">
+            <i class="bi bi-chevron-right"></i>
+            <span>Next</span>
+          </span>
         </button>
       </div>
       <h3 class="current-date">{{ viewDate | date:'MMMM yyyy' }}</h3>

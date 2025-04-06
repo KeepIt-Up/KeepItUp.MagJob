@@ -13,6 +13,280 @@
   }
 }
 
+/* Calendar Styles */
+.cal-month-view {
+  .cal-header {
+    text-align: center;
+    font-weight: bold;
+    .cal-cell {
+      padding: 5px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      white-space: nowrap;
+    }
+  }
+
+  .cal-days {
+    border: 1px solid;
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  .cal-cell-top {
+    min-height: 78px;
+    flex: 1;
+  }
+
+  .cal-cell-row {
+    display: flex;
+    @apply border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .cal-cell {
+    float: left;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    @apply border-r border-gray-200 dark:border-gray-700;
+  }
+
+  .cal-day-cell {
+    min-height: 100px;
+    @apply bg-white dark:bg-gray-800;
+
+    &:not(:last-child) {
+      @apply border-r border-gray-200 dark:border-gray-700;
+    }
+
+    &:hover {
+      @apply bg-gray-50 dark:bg-gray-700;
+    }
+  }
+
+  .cal-day-cell.cal-today {
+    @apply bg-blue-50 dark:bg-blue-900;
+  }
+
+  .cal-day-cell.cal-weekend {
+    @apply bg-gray-50 dark:bg-gray-700;
+  }
+
+  .cal-day-cell.cal-drag-over {
+    @apply bg-blue-100 dark:bg-blue-800;
+  }
+
+  .cal-day-cell.cal-out-month {
+    @apply bg-gray-100 dark:bg-gray-900;
+    .cal-day-number {
+      opacity: 0.5;
+    }
+  }
+}
+
+.cal-week-view {
+  .cal-day-headers {
+    display: flex;
+    padding-left: 70px;
+    border: 1px solid;
+    @apply border-gray-200 dark:border-gray-700;
+
+    .cal-header {
+      flex: 1;
+      text-align: center;
+      padding: 5px;
+
+      &:not(:last-child) {
+        @apply border-r border-gray-200 dark:border-gray-700;
+      }
+
+      &:hover {
+        @apply bg-gray-50 dark:bg-gray-700;
+      }
+
+      &.cal-today {
+        @apply bg-blue-50 dark:bg-blue-900;
+      }
+
+      &.cal-weekend span {
+        @apply text-gray-500 dark:text-gray-400;
+      }
+    }
+  }
+
+  .cal-all-day-events {
+    @apply border-l border-r border-b border-gray-200 dark:border-gray-700;
+    padding-left: 70px;
+  }
+
+  .cal-time-events {
+    position: relative;
+    border: 1px solid;
+    @apply border-gray-200 dark:border-gray-700;
+    padding-left: 70px;
+
+    .cal-time-label-column {
+      width: 70px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      @apply border-r border-gray-200 dark:border-gray-700;
+      background-color: inherit;
+    }
+  }
+
+  .cal-time-label {
+    @apply text-sm text-gray-600 dark:text-gray-400;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .cal-day-columns {
+    display: flex;
+    position: relative;
+
+    .cal-day-column {
+      flex: 1;
+      position: relative;
+
+      &:not(:last-child) {
+        @apply border-r border-gray-200 dark:border-gray-700;
+      }
+    }
+  }
+
+  .cal-event-container {
+    position: absolute;
+    z-index: 1;
+  }
+}
+
+.cal-day-view {
+  .cal-hour {
+    @apply text-sm text-gray-600 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700;
+
+    &:last-child {
+      @apply border-b-0;
+    }
+  }
+
+  .cal-hour-segment {
+    height: 30px;
+    position: relative;
+
+    &:hover {
+      @apply bg-gray-50 dark:bg-gray-700;
+    }
+  }
+
+  .cal-time-marker {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    @apply bg-red-500;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .cal-event-container {
+    position: absolute;
+    width: calc(100% - 70px);
+    margin-left: 70px;
+  }
+
+  .cal-all-day-events {
+    @apply border border-gray-200 dark:border-gray-700 mb-2;
+    padding-left: 70px;
+  }
+}
+
+.cal-event {
+  @apply bg-primary text-white p-1 rounded m-0.5 cursor-pointer transition-colors duration-200 overflow-hidden;
+  
+  &:hover {
+    @apply bg-primary-600;
+  }
+
+  .cal-event-title {
+    @apply font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+
+  .cal-event-actions {
+    @apply flex gap-1 mt-1;
+  }
+}
+
+.calendar-container {
+  @apply p-4;
+
+  .calendar-header {
+    @apply mb-4;
+
+    .controls {
+      @apply flex justify-between items-center flex-wrap gap-4;
+
+      .navigation-buttons, .view-buttons {
+        @apply flex gap-2;
+      }
+
+      .current-date {
+        @apply m-0 text-2xl font-medium;
+      }
+    }
+  }
+
+  .btn-nav, .btn-view {
+    @apply px-4 py-2 border border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900 rounded-md cursor-pointer transition-all duration-200;
+
+    span {
+      @apply flex items-center gap-2 text-gray-900 dark:text-white;
+    }
+
+    i {
+      @apply text-lg text-gray-900 dark:text-white;
+    }
+
+    &:hover {
+      @apply bg-blue-100 dark:bg-blue-800;
+    }
+
+    &.active {
+      @apply bg-primary text-white border-primary;
+
+      span, i {
+        @apply text-white;
+      }
+    }
+  }
+
+  /* Target Angular-rendered buttons */
+  button[class*="btn-nav"], button[class*="btn-view"] {
+    span {
+      @apply text-gray-900 dark:text-white;
+    }
+
+    i {
+      @apply text-gray-900 dark:text-white;
+    }
+  }
+
+  [data-theme="dark"] {
+    button[class*="btn-nav"], button[class*="btn-view"] {
+      span, i {
+        @apply text-white;
+      }
+    }
+  }
+}
+
+.cal-event-title {
+  @apply font-medium;
+}
+
+.cal-day-badge {
+  @apply mt-4 ml-2 bg-red-500 inline-block min-w-[20px] px-2 py-1 text-xs font-bold leading-none text-white text-center whitespace-nowrap align-middle rounded-full;
+}
+
 @layer components {
   .mg-btn {
     @apply flex flex-row justify-center items-center;

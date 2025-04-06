@@ -3,9 +3,16 @@ import {
   ChangeDetectionStrategy,
   OnInit,
 } from '@angular/core';
-import { CalendarEvent, CalendarView, CalendarEventAction } from 'angular-calendar';
+import { 
+  CalendarEvent, 
+  CalendarView, 
+  CalendarEventAction, 
+  CalendarUtils, 
+  CalendarModule,
+  CalendarA11y,
+  CalendarEventTitleFormatter 
+} from 'angular-calendar';
 import { Subject } from 'rxjs';
-import { CalendarModule } from 'angular-calendar';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import moment from 'moment';
@@ -18,6 +25,11 @@ interface CalendarEventExtended extends CalendarEvent {
   selector: 'app-calendar',
   standalone: true,
   imports: [CommonModule, FormsModule, CalendarModule, DatePipe],
+  providers: [
+    CalendarUtils, 
+    CalendarA11y,
+    CalendarEventTitleFormatter
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
@@ -80,7 +92,7 @@ export class CalendarComponent implements OnInit {
   }
 
   deleteEvent(eventToDelete: CalendarEventExtended): void {
-    this.events = this.events.filter((event) => event !== eventToDelete);
+    this.events = this.events.filter(event => event !== eventToDelete);
   }
 
   setView(view: CalendarView): void {
