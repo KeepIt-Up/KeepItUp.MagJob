@@ -36,7 +36,7 @@ export class RolesTableComponent implements OnInit {
         sortField: 'id',
         ascending: true,
       };
-      this.endpointURL = `/api/organizations/roles`;
+      this.endpointURL = `/organizations/roles`;
     });
   }
 

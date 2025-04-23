@@ -54,4 +54,4 @@ public class InvitationDto
     /// Identyfikator użytkownika, który utworzył zaproszenie.
     /// </summary>
     public Guid CreatedBy { get; set; }
-} 
+}

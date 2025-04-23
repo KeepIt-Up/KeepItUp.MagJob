@@ -62,6 +62,52 @@ export class OrganizationService {
     );
   }
 
+  /**
+   * Update organization logo with file upload
+   */
+  updateLogo(organizationId: string, logoFile: File): Observable<{ logoUrl: string }> {
+    this.stateService.setLoading(true);
+    return this.apiService.updateLogo(organizationId, logoFile).pipe(
+      tap(response => {
+        // Get current organization and update its logo URL
+        const currentOrg = this.$organization();
+        if (currentOrg) {
+          const updatedOrg = { ...currentOrg, logoUrl: response.logoUrl };
+          this.stateService.setData(updatedOrg);
+        }
+        this.notificationService.show('Organization logo updated successfully', 'success');
+      }),
+      catchError(error => {
+        this.stateService.setError(error);
+        this.notificationService.show('Failed to update organization logo', 'error');
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  /**
+   * Update organization banner with file upload
+   */
+  updateBanner(organizationId: string, bannerFile: File): Observable<{ bannerUrl: string }> {
+    this.stateService.setLoading(true);
+    return this.apiService.updateBanner(organizationId, bannerFile).pipe(
+      tap(response => {
+        // Get current organization and update its banner URL
+        const currentOrg = this.$organization();
+        if (currentOrg) {
+          const updatedOrg = { ...currentOrg, bannerUrl: response.bannerUrl };
+          this.stateService.setData(updatedOrg);
+        }
+        this.notificationService.show('Organization banner updated successfully', 'success');
+      }),
+      catchError(error => {
+        this.stateService.setError(error);
+        this.notificationService.show('Failed to update organization banner', 'error');
+        return throwError(() => error);
+      }),
+    );
+  }
+
   createOrganization(payload: CreateOrganizationPayload): Observable<any> {
     return this.apiService.create(payload).pipe(
       tap(organization => {
@@ -78,18 +124,20 @@ export class OrganizationService {
 
   getInvitations(): Observable<any> {
     const query = { id: this.$organization()?.id };
-    return this.apiService.getInvitations(query, this.invitationsPaginationOptions$()).pipe(
-      tap((response: PaginatedResponse<Invitation>) => {
-        if (response.items.length === 0) {
-          throw new Error('No invitations found');
-        }
-        this.invitationStateService.setData(response);
-      }),
-      catchError(error => {
-        console.log(error);
-        this.invitationStateService.setError(error);
-        throw error;
-      }),
-    );
+    return this.apiService
+      .getInvitations(this.$organization()?.id ?? '', query, this.invitationsPaginationOptions$())
+      .pipe(
+        tap((response: PaginatedResponse<Invitation>) => {
+          if (response.items.length === 0) {
+            throw new Error('No invitations found');
+          }
+          this.invitationStateService.setData(response);
+        }),
+        catchError(error => {
+          console.log(error);
+          this.invitationStateService.setError(error);
+          throw error;
+        }),
+      );
   }
 }

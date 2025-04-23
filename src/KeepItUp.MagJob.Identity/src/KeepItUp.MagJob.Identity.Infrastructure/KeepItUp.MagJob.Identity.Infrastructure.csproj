@@ -3,9 +3,9 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.SharedKernel" />
-    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MailKit" />
+    <PackageReference Include="Mapster" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
@@ -21,5 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.Core\KeepItUp.MagJob.Identity.Core.csproj" />
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.UseCases\KeepItUp.MagJob.Identity.UseCases.csproj" />
+    <ProjectReference Include="..\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj" />
   </ItemGroup>
 </Project>

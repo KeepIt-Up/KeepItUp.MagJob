@@ -1,4 +1,4 @@
-namespace KeepItUp.MagJob.Identity.Web.Users;
+﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Odpowiedź dla endpointu UpdateUserEndpoint.
@@ -13,7 +13,7 @@ public class UpdateUserResponse
     /// <summary>
     /// Zewnętrzny identyfikator użytkownika (np. z Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres email użytkownika.
@@ -34,4 +34,19 @@ public class UpdateUserResponse
     /// Czy użytkownik jest aktywny.
     /// </summary>
     public bool IsActive { get; set; }
-} 
+
+    /// <summary>
+    /// URL do zdjęcia profilowego użytkownika.
+    /// </summary>
+    public string? ProfileImageUrl { get; set; }
+
+    /// <summary>
+    /// Numer telefonu użytkownika.
+    /// </summary>
+    public string? PhoneNumber { get; set; }
+
+    /// <summary>
+    /// Adres użytkownika.
+    /// </summary>
+    public string? Address { get; set; }
+}

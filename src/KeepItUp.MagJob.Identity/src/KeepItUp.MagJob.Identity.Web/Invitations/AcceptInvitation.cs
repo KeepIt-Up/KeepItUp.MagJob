@@ -26,7 +26,8 @@ public class AcceptInvitation(IMediator mediator, ICurrentUserAccessor currentUs
             .ProducesProblem(401)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Akceptuje zaproszenie do organizacji";
             s.Description = "Akceptuje zaproszenie do organizacji na podstawie identyfikatora i tokenu";
             s.ExampleRequest = new AcceptInvitationRequest { InvitationId = Guid.NewGuid(), Token = "token" };

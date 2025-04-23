@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,7 +8,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRolePer
 /// Handler dla komendy <see cref="UpdateRolePermissionsCommand"/>.
 /// </summary>
 public class UpdateRolePermissionsCommandHandler(
-    IRepository<Organization> organizationRepository,
+    IOrganizationRepository organizationRepository,
     ILogger<UpdateRolePermissionsCommandHandler> logger)
     : IRequestHandler<UpdateRolePermissionsCommand, Result>
 {
@@ -26,36 +23,26 @@ public class UpdateRolePermissionsCommandHandler(
         try
         {
             // Pobieramy organizację wraz z rolami
-            var spec = new OrganizationWithRolesSpec(request.OrganizationId);
-            var organization = await organizationRepository.FirstOrDefaultAsync(spec, cancellationToken);
+            var organization = await organizationRepository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o identyfikatorze {request.OrganizationId}.");
             }
 
-            // Sprawdzamy, czy użytkownik ma dostęp do organizacji
-            if (!organization.HasAccess(request.UserId))
-            {
-                return Result.Forbidden("Brak dostępu do organizacji.");
-            }
 
             // Pobieramy rolę
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o identyfikatorze {request.RoleId} w organizacji.");
             }
 
-            // Aktualizujemy uprawnienia roli
-            role.ClearPermissions();
-            foreach (var permissionName in request.Permissions)
-            {
-                role.AddPermission(new Permission(permissionName));
-            }
-
-            // Zapisujemy zmiany
-            await organizationRepository.UpdateAsync(organization, cancellationToken);
+            // Aktualizujemy uprawnienia roli przy użyciu nowej metody
+            await organizationRepository.UpdateRolePermissionsAsync(request.RoleId, request.Permissions, cancellationToken);
 
             return Result.Success();
         }
@@ -65,4 +52,4 @@ public class UpdateRolePermissionsCommandHandler(
             return Result.Error("Wystąpił błąd podczas aktualizacji uprawnień roli.");
         }
     }
-} 
+}

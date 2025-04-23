@@ -27,7 +27,8 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Aktualizuje istniejącą organizację";
             s.Description = "Aktualizuje istniejącą organizację o podanym identyfikatorze";
             s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji" };
@@ -102,4 +103,4 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
             await SendErrorsAsync(401, ct);
         }
     }
-} 
+}

@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitation;
@@ -8,6 +7,11 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitat
 /// </summary>
 public record RejectInvitationCommand : IRequest<Result>
 {
+    /// <summary>
+    /// Identyfikator organizacji.
+    /// </summary>
+    public Guid OrganizationId { get; init; }
+
     /// <summary>
     /// Identyfikator zaproszenia.
     /// </summary>
@@ -22,4 +26,4 @@ public record RejectInvitationCommand : IRequest<Result>
     /// Identyfikator użytkownika odrzucającego zaproszenie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

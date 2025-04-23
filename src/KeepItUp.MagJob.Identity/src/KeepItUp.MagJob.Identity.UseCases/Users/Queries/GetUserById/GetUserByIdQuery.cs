@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
@@ -12,4 +11,4 @@ public record GetUserByIdQuery : IRequest<Result<UserDto>>
     /// Identyfikator użytkownika.
     /// </summary>
     public Guid Id { get; init; }
-} 
+}

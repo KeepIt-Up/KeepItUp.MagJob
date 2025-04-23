@@ -21,6 +21,16 @@ public class OrganizationDto
     public string? Description { get; set; }
 
     /// <summary>
+    /// URL do logo organizacji.
+    /// </summary>
+    public string? LogoUrl { get; set; }
+
+    /// <summary>
+    /// URL do bannera organizacji.
+    /// </summary>
+    public string? BannerUrl { get; set; }
+
+    /// <summary>
     /// Identyfikator właściciela organizacji.
     /// </summary>
     public Guid OwnerId { get; set; }
@@ -34,4 +44,4 @@ public class OrganizationDto
     /// Lista ról użytkownika w organizacji.
     /// </summary>
     public List<string> UserRoles { get; set; } = new List<string>();
-} 
+}

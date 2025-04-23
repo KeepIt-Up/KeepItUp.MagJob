@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+aside {
+  transition:
+    width 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+a {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  aside.w-64 {
+    width: 100%;
+  }
+
+  button.absolute.-right-5 {
+    right: 10px;
+  }
+}

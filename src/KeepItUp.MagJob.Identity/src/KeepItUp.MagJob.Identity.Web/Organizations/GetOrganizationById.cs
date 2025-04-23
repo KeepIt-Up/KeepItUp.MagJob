@@ -18,15 +18,11 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
     public override void Configure()
     {
         Get(GetOrganizationByIdRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("GetOrganization")
-            .Produces<GetOrganizationByIdResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
-        Summary(s => {
+            .Produces<GetOrganizationByIdResponse>(200));
+        Summary(s =>
+        {
             s.Summary = "Pobiera organizację";
             s.Description = "Pobiera organizację o podanym identyfikatorze";
         });
@@ -78,7 +74,9 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
                 Description = result.Value.Description,
                 OwnerId = result.Value.OwnerId,
                 IsOwner = result.Value.OwnerId == userGuid,
-                MemberCount = 0 // Tymczasowo ustawiamy na 0
+                MemberCount = 0, // Tymczasowo ustawiamy na 0
+                LogoUrl = result.Value.LogoUrl,
+                BannerUrl = result.Value.BannerUrl
             };
 
             await SendOkAsync(Response, ct);
@@ -89,4 +87,4 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
             await SendErrorsAsync(401, ct);
         }
     }
-} 
+}

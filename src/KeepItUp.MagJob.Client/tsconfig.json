@@ -50,6 +50,9 @@
       ],
       "@environments/*": [
         "./src/environments/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
       ]
     }
   },

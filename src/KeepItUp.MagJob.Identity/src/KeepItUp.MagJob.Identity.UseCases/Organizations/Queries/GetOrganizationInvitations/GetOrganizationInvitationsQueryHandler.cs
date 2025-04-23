@@ -1,8 +1,6 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
+﻿using System.Linq.Expressions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -11,9 +9,9 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizatio
 /// <summary>
 /// Handler dla zapytania GetOrganizationInvitationsQuery.
 /// </summary>
-public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganizationInvitationsQuery, Result<List<InvitationDto>>>
+public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganizationInvitationsQuery, Result<PaginationResult<InvitationDto>>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetOrganizationInvitationsQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +20,7 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationInvitationsQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetOrganizationInvitationsQueryHandler> logger)
     {
         _repository = repository;
@@ -34,65 +32,57 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
     /// </summary>
     /// <param name="request">Zapytanie GetOrganizationInvitationsQuery.</param>
     /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista zaproszeń do organizacji.</returns>
-    public async Task<Result<List<InvitationDto>>> Handle(GetOrganizationInvitationsQuery request, CancellationToken cancellationToken)
+    /// <returns>Lista zaproszeń do organizacji z paginacją.</returns>
+    public async Task<Result<PaginationResult<InvitationDto>>> Handle(GetOrganizationInvitationsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithInvitationsSpec(request.OrganizationId), cancellationToken);
-
-            if (organization == null)
+            // Sprawdź czy organizacja istnieje
+            if (!await _repository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
-                return Result<List<InvitationDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
+                return Result<PaginationResult<InvitationDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do przeglądania zaproszeń
-            if (organization.OwnerId != request.UserId)
+            // // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
+            // bool hasAccess = await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
+
+            // if (!hasAccess)
+            // {
+            //     return Result<PaginationResult<InvitationDto>>.Forbidden("Brak dostępu do organizacji.");
+            // }
+
+            // Definiujemy selektor do mapowania Invitation na InvitationDto
+            Expression<Func<Invitation, InvitationDto>> selector = i => new InvitationDto
             {
-                var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                if (requestingMember == null || !requestingMember.Roles.Any(r => r.Name == "Admin"))
-                {
-                    return Result<List<InvitationDto>>.Forbidden("Brak uprawnień do przeglądania zaproszeń organizacji.");
-                }
-            }
+                Id = i.Id,
+                OrganizationId = i.OrganizationId,
+                Email = i.Email,
+                Token = i.Token,
+                Status = i.Status.ToString(),
+                ExpiresAt = i.ExpiresAt,
+                IsExpired = i.IsExpired,
+                CreatedAt = i.CreatedAt,
+                CreatedBy = Guid.Empty // Tymczasowa wartość domyślna
+            };
 
-            var result = new List<InvitationDto>();
+            // Definiujemy filtr na Status.Pending
+            Expression<Func<Invitation, bool>> filter = i => i.Status == InvitationStatus.Pending;
 
-            // Mapuj zaproszenia na DTO
-            foreach (var invitation in organization.Invitations)
-            {
-                var role = organization.Roles.FirstOrDefault(r => r.Id == invitation.RoleId);
-                
-                var invitationDto = new InvitationDto
-                {
-                    Id = invitation.Id,
-                    OrganizationId = organization.Id,
-                    Email = invitation.Email,
-                    Token = invitation.Token,
-                    Status = invitation.Status.ToString(),
-                    ExpiresAt = invitation.ExpiresAt,
-                    IsExpired = invitation.IsExpired,
-                    Role = role != null ? new RoleDto
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Description = role.Description,
-                        Color = role.Color,
-                        Permissions = role.Permissions.Select(p => p.Name).ToList()
-                    } : null
-                };
+            // Używamy repozytorium z paginacją
+            var paginationResult = await _repository.GetInvitationsByOrganizationIdWithPaginationAsync(
+                request.OrganizationId,
+                selector,
+                request.PaginationParameters,
+                filter,
+                cancellationToken);
 
-                result.Add(invitationDto);
-            }
-
-            return Result<List<InvitationDto>>.Success(result);
+            return Result<PaginationResult<InvitationDto>>.Success(paginationResult);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas pobierania zaproszeń organizacji o ID {OrganizationId}", request.OrganizationId);
-            return Result<List<InvitationDto>>.Error("Wystąpił błąd podczas pobierania zaproszeń organizacji: " + ex.Message);
+            _logger.LogError(ex, "Błąd podczas pobierania zaproszeń dla organizacji o ID {OrganizationId}",
+                request.OrganizationId);
+            return Result<PaginationResult<InvitationDto>>.Error("Wystąpił błąd podczas pobierania zaproszeń: " + ex.Message);
         }
     }
-} 
+}

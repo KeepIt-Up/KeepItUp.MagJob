@@ -16,4 +16,4 @@ public class GetPermissionsQueryValidator : AbstractValidator<GetPermissionsQuer
             .NotEmpty()
             .WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

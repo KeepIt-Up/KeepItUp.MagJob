@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
@@ -60,4 +60,4 @@ public class UserProfileDto
     /// URL do zdjęcia profilowego użytkownika.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
-} 
+}
