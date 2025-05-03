@@ -3,14 +3,24 @@
     <div
       (click)="onRoleSelect.emit(role)"
       (keydown.enter)="onRoleSelect.emit(role)"
-      [class.bg-gray-100]="selectedRole$()?.id === role.id"
+      [class.bg-white]="selectedRole$()?.id === role.id"
       [class.dark:bg-gray-700]="selectedRole$()?.id === role.id"
-      class="mx-2 p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center gap-2"
+      [class.border-blue-500]="selectedRole$()?.id === role.id"
+      [class.border-2]="selectedRole$()?.id === role.id"
+      [class.border]="selectedRole$()?.id !== role.id"
+      [class.border-transparent]="selectedRole$()?.id !== role.id"
+      class="mx-2 p-3 rounded-lg cursor-pointer hover:bg-white dark:hover:bg-gray-700 text-gray-900 dark:text-white flex items-center gap-2 transition-colors"
       tabindex="0"
       role="button"
     >
-      <div class="rounded-full bi bi-person-gear" [style.color]="role.color || '#6B7280'"></div>
-      {{ role.name }}
+      <div
+        class="flex-shrink-0 w-4 h-4 rounded-full"
+        [style.background-color]="role.color || '#6B7280'"
+      ></div>
+      <span class="truncate">{{ role.name }}</span>
     </div>
+  }
+  @if (roles$().length === 0) {
+    <div class="p-4 text-sm text-gray-500 dark:text-gray-400 text-center">No roles available</div>
   }
 </div>

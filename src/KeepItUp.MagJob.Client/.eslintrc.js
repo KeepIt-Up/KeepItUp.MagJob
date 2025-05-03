@@ -1,5 +1,6 @@
 module.exports = {
     root: true,
+
     ignorePatterns: [
         "dist/**/*",
         "tmp/**/*",
@@ -11,6 +12,7 @@ module.exports = {
         ".angular/cache/**/*",
         "coverage/**/*"
     ],
+
     overrides: [
         {
             files: ['*.ts'],

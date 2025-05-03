@@ -1,7 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Specifications;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -10,25 +7,21 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AcceptInvitat
 /// <summary>
 /// Handler dla komendy AcceptInvitationCommand.
 /// </summary>
-public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result>
+public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result<Guid>>
 {
-    private readonly IRepository<Organization> _organizationRepository;
-    private readonly IReadRepository<User> _userRepository;
+    private readonly IOrganizationRepository _organizationRepository;
     private readonly ILogger<AcceptInvitationCommandHandler> _logger;
 
     /// <summary>
     /// Inicjalizuje nową instancję klasy <see cref="AcceptInvitationCommandHandler"/>.
     /// </summary>
     /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
     /// <param name="logger">Logger.</param>
     public AcceptInvitationCommandHandler(
-        IRepository<Organization> organizationRepository,
-        IReadRepository<User> userRepository,
+        IOrganizationRepository organizationRepository,
         ILogger<AcceptInvitationCommandHandler> logger)
     {
         _organizationRepository = organizationRepository;
-        _userRepository = userRepository;
         _logger = logger;
     }
 
@@ -37,77 +30,36 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
     /// </summary>
     /// <param name="request">Komenda AcceptInvitationCommand.</param>
     /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
-    public async Task<Result> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
+    /// <returns>Identyfikator członka organizacji.</returns>
+    public async Task<Result<Guid>> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz użytkownika
-            var user = await _userRepository.FirstOrDefaultAsync(
-                new UserByIdSpec(request.UserId), cancellationToken);
+            // Pobierz organizację z zaproszeniami
+            var organization = await _organizationRepository.GetByIdWithInvitationsAsync(request.OrganizationId, cancellationToken);
 
-            if (user == null)
-            {
-                return Result.NotFound($"Nie znaleziono użytkownika o ID {request.UserId}.");
-            }
-
-            // Pobierz organizację z zaproszeniem
-            var organization = await _organizationRepository.FirstOrDefaultAsync(
-                new OrganizationWithInvitationSpec(request.InvitationId), cancellationToken);
-
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
-                return Result.NotFound($"Nie znaleziono zaproszenia o ID {request.InvitationId}.");
+                return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Znajdź zaproszenie
-            var invitation = organization.Invitations.FirstOrDefault(i => i.Id == request.InvitationId);
-            if (invitation == null)
-            {
-                return Result.NotFound($"Nie znaleziono zaproszenia o ID {request.InvitationId}.");
-            }
+            // Zaakceptuj zaproszenie i dodaj użytkownika jako członka organizacji
+            var member = organization.AcceptInvitation(request.InvitationId, request.UserId);
 
-            // Sprawdź, czy token jest poprawny
-            if (invitation.Token != request.Token)
-            {
-                return Result.Unauthorized("Nieprawidłowy token zaproszenia.");
-            }
-
-            // Sprawdź, czy zaproszenie jest aktywne
-            if (invitation.Status != InvitationStatus.Pending || invitation.IsExpired)
-            {
-                return Result.Error("Zaproszenie wygasło lub zostało już zaakceptowane/odrzucone.");
-            }
-
-            // Sprawdź, czy adres e-mail użytkownika zgadza się z adresem e-mail zaproszenia
-            if (user.Email != invitation.Email)
-            {
-                return Result.Unauthorized("Adres e-mail użytkownika nie zgadza się z adresem e-mail zaproszenia.");
-            }
-
-            // Sprawdź, czy użytkownik jest już członkiem organizacji
-            var isMember = organization.Members.Any(m => m.UserId == request.UserId);
-            if (isMember)
-            {
-                return Result.Error("Użytkownik jest już członkiem organizacji.");
-            }
-
-            // Akceptuj zaproszenie
-            organization.AcceptInvitation(invitation.Id, request.UserId);
-
-            // Zapisz zmiany w repozytorium
+            // Zapisz zmiany
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
-            await _organizationRepository.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Zaproszenie o ID {InvitationId} zostało zaakceptowane przez użytkownika o ID {UserId}",
-                invitation.Id, request.UserId);
+            _logger.LogInformation("Użytkownik {UserId} zaakceptował zaproszenie {InvitationId} do organizacji {OrganizationId}",
+                request.UserId, request.InvitationId, request.OrganizationId);
 
-            return Result.Success();
+            return Result<Guid>.Success(member.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas akceptacji zaproszenia");
-            return Result.Error("Wystąpił błąd podczas akceptacji zaproszenia: " + ex.Message);
+            _logger.LogError(ex, "Błąd podczas akceptowania zaproszenia {InvitationId} przez użytkownika {UserId} do organizacji {OrganizationId}",
+                request.InvitationId, request.UserId, request.OrganizationId);
+            return Result<Guid>.Error("Wystąpił błąd podczas akceptowania zaproszenia: " + ex.Message);
         }
     }
-} 
+}

@@ -1,48 +1,40 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { ImageService } from '@shared/services/image.service';
-import { SafeUrl } from '@angular/platform-browser';
-import { Organization } from '@organizations/models/organization.model';
-
-interface NavItem {
-  path: string;
-  icon: string;
-  label: string;
-}
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CurrentOrganization } from '@organizations/models/current-organization.model';
+import {
+  SidebarComponent,
+  NavSection,
+  NavItem,
+} from '@shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-organization-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [SidebarComponent],
   templateUrl: './organization-sidebar.component.html',
+  standalone: true,
 })
 export class OrganizationSidebarComponent {
-  @Input() organization!: Organization;
-  sidebarExpanded!: boolean;
+  @Input() organization!: CurrentOrganization;
+  @Input() sidebarExpanded = false;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
 
-  private imageService = inject(ImageService);
+  mainSection: NavSection = {
+    title: 'Main',
+    items: [
+      { path: 'dashboard', icon: 'heroHome', label: 'Home' },
+      { path: 'members', icon: 'heroUserGroup', label: 'Members' },
+    ],
+  };
 
-  private authService = inject(OAuthService);
+  settingsSection: NavSection = {
+    title: 'Settings',
+    items: [
+      { path: 'settings', icon: 'heroCog', label: 'Settings' },
+      { path: 'roles', icon: 'heroUserGroup', label: 'Roles' },
+    ],
+  };
 
-  mainNavItems: NavItem[] = [
-    { path: 'dashboard', icon: 'bi-house', label: 'Home' },
-    { path: 'members', icon: 'bi-people', label: 'Members' },
-    //{ path: 'schedule', icon: 'bi-calendar', label: 'Schedule' },
+  footerItems: NavItem[] = [
+    { path: 'help', icon: 'heroQuestionMarkCircle', label: 'Help' },
+    { path: 'logout', icon: 'heroArrowRightOnRectangle', label: 'Sign Out' },
   ];
-
-  settingsNavItems: NavItem[] = [{ path: 'settings', icon: 'bi-gear', label: 'Settings' }];
-
-  toggle() {
-    this.sidebarExpanded = !this.sidebarExpanded;
-    this.sidebarExpandedChange.emit(this.sidebarExpanded);
-  }
-
-  getSafeImageUrl(base64String: string | undefined): SafeUrl | undefined {
-    return this.imageService.getSafeImageUrl(base64String);
-  }
-
-  logout() {
-    this.authService.logOut();
-  }
 }

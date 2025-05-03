@@ -1,6 +1,8 @@
 {
   "id": "f4ef7b75-8588-48e1-afcc-72f3d4dce1e7",
-  "realm": "magjob-realm",
+  "realm": "keepitup-magjob",
+  "displayName": "MagJob",
+  "displayNameHtml": "",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -107,6 +109,7 @@
       }
     ],
     "client": {
+      "keepitup-magjob-identity": [],
       "realm-management": [
         {
           "id": "a99876b4-1e16-4dd3-9bb5-8f378192433b",
@@ -319,9 +322,9 @@
           "attributes": {}
         }
       ],
-      "client.web": [],
       "security-admin-console": [],
       "admin-cli": [],
+      "keepitup-magjob-client": [],
       "account-console": [],
       "broker": [
         {
@@ -334,7 +337,6 @@
           "attributes": {}
         }
       ],
-      "MagJob.Identity": [],
       "account": [
         {
           "id": "0e31969b-a821-4759-846e-8b6bebd1e5d5",
@@ -482,12 +484,12 @@
   "users": [
     {
       "id": "818ee6cb-3d08-420d-a480-08c70db4a3b4",
-      "username": "service-account-magjob.identity",
+      "username": "service-account-keepitup-magjob-identity",
       "emailVerified": false,
       "createdTimestamp": 1741733096569,
       "enabled": true,
       "totp": false,
-      "serviceAccountClientId": "MagJob.Identity",
+      "serviceAccountClientId": "keepitup-magjob-identity",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
@@ -532,13 +534,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/magjob-realm/account/",
+      "baseUrl": "/realms/keepitup-magjob/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/magjob-realm/account/*"
+        "/realms/keepitup-magjob/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -579,13 +581,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/magjob-realm/account/",
+      "baseUrl": "/realms/keepitup-magjob/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/magjob-realm/account/*"
+        "/realms/keepitup-magjob/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -721,8 +723,8 @@
     },
     {
       "id": "24e9914b-1f09-479a-838a-5009f3272149",
-      "clientId": "client.web",
-      "name": "MagJob Client Web",
+      "clientId": "keepitup-magjob-client",
+      "name": "KeepItUp.MagJob.Client Client",
       "description": "",
       "rootUrl": "http://localhost:4200/",
       "adminUrl": "",
@@ -731,7 +733,6 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
       "redirectUris": [
         "https://localhost/*",
         "http://localhost:4200/*",
@@ -753,16 +754,19 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": false,
-      "publicClient": false,
+      "publicClient": true,
       "frontchannelLogout": true,
       "protocol": "openid-connect",
       "attributes": {
         "access.token.lifespan": "900",
-        "client.secret.creation.time": "1741805694",
+        "client.secret.creation.time": "1743537481",
+        "request.object.signature.alg": "any",
+        "request.object.encryption.alg": "any",
         "client.introspection.response.allow.jwt.claim.enabled": "false",
         "frontchannel.logout.session.required": "true",
         "post.logout.redirect.uris": "+",
         "oauth2.device.authorization.grant.enabled": "false",
+        "use.jwks.url": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
         "use.refresh.tokens": "true",
         "realm_client": "false",
@@ -770,10 +774,13 @@
         "client.use.lightweight.access.token.enabled": "false",
         "backchannel.logout.session.required": "true",
         "client_credentials.use_refresh_token": "false",
+        "request.object.required": "not required",
         "acr.loa.map": "{}",
         "require.pushed.authorization.requests": "false",
         "tls.client.certificate.bound.access.tokens": "false",
         "display.on.consent.screen": "false",
+        "request.object.encryption.enc": "any",
+        "pkce.code.challenge.method": "S256",
         "token.response.type.bearer.lower-case": "false"
       },
       "authenticationFlowBindingOverrides": {},
@@ -833,8 +840,8 @@
     },
     {
       "id": "1116dc03-3ec4-44d6-be7b-b9c28296a74e",
-      "clientId": "MagJob.Identity",
-      "name": "MagJob.Identity",
+      "clientId": "keepitup-magjob-identity",
+      "name": "KeepItUp.MagJob.Identity Client",
       "description": "Identity Microservice",
       "rootUrl": "https://localhost:57679",
       "adminUrl": "https://localhost:57679",
@@ -863,9 +870,11 @@
       "attributes": {
         "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1741731244",
+        "client.secret.creation.time": "1743614958",
         "backchannel.logout.session.required": "true",
+        "login_theme": "magjob",
         "frontchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "+",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "use.jwks.url": "false",
@@ -939,13 +948,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/magjob-realm/console/",
+      "baseUrl": "/admin/keepitup-magjob/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/magjob-realm/console/*"
+        "/admin/keepitup-magjob/console/*"
       ],
       "webOrigins": [
         "+"
@@ -1434,8 +1443,8 @@
           "protocolMapper": "oidc-allowed-origins-mapper",
           "consentRequired": false,
           "config": {
-            "introspection.token.claim": "true",
-            "access.token.claim": "true"
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
           }
         }
       ]
@@ -1683,8 +1692,8 @@
           "consentRequired": false,
           "config": {
             "id.token.claim": "true",
-            "introspection.token.claim": "true",
             "access.token.claim": "true",
+            "introspection.token.claim": "true",
             "userinfo.token.claim": "true"
           }
         }
@@ -1719,6 +1728,10 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
+  "loginTheme": "magjob",
+  "accountTheme": "",
+  "adminTheme": "",
+  "emailTheme": "",
   "eventsEnabled": true,
   "eventsExpiration": 600,
   "eventsListeners": [
@@ -1726,13 +1739,13 @@
     "email"
   ],
   "enabledEventTypes": [
-    "UPDATE_CONSENT_ERROR",
     "SEND_RESET_PASSWORD",
+    "UPDATE_CONSENT_ERROR",
     "GRANT_CONSENT",
     "VERIFY_PROFILE_ERROR",
-    "UPDATE_TOTP",
     "REMOVE_TOTP",
     "REVOKE_GRANT",
+    "UPDATE_TOTP",
     "LOGIN_ERROR",
     "CLIENT_LOGIN",
     "RESET_PASSWORD_ERROR",
@@ -1742,42 +1755,42 @@
     "CUSTOM_REQUIRED_ACTION",
     "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR",
     "RESTART_AUTHENTICATION",
-    "UPDATE_PROFILE_ERROR",
     "IMPERSONATE",
+    "UPDATE_PROFILE_ERROR",
     "LOGIN",
-    "UPDATE_PASSWORD_ERROR",
     "OAUTH2_DEVICE_VERIFY_USER_CODE",
+    "UPDATE_PASSWORD_ERROR",
     "CLIENT_INITIATED_ACCOUNT_LINKING",
-    "USER_DISABLED_BY_PERMANENT_LOCKOUT",
     "OAUTH2_EXTENSION_GRANT",
+    "USER_DISABLED_BY_PERMANENT_LOCKOUT",
     "REMOVE_CREDENTIAL_ERROR",
     "TOKEN_EXCHANGE",
-    "REGISTER",
-    "LOGOUT",
     "AUTHREQID_TO_TOKEN",
+    "LOGOUT",
+    "REGISTER",
     "DELETE_ACCOUNT_ERROR",
     "CLIENT_REGISTER",
     "IDENTITY_PROVIDER_LINK_ACCOUNT",
     "USER_DISABLED_BY_TEMPORARY_LOCKOUT",
-    "UPDATE_PASSWORD",
     "DELETE_ACCOUNT",
-    "FEDERATED_IDENTITY_LINK_ERROR",
+    "UPDATE_PASSWORD",
     "CLIENT_DELETE",
+    "FEDERATED_IDENTITY_LINK_ERROR",
     "IDENTITY_PROVIDER_FIRST_LOGIN",
-    "VERIFY_EMAIL",
     "CLIENT_DELETE_ERROR",
+    "VERIFY_EMAIL",
     "CLIENT_LOGIN_ERROR",
     "RESTART_AUTHENTICATION_ERROR",
-    "REMOVE_FEDERATED_IDENTITY_ERROR",
     "EXECUTE_ACTIONS",
+    "REMOVE_FEDERATED_IDENTITY_ERROR",
     "TOKEN_EXCHANGE_ERROR",
     "PERMISSION_TOKEN",
     "FEDERATED_IDENTITY_OVERRIDE_LINK",
     "SEND_IDENTITY_PROVIDER_LINK_ERROR",
     "UPDATE_CREDENTIAL_ERROR",
     "EXECUTE_ACTION_TOKEN_ERROR",
-    "SEND_VERIFY_EMAIL",
     "OAUTH2_EXTENSION_GRANT_ERROR",
+    "SEND_VERIFY_EMAIL",
     "OAUTH2_DEVICE_AUTH",
     "EXECUTE_ACTIONS_ERROR",
     "REMOVE_FEDERATED_IDENTITY",
@@ -1785,22 +1798,22 @@
     "IDENTITY_PROVIDER_POST_LOGIN",
     "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR",
     "FEDERATED_IDENTITY_OVERRIDE_LINK_ERROR",
-    "UPDATE_EMAIL",
     "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR",
+    "UPDATE_EMAIL",
     "REGISTER_ERROR",
     "REVOKE_GRANT_ERROR",
+    "EXECUTE_ACTION_TOKEN",
     "LOGOUT_ERROR",
     "UPDATE_EMAIL_ERROR",
-    "EXECUTE_ACTION_TOKEN",
     "CLIENT_UPDATE_ERROR",
-    "UPDATE_PROFILE",
     "AUTHREQID_TO_TOKEN_ERROR",
     "INVITE_ORG_ERROR",
-    "FEDERATED_IDENTITY_LINK",
+    "UPDATE_PROFILE",
     "CLIENT_REGISTER_ERROR",
+    "FEDERATED_IDENTITY_LINK",
     "INVITE_ORG",
-    "SEND_VERIFY_EMAIL_ERROR",
     "SEND_IDENTITY_PROVIDER_LINK",
+    "SEND_VERIFY_EMAIL_ERROR",
     "RESET_PASSWORD",
     "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR",
     "OAUTH2_DEVICE_AUTH_ERROR",
@@ -1810,8 +1823,8 @@
     "VERIFY_EMAIL_ERROR",
     "SEND_RESET_PASSWORD_ERROR",
     "CLIENT_UPDATE",
-    "IDENTITY_PROVIDER_POST_LOGIN_ERROR",
     "CUSTOM_REQUIRED_ACTION_ERROR",
+    "IDENTITY_PROVIDER_POST_LOGIN_ERROR",
     "UPDATE_TOTP_ERROR",
     "CODE_TO_TOKEN",
     "VERIFY_PROFILE",
@@ -1909,13 +1922,13 @@
         "config": {
           "allowed-protocol-mapper-types": [
             "oidc-full-name-mapper",
-            "saml-user-attribute-mapper",
+            "oidc-usermodel-property-mapper",
             "saml-role-list-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-full-name-mapper",
             "saml-user-property-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "oidc-usermodel-property-mapper",
-            "oidc-address-mapper"
+            "saml-user-attribute-mapper"
           ]
         }
       },
@@ -1954,14 +1967,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-usermodel-property-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "saml-role-list-mapper",
             "oidc-address-mapper",
+            "saml-role-list-mapper",
+            "saml-user-property-mapper",
+            "oidc-usermodel-property-mapper",
             "oidc-full-name-mapper",
-            "saml-user-attribute-mapper",
-            "saml-user-property-mapper"
+            "oidc-sha256-pairwise-sub-mapper",
+            "saml-user-attribute-mapper"
           ]
         }
       }
@@ -2776,7 +2789,10 @@
     "oauth2DeviceCodeLifespan": "600",
     "parRequestUriLifespan": "60",
     "clientSessionMaxLifespan": "0",
-    "adminEventsExpiration": "600"
+    "frontendUrl": "",
+    "acr.loa.map": "{}",
+    "adminEventsExpiration": "600",
+    "darkMode": "true"
   },
   "keycloakVersion": "26.1.4",
   "userManagedAccessAllowed": false,

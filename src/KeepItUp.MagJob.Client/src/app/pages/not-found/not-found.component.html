@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation -->
+  <app-navbar></app-navbar>
+
+  <!-- Not Found Content -->
+  <main
+    class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[80vh]"
+  >
+    <div class="text-center">
+      <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2">404</h1>
+      <h2 class="text-3xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Page Not Found</h2>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+        We're sorry, the page you requested could not be found. It might have been removed, had its
+        name changed, or is temporarily unavailable.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <app-button variant="primary" size="lg" routerLink="/landing" iconLeft="heroHome">
+          Go to Home
+        </app-button>
+        <app-button
+          variant="outline"
+          size="lg"
+          routerLink="/help"
+          iconLeft="heroQuestionMarkCircle"
+        >
+          Help Center
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="mt-16 max-w-3xl w-full">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+        Popular destinations
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Suggestion 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
+            >
+              <ng-icon name="heroUserGroup" class="h-5 w-5 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Organization</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
+            Manage your organization and team members.
+          </p>
+          <app-button
+            variant="link"
+            size="sm"
+            routerLink="/organization"
+            iconRight="heroArrowRight"
+          >
+            Go to Organization
+          </app-button>
+        </div>
+
+        <!-- Suggestion 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
+            >
+              <ng-icon name="heroUser" class="h-5 w-5 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">User Profile</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
+            View and edit your personal profile settings.
+          </p>
+          <app-button variant="link" size="sm" routerLink="/user" iconRight="heroArrowRight">
+            Go to Profile
+          </app-button>
+        </div>
+
+        <!-- Suggestion 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-center mb-4">
+            <div
+              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
+            >
+              <ng-icon name="heroEnvelope" class="h-5 w-5 text-primary"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Contact Support</h3>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
+            Need help? Our support team is available.
+          </p>
+          <app-button variant="link" size="sm" routerLink="/help" iconRight="heroArrowRight">
+            Contact Support
+          </app-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link Button Demonstration -->
+    <div class="mt-10 text-center">
+      <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+        Looking for something else? You might want to check our documentation.
+      </p>
+      <app-button variant="link" routerLink="/help" iconRight="heroArrowRight">
+        View documentation
+      </app-button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>

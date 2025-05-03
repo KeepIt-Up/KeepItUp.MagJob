@@ -26,7 +26,8 @@ public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Usuwa (dezaktywuje) organizację";
             s.Description = "Usuwa (dezaktywuje) organizację o podanym identyfikatorze";
         });
@@ -79,4 +80,4 @@ public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor current
             await SendErrorsAsync(401, ct);
         }
     }
-} 
+}

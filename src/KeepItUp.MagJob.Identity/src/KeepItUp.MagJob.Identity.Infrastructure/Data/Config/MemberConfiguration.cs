@@ -1,8 +1,5 @@
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -45,11 +42,21 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
                 {
                     j.HasKey("MemberId", "RoleId");
                     j.ToTable(DataSchemaConstants.MEMBER_ROLES_TABLE, DataSchemaConstants.IDENTITY_SCHEMA);
+
+                    // Add indexes for the join table
+                    j.HasIndex("MemberId");
+                    j.HasIndex("RoleId");
                 });
 
         // Indeksy
         builder.HasIndex(m => new { m.UserId, m.OrganizationId }).IsUnique();
+
+        // Indeks dla szybkiego wyszukiwania po UserId
+        builder.HasIndex(m => m.UserId);
+
+        // Indeks dla szybkiego wyszukiwania po OrganizationId
+        builder.HasIndex(m => m.OrganizationId);
     }
 
     protected override string GetTableName() => DataSchemaConstants.MEMBERS_TABLE;
-} 
+}

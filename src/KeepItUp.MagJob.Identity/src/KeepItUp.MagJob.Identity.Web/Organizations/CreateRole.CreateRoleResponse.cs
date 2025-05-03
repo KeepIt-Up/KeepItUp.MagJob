@@ -6,13 +6,13 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// </summary>
 public class CreateRoleResponse
 {
-  /// <summary>
-  /// Identyfikator utworzonej roli.
-  /// </summary>
-  public Guid Id { get; set; }
+    /// <summary>
+    /// Identyfikator utworzonej roli.
+    /// </summary>
+    public Guid Id { get; set; }
 
-  /// <summary>
-  /// Nazwa roli.
-  /// </summary>
-  public string Name { get; set; } = string.Empty;
+    /// <summary>
+    /// Nazwa roli.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
 }

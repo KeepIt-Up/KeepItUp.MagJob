@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
@@ -37,7 +37,9 @@ public class Member : BaseEntity
     /// </summary>
     public DateTime JoinedAt { get; private set; } = DateTime.UtcNow;
 
-    // Prywatny konstruktor dla EF Core
+    /// <summary>
+    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// </summary>
     private Member() { }
 
     /// <summary>
@@ -60,24 +62,50 @@ public class Member : BaseEntity
         };
 
         member._roleIds.Add(roleId);
+        member.RegisterDomainEventAndUpdate(new MemberCreatedEvent(member.Id, organizationId, userId, roleId));
 
         return member;
+    }
+
+    /// <summary>
+    /// Metoda pomocnicza do synchronizacji ról z innymi członkami organizacji.
+    /// Powinna być wywoływana przez Organization po załadowaniu wszystkich ról.
+    /// </summary>
+    /// <param name="organizationRoles">Wszystkie role dostępne w organizacji</param>
+    public void SyncRoles(IEnumerable<Role> organizationRoles)
+    {
+        Roles.Clear();
+
+        foreach (var roleId in _roleIds)
+        {
+            var role = organizationRoles.FirstOrDefault(r => r.Id == roleId);
+            if (role != null)
+            {
+                Roles.Add(role);
+            }
+        }
     }
 
     /// <summary>
     /// Przypisuje nową rolę członkowi organizacji.
     /// </summary>
     /// <param name="roleId">Identyfikator roli do przypisania.</param>
-    public void AssignRole(Guid roleId)
+    /// <param name="role">Opcjonalna instancja roli, jeśli jest dostępna (dla efektywności)</param>
+    public void AssignRole(Guid roleId, Role? role = null)
     {
         Guard.Against.Default(roleId, nameof(roleId));
 
         if (!_roleIds.Contains(roleId))
         {
             _roleIds.Add(roleId);
-            
-            // Wywołanie metody Update z klasy bazowej
-            base.Update();
+
+            // Dodaj także do nawigacji Roles, jeśli została dostarczona instancja
+            if (role != null && !Roles.Any(r => r.Id == roleId))
+            {
+                Roles.Add(role);
+            }
+
+            RegisterDomainEventAndUpdate(new RoleAssignedToMemberEvent(Id, OrganizationId, UserId, roleId));
         }
     }
 
@@ -97,13 +125,19 @@ public class Member : BaseEntity
         }
 
         bool removed = _roleIds.Remove(roleId);
-        
+
         if (removed)
         {
-            // Wywołanie metody Update z klasy bazowej
-            base.Update();
+            // Usuń również z nawigacji Roles
+            var roleToRemove = Roles.FirstOrDefault(r => r.Id == roleId);
+            if (roleToRemove != null)
+            {
+                Roles.Remove(roleToRemove);
+            }
+
+            RegisterDomainEventAndUpdate(new RoleRevokedFromMemberEvent(Id, OrganizationId, UserId, roleId));
         }
-        
+
         return removed;
     }
 
@@ -116,4 +150,4 @@ public class Member : BaseEntity
     {
         return _roleIds.Contains(roleId);
     }
-} 
+}

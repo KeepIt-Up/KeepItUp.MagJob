@@ -1,6 +1,4 @@
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -40,7 +38,7 @@ public class UserConfiguration : BaseEntityConfiguration<User>
 
             profile.Property(p => p.ProfileImage)
                 .HasMaxLength(DataSchemaConstants.DEFAULT_PROFILE_IMAGE_LENGTH);
-            
+
             // Dodanie właściwości dyskryminatora, aby EF Core mógł określić, czy encja istnieje
             profile.Property<bool>("IsProfileCreated")
                 .HasDefaultValue(true);
@@ -52,4 +50,4 @@ public class UserConfiguration : BaseEntityConfiguration<User>
     }
 
     protected override string GetTableName() => DataSchemaConstants.USERS_TABLE;
-} 
+}

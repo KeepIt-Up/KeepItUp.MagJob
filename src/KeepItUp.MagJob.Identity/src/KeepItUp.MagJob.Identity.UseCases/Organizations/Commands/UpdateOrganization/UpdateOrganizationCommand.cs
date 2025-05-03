@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganization;
@@ -27,4 +26,4 @@ public record UpdateOrganizationCommand : IRequest<Result>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

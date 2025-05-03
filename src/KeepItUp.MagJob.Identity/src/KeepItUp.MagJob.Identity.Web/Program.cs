@@ -1,4 +1,5 @@
 ﻿using KeepItUp.MagJob.Identity.Web.Configurations;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,23 @@ await app.UseAppMiddlewareAndSeedDatabase();
 
 // Użyj konfiguracji Swagger
 app.UseSwaggerConfig(appLogger);
+
+// Dodaj obsługę plików statycznych
+app.UseStaticFiles();
+
+// Dodaj dodatkową konfigurację dla katalogu uploads
+var uploadPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads");
+// Ensure directory exists
+if (!Directory.Exists(uploadPath))
+{
+    Directory.CreateDirectory(uploadPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadPath),
+    RequestPath = "/uploads"
+});
 
 app.Run();
 

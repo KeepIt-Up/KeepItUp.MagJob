@@ -1,28 +1,42 @@
-import { Component, computed, EventEmitter, inject, Output } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { UserService } from '../../services/user.service';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  SidebarComponent,
+  NavSection,
+  NavItem,
+} from '@shared/components/sidebar/sidebar.component';
+import { AsyncPipe } from '@angular/common';
+import { UserContextService } from '@users/services/user-context.service';
 
 @Component({
   selector: 'app-user-sidebar',
-  imports: [RouterLink, RouterLinkActive],
   templateUrl: './user-sidebar.component.html',
+  standalone: true,
+  imports: [SidebarComponent, AsyncPipe],
 })
 export class UserSidebarComponent {
+  @Input() sidebarExpanded = false;
   @Output() sidebarExpandedChange = new EventEmitter<boolean>();
-  private authService = inject(OAuthService);
-  private userService = inject(UserService);
-  sidebarExpanded = true;
 
-  toggle() {
-    this.sidebarExpanded = !this.sidebarExpanded;
-    this.sidebarExpandedChange.emit(this.sidebarExpanded);
-  }
+  readonly userContextService = inject(UserContextService);
 
-  state$ = this.userService.userState$;
-  userName = computed(() => `${this.state$().data?.given_name} ${this.state$().data?.family_name}`);
+  mainSection: NavSection = {
+    title: 'Main',
+    items: [
+      { path: 'organizations', icon: 'heroBuildingOffice', label: 'Organizations' },
+      { path: 'invitations', icon: 'heroEnvelope', label: 'Invitations' },
+    ],
+  };
 
-  logOut() {
-    this.authService.logOut();
-  }
+  settingsSection: NavSection = {
+    title: 'Settings',
+    items: [
+      { path: 'settings', icon: 'heroUser', label: 'Profile' },
+      { path: 'security/password', icon: 'heroShieldCheck', label: 'Security' },
+    ],
+  };
+
+  footerItems: NavItem[] = [
+    { path: 'help', icon: 'heroQuestionMarkCircle', label: 'Help' },
+    { path: 'logout', icon: 'heroArrowRightOnRectangle', label: 'Sign Out' },
+  ];
 }

@@ -72,27 +72,10 @@
               ],
               "outputHashing": "all"
             },
-            "docker": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.docker.ts"
-                }
-              ]
-            },
             "local": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.ts"
-                }
-              ]
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "local"
@@ -102,9 +85,6 @@
           "configurations": {
             "production": {
               "buildTarget": "keepitup.magjob.client:build:production"
-            },
-            "docker": {
-              "buildTarget": "keepitup.magjob.client:build:docker"
             },
             "local": {
               "buildTarget": "keepitup.magjob.client:build:local"

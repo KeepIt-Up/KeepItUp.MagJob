@@ -27,11 +27,13 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Aktualizuje uprawnienia roli w organizacji";
             s.Description = "Aktualizuje uprawnienia roli w organizacji o podanym identyfikatorze";
-            s.ExampleRequest = new UpdateRolePermissionsRequest { 
-                OrganizationId = Guid.NewGuid(), 
+            s.ExampleRequest = new UpdateRolePermissionsRequest
+            {
+                OrganizationId = Guid.NewGuid(),
                 RoleId = Guid.NewGuid(),
                 Permissions = new List<string> { "organization.create", "organization.update" }
             };

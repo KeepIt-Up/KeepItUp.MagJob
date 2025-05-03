@@ -18,4 +18,4 @@ public class GetOrganizationByIdQueryValidator : AbstractValidator<GetOrganizati
         RuleFor(x => x.UserId)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

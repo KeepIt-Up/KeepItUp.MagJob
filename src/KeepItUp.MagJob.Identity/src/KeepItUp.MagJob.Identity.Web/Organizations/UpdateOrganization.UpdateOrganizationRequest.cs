@@ -22,4 +22,4 @@ public class UpdateOrganizationRequest
     /// Opis organizacji.
     /// </summary>
     public string? Description { get; set; }
-} 
+}

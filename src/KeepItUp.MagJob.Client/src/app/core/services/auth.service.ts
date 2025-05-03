@@ -1,129 +1,106 @@
 import { Injectable, inject } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { AuthConfig, OAuthEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
 import { authCodeFlowConfig } from '@core/configs/auth.config';
-import { UserBase } from '@core/models/user-base.model';
-import { IdentityClaims } from '@core/models/identity-claims.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private userProfileSubject = new BehaviorSubject<UserBase | null>(null);
-
-  private readonly oauthService = inject(OAuthService);
-  private readonly router = inject(Router);
+  private readonly oAuthService = inject(OAuthService);
 
   /**
-   * Inicjalizuje uwierzytelnianie
-   * @returns Promise reprezentujący asynchroniczną operację
+   * Redirects to the Keycloak registration page
    */
-  public async initAuth(): Promise<void> {
-    return new Promise(resolve => {
-      // Konfiguracja OAuthService
-      this.oauthService.configure(authCodeFlowConfig);
+  initRegistrationFlow(): void {
+    const authConfig = authCodeFlowConfig;
 
-      // Włączenie automatycznego odświeżania tokenów
-      this.oauthService.setupAutomaticSilentRefresh();
+    // Construct the registration URL
+    const registrationUrl =
+      `${authConfig.issuer}/protocol/openid-connect/registrations` +
+      `?client_id=${authConfig.clientId}` +
+      `&redirect_uri=${encodeURIComponent(authConfig.redirectUri ?? window.location.origin)}` +
+      `&response_type=${authConfig.responseType}` +
+      `&scope=${authConfig.scope}`;
 
-      // Konfiguracja obsługi zdarzeń
-      this.setupEventHandlers();
-
-      // Ładowanie dokumentu discovery i próba logowania
-      this.oauthService
-        .loadDiscoveryDocument()
-        .then(() => {
-          return this.oauthService.tryLogin();
-        })
-        .then(() => {
-          this.loadUserProfile();
-          resolve();
-        })
-        .catch(error => {
-          console.error('Error during OAuth initialization:', error);
-          resolve();
-        });
-    });
+    // Redirect to the registration page
+    window.location.href = registrationUrl;
   }
 
   /**
-   * Inicjuje proces logowania
-   * @param redirectUri Opcjonalny URI przekierowania po zalogowaniu
+   * Redirects to the Keycloak login page
    */
-  public login(redirectUri?: string): void {
-    this.oauthService.initLoginFlow(redirectUri);
+  initLoginFlow(): void {
+    this.oAuthService.initLoginFlow();
   }
 
   /**
-   * Wylogowuje użytkownika
+   * Logs out the user
    */
-  public logout(): void {
-    this.oauthService.logOut();
+  logOut(): void {
+    this.oAuthService.logOut();
   }
 
   /**
-   * Sprawdza, czy użytkownik jest uwierzytelniony
-   * @returns Czy użytkownik jest uwierzytelniony
+   * Checks if the user has a valid access token
+   * @returns true if the user has a valid access token, otherwise false
    */
-  public isAuthenticated(): boolean {
-    return this.oauthService.hasValidAccessToken();
+  hasValidAccessToken(): boolean {
+    return this.oAuthService.hasValidAccessToken();
   }
 
   /**
-   * Pobiera token dostępu
-   * @returns Token dostępu
+   * Gets the user's access token
+   * @returns the user's access token
    */
-  public getAccessToken(): string {
-    return this.oauthService.getAccessToken();
+  getAccessToken(): string {
+    return this.oAuthService.getAccessToken();
   }
 
   /**
-   * Pobiera identyfikator użytkownika
-   * @returns Identyfikator użytkownika
+   * Gets the user's refresh token
+   * @returns the user's refresh token
    */
-  public getUserId(): string | null {
-    const claims = this.oauthService.getIdentityClaims() as IdentityClaims;
-    return claims ? claims.sub : null;
+  getRefreshToken(): string | null {
+    return this.oAuthService.getRefreshToken();
   }
 
   /**
-   * Pobiera profil użytkownika
-   * @returns Observable z profilem użytkownika
+   * Gets the events observable
+   * @returns the events observable
    */
-  public getUserProfile(): Observable<UserBase | null> {
-    return this.userProfileSubject.asObservable();
+  getEvents(): Observable<OAuthEvent> {
+    return this.oAuthService.events;
   }
 
   /**
-   * Ładuje profil użytkownika
+   * Configures the OAuth service
+   * @param config the auth config
    */
-  private loadUserProfile(): void {
-    const claims = this.oauthService.getIdentityClaims() as IdentityClaims;
-    if (claims) {
-      const user: UserBase = {
-        id: claims.sub,
-        given_name: claims.given_name ?? '',
-        family_name: claims.family_name ?? '',
-        email: claims.email ?? '',
-      };
-      this.userProfileSubject.next(user);
-    }
+  configure(config: AuthConfig): void {
+    this.oAuthService.configure(config);
   }
 
   /**
-   * Konfiguruje obsługę zdarzeń OAuth
+   * Sets up automatic silent refresh
    */
-  private setupEventHandlers(): void {
-    this.oauthService.events.subscribe(event => {
-      if (event.type === 'token_received') {
-        this.loadUserProfile();
-      } else if (event.type === 'logout') {
-        this.userProfileSubject.next(null);
-        void this.router.navigate(['/landing']);
-      } else if (event.type === 'token_error' || event.type === 'token_refresh_error') {
-        console.error('Token error:', event);
-      }
-    });
+  setupAutomaticSilentRefresh(): void {
+    this.oAuthService.setupAutomaticSilentRefresh();
+  }
+
+  /**
+   * Loads the discovery document
+   * @returns the discovery document
+   */
+  loadDiscoveryDocument(): Promise<OAuthSuccessEvent> {
+    return this.oAuthService.loadDiscoveryDocument();
+  }
+
+  /**
+   * Tries to login
+   * @returns the login result
+   */
+  tryLogin(): Promise<boolean> {
+    return this.oAuthService.tryLogin();
   }
 }

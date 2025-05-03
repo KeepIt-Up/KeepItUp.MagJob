@@ -1,19 +1,21 @@
-@if (state$().data) {
-  <div class="flex">
-    <app-user-sidebar (sidebarExpandedChange)="sidebarExpandedChange($event)"></app-user-sidebar>
-    <div class="flex-1 ml-16" [class.ml-64]="sidebarExpanded">
-      <app-navbar></app-navbar>
-      <main
-        class="p-4 max-w-screen-2xl flex-1 flex-wrap items-center justify-between mx-auto w-full"
-      >
-        <router-outlet></router-outlet>
-      </main>
+@if (userContext$ | async; as userContext) {
+  @if (userContext.data) {
+    <div class="flex">
+      <app-user-sidebar (sidebarExpandedChange)="sidebarExpandedChange($event)"></app-user-sidebar>
+      <div class="flex-1 ml-16" [class.ml-64]="sidebarExpanded">
+        <app-navbar></app-navbar>
+        <main
+          class="p-4 max-w-screen-2xl flex-1 flex-wrap items-center justify-between mx-auto w-full"
+        >
+          <router-outlet></router-outlet>
+        </main>
+      </div>
     </div>
-  </div>
-} @else if (state$().loading) {
-  <app-navbar></app-navbar>
-  <app-spinner></app-spinner>
-} @else if (state$().error) {
-  <app-navbar></app-navbar>
-  <app-error-alert [error]="state$().error"></app-error-alert>
+  } @else if (userContext.loading) {
+    <app-navbar></app-navbar>
+    <app-spinner></app-spinner>
+  } @else if (userContext.error) {
+    <app-navbar></app-navbar>
+    <app-error-alert [error]="getError(userContext.error)"></app-error-alert>
+  }
 }

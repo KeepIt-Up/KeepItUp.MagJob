@@ -20,4 +20,4 @@ public class GetRolesByOrganizationIdQueryValidator : AbstractValidator<GetRoles
             .NotEmpty()
             .WithMessage("Identyfikator użytkownika jest wymagany.");
     }
-} 
+}

@@ -12,4 +12,4 @@ public class GetOrganizationByIdRequest
     /// Identyfikator organizacji.
     /// </summary>
     public Guid Id { get; set; }
-} 
+}

@@ -3,12 +3,11 @@
  */
 export const environment = {
   production: false,
-  apiUrl: 'http://GATEWAY_URL',
+  apiUrl: 'http://localhost:5000',
   keycloakConfig: {
-    url: 'https://KEYCLOAK_URL',
-    realm: 'magjob-realm',
-    clientId: 'client.web',
+    url: 'http://localhost:18080',
+    realm: 'keepitup-magjob',
+    clientId: 'keepitup-magjob-client',
     redirectUri: `${window.location.origin}/user`,
-    dummyClientSecret: 'YOUR_DUMMY_CLIENT_SECRET',
   },
 };

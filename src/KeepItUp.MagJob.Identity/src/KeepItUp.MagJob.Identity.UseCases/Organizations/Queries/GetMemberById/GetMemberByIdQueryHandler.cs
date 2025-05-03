@@ -1,8 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetMemberById;
 /// </summary>
 public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Result<MemberDto>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetMemberByIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +18,7 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetMemberByIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetMemberByIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,22 +36,21 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithMembersAndRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
                 return Result<MemberDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.RequestingUserId ||
-                             organization.Members.Any(m => m.UserId == request.RequestingUserId);
+            // // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
+            // bool hasAccess = organization.OwnerId == request.RequestingUserId ||
+            //                  await _repository.HasMemberAsync(request.OrganizationId, request.RequestingUserId, cancellationToken);
 
-            if (!hasAccess)
-            {
-                return Result<MemberDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            // if (!hasAccess)
+            // {
+            //     return Result<MemberDto>.Forbidden("Brak dostępu do organizacji.");
+            // }
 
             // Znajdź członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
@@ -95,9 +90,9 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas pobierania członka o ID {MemberUserId} w organizacji o ID {OrganizationId}", 
+            _logger.LogError(ex, "Błąd podczas pobierania członka o ID {MemberUserId} w organizacji o ID {OrganizationId}",
                 request.MemberUserId, request.OrganizationId);
             return Result<MemberDto>.Error("Wystąpił błąd podczas pobierania członka: " + ex.Message);
         }
     }
-} 
+}
