@@ -149,6 +149,11 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.viewDate = new Date();
+    moment.updateLocale('en', {
+      week: {
+        dow: 1,
+      },
+    });
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
