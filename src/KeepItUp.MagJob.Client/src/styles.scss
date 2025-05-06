@@ -392,3 +392,11 @@
 ::-webkit-scrollbar-corner {
   @apply bg-transparent;
 }
+
+mwl-calendar-week-view-event {
+  display: block;  /* Makes it a block-level element */
+  height: 100%;    /* Takes full height of parent */
+}
+mwl-calendar-week-view-event > div {
+  height: 100%;
+}

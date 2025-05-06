@@ -1,69 +1,76 @@
+<mwl-demo-utils-calendar-header [(view)]="view" [(viewDate)]="viewDate">
+</mwl-demo-utils-calendar-header>
 <div class="calendar-container">
   <div class="calendar-header">
-    <div class="controls">
-      <div class="navigation-buttons">
-        <button
-          class="btn-nav"
-          mwlCalendarPreviousView
-          [view]="view"
-          [(viewDate)]="viewDate"
-        >
-          <span class="flex items-center gap-2">
-            <i class="bi bi-chevron-left"></i>
-            <span>Previous</span>
-          </span>
-        </button>
-        <button
-          class="btn-nav"
-          mwlCalendarToday
-          [(viewDate)]="viewDate"
-        >
-          <span class="flex items-center gap-2">
-            <i class="bi bi-calendar-event"></i>
-            <span>Today</span>
-          </span>
-        </button>
-        <button
-          class="btn-nav"
-          mwlCalendarNextView
-          [view]="view"
-          [(viewDate)]="viewDate"
-        >
-          <span class="flex items-center gap-2">
-            <i class="bi bi-chevron-right"></i>
-            <span>Next</span>
-          </span>
-        </button>
-        <button
-          class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
-          (click)="addEvent()"
-        >
-          <span class="flex items-center gap-2">
-            <i class="bi bi-plus-lg"></i>
-            <span>Add Event</span>
-          </span>
-        </button>
-      </div>
-      <h3 class="current-date">{{ viewDate | date:'MMMM yyyy' }}</h3>
-      <div class="view-buttons">
+    <div class="flex items-center gap-2">
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-chevron-left"></i>
+          <span>Previous</span>
+        </span>
+      </button>
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-calendar-event"></i>
+          <span>Today</span>
+        </span>
+      </button>
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-chevron-right"></i>
+          <span>Next</span>
+        </span>
+      </button>
+      <button
+        class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
+        (click)="addEvent()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-plus-lg"></i>
+          <span>Add Event</span>
+        </span>
+      </button>
+    </div>
+    <div class="flex items-center gap-2">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        {{ viewDate | date }}
+      </h2>
+      <div class="flex gap-2">
         <button
           class="btn-view"
-          (click)="setView(CalendarView.Month)"
           [class.active]="view === CalendarView.Month"
+          (click)="setView(CalendarView.Month)"
         >
           Month
         </button>
         <button
           class="btn-view"
-          (click)="setView(CalendarView.Week)"
           [class.active]="view === CalendarView.Week"
+          (click)="setView(CalendarView.Week)"
         >
           Week
         </button>
         <button
           class="btn-view"
-          (click)="setView(CalendarView.Day)"
           [class.active]="view === CalendarView.Day"
+          (click)="setView(CalendarView.Day)"
         >
           Day
         </button>
@@ -71,164 +78,67 @@
     </div>
   </div>
 
-  <div [ngSwitch]="view">
+  <div class="calendar-content">
     <mwl-calendar-month-view
-      *ngSwitchCase="CalendarView.Month"
+      *ngIf="view === CalendarView.Month"
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      [eventActions]="actions"
+      [activeDayIsOpen]="true"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegments]="4"
+      [weekStartsOn]="0"
       (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-month-view>
+
     <mwl-calendar-week-view
-      *ngSwitchCase="CalendarView.Week"
+      *ngIf="view === CalendarView.Week"
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      [eventActions]="actions"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegmentHeight]="40"
+      [hourSegments]="2"
+      [weekStartsOn]="0"
       (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-week-view>
+
     <mwl-calendar-day-view
-      *ngSwitchCase="CalendarView.Day"
+      *ngIf="view === CalendarView.Day"
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      [eventActions]="actions"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegments]="2"
       (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
     >
     </mwl-calendar-day-view>
   </div>
-</div>
 
-<div *ngIf="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">Delete Event</h3>
-    <p class="text-gray-600 dark:text-gray-300 mb-4">
-      Are you sure you want to delete "{{ eventToDelete?.title }}"?
-    </p>
-    <div class="flex justify-end gap-4">
-      <button
-        class="btn-nav"
-        (click)="cancelDelete()"
-      >
-        Cancel
-      </button>
-      <button
-        class="btn-nav bg-red-500 hover:bg-red-600 text-white"
-        (click)="confirmDelete()"
-      >
-        Delete
-      </button>
-    </div>
-  </div>
-</div>
+  <app-add-event-dialog
+    *ngIf="showAddDialog"
+    (add)="onAddEvent($event)"
+    (cancel)="onCancelAdd()"
+  ></app-add-event-dialog>
 
-<div *ngIf="showEditDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">Edit Event</h3>
-    <div class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-        <input
-          type="text"
-          [(ngModel)]="editedEvent!.title"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-        <input
-          type="datetime-local"
-          [(ngModel)]="editedEvent!.start"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-        <input
-          type="datetime-local"
-          [(ngModel)]="editedEvent!.end"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-        <textarea
-          [(ngModel)]="editedEvent!.description"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          rows="3"
-        ></textarea>
-      </div>
-    </div>
-    <div class="flex justify-end gap-4 mt-6">
-      <button
-        class="btn-nav"
-        (click)="cancelEdit()"
-      >
-        Cancel
-      </button>
-      <button
-        class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
-        (click)="confirmEdit()"
-      >
-        Save
-      </button>
-    </div>
-  </div>
-</div>
+  <app-edit-event-dialog
+    *ngIf="showEditDialog"
+    [event]="editedEvent"
+    (save)="onSaveEvent($event)"
+    (cancel)="onCancelEdit()"
+  ></app-edit-event-dialog>
 
-<div *ngIf="showAddDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">Add New Event</h3>
-    <div class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-        <input
-          type="text"
-          [(ngModel)]="newEvent.title"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-        <input
-          type="datetime-local"
-          [(ngModel)]="newEvent.start"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-        <input
-          type="datetime-local"
-          [(ngModel)]="newEvent.end"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-        >
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-        <textarea
-          [(ngModel)]="newEvent.description"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          rows="3"
-        ></textarea>
-      </div>
-    </div>
-    <div class="flex justify-end gap-4 mt-6">
-      <button
-        class="btn-nav"
-        (click)="cancelAdd()"
-      >
-        Cancel
-      </button>
-      <button
-        class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
-        (click)="confirmAdd()"
-      >
-        Add Event
-      </button>
-    </div>
-  </div>
-</div> 
+  <app-delete-confirmation-dialog
+    *ngIf="showDeleteConfirm"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()"
+  ></app-delete-confirmation-dialog>
+</div>

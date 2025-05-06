@@ -1,96 +1,18 @@
-.calendar-container {
-  @apply p-4;
+// .mwl-calendar-week-view-event {
+//   height: 100% !important;
+//   display: block !important;
+// }
 
-  .calendar-header {
-    @apply mb-4;
+// mwl-calendar-week-view-event {
+//   display: block;  /* Makes it a block-level element */
+//   height: 100%;    /* Takes full height of parent */
+// }
 
-    .controls {
-      @apply flex justify-between items-center flex-wrap gap-4;
-
-      .navigation-buttons, .view-buttons {
-        @apply flex gap-2;
-      }
-
-      .current-date {
-        @apply m-0 text-2xl font-medium;
-      }
-    }
-  }
-
-  .btn-nav, .btn-view {
-    @apply px-4 py-2 border border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900 rounded-md cursor-pointer transition-all duration-200;
-
-    span {
-      @apply flex items-center gap-2 text-gray-900 dark:text-white;
-    }
-
-    i {
-      @apply text-lg text-gray-900 dark:text-white;
-    }
-
-    &:hover {
-      @apply bg-blue-100 dark:bg-blue-800;
-    }
-
-    &.active {
-      @apply bg-primary text-white border-primary;
-
-      span, i {
-        @apply text-white;
-      }
-    }
-  }
+.cal-event-container mwl-calendar-week-view-event {
+  display: block;
+  height: 100%;
 }
 
-// Calendar event styles
-.cal-event {
-  @apply bg-primary text-white p-1 rounded m-0.5 cursor-pointer transition-colors duration-200 overflow-hidden;
-  
-  &:hover {
-    @apply bg-primary-600;
-  }
-
-  &.cal-draggable {
-    @apply cursor-move;
-  }
-
-  &.cal-drag-over {
-    @apply bg-primary-700;
-  }
+.cal-event-container mwl-calendar-week-view-event > .cal-event {
+  height: 100%;
 }
-
-.cal-event-title {
-  @apply font-medium text-sm overflow-hidden text-ellipsis whitespace-nowrap;
-}
-
-.cal-day-badge {
-  @apply mt-[18px] ml-[10px] bg-red-600 inline-block min-w-[10px] px-2 py-1 text-xs font-bold leading-none text-white text-center whitespace-nowrap align-middle rounded-full;
-}
-
-// Day view styles
-.cal-day-view {
-  .cal-time-events {
-    @apply border-r border-gray-200 dark:border-gray-700;
-  }
-
-  .cal-hour-segment {
-    @apply border-b border-gray-200 dark:border-gray-700;
-  }
-
-  .cal-event-container {
-    @apply relative;
-  }
-}
-
-// Drag and drop styles
-.cal-drag-over {
-  @apply bg-primary-700;
-}
-
-.cal-draggable {
-  @apply cursor-move;
-}
-
-.cal-drag-active {
-  @apply opacity-50;
-} 

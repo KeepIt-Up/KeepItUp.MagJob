@@ -7,13 +7,14 @@ import { tokenInterceptor } from './app/core/interceptors/token.interceptor';
 import { AuthService } from './app/core/services/auth.service';
 import { heroIcons } from './app/shared/icons/icons';
 import { provideNgIconsConfig } from '@ng-icons/core';
-import { 
-  CalendarDateFormatter, 
-  CalendarNativeDateFormatter, 
-  DateAdapter, 
+
+import {
+  CalendarDateFormatter,
+  CalendarNativeDateFormatter,
+  DateAdapter,
   CalendarUtils,
   CalendarA11y,
-  CalendarEventTitleFormatter 
+  CalendarEventTitleFormatter,
 } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/moment';
 import moment from 'moment';
