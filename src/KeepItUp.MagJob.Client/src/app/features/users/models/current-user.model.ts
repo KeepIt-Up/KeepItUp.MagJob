@@ -7,4 +7,10 @@ export interface CurrentUser {
   profileImageUrl: string | null;
   phoneNumber?: string;
   address?: string;
+  memberships: {
+    organizationId: string;
+    memberId: string;
+    joinedAt: string;
+    roles: string[];
+  }[];
 }

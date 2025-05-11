@@ -1,4 +1,7 @@
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -43,6 +46,23 @@ public class UserConfiguration : BaseEntityConfiguration<User>
             profile.Property<bool>("IsProfileCreated")
                 .HasDefaultValue(true);
         });
+
+        // Konfiguracja kolekcji Permissions (jako lista stringów)
+        builder.Property<List<string>>("_permissions")
+            .HasColumnName("Permissions")
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList(),
+                new Microsoft.EntityFrameworkCore.ChangeTracking.ValueComparer<List<string>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
+
+        // Konfiguracja relacji z Member
+        builder.HasMany(u => u.Memberships)
+            .WithOne()
+            .HasForeignKey(m => m.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Indeksy
         builder.HasIndex(u => u.ExternalId).IsUnique();
