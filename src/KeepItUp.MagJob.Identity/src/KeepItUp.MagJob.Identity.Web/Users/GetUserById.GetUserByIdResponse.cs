@@ -1,4 +1,6 @@
-﻿namespace KeepItUp.MagJob.Identity.Web.Users;
+﻿using KeepItUp.MagJob.Identity.UseCases.Users.Queries;
+
+namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Odpowiedź dla endpointu GetUserEndpoint.
@@ -39,4 +41,9 @@ public class GetUserByIdResponse
     /// URL do zdjęcia profilowego użytkownika.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
+
+    /// <summary>
+    /// Lista organizacji, do których należy użytkownik.
+    /// </summary>
+    public List<MembershipDto> Memberships { get; set; } = new();
 }

@@ -32,6 +32,7 @@ public class UserRepository : IUserRepository
     {
         return await _dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Memberships)
             .FirstOrDefaultAsync(u => u.ExternalId == externalId, cancellationToken);
     }
 
