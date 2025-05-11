@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+﻿using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -51,7 +51,14 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                IsActive = user.IsActive
+                IsActive = user.IsActive,
+                Memberships = user.Memberships?.Select(m => new MembershipDto
+                {
+                    MemberId = m.Id,
+                    OrganizationId = m.OrganizationId,
+                    JoinedAt = m.JoinedAt,
+                    Roles = m.RoleIds.Select(r => r.ToString()).ToList()
+                }).ToList() ?? new List<MembershipDto>()
             };
 
             // Mapuj profil użytkownika na DTO (jeśli istnieje)

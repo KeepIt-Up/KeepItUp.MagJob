@@ -1,4 +1,5 @@
-﻿using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
 
@@ -48,9 +49,19 @@ public class User : BaseEntity, IAggregateRoot
     private readonly List<string> _permissions = new();
 
     /// <summary>
+    /// Lista organizacji, do których należy użytkownik.
+    /// </summary>
+    private readonly List<Member> _memberships = new();
+
+    /// <summary>
     /// Lista uprawnień użytkownika (tylko do odczytu).
     /// </summary>
     public IReadOnlyCollection<string> Permissions => _permissions.AsReadOnly();
+
+    /// <summary>
+    /// Lista organizacji, do których należy użytkownik (tylko do odczytu).
+    /// </summary>
+    public IReadOnlyCollection<Member> Memberships => _memberships.AsReadOnly();
 
     /// <summary>
     /// Data ostatniego logowania użytkownika.

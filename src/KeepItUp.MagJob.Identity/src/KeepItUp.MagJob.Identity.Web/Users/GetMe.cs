@@ -114,7 +114,8 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
             FirstName = result.Value.FirstName,
             LastName = result.Value.LastName,
             IsActive = result.Value.IsActive,
-            ProfileImageUrl = profileImageUrl
+            ProfileImageUrl = profileImageUrl,
+            Memberships = result.Value.Memberships
         };
 
         await SendOkAsync(response, ct);
