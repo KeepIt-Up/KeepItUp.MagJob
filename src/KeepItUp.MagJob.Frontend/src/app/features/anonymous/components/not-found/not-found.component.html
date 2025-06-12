@@ -1,0 +1,119 @@
+<!-- 404 Not Found Page -->
+<div class="min-h-screen flex align-items-center justify-content-center py-6 lg:py-8 px-4">
+  <div class="max-w-screen-md mx-auto text-center">
+    <!-- Hero Section -->
+    <div class="mb-8">
+      <!-- Error Illustration -->
+      <div class="relative mb-6">
+        <div
+          class="inline-flex align-items-center justify-content-center bg-primary-50 border-circle w-8rem h-8rem lg:w-10rem lg:h-10rem mb-4 shadow-1"
+        >
+          <i class="pi pi-compass text-6xl lg:text-8xl text-primary"></i>
+        </div>
+      </div>
+
+      <!-- Error Code & Message -->
+      <div class="mb-6">
+        <h1 class="text-7xl lg:text-9xl font-bold text-primary mb-3 line-height-1">404</h1>
+        <h2 class="text-3xl lg:text-4xl font-bold text-900 mb-4">Oops! Page Not Found</h2>
+        <p class="text-lg lg:text-xl text-600 line-height-3 max-w-30rem mx-auto">
+          The page you're looking for seems to have taken a wrong turn. Don't worry, we'll help you
+          find your way back.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-column sm:flex-row gap-3 justify-content-center mb-8">
+      <p-button
+        label="Back to Home"
+        icon="pi pi-home"
+        (click)="goHome()"
+        styleClass="px-6 py-3 text-base font-semibold w-full sm:w-auto h-3rem"
+      >
+      </p-button>
+      <p-button
+        label="Go Back"
+        icon="pi pi-arrow-left"
+        [outlined]="true"
+        (click)="goBack()"
+        styleClass="px-6 py-3 text-base font-semibold w-full sm:w-auto h-3rem"
+      >
+      </p-button>
+    </div>
+
+    <!-- Quick Links Section -->
+    <div class="bg-surface-50 border-round-lg p-6 mb-6">
+      <h3 class="text-xl font-bold text-900 mb-4">Popular Destinations</h3>
+
+      <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3 mb-3">
+          <p-card
+            styleClass="h-full hover:shadow-2 transition-all transition-duration-300 cursor-pointer"
+          >
+            <ng-template pTemplate="content">
+              <div class="text-center p-3" (click)="goHome()">
+                <i class="pi pi-home text-3xl text-primary mb-3"></i>
+                <h4 class="text-base font-semibold text-900 mb-2">Home Page</h4>
+                <p class="text-sm text-600 m-0">Return to the main page</p>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3 mb-3">
+          <p-card
+            styleClass="h-full hover:shadow-2 transition-all transition-duration-300 cursor-pointer"
+          >
+            <ng-template pTemplate="content">
+              <div class="text-center p-3" routerLink="/help">
+                <i class="pi pi-question-circle text-3xl text-blue-500 mb-3"></i>
+                <h4 class="text-base font-semibold text-900 mb-2">Help Center</h4>
+                <p class="text-sm text-600 m-0">Find answers and guides</p>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3 mb-3">
+          <p-card
+            styleClass="h-full hover:shadow-2 transition-all transition-duration-300 cursor-pointer"
+          >
+            <ng-template pTemplate="content">
+              <div class="text-center p-3" (click)="signIn()">
+                <i class="pi pi-sign-in text-3xl text-green-500 mb-3"></i>
+                <h4 class="text-base font-semibold text-900 mb-2">Sign In</h4>
+                <p class="text-sm text-600 m-0">Access your account</p>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3 mb-3">
+          <p-card
+            styleClass="h-full hover:shadow-2 transition-all transition-duration-300 cursor-pointer"
+          >
+            <ng-template pTemplate="content">
+              <div class="text-center p-3" (click)="contactSupport()">
+                <i class="pi pi-envelope text-3xl text-purple-500 mb-3"></i>
+                <h4 class="text-base font-semibold text-900 mb-2">Contact Support</h4>
+                <p class="text-sm text-600 m-0">Get help from our team</p>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Message -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-500 line-height-3">
+        <span class="font-medium">Error Code:</span> 404 •
+        <a
+          href="#"
+          class="text-primary cursor-pointer hover:underline ml-1"
+          (click)="reportIssue()"
+        >
+          Report this issue
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

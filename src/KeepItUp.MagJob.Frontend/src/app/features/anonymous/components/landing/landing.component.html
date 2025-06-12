@@ -1,0 +1,273 @@
+<!-- Landing Page using PrimeFlex utilities -->
+<div class="surface-ground">
+  <!-- Hero Section -->
+  <section class="bg-hero py-8 lg:py-12 theme-transition">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6">
+      <div class="grid align-items-center">
+        <div class="col-12 lg:col-6 text-center lg:text-left mb-6 lg:mb-0">
+          <h1 class="text-4xl lg:text-6xl font-bold text-900 line-height-2 mb-4">
+            Streamline Your
+            <span class="text-gradient">Organization</span>
+          </h1>
+          <p class="text-lg lg:text-xl text-600 line-height-3 mb-6 max-w-30rem mx-auto lg:mx-0">
+            Manage members, assign roles, track progress, and boost productivity with our
+            comprehensive platform designed for modern organizations.
+          </p>
+          <div
+            class="flex flex-column sm:flex-row gap-3 justify-content-center lg:justify-content-start"
+          >
+            <p-button
+              label="Get Started Free"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              styleClass="px-6 py-3 text-lg font-semibold w-full sm:w-auto theme-transition"
+            >
+            </p-button>
+            <p-button
+              label="Watch Demo"
+              icon="pi pi-play"
+              [outlined]="true"
+              styleClass="px-6 py-3 text-lg font-semibold w-full sm:w-auto theme-transition"
+            >
+            </p-button>
+          </div>
+
+          <!-- Trust Indicators -->
+          <div
+            class="flex flex-wrap align-items-center justify-content-center lg:justify-content-start gap-4 mt-6 text-sm text-600"
+          >
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-check-circle text-green-500"></i>
+              <span>Free 14-day trial</span>
+            </div>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-shield text-blue-500"></i>
+              <span>Enterprise security</span>
+            </div>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-star text-orange-500"></i>
+              <span>Easy to get started</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 lg:col-6 text-center">
+          <div
+            class="surface-card border-round-lg shadow-2 p-6 lg:p-8 max-w-30rem mx-auto theme-transition"
+          >
+            <div class="mb-4">
+              <i class="pi pi-desktop text-6xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-900 mb-3">Modern Dashboard</h3>
+            <p class="text-600 line-height-3 mb-4">
+              Intuitive interface designed for productivity and ease of use.
+            </p>
+            <div class="grid gap-3">
+              <div class="col-12 surface-100 border-round p-3 text-center theme-transition">
+                <i class="pi pi-users text-2xl text-primary mb-2"></i>
+                <p class="text-sm font-medium text-900 m-0">Member Management</p>
+              </div>
+              <div class="col-12 surface-100 border-round p-3 text-center theme-transition">
+                <i class="pi pi-check-circle text-2xl text-green-600 mb-2"></i>
+                <p class="text-sm font-medium text-900 m-0">Task Tracking</p>
+              </div>
+              <div class="col-12 surface-100 border-round p-3 text-center theme-transition">
+                <i class="pi pi-chart-bar text-2xl text-blue-600 mb-2"></i>
+                <p class="text-sm font-medium text-900 m-0">Analytics & Reports</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-8 lg:py-12">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6">
+      <div class="text-center mb-8 lg:mb-12">
+        <h2 class="text-3xl lg:text-5xl font-bold text-900 mb-4">
+          Everything You Need to <span class="text-gradient">Succeed</span>
+        </h2>
+        <p class="text-lg lg:text-xl text-600 max-w-40rem mx-auto line-height-3">
+          Powerful features designed to help your organization thrive in today's fast-paced
+          environment.
+        </p>
+      </div>
+
+      <div class="grid">
+        <!-- Feature 1 -->
+        <div class="col-12 lg:col-4 mb-6 lg:mb-0">
+          <p-card styleClass="h-full feature-card theme-transition cursor-pointer">
+            <ng-template pTemplate="header">
+              <div class="surface-100 p-4 text-center theme-transition">
+                <i class="pi pi-users text-5xl text-blue-500 mb-3"></i>
+                <h3 class="text-xl font-semibold text-900 m-0">Member Management</h3>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <p class="text-600 line-height-3 mb-4">
+                Easily manage team members, track their roles, and monitor their contributions in
+                real-time.
+              </p>
+              <ul class="list-none p-0 m-0">
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Role-based permissions</span>
+                </li>
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Activity tracking</span>
+                </li>
+                <li class="flex align-items-center gap-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Team collaboration tools</span>
+                </li>
+              </ul>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <p-button
+                label="Learn More"
+                [text]="true"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                styleClass="w-full justify-content-center"
+              >
+              </p-button>
+            </ng-template>
+          </p-card>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="col-12 lg:col-4 mb-6 lg:mb-0">
+          <p-card styleClass="h-full feature-card theme-transition cursor-pointer">
+            <ng-template pTemplate="header">
+              <div class="surface-100 p-4 text-center theme-transition">
+                <i class="pi pi-clipboard text-5xl text-green-500 mb-3"></i>
+                <h3 class="text-xl font-semibold text-900 m-0">Task Assignment</h3>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <p class="text-600 line-height-3 mb-4">
+                Assign tasks efficiently, set deadlines, and track progress with our intuitive task
+                management system.
+              </p>
+              <ul class="list-none p-0 m-0">
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Drag & drop interface</span>
+                </li>
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Deadline management</span>
+                </li>
+                <li class="flex align-items-center gap-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Progress visualization</span>
+                </li>
+              </ul>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <p-button
+                label="Learn More"
+                [text]="true"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                styleClass="w-full justify-content-center"
+              >
+              </p-button>
+            </ng-template>
+          </p-card>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="col-12 lg:col-4">
+          <p-card styleClass="h-full feature-card theme-transition cursor-pointer">
+            <ng-template pTemplate="header">
+              <div class="surface-100 p-4 text-center theme-transition">
+                <i class="pi pi-chart-bar text-5xl text-purple-500 mb-3"></i>
+                <h3 class="text-xl font-semibold text-900 m-0">Analytics Dashboard</h3>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <p class="text-600 line-height-3 mb-4">
+                Get insights into your organization's performance with comprehensive analytics and
+                reporting tools.
+              </p>
+              <ul class="list-none p-0 m-0">
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Real-time metrics</span>
+                </li>
+                <li class="flex align-items-center gap-2 mb-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Custom reports</span>
+                </li>
+                <li class="flex align-items-center gap-2 text-sm">
+                  <i class="pi pi-check text-green-500"></i>
+                  <span>Export capabilities</span>
+                </li>
+              </ul>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <p-button
+                label="Learn More"
+                [text]="true"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                styleClass="w-full justify-content-center"
+              >
+              </p-button>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="bg-primary py-8 lg:py-12 theme-transition">
+    <div class="max-w-screen-xl mx-auto px-4 lg:px-6 text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+        Ready to Transform Your Organization?
+      </h2>
+      <p class="text-lg lg:text-xl text-primary-100 mb-6 max-w-40rem mx-auto line-height-3">
+        Start streamlining your organization's operations and boost productivity with our
+        comprehensive management platform.
+      </p>
+      <div class="flex flex-column sm:flex-row gap-3 justify-content-center align-items-center">
+        <p-button
+          label="Start Free Trial"
+          icon="pi pi-play"
+          styleClass="bg-white text-primary hover:bg-gray-50 px-6 py-3 text-lg font-semibold w-full sm:w-auto border-none theme-transition"
+        >
+        </p-button>
+        <p-button
+          label="Contact Sales"
+          icon="pi pi-phone"
+          [outlined]="true"
+          styleClass="border-white text-white hover:bg-white hover:text-primary px-6 py-3 text-lg font-semibold w-full sm:w-auto theme-transition"
+        >
+        </p-button>
+      </div>
+
+      <!-- Trust badges -->
+      <div
+        class="flex flex-wrap justify-content-center align-items-center gap-6 mt-8 text-primary-100"
+      >
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-shield text-green-400"></i>
+          <span class="text-sm font-medium">Secure & Reliable</span>
+        </div>
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-clock text-blue-400"></i>
+          <span class="text-sm font-medium">24/7 Support</span>
+        </div>
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-cloud text-purple-400"></i>
+          <span class="text-sm font-medium">Cloud-Based</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

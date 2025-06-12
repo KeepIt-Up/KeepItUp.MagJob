@@ -1,0 +1,75 @@
+<div [style.min-height]="$minHeight()">
+  <!-- Loading state -->
+  @if ($state().isLoading) {
+    <div class="state-loading">
+      @if (loadingTemplate()) {
+        <ng-container *ngTemplateOutlet="loadingTemplate()!"></ng-container>
+      } @else {
+        <div class="flex justify-content-center align-items-center h-full">
+          <div class="flex flex-column align-items-center">
+            <p-progressSpinner></p-progressSpinner>
+            <span>{{ $loadingMessage() }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Error state -->
+  @if ($state().isError) {
+    <div class="state-error">
+      @if (errorTemplate()) {
+        <ng-container
+          *ngTemplateOutlet="errorTemplate()!; context: { $implicit: $actualErrorMessage }"
+        ></ng-container>
+      } @else {
+        <div class="p-4 bg-red-50 border-round">
+          <div class="flex align-items-center text-red-700">
+            <i class="pi pi-exclamation-circle mr-2" style="font-size: 1.5rem"></i>
+            <div>
+              <h3 class="mt-0 mb-1">Wystąpił błąd</h3>
+              <p class="m-0">{{ $actualErrorMessage() }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (
+    !$state().isLoading &&
+    !$state().isError &&
+    $isEmpty() &&
+    $showEmptyState() &&
+    !$state().isInitial
+  ) {
+    <div class="state-empty">
+      @if ($effectiveEmptyTemplate()) {
+        <ng-container *ngTemplateOutlet="$effectiveEmptyTemplate()!"></ng-container>
+      } @else {
+        <div class="flex flex-column justify-content-center align-items-center h-full">
+          <i class="pi pi-folder-open mb-3" style="font-size: 2.5rem; opacity: 0.5"></i>
+          <div class="text-700">{{ $emptyMessage() }}</div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Content state -->
+  @if (
+    !$state().isLoading &&
+    !$state().isError &&
+    (!$isEmpty() || !$showEmptyState() || $state().isInitial)
+  ) {
+    <div class="state-content">
+      @if (contentTemplate()) {
+        <ng-container
+          *ngTemplateOutlet="contentTemplate()!; context: { $implicit: $state().data }"
+        ></ng-container>
+      } @else {
+        <ng-content select="[content]"></ng-content>
+      }
+    </div>
+  }
+</div>

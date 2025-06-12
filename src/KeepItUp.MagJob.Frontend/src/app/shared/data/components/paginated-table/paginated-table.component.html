@@ -1,0 +1,70 @@
+<div class="data-grid-container">
+  <!-- Table -->
+  <p-table
+    [value]="config().state().data?.items ?? []"
+    [paginator]="true"
+    (onPage)="onPageChange($event)"
+    [rows]="config().state().data?.pageSize ?? 10"
+    [totalRecords]="config().state().data?.totalCount ?? 0"
+    [lazy]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Wyświetlono {first} do {last} z {totalRecords} wpisów"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [rowHover]="true"
+    [rowsPerPageOptions]="config().pageSizeOptions || [5, 10, 25, 50]"
+    [showJumpToPageDropdown]="false"
+    sortMode="single"
+    [sortField]="config().params.sortField"
+    [sortOrder]="config().params.ascending ? 1 : -1"
+    (onSort)="onSortChange($event)"
+    [selectionMode]="'single'"
+    dataKey="id"
+    (onRowSelect)="handleRowSelect($event)"
+  >
+    <!-- Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        @for (column of config().columns; track column.field) {
+          <th
+            [pSortableColumn]="column.sortable ? column.field.toString() : undefined"
+            [style.display]="column.hideOnMobile ? 'none' : 'table-cell'"
+            [style.width]="column.width"
+          >
+            {{ column.header }}
+            @if (column.sortable) {
+              <p-sortIcon [field]="column.field.toString()"></p-sortIcon>
+            }
+          </th>
+        }
+      </tr>
+    </ng-template>
+
+    <!-- Body -->
+    <ng-template pTemplate="body" let-row>
+      <tr [pSelectableRow]="row">
+        @for (column of config().columns; track column.field) {
+          <td [style.display]="column.hideOnMobile ? 'none' : 'table-cell'">
+            @if (column.templateRef && columnTemplates()[column.templateRef]) {
+              <ng-container
+                *ngTemplateOutlet="
+                  columnTemplates()[column.templateRef];
+                  context: { $implicit: row, column: column }
+                "
+              ></ng-container>
+            } @else {
+              {{ getCellValue(row, column) }}
+            }
+          </td>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="config().columns.length" class="text-center p-4">
+          {{ config().emptyStateMessage || 'No data found' }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

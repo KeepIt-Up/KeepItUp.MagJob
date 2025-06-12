@@ -1,0 +1,45 @@
+<p-scrollPanel #scrollPanel [style]="{ height: '100%' }">
+  <ng-container *ngTemplateOutlet="listContentTemplate"></ng-container>
+</p-scrollPanel>
+
+<ng-template #listContentTemplate>
+  <!-- Empty state message -->
+  @if ((config().state().data?.items)!.length === 0 && !config().state().isLoading) {
+    <div class="infinity-list-empty">
+      {{ config().emptyMessage || 'No items available' }}
+    </div>
+  }
+
+  <!-- Initial loading state -->
+  @if (config().state().isLoading) {
+    <div class="infinity-list-loading">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="infinity-list-loading-item">
+          <p-skeleton></p-skeleton>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- List items -->
+  @if ((config().state().data?.items)!.length > 0) {
+    <div class="infinity-list-items">
+      @for (item of config().state().data?.items; track item) {
+        @if (config().itemTemplate) {
+          <div class="infinity-list-item" (click)="handleItemSelect(item)">
+            <ng-container
+              *ngTemplateOutlet="config().itemTemplate!; context: { $implicit: item }"
+            ></ng-container>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <!-- Loading more indicator -->
+  @if (config().state().isLoading && config().state().data?.hasNext) {
+    <div class="infinity-list-loading-more">
+      <p-skeleton></p-skeleton>
+    </div>
+  }
+</ng-template>

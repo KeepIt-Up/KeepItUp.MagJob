@@ -1,0 +1,13 @@
+.data-grid-container {
+  width: 100%;
+}
+
+:host ::ng-deep .p-datatable-gridlines .p-datatable-tbody > tr > td {
+  border: 1px solid #e9ecef;
+}
+
+@media screen and (max-width: 768px) {
+  :host ::ng-deep *[style*='display: none'] {
+    display: none !important;
+  }
+}

@@ -1,0 +1,48 @@
+  
+  ::ng-deep .p-scrollpanel-content {
+    height: 100%;
+    padding: 0.5rem;
+  }
+
+.infinity-list-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.infinity-list-item {
+  width: 100%;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--surface-border, #dee2e6);
+  transition: background-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--surface-hover, #f8f9fa);
+  }
+}
+
+.infinity-list-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  font-style: italic;
+  color: var(--text-color-secondary, #6c757d);
+}
+
+.infinity-list-loading {
+  padding: 0.5rem;
+}
+
+.infinity-list-loading-item {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.infinity-list-loading-more {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
