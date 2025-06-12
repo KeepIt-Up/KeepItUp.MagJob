@@ -4,84 +4,84 @@ using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 /// <summary>
-/// Status zaproszenia.
+/// Status of an invitation.
 /// </summary>
 public enum InvitationStatus
 {
     /// <summary>
-    /// Zaproszenie oczekuje na akceptację.
+    /// Invitation is pending acceptance.
     /// </summary>
     Pending = 0,
 
     /// <summary>
-    /// Zaproszenie zostało zaakceptowane.
+    /// Invitation has been accepted.
     /// </summary>
     Accepted = 1,
 
     /// <summary>
-    /// Zaproszenie zostało odrzucone.
+    /// Invitation has been rejected.
     /// </summary>
     Rejected = 2,
 
     /// <summary>
-    /// Zaproszenie wygasło.
+    /// Invitation has expired.
     /// </summary>
     Expired = 3
 }
 
 /// <summary>
-/// Reprezentuje zaproszenie do organizacji.
+/// Represents an invitation to an organization.
 /// </summary>
 public class Invitation : BaseEntity
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; private set; }
 
     /// <summary>
-    /// Adres e-mail zapraszanego użytkownika.
+    /// Email address of the invited user.
     /// </summary>
     public string Email { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Token zaproszenia.
+    /// Invitation token.
     /// </summary>
     public string Token { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator roli, która zostanie przypisana po akceptacji zaproszenia.
+    /// ID of the role that will be assigned after accepting the invitation.
     /// </summary>
     public Guid RoleId { get; private set; }
 
     /// <summary>
-    /// Status zaproszenia.
+    /// Status of the invitation.
     /// </summary>
     public InvitationStatus Status { get; private set; } = InvitationStatus.Pending;
 
     /// <summary>
-    /// Data wygaśnięcia zaproszenia.
+    /// Expiration date of the invitation.
     /// </summary>
     public DateTime ExpiresAt { get; private set; }
 
     /// <summary>
-    /// Czy zaproszenie wygasło.
+    /// Whether the invitation has expired.
     /// </summary>
     public bool IsExpired => Status == InvitationStatus.Expired || DateTime.UtcNow > ExpiresAt;
 
     /// <summary>
-    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// Private constructor for EF Core and factory creation.
     /// </summary>
     private Invitation() { }
 
     /// <summary>
-    /// Tworzy nowe zaproszenie do organizacji.
+    /// Creates a new invitation to an organization.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="email">Adres e-mail osoby zapraszanej.</param>
-    /// <param name="roleId">Identyfikator roli, która zostanie przypisana po akceptacji zaproszenia.</param>
-    /// <param name="expiresAt">Data wygaśnięcia zaproszenia.</param>
-    /// <returns>Nowe zaproszenie.</returns>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="email">Email address of the invited user.</param>
+    /// <param name="roleId">ID of the role that will be assigned after accepting the invitation.</param>
+    /// <param name="expiresAt">Expiration date of the invitation.</param>
+    /// <returns>New invitation.</returns>
     public static Invitation Create(Guid organizationId, string email, Guid roleId, DateTime? expiresAt = null)
     {
         Guard.Against.Default(organizationId, nameof(organizationId));
@@ -103,7 +103,7 @@ public class Invitation : BaseEntity
     }
 
     /// <summary>
-    /// Akceptuje zaproszenie.
+    /// Accepts the invitation.
     /// </summary>
     public void Accept()
     {
@@ -123,7 +123,7 @@ public class Invitation : BaseEntity
     }
 
     /// <summary>
-    /// Odrzuca zaproszenie.
+    /// Rejects the invitation.
     /// </summary>
     public void Reject()
     {
@@ -143,7 +143,7 @@ public class Invitation : BaseEntity
     }
 
     /// <summary>
-    /// Oznacza zaproszenie jako wygasłe.
+    /// Marks the invitation as expired.
     /// </summary>
     public void MarkAsExpired()
     {

@@ -2,25 +2,25 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie aktualizacji logo organizacji.
+/// Domain event informing about the update of an organization's logo.
 /// </summary>
 public class OrganizationLogoUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// URL do logo organizacji.
+    /// URL of the organization's logo.
     /// </summary>
     public string? LogoUrl { get; }
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="OrganizationLogoUpdatedEvent"/>.
+    /// Creates a new OrganizationLogoUpdatedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="logoUrl">URL do logo organizacji.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="logoUrl">URL of the organization's logo.</param>
     public OrganizationLogoUpdatedEvent(Guid organizationId, string? logoUrl)
     {
         OrganizationId = organizationId;

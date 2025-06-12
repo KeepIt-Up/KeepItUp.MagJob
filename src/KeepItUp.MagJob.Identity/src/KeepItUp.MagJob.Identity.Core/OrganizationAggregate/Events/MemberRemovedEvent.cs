@@ -2,25 +2,25 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o usunięciu członka z organizacji.
+/// Domain event informing about the removal of a member from an organization.
 /// </summary>
 public class MemberRemovedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o usunięciu członka z organizacji.
+    /// Creates a new MemberRemovedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="userId">Identyfikator użytkownika.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="userId">User ID.</param>
     public MemberRemovedEvent(Guid organizationId, Guid userId)
     {
         OrganizationId = organizationId;

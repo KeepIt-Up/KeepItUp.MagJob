@@ -1,37 +1,37 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie domenowe informujące o zaakceptowaniu zaproszenia do organizacji.
+/// Domain event informing about the acceptance of an invitation to an organization.
 /// </summary>
 public class InvitationAcceptedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation ID.
     /// </summary>
     public Guid InvitationId { get; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Adres e-mail osoby zapraszanej.
+    /// Email address of the invited person.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Identyfikator roli, która zostanie przypisana.
+    /// Role ID that will be assigned.
     /// </summary>
     public Guid RoleId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie InvitationAcceptedEvent.
+    /// Creates a new InvitationAcceptedEvent.
     /// </summary>
-    /// <param name="invitationId">Identyfikator zaproszenia.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="email">Adres e-mail osoby zapraszanej.</param>
-    /// <param name="roleId">Identyfikator roli, która zostanie przypisana.</param>
+    /// <param name="invitationId">Invitation ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="email">Email address of the invited person.</param>
+    /// <param name="roleId">Role ID that will be assigned.</param>
     public InvitationAcceptedEvent(Guid invitationId, Guid organizationId, string email, Guid roleId)
     {
         InvitationId = invitationId;

@@ -4,7 +4,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Handlers;
 
 /// <summary>
-/// Handler dla zdarzenia aktualizacji użytkownika
+/// Handler for the event of updating a user
 /// </summary>
 internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedEvent>
 {
@@ -14,10 +14,10 @@ internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedE
 
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UserUpdatedDomainEventHandler"/>
+    /// Initializes a new instance of the <see cref="UserUpdatedDomainEventHandler"/> class
     /// </summary>
-    /// <param name="keycloakSyncService">Serwis synchronizacji z Keycloak</param>
-    /// <param name="userRepository">Repozytorium użytkowników</param>
+    /// <param name="keycloakSyncService">Keycloak synchronization service</param>
+    /// <param name="userRepository">User repository</param>
     /// <param name="logger">Logger</param>
     public UserUpdatedDomainEventHandler(
         IKeycloakSyncService keycloakSyncService,
@@ -30,18 +30,17 @@ internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedE
     }
 
     /// <summary>
-    /// Obsługuje zdarzenie aktualizacji użytkownika
+    /// Handles the event of updating a user
     /// </summary>
-    /// <param name="notification">Zdarzenie</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="notification">Event</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     public async Task Handle(UserUpdatedEvent notification, CancellationToken cancellationToken)
     {
         try
         {
             _logger.LogInformation("Obsługa zdarzenia aktualizacji użytkownika {UserId}", notification.UserId);
 
-            // Jeśli użytkownik ma identyfikator zewnętrzny, synchronizujemy dane z Keycloak
             if (notification.ExternalId != Guid.Empty)
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
@@ -51,7 +50,6 @@ internal class UserUpdatedDomainEventHandler : INotificationHandler<UserUpdatedE
                     return;
                 }
 
-                // Pobierz dane użytkownika z Keycloak
                 await _keycloakSyncService.SyncUserDataAsync(notification.ExternalId.ToString(), cancellationToken);
 
                 _logger.LogInformation("Zsynchronizowano dane użytkownika {UserId} z Keycloak", notification.UserId);

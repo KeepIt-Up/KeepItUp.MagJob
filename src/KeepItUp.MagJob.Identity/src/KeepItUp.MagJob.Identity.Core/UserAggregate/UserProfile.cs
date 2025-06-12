@@ -1,31 +1,31 @@
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
 
 /// <summary>
-/// Reprezentuje profil użytkownika jako value object.
+/// Represents the user's profile as a value object.
 /// </summary>
 public class UserProfile : ValueObject
 {
     /// <summary>
-    /// Numer telefonu użytkownika.
+    /// User's phone number.
     /// </summary>
     public string? PhoneNumber { get; }
 
     /// <summary>
-    /// Adres użytkownika.
+    /// User's address.
     /// </summary>
     public string? Address { get; }
 
     /// <summary>
-    /// URL do zdjęcia profilowego użytkownika.
+    /// URL of the user's profile picture.
     /// </summary>
     public string? ProfileImage { get; }
 
     /// <summary>
-    /// Tworzy nowy profil użytkownika.
+    /// Creates a new user profile.
     /// </summary>
-    /// <param name="phoneNumber">Numer telefonu użytkownika.</param>
-    /// <param name="address">Adres użytkownika.</param>
-    /// <param name="profileImage">URL do zdjęcia profilowego użytkownika.</param>
+    /// <param name="phoneNumber">User's phone number.</param>
+    /// <param name="address">User's address.</param>
+    /// <param name="profileImage">URL of the user's profile picture.</param>
     public UserProfile(string? phoneNumber, string? address, string? profileImage)
     {
         PhoneNumber = phoneNumber;
@@ -34,9 +34,9 @@ public class UserProfile : ValueObject
     }
 
     /// <summary>
-    /// Zwraca komponenty używane do porównywania równości obiektów.
+    /// Returns the components used to compare object equality.
     /// </summary>
-    /// <returns>Kolekcja komponentów do porównania.</returns>
+    /// <returns>Collection of components to compare.</returns>
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return PhoneNumber ?? string.Empty;
@@ -45,24 +45,24 @@ public class UserProfile : ValueObject
     }
 
     /// <summary>
-    /// Tworzy nowy profil użytkownika z aktualizacją wybranych właściwości.
+    /// Creates a new user profile with updates to selected properties.
     /// </summary>
-    /// <param name="phoneNumber">Nowy numer telefonu lub null, aby zachować obecny.</param>
-    /// <param name="address">Nowy adres lub null, aby zachować obecny.</param>
-    /// <param name="profileImage">Nowy URL do zdjęcia profilowego lub null, aby zachować obecny.</param>
-    /// <returns>Nowy obiekt UserProfile z zaktualizowanymi właściwościami lub ten sam obiekt, jeśli nic się nie zmieniło.</returns>
+    /// <param name="phoneNumber">New phone number or null to keep the current one.</param>
+    /// <param name="address">New address or null, to keep the current one.</param>
+    /// <param name="profileImage">New profile picture URL or null, to keep the current one.</param>
+    /// <returns>New UserProfile object with updated properties or the same object, if nothing changed.</returns>
     public UserProfile WithUpdates(string? phoneNumber = null, string? address = null, string? profileImage = null)
     {
         var newPhoneNumber = phoneNumber ?? PhoneNumber;
         var newAddress = address ?? Address;
         var newProfileImage = profileImage ?? ProfileImage;
 
-        // Sprawdź czy coś się zmieniło
+        // Check if something changed
         if (string.Equals(newPhoneNumber, PhoneNumber) &&
             string.Equals(newAddress, Address) &&
             string.Equals(newProfileImage, ProfileImage))
         {
-            return this; // Zwracamy ten sam obiekt jeśli nic się nie zmieniło
+            return this; // Return the same object if nothing changed
         }
 
         return new UserProfile(newPhoneNumber, newAddress, newProfileImage);

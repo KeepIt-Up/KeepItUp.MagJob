@@ -1,26 +1,26 @@
 namespace KeepItUp.MagJob.Identity.Core.Interfaces;
 
 /// <summary>
-/// Interfejs serwisu do zarządzania zdjęciami profilowymi użytkowników
+/// Interface for managing user profile pictures
 /// </summary>
 public interface IUserProfilePictureService
 {
     /// <summary>
-    /// Pobiera URL zdjęcia profilowego użytkownika
+    /// Gets the URL of the user's profile picture
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w module Identity</param>
-    /// <param name="externalId">Identyfikator użytkownika w Keycloak</param>
-    /// <param name="forceRefresh">Czy wymusić odświeżenie zdjęcia z IDP</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>URL zdjęcia profilowego lub null, jeśli użytkownik nie ma zdjęcia</returns>
+    /// <param name="userId">User ID in the Identity module</param>
+    /// <param name="externalId">User ID in Keycloak</param>
+    /// <param name="forceRefresh">Whether to force a refresh of the picture from IDP</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>URL of the user's profile picture or null if the user has no picture</returns>
     Task<string?> GetProfilePictureUrlAsync(Guid userId, Guid externalId, bool forceRefresh = false, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Synchronizuje zdjęcie profilowe użytkownika z IDP
+    /// Synchronizes the user's profile picture with IDP
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w module Identity</param>
-    /// <param name="externalId">Identyfikator użytkownika w Keycloak</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>URL zaktualizowanego zdjęcia profilowego lub null, jeśli użytkownik nie ma zdjęcia w IDP</returns>
+    /// <param name="userId">User ID in the Identity module</param>
+    /// <param name="externalId">User ID in Keycloak</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>URL of the updated profile picture or null if the user has no picture in IDP</returns>
     Task<string?> SyncProfilePictureFromIdpAsync(Guid userId, Guid externalId, CancellationToken cancellationToken = default);
 }

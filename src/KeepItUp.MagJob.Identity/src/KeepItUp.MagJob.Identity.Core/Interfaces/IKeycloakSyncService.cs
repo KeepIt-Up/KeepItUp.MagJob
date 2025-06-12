@@ -3,38 +3,38 @@
 namespace KeepItUp.MagJob.Identity.Core.Interfaces;
 
 /// <summary>
-/// Interfejs serwisu synchronizacji z Keycloak
+/// Interface for synchronization with Keycloak
 /// </summary>
 public interface IKeycloakSyncService
 {
     /// <summary>
-    /// Synchronizuje role użytkownika z Keycloak
+    /// Synchronizes user roles with Keycloak
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="userId">User ID in Keycloak</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     Task SyncUserRolesAsync(string userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Synchronizuje dane użytkownika z Keycloak
+    /// Synchronizes user data with Keycloak
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="userId">User ID in Keycloak</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     Task SyncUserDataAsync(string userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Synchronizuje wszystkich użytkowników z Keycloak
+    /// Synchronizes all users from Keycloak
     /// </summary>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     Task SyncAllUsersAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Importuje nowego użytkownika z Keycloak do modułu Identity
+    /// Imports a new user from Keycloak to the Identity module
     /// </summary>
-    /// <param name="keycloakUserId">Identyfikator użytkownika w Keycloak</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Identyfikator utworzonego użytkownika w module Identity</returns>
+    /// <param name="keycloakUserId">User ID in Keycloak</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>ID of the created user in the Identity module</returns>
     Task<Guid> ImportUserFromKeycloakAsync(string keycloakUserId, CancellationToken cancellationToken = default);
 }

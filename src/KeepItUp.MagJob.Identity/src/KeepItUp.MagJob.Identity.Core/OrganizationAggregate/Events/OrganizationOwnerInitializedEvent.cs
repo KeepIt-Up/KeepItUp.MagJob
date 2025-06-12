@@ -1,31 +1,31 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o inicjalizacji właściciela organizacji.
+/// Domain event informing about the initialization of an organization's owner.
 /// </summary>
 public class OrganizationOwnerInitializedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner ID.
     /// </summary>
     public Guid OwnerId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o inicjalizacji właściciela organizacji.
+    /// Creates a new OrganizationOwnerInitializedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="name">Nazwa organizacji.</param>
-    /// <param name="ownerId">Identyfikator właściciela organizacji.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="name">Organization name.</param>
+    /// <param name="ownerId">Owner ID.</param>
     public OrganizationOwnerInitializedEvent(Guid organizationId, string name, Guid ownerId)
     {
         OrganizationId = organizationId;

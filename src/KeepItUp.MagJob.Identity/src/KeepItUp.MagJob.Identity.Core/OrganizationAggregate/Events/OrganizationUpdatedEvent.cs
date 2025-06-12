@@ -2,31 +2,31 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o aktualizacji danych organizacji.
+/// Domain event informing about the update of an organization's data.
 /// </summary>
 public class OrganizationUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner ID.
     /// </summary>
     public Guid OwnerId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o aktualizacji danych organizacji.
+    /// Creates a new OrganizationUpdatedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="name">Nazwa organizacji.</param>
-    /// <param name="ownerId">Identyfikator właściciela organizacji.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="name">Organization name.</param>
+    /// <param name="ownerId">Owner ID.</param>
     public OrganizationUpdatedEvent(Guid organizationId, string name, Guid ownerId)
     {
         OrganizationId = organizationId;

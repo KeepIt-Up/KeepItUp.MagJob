@@ -3,61 +3,61 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 /// <summary>
-/// Reprezentuje rolę w organizacji.
+/// Represents a role in an organization.
 /// </summary>
 public class Role : BaseEntity
 {
     /// <summary>
-    /// Nazwa roli.
+    /// Name of the role.
     /// </summary>
     public string Name { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Description of the role.
     /// </summary>
     public string? Description { get; private set; }
 
     /// <summary>
-    /// Kolor roli (w formacie HEX).
+    /// Color of the role (in HEX format).
     /// </summary>
     public string? Color { get; private set; }
 
     /// <summary>
-    /// Identyfikator organizacji, do której należy rola.
+    /// Organization ID to which the role belongs.
     /// </summary>
     public Guid OrganizationId { get; private set; }
 
     /// <summary>
-    /// Lista uprawnień przypisanych do roli.
+    /// List of permissions assigned to the role.
     /// </summary>
     private readonly List<Permission> _permissions = new();
 
     /// <summary>
-    /// Lista uprawnień przypisanych do roli (tylko do odczytu).
+    /// List of permissions assigned to the role (read-only).
     /// </summary>
     public IReadOnlyCollection<Permission> Permissions => _permissions.AsReadOnly();
 
     /// <summary>
-    /// Lista członków posiadających tę rolę.
+    /// List of members having this role.
     /// </summary>
     private readonly List<Member> _members = new();
 
     /// <summary>
-    /// Lista członków posiadających tę rolę (tylko do odczytu).
+    /// List of members having this role (read-only).
     /// </summary>
     public IReadOnlyCollection<Member> Members => _members.AsReadOnly();
 
-    // Prywatny konstruktor dla EF Core
+    // Private constructor for EF Core
     private Role() { }
 
     /// <summary>
-    /// Tworzy nową rolę.
+    /// Creates a new role.
     /// </summary>
-    /// <param name="name">Nazwa roli.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="description">Opis roli.</param>
-    /// <param name="color">Kolor roli (w formacie HEX).</param>
-    /// <returns>Nowa rola.</returns>
+    /// <param name="name">Name of the role.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="description">Description of the role.</param>
+    /// <param name="color">Color of the role (in HEX format).</param>
+    /// <returns>New role.</returns>
     public static Role Create(string name, Guid organizationId, string? description = null, string? color = null)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
@@ -73,11 +73,11 @@ public class Role : BaseEntity
     }
 
     /// <summary>
-    /// Aktualizuje dane roli.
+    /// Updates the role data.
     /// </summary>
-    /// <param name="name">Nazwa roli.</param>
-    /// <param name="description">Opis roli.</param>
-    /// <param name="color">Kolor roli (w formacie HEX).</param>
+    /// <param name="name">Name of the role.</param>
+    /// <param name="description">Description of the role.</param>
+    /// <param name="color">Color of the role (in HEX format).</param>
     public void Update(string name, string? description = null, string? color = null)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
@@ -86,19 +86,18 @@ public class Role : BaseEntity
         Description = description;
         Color = color;
 
-        // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
 
     /// <summary>
-    /// Dodaje uprawnienie do roli.
+    /// Adds a permission to the role.
     /// </summary>
-    /// <param name="permission">Uprawnienie do dodania.</param>
+    /// <param name="permission">Permission to add.</param>
     public void AddPermission(Permission permission)
     {
         Guard.Against.Null(permission, nameof(permission));
 
-        // Sprawdź, czy uprawnienie już istnieje
+        // Check if the permission already exists
         if (_permissions.Any(p => p.Name == permission.Name))
         {
             return;
@@ -106,19 +105,19 @@ public class Role : BaseEntity
 
         _permissions.Add(permission);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
     }
 
     /// <summary>
-    /// Usuwa uprawnienie z roli.
+    /// Removes a permission from the role.
     /// </summary>
-    /// <param name="permissionName">Nazwa uprawnienia do usunięcia.</param>
+    /// <param name="permissionName">Name of the permission to remove.</param>
     public void RemovePermission(string permissionName)
     {
         Guard.Against.NullOrEmpty(permissionName, nameof(permissionName));
 
-        // Znajdź uprawnienie
+        // Find the permission
         var permission = _permissions.FirstOrDefault(p => p.Name == permissionName);
         if (permission == null)
         {
@@ -127,15 +126,15 @@ public class Role : BaseEntity
 
         _permissions.Remove(permission);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
     }
 
     /// <summary>
-    /// Sprawdza, czy rola posiada określone uprawnienie.
+    /// Checks if the role has a specific permission.
     /// </summary>
-    /// <param name="permissionName">Nazwa uprawnienia.</param>
-    /// <returns>True, jeśli rola posiada uprawnienie; w przeciwnym razie false.</returns>
+    /// <param name="permissionName">Name of the permission.</param>
+    /// <returns>True, if the role has the permission; otherwise false.</returns>
     public bool HasPermission(string permissionName)
     {
         Guard.Against.NullOrEmpty(permissionName, nameof(permissionName));
@@ -144,13 +143,12 @@ public class Role : BaseEntity
     }
 
     /// <summary>
-    /// Usuwa wszystkie uprawnienia z roli.
+    /// Removes all permissions from the role.
     /// </summary>
     public void ClearPermissions()
     {
         _permissions.Clear();
 
-        // Wywołanie metody Update z klasy bazowej
         base.Update();
     }
 }

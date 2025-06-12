@@ -3,82 +3,82 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 /// <summary>
-/// Reprezentuje organizację w systemie.
+/// Represents an organization in the system.
 /// </summary>
 public class Organization : BaseEntity, IAggregateRoot
 {
     /// <summary>
-    /// Nazwa organizacji.
+    /// Name of the organization.
     /// </summary>
     public string Name { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Description of the organization.
     /// </summary>
     public string? Description { get; private set; }
 
     /// <summary>
-    /// URL do logo organizacji.
+    /// URL of the organization's logo.
     /// </summary>
     public string? LogoUrl { get; private set; }
 
     /// <summary>
-    /// URL do bannera organizacji.
+    /// URL of the organization's banner.
     /// </summary>
     public string? BannerUrl { get; private set; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// ID of the organization's owner.
     /// </summary>
     public Guid OwnerId { get; private set; }
 
     /// <summary>
-    /// Czy organizacja jest aktywna.
+    /// Whether the organization is active.
     /// </summary>
     public bool IsActive { get; private set; } = true;
 
     /// <summary>
-    /// Lista członków organizacji.
+    /// List of organization members.
     /// </summary>
     private readonly List<Member> _members = new();
 
     /// <summary>
-    /// Lista członków organizacji (tylko do odczytu).
+    /// List of organization members (read-only).
     /// </summary>
     public IReadOnlyCollection<Member> Members => _members.AsReadOnly();
 
     /// <summary>
-    /// Lista ról w organizacji.
+    /// List of roles in the organization.
     /// </summary>
     private readonly List<Role> _roles = new();
 
     /// <summary>
-    /// Lista ról w organizacji (tylko do odczytu).
+    /// List of roles in the organization (read-only).
     /// </summary>
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
     /// <summary>
-    /// Lista zaproszeń do organizacji.
+    /// List of invitations to the organization.
     /// </summary>
     private readonly List<Invitation> _invitations = new();
 
     /// <summary>
-    /// Lista zaproszeń do organizacji (tylko do odczytu).
+    /// List of invitations to the organization (read-only).
     /// </summary>
     public IReadOnlyCollection<Invitation> Invitations => _invitations.AsReadOnly();
 
-    // Prywatny konstruktor dla EF Core
+    // Private constructor for EF Core
     private Organization() { }
 
     /// <summary>
-    /// Tworzy nową organizację.
+    /// Creates a new organization.
     /// </summary>
-    /// <param name="name">Nazwa organizacji.</param>
-    /// <param name="ownerId">Identyfikator właściciela organizacji.</param>
-    /// <param name="description">Opis organizacji.</param>
-    /// <param name="logoUrl">URL do logo organizacji.</param>
-    /// <param name="bannerUrl">URL do bannera organizacji.</param>
-    /// <returns>Nowa organizacja.</returns>
+    /// <param name="name">Name of the organization.</param>
+    /// <param name="ownerId">ID of the organization's owner.</param>
+    /// <param name="description">Description of the organization.</param>
+    /// <param name="logoUrl">URL of the organization's logo.</param>
+    /// <param name="bannerUrl">URL of the organization's banner.</param>
+    /// <returns>New organization.</returns>
     public static Organization Create(string name, Guid ownerId, string? description = null, string? logoUrl = null, string? bannerUrl = null)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
@@ -99,17 +99,16 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Inicjalizuje domyślne role i członkostwo dla właściciela.
-    /// Ta metoda powinna być wywołana po zapisaniu organizacji do bazy danych,
-    /// gdy organizacja ma już przypisane prawidłowe ID.
+    /// Initializes default roles and membership for the owner.
+    /// This method should be called after saving the organization to the database,
+    /// when the organization already has valid IDs.
     /// </summary>
-    /// <returns>Organizacja z zainicjalizowanymi rolami i członkostwem właściciela.</returns>
+    /// <returns>Organization with initialized roles and membership for the owner.</returns>
     public Organization InitializeRoles()
     {
-        // Upewnij się, że organizacja ma prawidłowe ID
+        // Ensure the organization has valid ID
         Guard.Against.Default(Id, nameof(Id));
 
-        // Dodaj domyślne role
         var adminRole = Role.Create("Admin", Id, "Administrator organizacji", "#FF0000");
         var memberRole = Role.Create("Member", Id, "Członek organizacji", "#00FF00");
         var guestRole = Role.Create("Guest", Id, "Gość organizacji", "#0000FF");
@@ -122,27 +121,27 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Inicjalizuje domyślne role i członkostwo dla właściciela.
-    /// Ta metoda powinna być wywołana po zapisaniu organizacji do bazy danych,
-    /// gdy organizacja ma już przypisane prawidłowe ID.
+    /// Initializes default roles and membership for the owner.
+    /// This method should be called after saving the organization to the database,
+    /// when the organization already has valid IDs.
     /// </summary>
-    /// <returns>Organizacja z zainicjalizowanymi rolami i członkostwem właściciela.</returns>
+    /// <returns>Organization with initialized roles and membership for the owner.</returns>
     public Organization InitializeOwner()
     {
-        // Upewnij się, że organizacja ma prawidłowe ID
+        // Ensure the organization has valid ID
         Guard.Against.Default(Id, nameof(Id));
 
-        // Znajdź rolę Admina
+        // Find the Admin role
         var adminRole = _roles.FirstOrDefault(r => r.Name == "Admin");
         if (adminRole == null)
         {
             throw new InvalidOperationException("Nie znaleziono roli 'Admin' w organizacji. Uruchom najpierw InitializeRoles().");
         }
 
-        // Dodaj właściciela jako administratora
+        // Add the owner as an admin
         var ownerMember = Member.Create(OwnerId, Id, adminRole.Id);
 
-        // Ustaw jawnie referencje dla nawigacji między Member i Role
+        // Explicitly set references for navigation between Member and Role
         ownerMember.Roles.Add(adminRole);
 
         _members.Add(ownerMember);
@@ -151,12 +150,12 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje dane organizacji.
+    /// Updates the organization's data.
     /// </summary>
-    /// <param name="name">Nazwa organizacji.</param>
-    /// <param name="description">Opis organizacji.</param>
-    /// <param name="logoUrl">URL do logo organizacji.</param>
-    /// <param name="bannerUrl">URL do bannera organizacji.</param>
+    /// <param name="name">Name of the organization.</param>
+    /// <param name="description">Description of the organization.</param>
+    /// <param name="logoUrl">URL of the organization's logo.</param>
+    /// <param name="bannerUrl">URL of the organization's banner.</param>
     public void Update(string name, string? description, string? logoUrl = null, string? bannerUrl = null)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
@@ -174,42 +173,42 @@ public class Organization : BaseEntity, IAggregateRoot
             BannerUrl = bannerUrl;
         }
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new OrganizationUpdatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
-    /// Aktualizuje logo organizacji.
+    /// Updates the organization's logo.
     /// </summary>
-    /// <param name="logoUrl">URL do logo organizacji.</param>
+    /// <param name="logoUrl">URL of the organization's logo.</param>
     public void UpdateLogo(string? logoUrl)
     {
         LogoUrl = logoUrl;
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new OrganizationLogoUpdatedEvent(Id, LogoUrl));
     }
 
     /// <summary>
-    /// Aktualizuje banner organizacji.
+    /// Updates the organization's banner.
     /// </summary>
-    /// <param name="bannerUrl">URL do bannera organizacji.</param>
+    /// <param name="bannerUrl">URL of the organization's banner.</param>
     public void UpdateBanner(string? bannerUrl)
     {
         BannerUrl = bannerUrl;
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new OrganizationBannerUpdatedEvent(Id, BannerUrl));
     }
 
     /// <summary>
-    /// Dezaktywuje organizację.
+    /// Deactivates the organization.
     /// </summary>
     public void Deactivate()
     {
@@ -218,14 +217,14 @@ public class Organization : BaseEntity, IAggregateRoot
 
         IsActive = false;
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new OrganizationDeactivatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
-    /// Aktywuje organizację.
+    /// Activates the organization.
     /// </summary>
     public void Activate()
     {
@@ -234,38 +233,38 @@ public class Organization : BaseEntity, IAggregateRoot
 
         IsActive = true;
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new OrganizationActivatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
-    /// Dodaje nowego członka do organizacji.
+    /// Adds a new member to the organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator roli.</param>
-    /// <returns>Nowy członek organizacji.</returns>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <returns>New member.</returns>
     public Member AddMember(Guid userId, Guid roleId)
     {
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Sprawdź, czy rola istnieje w organizacji
+        // Check if the role exists in the organization
         var role = _roles.FirstOrDefault(r => r.Id == roleId);
         if (role == null)
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Sprawdź, czy użytkownik już jest członkiem organizacji
+        // Check if the user is already a member of the organization
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            // Jeśli użytkownik już jest członkiem, dodaj mu nową rolę
+            // If the user is already a member, add a new role to them
             existingMember.AssignRole(roleId, role);
 
-            // Wywołanie metody Update z klasy bazowej
+            // Call the Update method from the base class
             base.Update();
 
             RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
@@ -274,12 +273,12 @@ public class Organization : BaseEntity, IAggregateRoot
 
         var member = Member.Create(userId, Id, roleId);
 
-        // Dodaj referencję do obiektu roli w członku
+        // Add reference to the role object in the member
         member.SyncRoles(_roles);
 
         _members.Add(member);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberAddedEvent(Id, userId, roleId));
@@ -288,20 +287,20 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Usuwa członka z organizacji.
+    /// Removes a member from the organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
+    /// <param name="userId">User ID.</param>
     public void RemoveMember(Guid userId)
     {
         Guard.Against.Default(userId, nameof(userId));
 
-        // Sprawdź, czy użytkownik jest właścicielem organizacji
+        // Check if the user is the owner of the organization
         if (userId == OwnerId)
         {
             throw new InvalidOperationException("Nie można usunąć właściciela organizacji.");
         }
 
-        // Znajdź członka organizacji
+        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
@@ -310,29 +309,29 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _members.Remove(member);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRemovedEvent(Id, userId));
     }
 
     /// <summary>
-    /// Przypisuje rolę członkowi organizacji.
+    /// Assigns a role to a member of the organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator roli.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Role ID.</param>
     public void AssignRoleToMember(Guid userId, Guid roleId)
     {
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Sprawdź, czy rola istnieje w organizacji
+        // Check if the role exists in the organization
         if (!_roles.Any(r => r.Id == roleId))
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Znajdź członka organizacji
+        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
@@ -341,54 +340,54 @@ public class Organization : BaseEntity, IAggregateRoot
 
         member.AssignRole(roleId);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
     }
 
     /// <summary>
-    /// Usuwa rolę przypisaną do członka organizacji.
+    /// Removes a role assigned to a member of the organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator roli.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Role ID.</param>
     public void RevokeRoleFromMember(Guid userId, Guid roleId)
     {
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Znajdź członka organizacji
+        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie jest członkiem organizacji.");
         }
 
-        // Sprawdź, czy członek posiada tę rolę
+        // Check if the member has the role
         if (!member.HasRole(roleId))
         {
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie posiada roli o ID {roleId}.");
         }
 
-        // Usuń rolę
+        // Remove the role
         if (!member.RemoveRole(roleId))
         {
             throw new InvalidOperationException("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
         }
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRoleRevokedEvent(Id, userId, roleId));
     }
 
     /// <summary>
-    /// Dodaje nową rolę do organizacji.
+    /// Adds a new role to the organization.
     /// </summary>
-    /// <param name="name">Nazwa roli.</param>
-    /// <param name="description">Opis roli.</param>
-    /// <param name="color">Kolor roli (w formacie HEX).</param>
-    /// <returns>Nowa rola.</returns>
+    /// <param name="name">Name of the role.</param>
+    /// <param name="description">Description of the role.</param>
+    /// <param name="color">Color of the role (in HEX format).</param>
+    /// <returns>New role.</returns>
     public Role AddRole(string name, string? description = null, string? color = null)
     {
         Guard.Against.NullOrEmpty(name, nameof(name));
@@ -397,31 +396,31 @@ public class Organization : BaseEntity, IAggregateRoot
         var role = Role.Create(name, Id, description, color);
         _roles.Add(role);
 
-        // Aktualizuj wersję encji
+        // Update the entity version
         Update();
 
-        // Rejestruj zdarzenie domeny
+        // Register the domain event
         RegisterDomainEvent(new RoleCreatedEvent(Id, role.Id, role.Name));
 
         return role;
     }
 
     /// <summary>
-    /// Usuwa rolę z organizacji.
+    /// Removes a role from the organization.
     /// </summary>
-    /// <param name="roleId">Identyfikator roli.</param>
+    /// <param name="roleId">Role ID.</param>
     public void RemoveRole(Guid roleId)
     {
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Znajdź rolę
+        // Find the role
         var role = _roles.FirstOrDefault(r => r.Id == roleId);
         if (role == null)
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Sprawdź, czy rola jest używana przez członków organizacji
+        // Check if the role is used by members of the organization
         if (_members.Any(m => m.HasRole(roleId)))
         {
             throw new InvalidOperationException("Nie można usunąć roli, która jest przypisana do członków organizacji.");
@@ -429,31 +428,31 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _roles.Remove(role);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new RoleDeletedEvent(Id, roleId, role.Name));
     }
 
     /// <summary>
-    /// Tworzy nowe zaproszenie do organizacji.
+    /// Creates a new invitation to the organization.
     /// </summary>
-    /// <param name="email">Adres e-mail osoby zapraszanej.</param>
-    /// <param name="roleId">Identyfikator roli, która zostanie przypisana po akceptacji zaproszenia.</param>
-    /// <param name="expiresAt">Data wygaśnięcia zaproszenia.</param>
-    /// <returns>Nowe zaproszenie.</returns>
+    /// <param name="email">Email address of the invited person.</param>
+    /// <param name="roleId">Role ID that will be assigned after the invitation is accepted.</param>
+    /// <param name="expiresAt">Expiration date of the invitation.</param>
+    /// <returns>New invitation.</returns>
     public Invitation CreateInvitation(string email, Guid roleId, DateTime? expiresAt = null)
     {
         Guard.Against.NullOrEmpty(email, nameof(email));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Sprawdź, czy rola istnieje w organizacji
+        // Check if the role exists in the organization
         if (!_roles.Any(r => r.Id == roleId))
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Sprawdź, czy zaproszenie dla tego adresu e-mail już istnieje
+        // Check if an invitation for this email address already exists
         if (_invitations.Any(i => i.Email == email && !i.IsExpired))
         {
             throw new InvalidOperationException($"Zaproszenie dla adresu e-mail {email} już istnieje.");
@@ -468,40 +467,40 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Akceptuje zaproszenie do organizacji.
+    /// Accepts an invitation to the organization.
     /// </summary>
-    /// <param name="invitationId">Identyfikator zaproszenia.</param>
-    /// <param name="userId">Identyfikator użytkownika akceptującego zaproszenie.</param>
-    /// <returns>Nowy członek organizacji.</returns>
+    /// <param name="invitationId">Invitation ID.</param>
+    /// <param name="userId">User ID of the person accepting the invitation.</param>
+    /// <returns>New member.</returns>
     public Member AcceptInvitation(Guid invitationId, Guid userId)
     {
         Guard.Against.Default(invitationId, nameof(invitationId));
         Guard.Against.Default(userId, nameof(userId));
 
-        // Znajdź zaproszenie
+        // Find the invitation
         var invitation = _invitations.FirstOrDefault(i => i.Id == invitationId);
         if (invitation == null)
         {
             throw new InvalidOperationException($"Zaproszenie o ID {invitationId} nie istnieje.");
         }
 
-        // Sprawdź, czy zaproszenie nie wygasło
+        // Check if the invitation has expired
         if (invitation.IsExpired)
         {
             throw new InvalidOperationException("Zaproszenie wygasło.");
         }
 
-        // Sprawdź, czy użytkownik już jest członkiem organizacji
+        // Check if the user is already a member of the organization
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            // Jeśli użytkownik już jest członkiem, dodaj mu nową rolę
+            // If the user is already a member, add a new role to them
             existingMember.AssignRole(invitation.RoleId);
 
-            // Akceptuj zaproszenie
+            // Accept the invitation
             invitation.Accept();
 
-            // Wywołanie metody Update z klasy bazowej
+            // Call the Update method from the base class
             base.Update();
 
             RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
@@ -510,14 +509,14 @@ public class Organization : BaseEntity, IAggregateRoot
             return existingMember;
         }
 
-        // Akceptuj zaproszenie
+        // Accept the invitation
         invitation.Accept();
 
-        // Dodaj nowego członka
+        // Add a new member
         var member = Member.Create(userId, Id, invitation.RoleId);
         _members.Add(member);
 
-        // Wywołanie metody Update z klasy bazowej
+        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
@@ -527,46 +526,46 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Odrzuca zaproszenie do organizacji.
+    /// Rejects an invitation to the organization.
     /// </summary>
-    /// <param name="invitationId">Identyfikator zaproszenia.</param>
+    /// <param name="invitationId">Invitation ID.</param>
     public void RejectInvitation(Guid invitationId)
     {
         Guard.Against.Default(invitationId, nameof(invitationId));
 
-        // Znajdź zaproszenie
+        // Find the invitation
         var invitation = _invitations.FirstOrDefault(i => i.Id == invitationId);
         if (invitation == null)
         {
             throw new InvalidOperationException($"Zaproszenie o ID {invitationId} nie istnieje.");
         }
 
-        // Sprawdź, czy zaproszenie nie wygasło
+        // Check if the invitation has expired
         if (invitation.IsExpired)
         {
             throw new InvalidOperationException("Zaproszenie wygasło.");
         }
 
-        // Odrzuć zaproszenie
+        // Reject the invitation
         invitation.Reject();
 
         RegisterDomainEventAndUpdate(new InvitationRejectedEvent(invitationId, Id, invitation.Email));
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik ma dostęp do organizacji.
+    /// Checks if the user has access to the organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <returns>True, jeśli użytkownik ma dostęp do organizacji; w przeciwnym razie false.</returns>
+    /// <param name="userId">User ID.</param>
+    /// <returns>True, if the user has access to the organization; otherwise false.</returns>
     public bool HasAccess(Guid userId)
     {
-        // Właściciel organizacji zawsze ma dostęp
+        // The owner of the organization always has access
         if (OwnerId == userId)
         {
             return true;
         }
 
-        // Sprawdź, czy użytkownik jest członkiem organizacji
+        // Check if the user is a member of the organization
         return _members.Any(m => m.UserId == userId);
     }
 }

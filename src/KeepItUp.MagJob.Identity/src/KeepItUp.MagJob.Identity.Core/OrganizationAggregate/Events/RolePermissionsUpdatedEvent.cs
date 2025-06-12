@@ -1,31 +1,31 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o aktualizacji uprawnień roli w organizacji.
+/// Domain event informing about the update of a role's permissions in an organization.
 /// </summary>
 public class RolePermissionsUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role ID.
     /// </summary>
     public Guid RoleId { get; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o aktualizacji uprawnień roli w organizacji.
+    /// Creates a new RolePermissionsUpdatedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="roleId">Identyfikator roli.</param>
-    /// <param name="name">Nazwa roli.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="name">Role name.</param>
     public RolePermissionsUpdatedEvent(Guid organizationId, Guid roleId, string name)
     {
         OrganizationId = organizationId;

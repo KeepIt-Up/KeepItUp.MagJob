@@ -1,31 +1,31 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie domenowe informujące o wygaśnięciu zaproszenia do organizacji.
+/// Domain event informing about the expiration of an invitation to an organization.
 /// </summary>
 public class InvitationExpiredEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation ID.
     /// </summary>
     public Guid InvitationId { get; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Adres e-mail osoby zapraszanej.
+    /// Email address of the invited person.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie InvitationExpiredEvent.
+    /// Creates a new InvitationExpiredEvent.
     /// </summary>
-    /// <param name="invitationId">Identyfikator zaproszenia.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="email">Adres e-mail osoby zapraszanej.</param>
+    /// <param name="invitationId">Invitation ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="email">Email address of the invited person.</param>
     public InvitationExpiredEvent(Guid invitationId, Guid organizationId, string email)
     {
         InvitationId = invitationId;

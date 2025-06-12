@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Handlers;
 
 /// <summary>
-/// Handler dla zdarzenia utworzenia użytkownika
+/// Handler for the event of creating a user
 /// </summary>
 internal class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedEvent>
 {
@@ -14,10 +14,10 @@ internal class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedE
     private readonly ILogger<UserCreatedDomainEventHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UserCreatedDomainEventHandler"/>
+    /// Initializes a new instance of the <see cref="UserCreatedDomainEventHandler"/> class
     /// </summary>
-    /// <param name="keycloakSyncService">Serwis synchronizacji z Keycloak</param>
-    /// <param name="userRepository">Repozytorium użytkowników</param>
+    /// <param name="keycloakSyncService">Keycloak synchronization service</param>
+    /// <param name="userRepository">User repository</param>
     /// <param name="logger">Logger</param>
     public UserCreatedDomainEventHandler(
         IKeycloakSyncService keycloakSyncService,
@@ -30,19 +30,17 @@ internal class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedE
     }
 
     /// <summary>
-    /// Obsługuje zdarzenie utworzenia użytkownika
+    /// Handles the event of creating a user
     /// </summary>
-    /// <param name="notification">Zdarzenie</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="notification">Event</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
     {
         try
         {
             _logger.LogInformation("Obsługa zdarzenia utworzenia użytkownika {UserId}", notification.UserId);
 
-            // Jeśli użytkownik został utworzony w naszym systemie, ale nie ma jeszcze konta w Keycloak,
-            // możemy utworzyć je automatycznie
             if (notification.ExternalId != Guid.Empty)
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
@@ -52,8 +50,6 @@ internal class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedE
                     return;
                 }
 
-                // Tutaj można zaimplementować logikę tworzenia użytkownika w Keycloak
-                // Na razie tylko logujemy informację
                 _logger.LogInformation("Użytkownik {UserId} został utworzony w systemie, ale nie ma jeszcze konta w Keycloak", notification.UserId);
             }
 

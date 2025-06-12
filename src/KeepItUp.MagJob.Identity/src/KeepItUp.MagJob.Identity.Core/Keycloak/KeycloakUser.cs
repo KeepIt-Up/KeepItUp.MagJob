@@ -3,66 +3,66 @@ using System.Text.Json.Serialization;
 namespace KeepItUp.MagJob.Identity.Core.Keycloak;
 
 /// <summary>
-/// Reprezentuje użytkownika w kontekście Keycloak
+/// Represents a user in the context of Keycloak
 /// </summary>
 public class KeycloakUser
 {
     /// <summary>
-    /// Identyfikator użytkownika w Keycloak
+    /// User ID in Keycloak
     /// </summary>
     [JsonPropertyName("id")]
     public required string Id { get; set; }
 
     /// <summary>
-    /// Nazwa użytkownika
+    /// User name
     /// </summary>
     [JsonPropertyName("username")]
     public required string Username { get; set; }
 
     /// <summary>
-    /// Adres email użytkownika
+    /// User email address
     /// </summary>
     [JsonPropertyName("email")]
     public required string Email { get; set; }
 
     /// <summary>
-    /// Imię użytkownika
+    /// User first name
     /// </summary>
     [JsonPropertyName("firstName")]
     public string? FirstName { get; set; }
 
     /// <summary>
-    /// Nazwisko użytkownika
+    /// User last name
     /// </summary>
     [JsonPropertyName("lastName")]
     public string? LastName { get; set; }
 
     /// <summary>
-    /// Określa, czy użytkownik jest aktywny
+    /// Determines if the user is enabled
     /// </summary>
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 
     /// <summary>
-    /// Określa, czy email użytkownika został zweryfikowany
+    /// Determines if the user's email has been verified
     /// </summary>
     [JsonPropertyName("emailVerified")]
     public bool EmailVerified { get; set; }
 
     /// <summary>
-    /// Atrybuty użytkownika
+    /// User attributes
     /// </summary>
     [JsonPropertyName("attributes")]
     public Dictionary<string, List<string>>? Attributes { get; set; }
 
     /// <summary>
-    /// Data utworzenia konta użytkownika
+    /// User creation timestamp
     /// </summary>
     [JsonPropertyName("createdTimestamp")]
     public long CreatedTimestamp { get; set; }
 
     /// <summary>
-    /// Konwertuje timestamp na DateTime
+    /// Converts the timestamp to a DateTime
     /// </summary>
     [JsonIgnore]
     public DateTime CreatedAt => DateTimeOffset.FromUnixTimeMilliseconds(CreatedTimestamp).DateTime;

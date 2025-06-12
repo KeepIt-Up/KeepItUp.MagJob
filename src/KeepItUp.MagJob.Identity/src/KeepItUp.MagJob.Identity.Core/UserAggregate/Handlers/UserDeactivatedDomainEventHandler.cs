@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Handlers;
 
 /// <summary>
-/// Handler dla zdarzenia dezaktywacji użytkownika
+/// Handler for the event of deactivating a user
 /// </summary>
 internal class UserDeactivatedDomainEventHandler : INotificationHandler<UserDeactivatedEvent>
 {
@@ -13,9 +13,9 @@ internal class UserDeactivatedDomainEventHandler : INotificationHandler<UserDeac
     private readonly ILogger<UserDeactivatedDomainEventHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UserDeactivatedDomainEventHandler"/>
+    /// Initializes a new instance of the <see cref="UserDeactivatedDomainEventHandler"/> class
     /// </summary>
-    /// <param name="keycloakClient">Klient Keycloak</param>
+    /// <param name="keycloakClient">Keycloak client</param>
     /// <param name="logger">Logger</param>
     public UserDeactivatedDomainEventHandler(
         IKeycloakClient keycloakClient,
@@ -26,18 +26,17 @@ internal class UserDeactivatedDomainEventHandler : INotificationHandler<UserDeac
     }
 
     /// <summary>
-    /// Obsługuje zdarzenie dezaktywacji użytkownika
+    /// Handles the event of deactivating a user
     /// </summary>
-    /// <param name="notification">Zdarzenie</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Task reprezentujący asynchroniczną operację</returns>
+    /// <param name="notification">Event</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Task representing an asynchronous operation</returns>
     public async Task Handle(UserDeactivatedEvent notification, CancellationToken cancellationToken)
     {
         try
         {
             _logger.LogInformation("Obsługa zdarzenia dezaktywacji użytkownika {UserId}", notification.UserId);
 
-            // Jeśli użytkownik ma identyfikator zewnętrzny, dezaktywujemy go w Keycloak
             if (notification.ExternalId != Guid.Empty)
             {
                 await _keycloakClient.UpdateUserEnabledStatusAsync(notification.ExternalId.ToString(), false, cancellationToken);

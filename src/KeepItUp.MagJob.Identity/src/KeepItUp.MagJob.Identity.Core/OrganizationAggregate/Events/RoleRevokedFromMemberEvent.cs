@@ -1,37 +1,37 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o odebraniu roli członkowi organizacji.
+/// Domain event informing about the revocation of a role from a member of an organization.
 /// </summary>
 public class RoleRevokedFromMemberEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator członka.
+    /// Member ID.
     /// </summary>
     public Guid MemberId { get; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator odebranej roli.
+    /// Role ID.
     /// </summary>
     public Guid RoleId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o odebraniu roli członkowi organizacji.
+    /// Creates a new RoleRevokedFromMemberEvent.
     /// </summary>
-    /// <param name="memberId">Identyfikator członka.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator odebranej roli.</param>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Role ID.</param>
     public RoleRevokedFromMemberEvent(Guid memberId, Guid organizationId, Guid userId, Guid roleId)
     {
         MemberId = memberId;
