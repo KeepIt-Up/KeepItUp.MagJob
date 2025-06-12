@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
@@ -8,47 +8,26 @@ import {
   tap,
   of,
   catchError,
-  first,
 } from 'rxjs';
 import { CurrentUser } from '../models/current-user.model';
-import {
-  DataState,
-  createInitialState,
-  createLoadingState,
-  createSuccessState,
-  createErrorState,
-} from '../../../shared/data-state/data-state.model';
 import { UserApiService } from './user.api';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { OAuthEvent } from 'angular-oauth2-oidc';
+import { errorState, initialState, loadedState, loadingState, State } from '@shared/state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserContextService {
-  private readonly userContextState = new BehaviorSubject<DataState<CurrentUser>>(
-    createInitialState(),
-  );
+  private readonly userContextState =
+    signal<State<CurrentUser | undefined>>(initialState<CurrentUser | undefined>());
 
   private readonly userApiService = inject(UserApiService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
-  readonly userContext$ = this.userContextState.asObservable();
-  readonly user$ = this.userContext$.pipe(
-    map(state => state.data),
-    distinctUntilChanged(),
-    shareReplay(1),
-  );
-  readonly loading$ = this.userContext$.pipe(
-    map(state => state.loading),
-    distinctUntilChanged(),
-  );
-  readonly error$ = this.userContext$.pipe(
-    map(state => state.error),
-    distinctUntilChanged(),
-  );
+  readonly $userContext = this.userContextState.asReadonly();
 
   constructor() {
     this.authService.getEvents().subscribe((event: OAuthEvent) => {
@@ -63,8 +42,8 @@ export class UserContextService {
     });
   }
 
-  getCurrentUser(): CurrentUser | null {
-    return this.userContextState.value.data;
+  getCurrentUser(): CurrentUser | undefined {
+    return this.userContextState().data;
   }
 
   loadCurrentUser(): Observable<CurrentUser | null> {
@@ -79,7 +58,7 @@ export class UserContextService {
     return this.userApiService.getCurrentUser().pipe(
       tap({
         next: user => {
-          this.userContextState.next(createSuccessState(user));
+          this.userContextState.set(loadedState(user));
         },
         error: (error: unknown) => {
           const errorMessage = error instanceof Error ? error.message : 'Failed to load user data';
@@ -97,22 +76,21 @@ export class UserContextService {
   // Set loading state
   private setLoading(): void {
     const currentUser = this.getCurrentUser();
-    this.userContextState.next(createLoadingState(currentUser));
+    this.userContextState.set(loadingState(this.userContextState()));
   }
 
   // Set error state
   private setError(error: string): void {
-    const currentUser = this.getCurrentUser();
-    this.userContextState.next(createErrorState(error, currentUser));
+    this.userContextState.set(errorState(error));
   }
 
   // Reset user context
   resetUserContext(): void {
-    this.userContextState.next(createInitialState());
+    this.userContextState.set(initialState<CurrentUser | undefined>());
   }
 
   // Update user context
   updateUserContext(user: CurrentUser): void {
-    this.userContextState.next(createSuccessState(user));
+    this.userContextState.set(loadedState(user));
   }
 }

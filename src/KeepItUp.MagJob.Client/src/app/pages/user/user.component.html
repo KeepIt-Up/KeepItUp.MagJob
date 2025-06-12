@@ -1,5 +1,5 @@
-@if (userContext$ | async; as userContext) {
-  @if (userContext.data) {
+@if ($userContext()) {
+  @if ($userContext().data) {
     <div class="flex">
       <app-user-sidebar (sidebarExpandedChange)="sidebarExpandedChange($event)"></app-user-sidebar>
       <div class="flex-1 ml-16" [class.ml-64]="sidebarExpanded">
@@ -11,11 +11,11 @@
         </main>
       </div>
     </div>
-  } @else if (userContext.loading) {
+  } @else if ($userContext().isLoading) {
     <app-navbar></app-navbar>
     <app-spinner></app-spinner>
-  } @else if (userContext.error) {
+  } @else if ($userContext().isError) {
     <app-navbar></app-navbar>
-    <app-error-alert [error]="getError(userContext.error)"></app-error-alert>
+    <app-error-alert [error]="getError($userContext().error)"></app-error-alert>
   }
 }

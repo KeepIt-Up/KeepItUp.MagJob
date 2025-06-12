@@ -1,8 +1,8 @@
-@if (organizationContext$ | async; as state) {
-  @if (state.data) {
+@if ($organizationContext()) {
+  @if ($organizationContext().data) {
     <div class="flex h-screen" [class.overflow-hidden]="!scrollable()">
       <app-organization-sidebar
-        [organization]="state.data!"
+        [organization]="$organizationContext().data!"
         (sidebarExpandedChange)="sidebarExpandedChange($event)"
       ></app-organization-sidebar>
       <div class="flex-1 flex flex-col ml-16" [class.ml-64]="sidebarExpanded">
@@ -12,11 +12,11 @@
         </main>
       </div>
     </div>
-  } @else if (state.loading) {
+  } @else if ($organizationContext().isLoading) {
     <app-navbar></app-navbar>
     <app-spinner></app-spinner>
-  } @else if (state.error) {
+  } @else if ($organizationContext().isError) {
     <app-navbar></app-navbar>
-    <app-error-alert [error]="state.error"></app-error-alert>
+    <app-error-alert [error]="$organizationContext().error"></app-error-alert>
   }
 }

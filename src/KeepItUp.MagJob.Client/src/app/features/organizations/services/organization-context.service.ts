@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
@@ -10,44 +10,22 @@ import {
   catchError,
 } from 'rxjs';
 import { CurrentOrganization } from '../models/current-organization.model';
-import {
-  DataState,
-  createInitialState,
-  createLoadingState,
-  createSuccessState,
-  createErrorState,
-} from '../../../shared/data-state/data-state.model';
 import { OrganizationApiService } from './organization.api.service';
-import { Router } from '@angular/router';
+import { errorState, initialState, loadedState, loadingState, State } from '@shared/state';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrganizationContextService {
-  private readonly organizationContextState = new BehaviorSubject<DataState<CurrentOrganization>>(
-    createInitialState(),
-  );
+  private readonly organizationContextState =
+    signal<State<CurrentOrganization>>(initialState<CurrentOrganization>());
 
   private readonly organizationApiService = inject(OrganizationApiService);
-  private readonly router = inject(Router);
 
-  readonly organizationContext$ = this.organizationContextState.asObservable();
-  readonly organization$ = this.organizationContext$.pipe(
-    map(state => state.data),
-    distinctUntilChanged(),
-    shareReplay(1),
-  );
-  readonly loading$ = this.organizationContext$.pipe(
-    map(state => state.loading),
-    distinctUntilChanged(),
-  );
-  readonly error$ = this.organizationContext$.pipe(
-    map(state => state.error),
-    distinctUntilChanged(),
-  );
+  readonly $organizationContext = this.organizationContextState.asReadonly();
 
-  getCurrentOrganization(): CurrentOrganization | null {
-    return this.organizationContextState.value.data;
+  getCurrentOrganization(): CurrentOrganization | undefined {
+    return this.organizationContextState().data;
   }
 
   loadOrganization(organizationId: string): Observable<CurrentOrganization | null> {
@@ -62,7 +40,7 @@ export class OrganizationContextService {
     return this.organizationApiService.get(organizationId).pipe(
       tap({
         next: organization => {
-          this.organizationContextState.next(createSuccessState(organization));
+          this.organizationContextState.set(loadedState(organization));
         },
         error: (error: unknown) => {
           const errorMessage =
@@ -81,23 +59,21 @@ export class OrganizationContextService {
 
   // Set loading state
   private setLoading(): void {
-    const currentOrganization = this.getCurrentOrganization();
-    this.organizationContextState.next(createLoadingState(currentOrganization));
+    this.organizationContextState.set(loadingState(this.$organizationContext()));
   }
 
   // Set error state
   private setError(error: string): void {
-    const currentOrganization = this.getCurrentOrganization();
-    this.organizationContextState.next(createErrorState(error, currentOrganization));
+    this.organizationContextState.set(errorState(error));
   }
 
   // Reset organization context
   resetOrganizationContext(): void {
-    this.organizationContextState.next(createInitialState());
+    this.organizationContextState.set(initialState<CurrentOrganization>());
   }
 
   // Update organization context
   updateOrganizationContext(organization: CurrentOrganization): void {
-    this.organizationContextState.next(createSuccessState(organization));
+    this.organizationContextState.set(loadedState(organization));
   }
 }
