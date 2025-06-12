@@ -3,7 +3,6 @@ import {
   PaginatedResponse,
   PaginationOptions,
 } from '@shared/components/pagination/pagination.component';
-import { NotificationService } from '@shared/services/notification.service';
 import { catchError, tap, throwError } from 'rxjs';
 import { PermissionService } from '../models/permission.service';
 import { ListStateService } from '@shared/services/list-state.service';
@@ -17,7 +16,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class RoleService {
   private readonly apiService = inject(RoleApiService);
-  private readonly notificationService = inject(NotificationService);
   private readonly permissionService = inject(PermissionService);
   private readonly roleStateService = new ListStateService<Role, { endOfData: boolean }>();
   private readonly organizationService = inject(OrganizationService);
@@ -60,7 +58,6 @@ export class RoleService {
       }),
       catchError((error: Error | HttpErrorResponse) => {
         this.roleStateService.setError(error);
-        this.notificationService.show('Failed to create role', 'error');
         return throwError(() => error);
       }),
     );
@@ -70,10 +67,8 @@ export class RoleService {
     return this.apiService.update(roleId, role).pipe(
       tap(updatedRole => {
         this.roleStateService.update(updatedRole);
-        this.notificationService.show('Role updated successfully', 'success');
       }),
       catchError(error => {
-        this.notificationService.show('Failed to update role', 'error');
         return throwError(() => error);
       }),
     );
@@ -82,7 +77,6 @@ export class RoleService {
   deleteRole() {
     const organizationData = this.$organization().data;
     if (!organizationData || !this.selectedRole$()) {
-      this.notificationService.show('Organization data or role is not available', 'error');
       return throwError(() => new Error('Organization data or role is not available'));
     }
 
@@ -90,10 +84,8 @@ export class RoleService {
       tap(() => {
         this.roleStateService.remove(this.selectedRole$()!);
         this.selectedRole$.set(undefined);
-        this.notificationService.show('Role deleted successfully', 'success');
       }),
       catchError(error => {
-        this.notificationService.show('Failed to delete role', 'error');
         return throwError(() => error);
       }),
     );
@@ -102,7 +94,6 @@ export class RoleService {
   updateRolePermissions(roleId: string, permissionNames: string[]) {
     const organizationData = this.$organization().data;
     if (!organizationData) {
-      this.notificationService.show('Organization data is not available', 'error');
       return throwError(() => new Error('Organization data is not available'));
     }
 
@@ -123,11 +114,8 @@ export class RoleService {
           this.selectedRole$.set(updatedRole);
           this.roleStateService.update(updatedRole);
         }
-
-        this.notificationService.show('Permissions updated successfully', 'success');
       }),
       catchError(error => {
-        this.notificationService.show('Failed to update permissions', 'error');
         return throwError(() => error);
       }),
     );
@@ -136,16 +124,11 @@ export class RoleService {
   addMembersToRole(roleId: string, memberIds: string[]) {
     const organizationData = this.$organization().data;
     if (!organizationData) {
-      this.notificationService.show('Organization data is not available', 'error');
       return throwError(() => new Error('Organization data is not available'));
     }
 
     return this.apiService.addMembersToRole(organizationData.id, roleId, memberIds).pipe(
-      tap(() => {
-        this.notificationService.show('Members assigned successfully', 'success');
-      }),
       catchError(error => {
-        this.notificationService.show('Failed to assign members', 'error');
         return throwError(() => error);
       }),
     );
@@ -154,16 +137,11 @@ export class RoleService {
   removeMembersFromRole(roleId: string, memberIds: string[]) {
     const organizationData = this.$organization().data;
     if (!organizationData) {
-      this.notificationService.show('Organization data is not available', 'error');
       return throwError(() => new Error('Organization data is not available'));
     }
 
     return this.apiService.removeMembersFromRole(organizationData.id, roleId, memberIds).pipe(
-      tap(() => {
-        this.notificationService.show('Members removed successfully', 'success');
-      }),
       catchError(error => {
-        this.notificationService.show('Failed to remove members', 'error');
         return throwError(() => error);
       }),
     );

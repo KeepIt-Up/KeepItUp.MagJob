@@ -8,7 +8,6 @@ import { UserSettingsComponent } from './app/pages/user/user-settings/user-setti
 import { authGuard } from '@core/guards/auth.guard';
 import { OrganizationProfilComponent } from '@pages/organization/organization-profil/organization-profil.component';
 import { RolesManagementComponent } from '@pages/organization/roles-management/roles-management.component';
-import { MembersTableComponent } from '@pages/organization/members-table/member-table.component';
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { OrganizationComponent } from '@pages/organization/organization.component';
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
@@ -22,8 +21,7 @@ export const routes: Routes = [
     component: OrganizationComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'members', pathMatch: 'full' },
-      { path: 'members', component: MembersTableComponent },
+      { path: '', redirectTo: 'invitations', pathMatch: 'full' },
       { path: 'invitations', component: InvitationTableComponent },
       { path: 'roles', component: RolesManagementComponent },
       { path: 'settings', component: OrganizationProfilComponent },

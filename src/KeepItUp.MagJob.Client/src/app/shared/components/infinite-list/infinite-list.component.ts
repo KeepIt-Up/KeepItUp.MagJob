@@ -3,11 +3,10 @@ import { StatefullContainerComponent } from '../statefull-container/statefull-co
 import { PaginationOptions } from '../pagination/pagination.component';
 import { InfiniteScrollComponent } from '../infinite-scroll/infinite-scroll.component';
 import { State } from '@shared/services/state.service';
-import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-infinite-list',
-  imports: [StatefullContainerComponent, InfiniteScrollComponent, NgTemplateOutlet],
+  imports: [StatefullContainerComponent, InfiniteScrollComponent],
   templateUrl: './infinite-list.component.html',
 })
 export class InfiniteListComponent<T extends { id: string }> implements OnInit {

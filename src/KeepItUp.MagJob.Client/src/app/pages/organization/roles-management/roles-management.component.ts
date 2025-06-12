@@ -1,5 +1,4 @@
 import { Component, computed, inject, OnDestroy, OnInit, Signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
 import { TabsComponent } from '@shared/components/tabs/tabs.component';
@@ -7,13 +6,9 @@ import { ButtonComponent } from '@shared/components/button/button.component';
 import { ActivatedRoute } from '@angular/router';
 import { InfiniteListComponent } from '@shared/components/infinite-list/infinite-list.component';
 import { RolesListComponent } from '../../../features/roles/components/roles-list/roles-list.component';
-import { MemberSearchModalComponent } from '../../../features/members/components/member-search-modal/member-search-modal.component';
 import { RoleService } from '../../../features/roles/services/role.service';
 import { Permission, Role } from '../../../features/roles/models/role.model';
-import { MemberService } from '../../../features/members/services/member.service';
-import { Member } from '../../../features/members/models/member';
 import { OrganizationService } from '../../../features/organizations/services/organization.service';
-import { NotificationService } from '@shared/services/notification.service';
 import { PermissionService } from '../../../features/roles/models/permission.service';
 
 interface Tab {
@@ -28,14 +23,7 @@ interface PermissionWithValue {
 
 @Component({
   selector: 'app-roles-management',
-  imports: [
-    FormsModule,
-    TabsComponent,
-    RolesListComponent,
-    MemberSearchModalComponent,
-    InfiniteListComponent,
-    ButtonComponent,
-  ],
+  imports: [FormsModule, TabsComponent, RolesListComponent, InfiniteListComponent, ButtonComponent],
   templateUrl: './roles-management.component.html',
 })
 export class RolesManagementComponent implements OnInit, OnDestroy {
@@ -48,7 +36,6 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
 
   //organization
   private organizationService = inject(OrganizationService);
-  private notificationService = inject(NotificationService);
 
   //roles and permissions
   private roleService = inject(RoleService);
@@ -114,9 +101,6 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
 
   //members
   memberSearchQuery = '';
-  members: Member[] = [];
-  memberService = inject(MemberService);
-  memberSearchState$ = this.memberService.memberSearchState$;
   showMemberSearchModal = false;
 
   ngOnInit(): void {
@@ -189,14 +173,13 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
     const organizationState = this.organizationService.state$();
     if (!organizationState.data) {
       // Try to load the organization data first
-      this.notificationService.show('Loading organization data...', 'info');
       this.organizationService.getOrganization(this.organizationId).subscribe({
         next: () => {
           // Once organization data is loaded, proceed with updating permissions
           this.performUpdateRolePermissions();
         },
         error: () => {
-          this.notificationService.show('Failed to load organization data', 'error');
+          console.error('Error loading organization data');
         },
       });
     } else {
@@ -238,31 +221,6 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
     const permission = this.selectedRolePermission$().find(p => p.permission.id === permissionId);
     if (permission) {
       permission.value = !permission.value;
-    }
-  }
-
-  searchMembers(query: string) {
-    this.memberSearchQuery = query;
-    this.memberService.searchMembers(query, this.organizationId).subscribe();
-  }
-
-  loadMoreMembers() {
-    this.memberService.searchMembers(this.memberSearchQuery, this.organizationId).subscribe();
-  }
-
-  isMemberInRole(member: Member): boolean {
-    return this.selectedRole$()!.members.some(m => m.id === member.id) ?? false;
-  }
-
-  toggleMemberRole(member: Member) {
-    if (!this.selectedRole$()) return;
-
-    if (this.isMemberInRole(member)) {
-      // Remove member from role
-      this.roleService.removeMembersFromRole(this.selectedRole$()!.id, [member.id]).subscribe();
-    } else {
-      // Add member to role
-      this.roleService.addMembersToRole(this.selectedRole$()!.id, [member.id]).subscribe();
     }
   }
 }

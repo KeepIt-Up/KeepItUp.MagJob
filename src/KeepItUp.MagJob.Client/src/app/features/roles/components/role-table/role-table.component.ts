@@ -5,7 +5,6 @@ import { TableWithPaginationComponent } from '@shared/components/table-with-pagi
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { PaginationOptions } from '@shared/components/pagination/pagination.component';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { NotificationService } from '@shared/services/notification.service';
 import { RoleActionsComponent } from './role-actions.component';
 import { Role } from '@roles/models/role.model';
 
@@ -22,7 +21,6 @@ export class RolesTableComponent implements OnInit {
   paginationOptions!: PaginationOptions<Role>;
   endpointURL!: string;
   queryParams!: Record<any, any>;
-  notificationService = inject(NotificationService);
 
   ngOnInit(): void {
     this.route.parent?.params.subscribe(params => {

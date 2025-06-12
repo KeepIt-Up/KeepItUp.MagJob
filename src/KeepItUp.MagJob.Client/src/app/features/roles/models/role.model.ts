@@ -1,5 +1,3 @@
-import { Member } from '../../members/models/member';
-
 export interface Role {
   id: string;
   name: string;
@@ -7,7 +5,6 @@ export interface Role {
   color?: string;
   organizationId: string;
   permissions: Permission[];
-  members: Member[];
 }
 
 export interface Permission {

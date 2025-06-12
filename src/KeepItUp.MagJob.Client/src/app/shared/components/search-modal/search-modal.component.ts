@@ -4,7 +4,7 @@ import { PaginationOptions } from '../pagination/pagination.component';
 import { InfiniteListComponent } from '../infinite-list/infinite-list.component';
 import { ModalComponent } from '../modal/modal.component';
 import { SearchInputComponent } from '../search-input/search-input.component';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({

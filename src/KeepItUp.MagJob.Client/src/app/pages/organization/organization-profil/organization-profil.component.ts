@@ -4,10 +4,7 @@ import { ImageUploadModalComponent } from '@shared/components/image-upload-modal
 import { Subject, Subscription } from 'rxjs';
 import { Organization } from '../../../features/organizations/models/organization.model';
 import { OrganizationService } from '../../../features/organizations/services/organization.service';
-import { ImageService } from '@shared/services/image.service';
-import { NotificationService } from '@shared/services/notification.service';
 import { UpdateOrganizationPayload } from '../../../features/organizations/services/organization.api.service';
-import { SafeUrl } from '@angular/platform-browser';
 import { useOrganization } from '@organizations/hooks/use-organization';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
@@ -48,7 +45,6 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
 
   private organizationService = inject(OrganizationService);
   private organizationContextService = inject(OrganizationContextService);
-  private notificationService = inject(NotificationService);
   private readonly organizationContext = useOrganization();
 
   ngOnInit(): void {
@@ -173,7 +169,6 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
   handleProfileUpload(file: File): void {
     if (!this.validateFile(file)) {
       this.errorMessage = 'Invalid file type or size';
-      this.notificationService.show('Invalid file type or size', 'error');
       return;
     }
 
@@ -220,7 +215,6 @@ export class OrganizationProfilComponent implements OnInit, OnDestroy {
   handleBannerUpload(file: File): void {
     if (!this.validateFile(file)) {
       this.errorMessage = 'Invalid file type or size';
-      this.notificationService.show('Invalid file type or size', 'error');
       return;
     }
 
