@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji roli w organizacji.
+/// Endpoint to update a role in an organization.
 /// </summary>
 /// <remarks>
-/// Aktualizuje rolę w organizacji o podanym identyfikatorze.
+/// Updates a role in an organization with the given identifier.
 /// </remarks>
 public class UpdateRole(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<UpdateRoleRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Put(UpdateRoleRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("UpdateRole")
             .Produces(204)
@@ -43,11 +43,11 @@ public class UpdateRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{organizationId}/roles/{roleId}.
+    /// Handles the PUT /api/organizations/{organizationId}/roles/{roleId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(UpdateRoleRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

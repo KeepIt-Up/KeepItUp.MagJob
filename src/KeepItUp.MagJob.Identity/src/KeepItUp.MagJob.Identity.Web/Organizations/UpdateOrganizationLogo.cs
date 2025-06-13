@@ -6,7 +6,7 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji logo organizacji.
+/// Endpoint to update the logo of an organization.
 /// </summary>
 public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, UpdateOrganizationLogoResponse>
 {
@@ -16,11 +16,11 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
     private readonly ILogger<UpdateOrganizationLogo> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationLogo"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationLogo"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="fileStorageService">Serwis przechowywania plików.</param>
-    /// <param name="currentUserAccessor">Akcesor bieżącego użytkownika.</param>
+    /// <param name="fileStorageService">File storage service.</param>
+    /// <param name="currentUserAccessor">Current user accessor.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationLogo(
         IMediator mediator,
@@ -44,16 +44,16 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
         {
             d.WithName("UpdateOrganizationLogo");
             d.WithTags("Organizations");
-            d.WithSummary("Aktualizuje logo organizacji");
-            d.WithDescription("Aktualizuje logo organizacji.");
+            d.WithSummary("Updates the logo of an organization");
+            d.WithDescription("Updates the logo of an organization.");
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{organizationId}/logo.
+    /// Handles the PUT /api/organizations/{organizationId}/logo request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
     public override async Task HandleAsync(UpdateOrganizationLogoRequest req, CancellationToken ct)
     {
         var currentUserId = _currentUserAccessor.GetCurrentUserId();
@@ -65,7 +65,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
             return;
         }
 
-        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia i pobrać stare logo
         var getOrganizationQuery = new GetOrganizationByIdQuery
         {
             OrganizationId = req.OrganizationId,
@@ -97,16 +96,13 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
             return;
         }
 
-        // Pobierz poprzednie logo, aby je usunąć po aktualizacji
         string? oldLogoUrl = organizationResult.Value.LogoUrl;
 
         try
         {
-            // Przesłanie pliku do usługi przechowywania
             string logoUrl;
             using (var stream = req.LogoFile!.OpenReadStream())
             {
-                // Zapisz logo w podkatalogu "logos"
                 logoUrl = await _fileStorageService.UploadFileAsync(
                     stream,
                     req.LogoFile.FileName,
@@ -115,7 +111,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
                 );
             }
 
-            // Aktualizacja organizacji za pomocą komendy
             var command = new UpdateOrganizationLogoCommand
             {
                 OrganizationId = req.OrganizationId,
@@ -127,7 +122,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
 
             if (result.IsSuccess)
             {
-                // Jeśli aktualizacja się powiodła, usuń stare logo
                 if (!string.IsNullOrEmpty(oldLogoUrl) && oldLogoUrl != logoUrl)
                 {
                     await _fileStorageService.DeleteFileAsync(oldLogoUrl);
@@ -137,7 +131,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
                 return;
             }
 
-            // Jeśli aktualizacja się nie powiodła, usuń nowo przesłane logo
             await _fileStorageService.DeleteFileAsync(logoUrl);
 
             foreach (var error in result.Errors)

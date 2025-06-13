@@ -2,7 +2,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie odrzucenia zaproszenia do organizacji.
+/// Request to reject an invitation to an organization.
 /// </summary>
 public class RejectInvitationRequest
 {
@@ -10,12 +10,12 @@ public class RejectInvitationRequest
     public static string BuildRoute(Guid organizationId, Guid invitationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString()).Replace("{InvitationId:guid}", invitationId.ToString());
 
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation identifier.
     /// </summary>
     public Guid InvitationId { get; set; }
 
     /// <summary>
-    /// Token zaproszenia.
+    /// Invitation token.
     /// </summary>
     public string Token { get; set; } = string.Empty;
 }

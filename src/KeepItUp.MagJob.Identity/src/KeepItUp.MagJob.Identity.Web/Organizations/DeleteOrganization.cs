@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do usuwania (dezaktywacji) organizacji.
+/// Endpoint to delete an organization.
 /// </summary>
 /// <remarks>
-/// Usuwa (dezaktywuje) organizację o podanym identyfikatorze.
+/// Deactivates an organization with the given identifier.
 /// </remarks>
 public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<DeleteOrganizationRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Delete(DeleteOrganizationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("DeleteOrganization")
             .Produces(204)
@@ -28,22 +28,21 @@ public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Usuwa (dezaktywuje) organizację";
-            s.Description = "Usuwa (dezaktywuje) organizację o podanym identyfikatorze";
+            s.Summary = "Deactivates an organization";
+            s.Description = "Deactivates an organization with the given identifier";
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{id}.
+    /// Handles the DELETE /api/organizations/{id} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(DeleteOrganizationRequest req, CancellationToken ct)
     {
         try
         {
-            // Pobierz ID użytkownika z CurrentUserAccessor
             var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
 
             var command = new DeactivateOrganizationCommand

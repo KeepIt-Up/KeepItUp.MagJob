@@ -1,47 +1,47 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// DTO dla członka organizacji.
+/// DTO for a member of an organization.
 /// </summary>
 public class MemberRecord
 {
     /// <summary>
-    /// Identyfikator członka.
+    /// Member identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid UserId { get; set; }
 
     /// <summary>
-    /// Adres email użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nazwa wyświetlana użytkownika.
+    /// User display name.
     /// </summary>
     public string DisplayName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Data dołączenia do organizacji.
+    /// Date of joining the organization.
     /// </summary>
     public DateTime JoinedAt { get; set; }
 
     /// <summary>
-    /// Role przypisane do członka.
+    /// Roles assigned to the member.
     /// </summary>
     public List<OrganizationRoleRecord> Roles { get; set; } = new List<OrganizationRoleRecord>();
 }

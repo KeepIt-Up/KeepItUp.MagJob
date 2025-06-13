@@ -1,47 +1,47 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// DTO dla zaproszenia do organizacji.
+/// DTO for an invitation to an organization.
 /// </summary>
 public class OrganizationInvitationRecord
 {
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Adres email osoby zapraszanej.
+    /// Email address of the invited person.
     /// </summary>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Status zaproszenia.
+    /// Invitation status.
     /// </summary>
     public string Status { get; set; } = string.Empty;
 
     /// <summary>
-    /// Data wygaśnięcia zaproszenia.
+    /// Invitation expiration date.
     /// </summary>
     public DateTime ExpiresAt { get; set; }
 
     /// <summary>
-    /// Czy zaproszenie wygasło.
+    /// Whether the invitation has expired.
     /// </summary>
     public bool IsExpired { get; set; }
 
     /// <summary>
-    /// Data utworzenia zaproszenia.
+    /// Creation date of the invitation.
     /// </summary>
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Identyfikator użytkownika, który utworzył zaproszenie.
+    /// User identifier who created the invitation.
     /// </summary>
     public Guid CreatedBy { get; set; }
 
     /// <summary>
-    /// Rola, która zostanie przypisana po akceptacji zaproszenia.
+    /// Role that will be assigned after accepting the invitation.
     /// </summary>
     public OrganizationRoleRecord? Role { get; set; }
 }

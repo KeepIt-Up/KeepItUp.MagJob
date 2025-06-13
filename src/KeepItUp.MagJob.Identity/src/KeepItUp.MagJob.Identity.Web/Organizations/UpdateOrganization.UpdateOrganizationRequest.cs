@@ -1,7 +1,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Endpoints.Organizations;
 
 /// <summary>
-/// Żądanie dla endpointu UpdateOrganizationEndpoint.
+/// Request for the UpdateOrganizationEndpoint.
 /// </summary>
 public class UpdateOrganizationRequest
 {
@@ -9,17 +9,17 @@ public class UpdateOrganizationRequest
     public static string BuildRoute(Guid id) => Route.Replace("{Id:guid}", id.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; set; }
 }

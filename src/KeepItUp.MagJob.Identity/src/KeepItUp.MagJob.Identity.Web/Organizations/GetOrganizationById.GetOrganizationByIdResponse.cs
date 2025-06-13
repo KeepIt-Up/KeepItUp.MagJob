@@ -1,47 +1,47 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Odpowiedź dla endpointu GetOrganizationById.
+/// Response for the GetOrganizationByIdEndpoint.
 /// </summary>
 public class GetOrganizationByIdResponse
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner identifier.
     /// </summary>
     public Guid OwnerId { get; set; }
 
     /// <summary>
-    /// Czy użytkownik jest właścicielem organizacji.
+    /// Whether the user is the owner of the organization.
     /// </summary>
     public bool IsOwner { get; set; }
 
     /// <summary>
-    /// Liczba członków organizacji.
+    /// Number of organization members.
     /// </summary>
     public int MemberCount { get; set; }
 
     /// <summary>
-    /// URL logo organizacji.
+    /// Organization logo URL.
     /// </summary>
     public string? LogoUrl { get; set; }
 
     /// <summary>
-    /// URL banneru organizacji.
+    /// Organization banner URL.
     /// </summary>
     public string? BannerUrl { get; set; }
 

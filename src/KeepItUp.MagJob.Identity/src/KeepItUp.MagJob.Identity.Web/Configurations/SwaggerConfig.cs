@@ -6,19 +6,18 @@ using NSwag.AspNetCore;
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
 /// <summary>
-/// Konfiguracja Swagger dla aplikacji
+/// Swagger configuration for the application
 /// </summary>
 public static class SwaggerConfig
 {
     /// <summary>
-    /// Dodaje konfigurację Swagger do kolekcji usług
+    /// Adds Swagger configuration to the service collection
     /// </summary>
-    /// <param name="services">Kolekcja usług</param>
+    /// <param name="services">Service collection</param>
     /// <param name="logger">Logger</param>
-    /// <returns>Kolekcja usług</returns>
+    /// <returns>Service collection</returns>
     public static IServiceCollection AddSwaggerConfig(this IServiceCollection services, Microsoft.Extensions.Logging.ILogger logger)
     {
-        // Configure Swagger with OAuth2 authentication
         services.SwaggerDocument(o =>
         {
             o.ShortSchemaNames = true;
@@ -27,15 +26,12 @@ public static class SwaggerConfig
                 s.Title = "MagJob Identity API";
                 s.Version = "v1";
 
-                // Pobierz konfigurację Keycloak dla klienta web
                 var serviceProvider = services.BuildServiceProvider();
                 var keycloakClientWeb = serviceProvider.GetRequiredService<IOptions<KeycloakClientOptions>>().Value;
 
-                // Log Keycloak configuration for debugging
                 logger.LogInformation("Keycloak client web configuration: ServerUrl={ServerUrl}, Realm={Realm}, ClientId={ClientId}",
                     keycloakClientWeb.ServerUrl, keycloakClientWeb.Realm, keycloakClientWeb.ClientId);
 
-                // Configure OAuth2 security scheme
                 s.AddAuth("Keycloak", new OpenApiSecurityScheme
                 {
                     Type = OpenApiSecuritySchemeType.OAuth2,
@@ -62,19 +58,17 @@ public static class SwaggerConfig
     }
 
     /// <summary>
-    /// Konfiguruje middleware Swagger
+    /// Configures Swagger middleware
     /// </summary>
-    /// <param name="app">Aplikacja</param>
+    /// <param name="app">Application</param>
     /// <param name="logger">Logger</param>
-    /// <returns>Aplikacja</returns>
+    /// <returns>Application</returns>
     public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app, Microsoft.Extensions.Logging.ILogger logger)
     {
         try
         {
-            // Pobierz konfigurację Keycloak dla klienta web
             var keycloakClientWeb = app.ApplicationServices.GetRequiredService<IOptions<KeycloakClientOptions>>().Value;
 
-            // Configure Swagger UI with OAuth2 client settings
             app.UseSwaggerGen(uiConfig: c =>
             {
                 c.OAuth2Client = new OAuth2ClientSettings
@@ -85,11 +79,9 @@ public static class SwaggerConfig
                     UsePkceWithAuthorizationCodeGrant = true
                 };
 
-                // Add the redirect URL for Keycloak
                 var configuration = app.ApplicationServices.GetRequiredService<IConfiguration>();
                 var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
 
-                // Dynamiczne pobieranie adresu URL z aktualnego żądania
                 var request = httpContextAccessor?.HttpContext?.Request;
                 if (request == null)
                 {
@@ -109,7 +101,6 @@ public static class SwaggerConfig
         {
             logger.LogError(ex, "Błąd podczas konfiguracji Swagger UI");
 
-            // Fallback configuration if there's an error
             app.UseSwaggerGen();
             return app;
         }

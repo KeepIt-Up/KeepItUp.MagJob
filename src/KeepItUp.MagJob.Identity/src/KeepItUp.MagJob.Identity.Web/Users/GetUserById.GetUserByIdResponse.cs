@@ -3,47 +3,47 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Odpowiedź dla endpointu GetUserEndpoint.
+/// Response for the GetUserEndpoint.
 /// </summary>
 public class GetUserByIdResponse
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Zewnętrzny identyfikator użytkownika (np. z Keycloak).
+    /// External user identifier (e.g. from Keycloak).
     /// </summary>
     public Guid ExternalId { get; set; }
 
     /// <summary>
-    /// Adres email użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Czy użytkownik jest aktywny.
+    /// Determines if the user is active.
     /// </summary>
     public bool IsActive { get; set; }
 
     /// <summary>
-    /// URL do zdjęcia profilowego użytkownika.
+    /// URL of the user's profile picture.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
 
     /// <summary>
-    /// Lista organizacji, do których należy użytkownik.
+    /// List of organizations the user belongs to.
     /// </summary>
     public List<MembershipDto> Memberships { get; set; } = new();
 }

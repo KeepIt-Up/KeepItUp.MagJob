@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji uprawnień roli w organizacji.
+/// Endpoint to update the permissions of a role in an organization.
 /// </summary>
 /// <remarks>
-/// Aktualizuje uprawnienia roli w organizacji o podanym identyfikatorze.
+/// Updates the permissions of a role in an organization with the given identifier.
 /// </remarks>
 public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<UpdateRolePermissionsRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Put(UpdateRolePermissionsRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("UpdateRolePermissions")
             .Produces(204)
@@ -29,8 +29,8 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Aktualizuje uprawnienia roli w organizacji";
-            s.Description = "Aktualizuje uprawnienia roli w organizacji o podanym identyfikatorze";
+            s.Summary = "Updates the permissions of a role in an organization";
+            s.Description = "Updates the permissions of a role in an organization with the given identifier";
             s.ExampleRequest = new UpdateRolePermissionsRequest
             {
                 OrganizationId = Guid.NewGuid(),
@@ -41,11 +41,11 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{organizationId}/roles/{roleId}/permissions.
+    /// Handles the PUT /api/organizations/{organizationId}/roles/{roleId}/permissions request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(UpdateRolePermissionsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

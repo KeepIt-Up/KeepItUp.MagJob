@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do usunięcia roli z organizacji.
+/// Endpoint to delete a role from an organization.
 /// </summary>
 /// <remarks>
-/// Usuwa rolę z organizacji o podanym identyfikatorze.
+/// Deletes a role from an organization with the given identifier.
 /// </remarks>
 public class DeleteRole(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<DeleteRoleRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Delete(DeleteRoleRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("DeleteRole")
             .Produces(204)
@@ -29,18 +29,18 @@ public class DeleteRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Usuwa rolę z organizacji";
-            s.Description = "Usuwa rolę z organizacji o podanym identyfikatorze";
+            s.Summary = "Deletes a role from an organization";
+            s.Description = "Deletes a role from an organization with the given identifier";
             s.ExampleRequest = new DeleteRoleRequest { OrganizationId = Guid.NewGuid(), RoleId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{organizationId}/roles/{roleId}.
+    /// Handles the DELETE /api/organizations/{organizationId}/roles/{roleId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(DeleteRoleRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

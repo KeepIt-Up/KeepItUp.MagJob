@@ -12,11 +12,8 @@ public static class OptionConfigs
                                                       WebApplicationBuilder builder)
     {
         services.Configure<MailserverConfiguration>(configuration.GetSection("Mailserver"))
-        // Konfiguracja Keycloak
         .Configure<KeycloakAdminOptions>(configuration.GetSection("KeycloakAdmin"))
-        // Konfiguracja KeycloakClient
         .Configure<KeycloakClientOptions>(configuration.GetSection("KeycloakClient"))
-        // Configure Web Behavior
         .Configure<CookiePolicyOptions>(options =>
         {
             options.CheckConsentNeeded = context => true;

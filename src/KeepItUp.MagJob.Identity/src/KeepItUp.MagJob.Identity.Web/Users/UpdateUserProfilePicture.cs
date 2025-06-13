@@ -6,7 +6,7 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Endpoint do aktualizacji zdjęcia profilowego użytkownika.
+/// Endpoint to update the profile picture of a user.
 /// </summary>
 public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest, UpdateUserProfilePictureResponse>
 {
@@ -16,11 +16,11 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
     private readonly ILogger<UpdateUserProfilePicture> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateUserProfilePicture"/>.
+    /// Initializes a new instance of the <see cref="UpdateUserProfilePicture"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="fileStorageService">Serwis przechowywania plików.</param>
-    /// <param name="currentUserAccessor">Akcesor bieżącego użytkownika.</param>
+    /// <param name="fileStorageService">File storage service.</param>
+    /// <param name="currentUserAccessor">Current user accessor.</param>
     /// <param name="logger">Logger.</param>
     public UpdateUserProfilePicture(
         IMediator mediator,
@@ -35,14 +35,14 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
     }
 
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Put(UpdateUserProfilePictureRequest.Route);
         AllowFileUploads();
         AllowFormData();
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("UpdateUserProfilePicture")
             .WithTags("Users")
@@ -53,16 +53,16 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Aktualizuje zdjęcie profilowe użytkownika";
-            s.Description = "Aktualizuje zdjęcie profilowe użytkownika o podanym identyfikatorze";
+            s.Summary = "Updates the profile picture of a user";
+            s.Description = "Updates the profile picture of a user with the specified identifier";
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/users/{id}/profile-picture.
+    /// Handles the PUT /api/users/{id}/profile-picture request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
     public override async Task HandleAsync(UpdateUserProfilePictureRequest req, CancellationToken ct)
     {
         var currentUserId = _currentUserAccessor.GetCurrentUserId();
@@ -74,7 +74,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
             return;
         }
 
-        // Sprawdź, czy użytkownik istnieje
         var getUserQuery = new GetUserByIdQuery
         {
             Id = req.UserId
@@ -99,12 +98,10 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
             return;
         }
 
-        // Pobierz poprzednie zdjęcie profilowe, aby je usunąć po aktualizacji
         string? oldProfileImageUrl = userResult.Value.ProfileImageUrl();
 
         try
         {
-            // Sprawdź, czy przesłano plik
             if (req.ProfilePictureFile == null || req.ProfilePictureFile.Length == 0)
             {
                 AddError("Nie przesłano pliku ze zdjęciem profilowym");
@@ -112,7 +109,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
                 return;
             }
 
-            // Sprawdź typ pliku (akceptuj tylko obrazy)
             string contentType = req.ProfilePictureFile.ContentType;
             if (!(contentType.StartsWith("image/jpeg") || contentType.StartsWith("image/png") || contentType.StartsWith("image/gif")))
             {
@@ -121,11 +117,9 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
                 return;
             }
 
-            // Przesłanie pliku do usługi przechowywania
             string profileImageUrl;
             using (var stream = req.ProfilePictureFile.OpenReadStream())
             {
-                // Zapisz zdjęcie profilowe w podkatalogu "profile-pictures"
                 profileImageUrl = await _fileStorageService.UploadFileAsync(
                     stream,
                     req.ProfilePictureFile.FileName,
@@ -134,7 +128,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
                 );
             }
 
-            // Aktualizacja profilu użytkownika
             var command = new UpdateUserCommand
             {
                 Id = req.UserId,
@@ -149,7 +142,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
 
             if (result.IsSuccess)
             {
-                // Jeśli aktualizacja się powiodła, usuń stare zdjęcie profilowe (tylko jeśli zostało uploaded lokalnie)
                 if (!string.IsNullOrEmpty(oldProfileImageUrl)
                     && oldProfileImageUrl != profileImageUrl
                     && await _fileStorageService.FileExistsAsync(oldProfileImageUrl))
@@ -161,7 +153,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
                 return;
             }
 
-            // Jeśli aktualizacja się nie powiodła, usuń nowo przesłane zdjęcie
             await _fileStorageService.DeleteFileAsync(profileImageUrl);
 
             foreach (var error in result.Errors)

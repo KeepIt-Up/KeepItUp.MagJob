@@ -1,7 +1,7 @@
 
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// <summary>
-/// Żądanie utworzenia zaproszenia do organizacji.
+/// Request to create an invitation to an organization.
 /// </summary>
 public class CreateInvitationRequest
 {
@@ -9,17 +9,17 @@ public class CreateInvitationRequest
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Adres email osoby zapraszanej.
+    /// Email address of the person being invited.
     /// </summary>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator roli, która zostanie przypisana po akceptacji zaproszenia.
+    /// Role identifier to assign after accepting the invitation.
     /// </summary>
     public Guid RoleId { get; set; }
 }

@@ -5,21 +5,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do pobierania zaproszeń do organizacji.
+/// Endpoint to get invitations to an organization.
 /// </summary>
 /// <remarks>
-/// Pobiera wszystkie zaproszenia do organizacji o podanym identyfikatorze.
+/// Gets all invitations to an organization with the given identifier.
 /// </remarks>
 public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<GetInvitationsRequest, PaginationResult<InvitationDto>>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Get(GetInvitationsRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("GetInvitations")
             .Produces<PaginationResult<InvitationDto>>(200)
@@ -40,11 +40,11 @@ public class GetInvitationsEndpoint(IMediator mediator, ICurrentUserAccessor cur
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/organizations/{id}/invitations.
+    /// Handles the GET /api/organizations/{id}/invitations request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą zaproszeń do organizacji z paginacją.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the list of invitations to the organization with pagination.</returns>
     public override async Task HandleAsync(GetInvitationsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

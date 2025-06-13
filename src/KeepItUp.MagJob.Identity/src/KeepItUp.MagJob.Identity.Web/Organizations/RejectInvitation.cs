@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do odrzucenia zaproszenia do organizacji.
+/// Endpoint to reject an invitation to an organization.
 /// </summary>
 /// <remarks>
-/// Odrzuca zaproszenie do organizacji na podstawie identyfikatora i tokenu.
+/// Rejects an invitation to an organization based on an identifier and a token.
 /// </remarks>
 public class RejectInvitation(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<RejectInvitationRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Post(RejectInvitationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("RejectInvitation")
             .Produces(204)
@@ -28,18 +28,18 @@ public class RejectInvitation(IMediator mediator, ICurrentUserAccessor currentUs
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Odrzuca zaproszenie do organizacji";
-            s.Description = "Odrzuca zaproszenie do organizacji na podstawie identyfikatora i tokenu";
+            s.Summary = "Rejects an invitation to an organization";
+            s.Description = "Rejects an invitation to an organization based on an identifier and a token";
             s.ExampleRequest = new RejectInvitationRequest { InvitationId = Guid.NewGuid(), Token = "token" };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie POST /api/invitations/{invitationId}/reject.
+    /// Handles the POST /api/invitations/{invitationId}/reject request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(RejectInvitationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do tworzenia zaproszenia do organizacji.
+/// Endpoint to create an invitation to an organization.
 /// </summary>
 /// <remarks>
-/// Tworzy nowe zaproszenie do organizacji dla podanego adresu email.
+/// Creates a new invitation to an organization for the given email address.
 /// </remarks>
 public class CreateInvitation(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
   : Endpoint<CreateInvitationRequest, CreateInvitationResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Post(CreateInvitationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
           .WithName("CreateInvitation")
           .Produces(201)
@@ -37,11 +37,11 @@ public class CreateInvitation(IMediator mediator, ICurrentUserAccessor currentUs
     }
 
     /// <summary>
-    /// Obsługuje żądanie POST /api/organizations/{organizationId}/invitations.
+    /// Handles the POST /api/organizations/{organizationId}/invitations request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź zawierająca identyfikator utworzonego zaproszenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the identifier of the created invitation.</returns>
     public override async Task HandleAsync(CreateInvitationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

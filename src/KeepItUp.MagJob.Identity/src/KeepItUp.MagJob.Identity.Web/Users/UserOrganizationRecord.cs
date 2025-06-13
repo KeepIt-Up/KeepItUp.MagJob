@@ -1,37 +1,37 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// DTO dla organizacji w kontekście użytkownika.
+/// DTO for the organization in the context of the user.
 /// </summary>
 public class UserOrganizationRecord
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner organization identifier.
     /// </summary>
     public Guid OwnerId { get; set; }
 
     /// <summary>
-    /// Czy użytkownik jest właścicielem organizacji.
+    /// Determines if the user is the owner of the organization.
     /// </summary>
     public bool IsOwner { get; set; }
 
     /// <summary>
-    /// Liczba członków organizacji.
+    /// Number of organization members.
     /// </summary>
     public int MemberCount { get; set; }
 }

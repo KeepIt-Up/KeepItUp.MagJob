@@ -1,21 +1,19 @@
 ﻿namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Walidator dla żądania aktualizacji bannera organizacji.
+/// Validator for the UpdateOrganizationBannerRequest.
 /// </summary>
 public class UpdateOrganizationBannerValidator : Validator<UpdateOrganizationBannerRequest>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationBannerValidator"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationBannerValidator"/> class.
     /// </summary>
     public UpdateOrganizationBannerValidator()
     {
-        // Walidacja identyfikatora organizacji
         RuleFor(x => x.OrganizationId)
             .NotEmpty().WithMessage("Identyfikator organizacji jest wymagany.")
             .Must(id => id != Guid.Empty).WithMessage("Identyfikator organizacji nie może być pusty (Guid.Empty).");
 
-        // Walidacja pliku bannera
         RuleFor(x => x.BannerFile)
             .NotNull().WithMessage("Plik bannera jest wymagany.");
 

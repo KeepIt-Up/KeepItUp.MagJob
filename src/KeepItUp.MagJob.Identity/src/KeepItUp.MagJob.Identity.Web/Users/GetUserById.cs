@@ -4,10 +4,10 @@ using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Endpoint do pobierania użytkownika po identyfikatorze.
+/// Endpoint to get a user by their identifier.
 /// </summary>
 /// <remarks>
-/// Pobiera użytkownika o podanym identyfikatorze.
+/// Gets a user by their identifier.
 /// </remarks>
 public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
 {
@@ -16,10 +16,10 @@ public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
     private readonly ILogger<GetUserById> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserById"/>.
+    /// Initializes a new instance of the <see cref="GetUserById"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="profilePictureService">Serwis zdjęć profilowych.</param>
+    /// <param name="profilePictureService">Profile picture service.</param>
     /// <param name="logger">Logger.</param>
     public GetUserById(
         IMediator mediator,
@@ -32,12 +32,12 @@ public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
     }
 
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Get(GetUserByIdRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("GetUser")
             .Produces<GetUserByIdResponse>(200)
@@ -45,18 +45,18 @@ public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Pobiera użytkownika";
-            s.Description = "Pobiera użytkownika o podanym identyfikatorze";
+            s.Summary = "Gets a user";
+            s.Description = "Gets a user by their identifier";
             s.ExampleRequest = new GetUserByIdRequest { Id = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/users/{id}.
+    /// Handles the GET /api/users/{id} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi użytkownika.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the user data.</returns>
     public override async Task HandleAsync(GetUserByIdRequest req, CancellationToken ct)
     {
         var query = new GetUserByIdQuery
@@ -80,7 +80,7 @@ public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
 
         string? profileImageUrl = result.Value.ProfileImageUrl();
 
-        // Jeśli użytkownik nie ma zdjęcia profilowego, spróbuj je pobrać z IDP
+        // If the user does not have a profile picture, try to get it from the IDP
         if (string.IsNullOrEmpty(profileImageUrl))
         {
             try
@@ -94,7 +94,7 @@ public class GetUserById : Endpoint<GetUserByIdRequest, GetUserByIdResponse>
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Nie udało się pobrać zdjęcia profilowego użytkownika {UserId} z IDP", req.Id);
-                // Kontynuuj, nawet jeśli nie udało się pobrać zdjęcia
+                // Continue even if the profile picture could not be retrieved
             }
         }
 

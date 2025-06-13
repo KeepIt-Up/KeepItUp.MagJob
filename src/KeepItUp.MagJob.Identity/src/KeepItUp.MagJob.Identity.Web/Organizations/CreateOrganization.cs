@@ -4,16 +4,16 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do tworzenia organizacji.
+/// Endpoint to create an organization.
 /// </summary>
 /// <remarks>
-/// Tworzy nową organizację z podanymi danymi.
+/// Creates a new organization with the given data.
 /// </remarks>
 public class CreateOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<CreateOrganizationRequest, CreateOrganizationResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
@@ -26,19 +26,19 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Tworzy nową organizację";
-            s.Description = "Tworzy nową organizację z podanymi danymi";
+            s.Summary = "Creates a new organization";
+            s.Description = "Creates a new organization with the given data";
             s.ExampleRequest = new CreateOrganizationRequest { Name = "Nazwa organizacji", Description = "Opis organizacji" };
             s.ResponseExamples[201] = new CreateOrganizationResponse { Id = Guid.NewGuid(), Name = "Nazwa organizacji", Description = "Opis organizacji", OwnerId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie POST /api/organizations.
+    /// Handles the POST /api/organizations request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi utworzonej organizacji.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the data of the created organization.</returns>
     public override async Task HandleAsync(CreateOrganizationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
@@ -68,7 +68,6 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
             return;
         }
 
-        // Zakładamy, że result.Value to Guid (identyfikator utworzonej organizacji)
         var organizationId = result.Value;
 
         Response = new CreateOrganizationResponse

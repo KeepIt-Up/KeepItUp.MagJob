@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore;
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
 /// <summary>
-/// Konfiguracja middleware dla aplikacji
+/// Middleware configuration for the application
 /// </summary>
 public static class MiddlewareConfig
 {
     /// <summary>
-    /// Konfiguruje middleware aplikacji i inicjalizuje bazę danych
+    /// Configures middleware for the application and initializes the database
     /// </summary>
-    /// <param name="app">Aplikacja webowa</param>
-    /// <returns>Skonfigurowana aplikacja</returns>
+    /// <param name="app">Web application</param>
+    /// <returns>Configured application</returns>
     public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
@@ -36,11 +36,6 @@ public static class MiddlewareConfig
 
         app.UseFastEndpoints(c =>
        {
-           // Ustawienie PropertyNamingPolicy na null powoduje, że nazwy właściwości w JSON
-           // są zachowywane dokładnie tak, jak w klasach C# (PascalCase).
-           // Jest to zgodne z konwencją .NET, ale różni się od standardu JSON (camelCase).
-           // Uwaga: Jeśli klienci oczekują camelCase, należy zmienić to ustawienie na:
-           // c.Serializer.Options.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
            c.Serializer.Options.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
        });
 
@@ -52,9 +47,9 @@ public static class MiddlewareConfig
     }
 
     /// <summary>
-    /// Inicjalizuje bazę danych i wypełnia ją danymi początkowymi
+    /// Initializes the database and seeds it with initial data
     /// </summary>
-    /// <param name="app">Aplikacja webowa</param>
+    /// <param name="app">Web application</param>
     static async Task SeedDatabase(WebApplication app)
     {
         using var scope = app.Services.CreateScope();

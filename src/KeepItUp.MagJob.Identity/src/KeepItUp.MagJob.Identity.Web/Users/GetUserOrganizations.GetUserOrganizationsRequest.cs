@@ -3,7 +3,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Żądanie dla endpointu GetUserOrganizationsEndpoint.
+/// Request for the GetUserOrganizationsEndpoint.
 /// </summary>
 public class GetUserOrganizationsRequest : PaginationRequest<OrganizationDto>
 {
@@ -11,7 +11,7 @@ public class GetUserOrganizationsRequest : PaginationRequest<OrganizationDto>
     public static string BuildRoute(Guid id) => Route.Replace("{Id:guid}", id.ToString());
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid Id { get; set; }
 }

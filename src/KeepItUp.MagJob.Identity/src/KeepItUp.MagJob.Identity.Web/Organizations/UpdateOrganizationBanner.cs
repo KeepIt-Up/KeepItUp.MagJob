@@ -6,7 +6,7 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji bannera organizacji.
+/// Endpoint to update the banner of an organization.
 /// </summary>
 public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest, UpdateOrganizationBannerResponse>
 {
@@ -16,11 +16,11 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
     private readonly ILogger<UpdateOrganizationBanner> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationBanner"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationBanner"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="fileStorageService">Serwis przechowywania plików.</param>
-    /// <param name="currentUserAccessor">Akcesor bieżącego użytkownika.</param>
+    /// <param name="fileStorageService">File storage service.</param>
+    /// <param name="currentUserAccessor">Current user accessor.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationBanner(
         IMediator mediator,
@@ -44,16 +44,16 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
         {
             d.WithName("UpdateOrganizationBanner");
             d.WithTags("Organizations");
-            d.WithSummary("Aktualizuje banner organizacji");
-            d.WithDescription("Aktualizuje banner organizacji.");
+            d.WithSummary("Updates the banner of an organization");
+            d.WithDescription("Updates the banner of an organization.");
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{organizationId}/banner.
+    /// Handles the PUT /api/organizations/{organizationId}/banner request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
     public override async Task HandleAsync(UpdateOrganizationBannerRequest req, CancellationToken ct)
     {
         var currentUserId = _currentUserAccessor.GetCurrentUserId();
@@ -65,7 +65,6 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
             return;
         }
 
-        // Pobierz organizację, aby sprawdzić, czy użytkownik ma uprawnienia i pobrać stary banner
         var getOrganizationQuery = new GetOrganizationByIdQuery
         {
             OrganizationId = req.OrganizationId,
@@ -97,16 +96,13 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
             return;
         }
 
-        // Pobierz poprzedni banner, aby go usunąć po aktualizacji
         string? oldBannerUrl = organizationResult.Value.BannerUrl;
 
         try
         {
-            // Przesłanie pliku do usługi przechowywania
             string bannerUrl;
             using (var stream = req.BannerFile!.OpenReadStream())
             {
-                // Zapisz banner w podkatalogu "banners"
                 bannerUrl = await _fileStorageService.UploadFileAsync(
                     stream,
                     req.BannerFile.FileName,
@@ -115,7 +111,6 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
                 );
             }
 
-            // Aktualizacja organizacji za pomocą komendy
             var command = new UpdateOrganizationBannerCommand
             {
                 OrganizationId = req.OrganizationId,
@@ -127,7 +122,6 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
 
             if (result.IsSuccess)
             {
-                // Jeśli aktualizacja się powiodła, usuń stary banner
                 if (!string.IsNullOrEmpty(oldBannerUrl) && oldBannerUrl != bannerUrl)
                 {
                     await _fileStorageService.DeleteFileAsync(oldBannerUrl);
@@ -137,7 +131,6 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
                 return;
             }
 
-            // Jeśli aktualizacja się nie powiodła, usuń nowo przesłany banner
             await _fileStorageService.DeleteFileAsync(bannerUrl);
 
             foreach (var error in result.Errors)

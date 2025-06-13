@@ -1,22 +1,22 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie dla endpointu UpdateOrganizationBannerEndpoint.
+/// Request for the UpdateOrganizationBannerEndpoint.
 /// </summary>
 public class UpdateOrganizationBannerRequest
 {
     /// <summary>
-    /// Ścieżka endpointu
+    /// Endpoint route.
     /// </summary>
     public static string Route => "/Organizations/{OrganizationId:guid}/Banner";
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Plik bannera organizacji.
+    /// Organization banner file.
     /// </summary>
     public IFormFile? BannerFile { get; set; }
 }

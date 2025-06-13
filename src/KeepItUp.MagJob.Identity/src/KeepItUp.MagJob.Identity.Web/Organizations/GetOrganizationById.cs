@@ -4,16 +4,16 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do pobierania organizacji po identyfikatorze.
+/// Endpoint to get an organization by its identifier.
 /// </summary>
 /// <remarks>
-/// Pobiera organizację o podanym identyfikatorze.
+/// Gets an organization with the given identifier.
 /// </remarks>
 public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<GetOrganizationByIdRequest, GetOrganizationByIdResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
@@ -23,22 +23,21 @@ public class GetOrganizationById(IMediator mediator, ICurrentUserAccessor curren
             .Produces<GetOrganizationByIdResponse>(200));
         Summary(s =>
         {
-            s.Summary = "Pobiera organizację";
-            s.Description = "Pobiera organizację o podanym identyfikatorze";
+            s.Summary = "Gets an organization";
+            s.Description = "Gets an organization with the given identifier";
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/organizations/{id}.
+    /// Handles the GET /api/organizations/{id} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi organizacji.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the organization data.</returns>
     public override async Task HandleAsync(GetOrganizationByIdRequest req, CancellationToken ct)
     {
         try
         {
-            // Pobierz ID użytkownika z CurrentUserAccessor
             var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
 
             var query = new GetOrganizationByIdQuery

@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do usunięcia członka z organizacji.
+/// Endpoint to remove a member from an organization.
 /// </summary>
 /// <remarks>
-/// Usuwa członka z organizacji o podanym identyfikatorze.
+/// Removes a member from an organization with the given identifier.
 /// </remarks>
 public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<RemoveMemberRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Delete(RemoveMemberRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("RemoveMember")
             .Produces(204)
@@ -29,18 +29,18 @@ public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAc
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Usuwa członka z organizacji";
-            s.Description = "Usuwa członka z organizacji o podanym identyfikatorze";
+            s.Summary = "Removes a member from an organization";
+            s.Description = "Removes a member from an organization with the given identifier";
             s.ExampleRequest = new RemoveMemberRequest { OrganizationId = Guid.NewGuid(), MemberUserId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{organizationId}/members/{memberUserId}.
+    /// Handles the DELETE /api/organizations/{organizationId}/members/{memberUserId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(RemoveMemberRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

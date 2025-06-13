@@ -1,29 +1,29 @@
 ﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Żądanie aktualizacji zdjęcia profilowego użytkownika.
+/// Request for the UpdateUserProfilePictureEndpoint.
 /// </summary>
 public class UpdateUserProfilePictureRequest
 {
     /// <summary>
-    /// Szablon ścieżki URL dla endpointu aktualizacji zdjęcia profilowego użytkownika.
+    /// URL template for the UpdateUserProfilePictureEndpoint.
     /// </summary>
     public const string Route = "/Users/{UserId:guid}/profile-picture";
 
     /// <summary>
-    /// Buduje ścieżkę URL dla określonego identyfikatora użytkownika.
+    /// Builds the URL for the specified user identifier.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <returns>Ścieżka URL z uwzględnionym identyfikatorem.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <returns>URL with the specified identifier.</returns>
     public static string BuildRoute(Guid userId) => Route.Replace("{UserId:guid}", userId.ToString());
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid UserId { get; set; }
 
     /// <summary>
-    /// Plik ze zdjęciem profilowym.
+    /// Profile picture file.
     /// </summary>
     public IFormFile? ProfilePictureFile { get; set; }
 }

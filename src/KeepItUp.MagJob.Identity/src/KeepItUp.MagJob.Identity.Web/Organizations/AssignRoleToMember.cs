@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do przypisania roli członkowi organizacji.
+/// Endpoint to assign a role to a member of an organization.
 /// </summary>
 /// <remarks>
-/// Przypisuje rolę członkowi organizacji o podanym identyfikatorze.
+/// Assigns a role to a member of an organization with the given identifier.
 /// </remarks>
 public class AssignRoleToMember(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<AssignRoleToMemberRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Post(AssignRoleToMemberRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("AssignRoleToMember")
             .Produces(204)
@@ -29,8 +29,8 @@ public class AssignRoleToMember(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Przypisuje rolę członkowi organizacji";
-            s.Description = "Przypisuje rolę członkowi organizacji o podanym identyfikatorze";
+            s.Summary = "Assigns a role to a member of an organization";
+            s.Description = "Assigns a role to a member of an organization with the given identifier";
             s.ExampleRequest = new AssignRoleToMemberRequest
             {
                 OrganizationId = Guid.NewGuid(),
@@ -41,11 +41,11 @@ public class AssignRoleToMember(IMediator mediator, ICurrentUserAccessor current
     }
 
     /// <summary>
-    /// Obsługuje żądanie POST /api/organizations/{organizationId}/members/{memberUserId}/roles.
+    /// Handles the POST /api/organizations/{organizationId}/members/{memberUserId}/roles request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(AssignRoleToMemberRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

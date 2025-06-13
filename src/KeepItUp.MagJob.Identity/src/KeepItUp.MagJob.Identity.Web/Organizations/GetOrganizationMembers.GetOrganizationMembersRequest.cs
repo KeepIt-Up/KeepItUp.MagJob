@@ -3,7 +3,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie pobrania członków organizacji.
+/// Request to get the members of an organization.
 /// </summary>
 public class GetOrganizationMembersRequest : PaginationRequest<MemberDto>
 {
@@ -11,7 +11,7 @@ public class GetOrganizationMembersRequest : PaginationRequest<MemberDto>
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 }

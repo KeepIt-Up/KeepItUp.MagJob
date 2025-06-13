@@ -2,7 +2,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie przypisania roli członkowi organizacji.
+/// Request to assign a role to a member of an organization.
 /// </summary>
 public class AssignRoleToMemberRequest
 {
@@ -10,17 +10,17 @@ public class AssignRoleToMemberRequest
     public static string BuildRoute(Guid organizationId, Guid memberUserId, Guid roleId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString()).Replace("{MemberUserId:guid}", memberUserId.ToString()).Replace("{RoleId:guid}", roleId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Identyfikator użytkownika, któremu ma zostać przypisana rola.
+    /// User identifier to which the role should be assigned.
     /// </summary>
     public Guid MemberUserId { get; set; }
 
     /// <summary>
-    /// Identyfikator roli do przypisania.
+    /// Role identifier to assign.
     /// </summary>
     public Guid RoleId { get; set; }
 }

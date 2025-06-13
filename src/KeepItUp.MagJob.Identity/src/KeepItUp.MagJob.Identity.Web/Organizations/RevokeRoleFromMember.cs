@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do odebrania roli członkowi organizacji.
+/// Endpoint to revoke a role from a member of an organization.
 /// </summary>
 /// <remarks>
-/// Odbiera rolę członkowi organizacji o podanym identyfikatorze.
+/// Revokes a role from a member of an organization with the given identifier.
 /// </remarks>
 public class RevokeRoleFromMember(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<RevokeRoleFromMemberRequest>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Delete(RevokeRoleFromMemberRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("RevokeRoleFromMember")
             .Produces(204)
@@ -29,8 +29,8 @@ public class RevokeRoleFromMember(IMediator mediator, ICurrentUserAccessor curre
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Odbiera rolę członkowi organizacji";
-            s.Description = "Odbiera rolę członkowi organizacji o podanym identyfikatorze";
+            s.Summary = "Revokes a role from a member of an organization";
+            s.Description = "Revokes a role from a member of an organization with the given identifier";
             s.ExampleRequest = new RevokeRoleFromMemberRequest
             {
                 OrganizationId = Guid.NewGuid(),
@@ -41,11 +41,11 @@ public class RevokeRoleFromMember(IMediator mediator, ICurrentUserAccessor curre
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{organizationId}/members/{memberUserId}/roles/{roleId}.
+    /// Handles the DELETE /api/organizations/{organizationId}/members/{memberUserId}/roles/{roleId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
     public override async Task HandleAsync(RevokeRoleFromMemberRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();

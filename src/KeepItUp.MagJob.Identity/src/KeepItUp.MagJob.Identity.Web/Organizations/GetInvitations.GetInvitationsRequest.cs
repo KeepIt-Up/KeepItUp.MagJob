@@ -3,7 +3,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie dla endpointu GetInvitationsEndpoint.
+/// Request for the GetInvitationsEndpoint.
 /// </summary>
 public class GetInvitationsRequest : PaginationRequest<InvitationDto>
 {
@@ -11,7 +11,7 @@ public class GetInvitationsRequest : PaginationRequest<InvitationDto>
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 }

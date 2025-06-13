@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Endpoints.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji organizacji.
+/// Endpoint to update an organization.
 /// </summary>
 /// <remarks>
-/// Aktualizuje istniejącą organizację o podanym identyfikatorze.
+/// Updates an existing organization with the given identifier.
 /// </remarks>
 public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<UpdateOrganizationRequest, UpdateOrganizationResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Put(UpdateOrganizationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("UpdateOrganization")
             .Produces<UpdateOrganizationResponse>(200)
@@ -29,24 +29,23 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Aktualizuje istniejącą organizację";
-            s.Description = "Aktualizuje istniejącą organizację o podanym identyfikatorze";
+            s.Summary = "Updates an existing organization";
+            s.Description = "Updates an existing organization with the given identifier";
             s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji" };
             s.ResponseExamples[200] = new UpdateOrganizationResponse { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji", OwnerId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{id}.
+    /// Handles the PUT /api/organizations/{id} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi zaktualizowanej organizacji.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response with the updated organization data.</returns>
     public override async Task HandleAsync(UpdateOrganizationRequest req, CancellationToken ct)
     {
         try
         {
-            // Pobierz ID użytkownika z CurrentUserAccessor
             var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
 
             var command = new UpdateOrganizationCommand
@@ -92,7 +91,7 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
                 Id = req.Id,
                 Name = req.Name,
                 Description = req.Description,
-                OwnerId = userGuid // Zakładamy, że użytkownik aktualizujący jest właścicielem
+                OwnerId = userGuid
             };
 
             await SendOkAsync(Response, ct);

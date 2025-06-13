@@ -4,21 +4,21 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Permissions;
 
 /// <summary>
-/// Endpoint do pobierania wszystkich dostępnych uprawnień w systemie.
+/// Endpoint to get all available permissions in the system.
 /// </summary>
 /// <remarks>
-/// Zwraca listę wszystkich dostępnych uprawnień w systemie.
+/// Returns a list of all available permissions in the system.
 /// </remarks>
 public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
     : Endpoint<GetPermissionsRequest, PaginationResult<PermissionDto>>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Get(GetPermissionsRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
+        AllowAnonymous();
         Description(b => b
             .WithName("GetPermissions")
             .Produces<PaginationResult<PermissionDto>>(200)
@@ -28,8 +28,8 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
             .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Pobiera wszystkie dostępne uprawnienia w systemie";
-            s.Description = "Zwraca listę wszystkich dostępnych uprawnień w systemie";
+            s.Summary = "Gets all available permissions in the system";
+            s.Description = "Returns a list of all available permissions in the system";
             s.ExampleRequest = new GetPermissionsRequest
             {
                 PaginationParameters = PaginationParameters<PermissionDto>.Create()
@@ -38,11 +38,11 @@ public class GetPermissions(IMediator mediator, ICurrentUserAccessor currentUser
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/permissions.
+    /// Handles the GET /api/permissions request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź zawierająca listę uprawnień z paginacją.</returns>
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing a list of permissions with pagination.</returns>
     public override async Task HandleAsync(GetPermissionsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
