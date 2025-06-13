@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.Core.InvitationAggregate;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 

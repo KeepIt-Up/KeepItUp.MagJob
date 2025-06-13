@@ -34,10 +34,6 @@ public class OrganizationConfiguration : BaseEntityConfiguration<Organization>
             .HasForeignKey(r => r.OrganizationId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(o => o.Invitations)
-            .WithOne()
-            .HasForeignKey(i => i.OrganizationId)
-            .OnDelete(DeleteBehavior.Cascade);
         #endregion
 
         #region Indexes

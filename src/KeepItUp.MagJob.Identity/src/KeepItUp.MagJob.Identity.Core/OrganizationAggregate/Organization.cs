@@ -57,15 +57,6 @@ public class Organization : BaseEntity, IAggregateRoot
     /// </summary>
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
-    /// <summary>
-    /// List of invitations to the organization.
-    /// </summary>
-    private readonly List<Invitation> _invitations = new();
-
-    /// <summary>
-    /// List of invitations to the organization (read-only).
-    /// </summary>
-    public IReadOnlyCollection<Invitation> Invitations => _invitations.AsReadOnly();
 
     // Private constructor for EF Core
     private Organization() { }
@@ -250,21 +241,17 @@ public class Organization : BaseEntity, IAggregateRoot
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Check if the role exists in the organization
         var role = _roles.FirstOrDefault(r => r.Id == roleId);
         if (role == null)
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Check if the user is already a member of the organization
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            // If the user is already a member, add a new role to them
             existingMember.AssignRole(roleId, role);
 
-            // Call the Update method from the base class
             base.Update();
 
             RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
@@ -273,12 +260,10 @@ public class Organization : BaseEntity, IAggregateRoot
 
         var member = Member.Create(userId, Id, roleId);
 
-        // Add reference to the role object in the member
         member.SyncRoles(_roles);
 
         _members.Add(member);
 
-        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberAddedEvent(Id, userId, roleId));
@@ -294,13 +279,11 @@ public class Organization : BaseEntity, IAggregateRoot
     {
         Guard.Against.Default(userId, nameof(userId));
 
-        // Check if the user is the owner of the organization
         if (userId == OwnerId)
         {
             throw new InvalidOperationException("Nie można usunąć właściciela organizacji.");
         }
 
-        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
@@ -309,7 +292,6 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _members.Remove(member);
 
-        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRemovedEvent(Id, userId));
@@ -325,13 +307,11 @@ public class Organization : BaseEntity, IAggregateRoot
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Check if the role exists in the organization
         if (!_roles.Any(r => r.Id == roleId))
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
@@ -340,7 +320,6 @@ public class Organization : BaseEntity, IAggregateRoot
 
         member.AssignRole(roleId);
 
-        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
@@ -356,26 +335,22 @@ public class Organization : BaseEntity, IAggregateRoot
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Find the member of the organization
         var member = _members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
         {
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie jest członkiem organizacji.");
         }
 
-        // Check if the member has the role
         if (!member.HasRole(roleId))
         {
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie posiada roli o ID {roleId}.");
         }
 
-        // Remove the role
         if (!member.RemoveRole(roleId))
         {
             throw new InvalidOperationException("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
         }
 
-        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new MemberRoleRevokedEvent(Id, userId, roleId));
@@ -396,10 +371,8 @@ public class Organization : BaseEntity, IAggregateRoot
         var role = Role.Create(name, Id, description, color);
         _roles.Add(role);
 
-        // Update the entity version
         Update();
 
-        // Register the domain event
         RegisterDomainEvent(new RoleCreatedEvent(Id, role.Id, role.Name));
 
         return role;
@@ -413,14 +386,12 @@ public class Organization : BaseEntity, IAggregateRoot
     {
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Find the role
         var role = _roles.FirstOrDefault(r => r.Id == roleId);
         if (role == null)
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
 
-        // Check if the role is used by members of the organization
         if (_members.Any(m => m.HasRole(roleId)))
         {
             throw new InvalidOperationException("Nie można usunąć roli, która jest przypisana do członków organizacji.");
@@ -428,128 +399,39 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _roles.Remove(role);
 
-        // Call the Update method from the base class
         base.Update();
 
         RegisterDomainEvent(new RoleDeletedEvent(Id, roleId, role.Name));
     }
 
     /// <summary>
-    /// Creates a new invitation to the organization.
     /// </summary>
-    /// <param name="email">Email address of the invited person.</param>
-    /// <param name="roleId">Role ID that will be assigned after the invitation is accepted.</param>
-    /// <param name="expiresAt">Expiration date of the invitation.</param>
-    /// <returns>New invitation.</returns>
-    public Invitation CreateInvitation(string email, Guid roleId, DateTime? expiresAt = null)
+    /// <param name="userId">User ID of the person accepting the invitation.</param>
+    public Member AddMemberFromInvitation(Guid userId, Guid roleId)
     {
-        Guard.Against.NullOrEmpty(email, nameof(email));
+        Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        // Check if the role exists in the organization
-        if (!_roles.Any(r => r.Id == roleId))
-        {
-            throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
-        }
-
-        // Check if an invitation for this email address already exists
-        if (_invitations.Any(i => i.Email == email && !i.IsExpired))
-        {
-            throw new InvalidOperationException($"Zaproszenie dla adresu e-mail {email} już istnieje.");
-        }
-
-        var invitation = Invitation.Create(Id, email, roleId, expiresAt);
-        _invitations.Add(invitation);
-
-        RegisterDomainEventAndUpdate(new InvitationCreatedEvent(Id, invitation.Id, email, roleId));
-
-        return invitation;
-    }
-
-    /// <summary>
-    /// Accepts an invitation to the organization.
-    /// </summary>
-    /// <param name="invitationId">Invitation ID.</param>
-    /// <param name="userId">User ID of the person accepting the invitation.</param>
-    /// <returns>New member.</returns>
-    public Member AcceptInvitation(Guid invitationId, Guid userId)
-    {
-        Guard.Against.Default(invitationId, nameof(invitationId));
-        Guard.Against.Default(userId, nameof(userId));
-
-        // Find the invitation
-        var invitation = _invitations.FirstOrDefault(i => i.Id == invitationId);
-        if (invitation == null)
-        {
-            throw new InvalidOperationException($"Zaproszenie o ID {invitationId} nie istnieje.");
-        }
-
-        // Check if the invitation has expired
-        if (invitation.IsExpired)
-        {
-            throw new InvalidOperationException("Zaproszenie wygasło.");
-        }
-
-        // Check if the user is already a member of the organization
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            // If the user is already a member, add a new role to them
-            existingMember.AssignRole(invitation.RoleId);
+            existingMember.AssignRole(roleId);
 
-            // Accept the invitation
-            invitation.Accept();
-
-            // Call the Update method from the base class
             base.Update();
 
-            RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
-            RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, invitation.RoleId));
+            RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
 
             return existingMember;
         }
 
-        // Accept the invitation
-        invitation.Accept();
-
-        // Add a new member
-        var member = Member.Create(userId, Id, invitation.RoleId);
+        var member = Member.Create(userId, Id, roleId);
         _members.Add(member);
 
-        // Call the Update method from the base class
         base.Update();
 
-        RegisterDomainEventAndUpdate(new InvitationAcceptedEvent(invitationId, Id, invitation.Email, invitation.RoleId));
-        RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, invitation.RoleId));
+        RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, roleId));
 
         return member;
-    }
-
-    /// <summary>
-    /// Rejects an invitation to the organization.
-    /// </summary>
-    /// <param name="invitationId">Invitation ID.</param>
-    public void RejectInvitation(Guid invitationId)
-    {
-        Guard.Against.Default(invitationId, nameof(invitationId));
-
-        // Find the invitation
-        var invitation = _invitations.FirstOrDefault(i => i.Id == invitationId);
-        if (invitation == null)
-        {
-            throw new InvalidOperationException($"Zaproszenie o ID {invitationId} nie istnieje.");
-        }
-
-        // Check if the invitation has expired
-        if (invitation.IsExpired)
-        {
-            throw new InvalidOperationException("Zaproszenie wygasło.");
-        }
-
-        // Reject the invitation
-        invitation.Reject();
-
-        RegisterDomainEventAndUpdate(new InvitationRejectedEvent(invitationId, Id, invitation.Email));
     }
 
     /// <summary>
@@ -567,5 +449,15 @@ public class Organization : BaseEntity, IAggregateRoot
 
         // Check if the user is a member of the organization
         return _members.Any(m => m.UserId == userId);
+    }
+
+    /// <summary>
+    /// Checks if a role with the given ID exists in the organization.
+    /// </summary>
+    /// <param name="roleId">Role ID.</param>
+    /// <returns>True if the role exists; otherwise false.</returns>
+    public bool HasRole(Guid roleId)
+    {
+        return _roles.Any(r => r.Id == roleId);
     }
 }

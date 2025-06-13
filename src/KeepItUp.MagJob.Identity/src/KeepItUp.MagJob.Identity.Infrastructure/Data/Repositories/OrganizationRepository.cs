@@ -43,7 +43,6 @@ public class OrganizationRepository : IOrganizationRepository
         return await _dbContext.Organizations
             .AsNoTracking()
             .Include(o => o.Members)
-            .Include(o => o.Invitations)
             .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
     }
 
@@ -56,18 +55,9 @@ public class OrganizationRepository : IOrganizationRepository
                 .ThenInclude(m => m.Roles)
             .Include(o => o.Roles)
                 .ThenInclude(r => r.Permissions)
-            .Include(o => o.Invitations)
             .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
     }
 
-    /// <inheritdoc />
-    public async Task<Organization?> GetByIdWithInvitationsAsync(Guid organizationId, CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Organizations
-            .AsNoTracking()
-            .Include(o => o.Invitations)
-            .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
-    }
 
     /// <inheritdoc />
     public async Task<Organization?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
@@ -232,35 +222,6 @@ public class OrganizationRepository : IOrganizationRepository
             .ToListAsync(cancellationToken);
     }
 
-    /// <inheritdoc />
-    public Task<List<Invitation>> GetInvitationsByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public Task<Invitation?> GetInvitationByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public Task<Invitation> AddInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public Task UpdateInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default)
     {
@@ -288,28 +249,6 @@ public class OrganizationRepository : IOrganizationRepository
         return await membersQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
-    /// <inheritdoc />
-    public async Task<PaginationResult<TDestination>> GetInvitationsByOrganizationIdWithPaginationAsync<TDestination>(
-        Guid organizationId,
-        Expression<Func<Invitation, TDestination>> selector,
-        PaginationParameters<TDestination> parameters,
-        Expression<Func<Invitation, bool>>? filter = null,
-        CancellationToken cancellationToken = default)
-    {
-        // Get the IQueryable for the invitations of the given organization
-        var invitationsQuery = _dbContext.Set<Invitation>()
-            .AsNoTracking()
-            .Where(i => i.OrganizationId == organizationId);
-
-        // If a filter is provided, apply it
-        if (filter != null)
-        {
-            invitationsQuery = invitationsQuery.Where(filter);
-        }
-
-        // Apply pagination using the PagedQueryableExtensions extension
-        return await invitationsQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
-    }
 
     /// <inheritdoc />
     public async Task<PaginationResult<TDestination>> GetPermissionsWithPaginationAsync<TDestination>(

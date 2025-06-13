@@ -1,4 +1,5 @@
 ﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.Core.InvitationAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using KeepItUp.MagJob.Identity.SharedKernel;
@@ -32,16 +33,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     {
         UpdateTimestamps();
 
+        if (_dispatcher != null)
+        {
+            var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
+                .Select(e => e.Entity)
+                .Where(e => e.DomainEvents.Any())
+                .ToArray();
+
+            await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
+        }
+
         int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-        if (_dispatcher == null) return result;
-
-        var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
-            .Select(e => e.Entity)
-            .Where(e => e.DomainEvents.Any())
-            .ToArray();
-
-        await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
 
         return result;
     }

@@ -28,10 +28,6 @@ public interface IOrganizationRepository
     /// </summary>
     Task<Organization?> GetByIdWithMembersAndRolesAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Gets an organization by its ID with invitations.
-    /// </summary>
-    Task<Organization?> GetByIdWithInvitationsAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets an organization by its name.
@@ -84,30 +80,6 @@ public interface IOrganizationRepository
     /// </summary>
     Task<List<Member>> GetMembersByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Gets invitations to an organization by its ID.
-    /// </summary>
-    Task<List<Invitation>> GetInvitationsByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Gets an invitation by its ID.
-    /// </summary>
-    Task<Invitation?> GetInvitationByIdAsync(Guid id, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Adds a new invitation.
-    /// </summary>
-    Task<Invitation> AddInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Updates an invitation.
-    /// </summary>
-    Task UpdateInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Deletes an invitation.
-    /// </summary>
-    Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates a role's permissions.
@@ -147,22 +119,6 @@ public interface IOrganizationRepository
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Gets a paginated list of invitations to an organization.
-    /// </summary>
-    /// <typeparam name="TDestination">Destination type.</typeparam>
-    /// <param name="organizationId">Organization ID.</param>
-    /// <param name="selector">Selector mapping from Invitation to TDestination.</param>
-    /// <param name="parameters">Pagination parameters.</param>
-    /// <param name="filter">Optional filter for invitations (e.g. only pending).</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Pagination result.</returns>
-    Task<PaginationResult<TDestination>> GetInvitationsByOrganizationIdWithPaginationAsync<TDestination>(
-        Guid organizationId,
-        Expression<Func<Invitation, TDestination>> selector,
-        PaginationParameters<TDestination> parameters,
-        Expression<Func<Invitation, bool>>? filter = null,
-        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a paginated list of permissions.
