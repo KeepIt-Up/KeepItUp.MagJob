@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
 
 /// <summary>
-/// Komenda do usunięcia roli z organizacji.
+/// Command to delete a role from an organization.
 /// </summary>
 public record DeleteRoleCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

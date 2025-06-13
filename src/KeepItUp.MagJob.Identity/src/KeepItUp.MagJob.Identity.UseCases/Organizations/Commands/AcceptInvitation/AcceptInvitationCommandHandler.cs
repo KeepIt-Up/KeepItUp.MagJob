@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AcceptInvitation;
 
 /// <summary>
-/// Handler dla komendy AcceptInvitationCommand.
+/// Handler for the AcceptInvitationCommand.
 /// </summary>
 public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result<Guid>>
 {
@@ -13,9 +13,9 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
     private readonly ILogger<AcceptInvitationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="AcceptInvitationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="AcceptInvitationCommandHandler"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public AcceptInvitationCommandHandler(
         IOrganizationRepository organizationRepository,
@@ -26,28 +26,28 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
     }
 
     /// <summary>
-    /// Obsługuje komendę AcceptInvitationCommand.
+    /// Handles the AcceptInvitationCommand.
     /// </summary>
-    /// <param name="request">Komenda AcceptInvitationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator członka organizacji.</returns>
+    /// <param name="request">AcceptInvitationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Member identifier.</returns>
     public async Task<Result<Guid>> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z zaproszeniami
+            // Get the organization with invitations
             var organization = await _organizationRepository.GetByIdWithInvitationsAsync(request.OrganizationId, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
+            // Validator should ensure that the organization exists
             if (organization == null)
             {
-                return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
+                return Result<Guid>.NotFound($"Organization with ID {request.OrganizationId} not found.");
             }
 
-            // Zaakceptuj zaproszenie i dodaj użytkownika jako członka organizacji
+            // Accept the invitation and add the user as a member of the organization
             var member = organization.AcceptInvitation(request.InvitationId, request.UserId);
 
-            // Zapisz zmiany
+            // Save changes
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Użytkownik {UserId} zaakceptował zaproszenie {InvitationId} do organizacji {OrganizationId}",

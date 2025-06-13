@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganization;
 
 /// <summary>
-/// Handler dla komendy UpdateOrganizationCommand.
+/// Handler for the UpdateOrganizationCommand.
 /// </summary>
 public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizationCommand, Result>
 {
@@ -13,9 +13,9 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
     private readonly ILogger<UpdateOrganizationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationCommandHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
     }
 
     /// <summary>
-    /// Obsługuje komendę UpdateOrganizationCommand.
+    /// Handles the UpdateOrganizationCommand.
     /// </summary>
-    /// <param name="request">Komenda UpdateOrganizationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">UpdateOrganizationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.Id, cancellationToken);
 
             if (organization == null)
@@ -43,7 +42,6 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.Id}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do aktualizacji organizacji
             if (organization.OwnerId != request.UserId)
             {
                 var isMember = organization.Members.Any(m => m.UserId == request.UserId &&
@@ -55,7 +53,6 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
                 }
             }
 
-            // Sprawdź, czy nazwa organizacji nie jest już używana przez inną organizację
             if (organization.Name != request.Name)
             {
                 var existingOrganization = await _repository.GetByNameAsync(request.Name, cancellationToken);
@@ -66,10 +63,8 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
                 }
             }
 
-            // Aktualizuj organizację
             organization.Update(request.Name, request.Description);
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Zaktualizowano organizację o ID {OrganizationId}", organization.Id);

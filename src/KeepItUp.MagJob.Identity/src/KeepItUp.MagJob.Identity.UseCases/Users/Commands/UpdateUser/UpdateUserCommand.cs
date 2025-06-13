@@ -3,37 +3,37 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 
 /// <summary>
-/// Komenda do aktualizacji istniejącego użytkownika.
+/// Command to update an existing user.
 /// </summary>
 public record UpdateUserCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid Id { get; init; }
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; init; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; init; } = string.Empty;
 
     /// <summary>
-    /// Numer telefonu użytkownika (opcjonalny).
+    /// User phone number (optional).
     /// </summary>
     public string? PhoneNumber { get; init; }
 
     /// <summary>
-    /// Adres użytkownika (opcjonalny).
+    /// User address (optional).
     /// </summary>
     public string? Address { get; init; }
 
     /// <summary>
-    /// URL do zdjęcia profilowego użytkownika (opcjonalny).
+    /// URL of the user's profile picture (optional).
     /// </summary>
     public string? ProfileImageUrl { get; init; }
 }

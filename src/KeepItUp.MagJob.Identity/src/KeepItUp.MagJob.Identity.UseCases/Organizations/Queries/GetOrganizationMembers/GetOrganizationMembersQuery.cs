@@ -1,17 +1,17 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
 
 /// <summary>
-/// Zapytanie o członków organizacji.
+/// Query to get members of an organization.
 /// </summary>
 public class GetOrganizationMembersQuery : PaginationQuery<MemberDto>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

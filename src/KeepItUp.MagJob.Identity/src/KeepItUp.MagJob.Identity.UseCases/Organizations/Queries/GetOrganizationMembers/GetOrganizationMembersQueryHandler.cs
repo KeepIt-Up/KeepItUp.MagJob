@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
 
 /// <summary>
-/// Handler dla zapytania GetOrganizationMembersQuery.
+/// Handler for the GetOrganizationMembersQuery.
 /// </summary>
 public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizationMembersQuery, Result<PaginationResult<MemberDto>>>
 {
@@ -16,10 +16,10 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
     private readonly ILogger<GetOrganizationMembersQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetOrganizationMembersQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetOrganizationMembersQueryHandler"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationMembersQueryHandler(
         IOrganizationRepository organizationRepository,
@@ -32,22 +32,20 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetOrganizationMembersQuery.
+    /// Handles the GetOrganizationMembersQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetOrganizationMembersQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista członków organizacji z paginacją.</returns>
+    /// <param name="request">GetOrganizationMembersQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of members of the organization with pagination.</returns>
     public async Task<Result<PaginationResult<MemberDto>>> Handle(GetOrganizationMembersQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź czy organizacja istnieje
             if (!await _organizationRepository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
                 return Result<PaginationResult<MemberDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma dostęp do organizacji
             //bool hasAccess = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
             //if (!hasAccess)
@@ -55,14 +53,13 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
             //    return Result<PaginationResult<MemberDto>>.Forbidden("Brak dostępu do organizacji.");
             //}
 
-            // Definiujemy selektor do mapowania Member -> MemberDto
             Expression<Func<Core.OrganizationAggregate.Member, MemberDto>> memberSelector = member => new MemberDto
             {
                 Id = member.Id,
                 UserId = member.UserId,
-                Email = "", // Te pola będą uzupełnione po pobraniu danych
-                FirstName = "",
-                LastName = "",
+                Email = "", // TODO: Te pola będą uzupełnione po pobraniu danych
+                FirstName = "", // TODO: Te pola będą uzupełnione po pobraniu danych
+                LastName = "", // TODO: Te pola będą uzupełnione po pobraniu danych
                 Roles = member.Roles.Select(r => new RoleDto
                 {
                     Id = r.Id,
@@ -73,14 +70,12 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
                 }).ToList()
             };
 
-            // Używamy metody repozytorium do pobrania członków z paginacją
             var paginationResult = await _organizationRepository.GetMembersByOrganizationIdWithPaginationAsync(
                 request.OrganizationId,
                 memberSelector,
                 request.PaginationParameters,
                 cancellationToken);
 
-            // Pobierz dane użytkowników i uzupełnij DTO
             var userIds = paginationResult.Items.Select(m => m.UserId).ToList();
             var users = await _userRepository.GetByIdsAsync(userIds, cancellationToken);
 

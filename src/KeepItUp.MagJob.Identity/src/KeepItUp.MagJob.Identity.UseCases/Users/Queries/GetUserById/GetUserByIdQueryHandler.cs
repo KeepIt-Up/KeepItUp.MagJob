@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
 
 /// <summary>
-/// Handler dla zapytania GetUserByIdQuery.
+/// Handler for the GetUserByIdQuery.
 /// </summary>
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserDto>>
 {
@@ -13,9 +13,9 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
     private readonly ILogger<GetUserByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserByIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetUserByIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium użytkowników.</param>
+    /// <param name="repository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public GetUserByIdQueryHandler(
         IUserRepository repository,
@@ -26,16 +26,15 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetUserByIdQuery.
+    /// Handles the GetUserByIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetUserByIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane użytkownika.</returns>
+    /// <param name="request">GetUserByIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>User data.</returns>
     public async Task<Result<UserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz użytkownika z repozytorium
             var user = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (user == null)
@@ -43,7 +42,6 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 return Result<UserDto>.NotFound($"Nie znaleziono użytkownika o ID {request.Id}.");
             }
 
-            // Mapuj użytkownika na DTO
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -54,11 +52,8 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 IsActive = user.IsActive
             };
 
-            // Mapuj profil użytkownika na DTO (jeśli istnieje)
             try
             {
-                // Próbujemy uzyskać dostęp do właściwości profilu
-                // Jeśli profil istnieje i ma dostępne właściwości, utworzymy DTO
                 var phoneNumber = user.Profile?.PhoneNumber;
                 var address = user.Profile?.Address;
                 var profileImage = user.Profile?.ProfileImage;
@@ -72,7 +67,6 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
             }
             catch
             {
-                // Jeśli wystąpi wyjątek, ustawiamy pusty profil
                 userDto.Profile = new UserProfileDto
                 {
                     PhoneNumber = string.Empty,

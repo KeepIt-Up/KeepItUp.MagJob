@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 
 /// <summary>
-/// Handler dla komendy UpdateOrganizationLogoCommand.
+/// Handler for the UpdateOrganizationLogoCommand.
 /// </summary>
 public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrganizationLogoCommand, Result>
 {
@@ -13,9 +13,9 @@ public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrgani
     private readonly ILogger<UpdateOrganizationLogoCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationLogoCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationLogoCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationLogoCommandHandler(
         IOrganizationRepository repository,
@@ -26,26 +26,23 @@ public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrgani
     }
 
     /// <summary>
-    /// Obsługuje komendę UpdateOrganizationLogoCommand.
+    /// Handles the UpdateOrganizationLogoCommand.
     /// </summary>
-    /// <param name="request">Komenda UpdateOrganizationLogoCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">UpdateOrganizationLogoCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(UpdateOrganizationLogoCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdAsync(request.OrganizationId, cancellationToken);
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Aktualizuj logo organizacji
             organization.UpdateLogo(request.LogoUrl);
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Zaktualizowano logo organizacji o ID {OrganizationId}", organization.Id);

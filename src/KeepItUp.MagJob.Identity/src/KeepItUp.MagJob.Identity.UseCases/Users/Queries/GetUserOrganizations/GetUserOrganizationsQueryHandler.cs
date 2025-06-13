@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 
 /// <summary>
-/// Handler dla zapytania GetUserOrganizationsQuery.
+/// Handler for the GetUserOrganizationsQuery.
 /// </summary>
 public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizationsQuery, Result<PaginationResult<OrganizationDto>>>
 {
@@ -18,10 +18,10 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
     private readonly ILogger<GetUserOrganizationsQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserOrganizationsQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetUserOrganizationsQueryHandler"/> class.
     /// </summary>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
+    /// <param name="userRepository">User repository.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetUserOrganizationsQueryHandler(
         IUserRepository userRepository,
@@ -34,16 +34,15 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetUserOrganizationsQuery.
+    /// Handles the GetUserOrganizationsQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetUserOrganizationsQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista organizacji, do których należy użytkownik.</returns>
+    /// <param name="request">GetUserOrganizationsQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of organizations to which the user belongs.</returns>
     public async Task<Result<PaginationResult<OrganizationDto>>> Handle(GetUserOrganizationsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź, czy użytkownik istnieje
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
             if (user == null)
@@ -51,8 +50,6 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
                 return Result<PaginationResult<OrganizationDto>>.NotFound($"Nie znaleziono użytkownika o ID {request.UserId}.");
             }
 
-
-            // Tworzymy wyrażenie do mapowania Organization na OrganizationDto
             Expression<Func<Organization, OrganizationDto>> selector = org => new OrganizationDto
             {
                 Id = org.Id,
@@ -68,7 +65,6 @@ public class GetUserOrganizationsQueryHandler : IRequestHandler<GetUserOrganizat
                     .ToList()
             };
 
-            // Używamy metody GetQueryableByUserId, która zwraca IQueryable<Organization>
             var result = await _organizationRepository.GetOrganizationsByUserIdAsync(request.UserId, selector, request.PaginationParameters, cancellationToken);
 
             return Result<PaginationResult<OrganizationDto>>.Success(result);

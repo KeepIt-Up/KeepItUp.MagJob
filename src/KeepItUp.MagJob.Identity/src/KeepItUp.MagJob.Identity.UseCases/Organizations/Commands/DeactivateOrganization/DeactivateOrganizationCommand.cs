@@ -3,17 +3,17 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrganization;
 
 /// <summary>
-/// Komenda do dezaktywacji organizacji.
+/// Command to deactivate an organization.
 /// </summary>
 public record DeactivateOrganizationCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

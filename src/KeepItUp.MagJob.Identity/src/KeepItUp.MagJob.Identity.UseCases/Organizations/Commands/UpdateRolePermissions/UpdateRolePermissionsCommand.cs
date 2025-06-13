@@ -3,27 +3,27 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRolePermissions;
 
 /// <summary>
-/// Komenda do aktualizacji uprawnień roli w organizacji.
+/// Command to update the permissions of a role in an organization.
 /// </summary>
 public record UpdateRolePermissionsCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Lista nazw uprawnień do przypisania do roli.
+    /// List of permission names to assign to the role.
     /// </summary>
     public List<string> Permissions { get; init; } = new();
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Permissions.Queries.GetPermissions;
 
 /// <summary>
-/// Walidator dla zapytania GetPermissionsQuery.
+/// Validator for the GetPermissionsQuery.
 /// </summary>
 public class GetPermissionsQueryValidator : AbstractValidator<GetPermissionsQuery>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetPermissionsQueryValidator"/>.
+    /// Initializes a new instance of the <see cref="GetPermissionsQueryValidator"/> class.
     /// </summary>
     public GetPermissionsQueryValidator()
     {

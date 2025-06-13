@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.DeactivateUser;
 
 /// <summary>
-/// Handler dla komendy DeactivateUserCommand.
+/// Handler for the DeactivateUserCommand.
 /// </summary>
 public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserCommand, Result>
 {
@@ -13,9 +13,9 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
     private readonly ILogger<DeactivateUserCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="DeactivateUserCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="DeactivateUserCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium użytkowników.</param>
+    /// <param name="repository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public DeactivateUserCommandHandler(
         IUserRepository repository,
@@ -26,16 +26,15 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
     }
 
     /// <summary>
-    /// Obsługuje komendę DeactivateUserCommand.
+    /// Handles the DeactivateUserCommand.
     /// </summary>
-    /// <param name="request">Komenda DeactivateUserCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">DeactivateUserCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz użytkownika z repozytorium
             var user = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (user == null)
@@ -43,10 +42,8 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
                 return Result.NotFound($"Nie znaleziono użytkownika o ID {request.Id}.");
             }
 
-            // Dezaktywuj użytkownika
             user.Deactivate();
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(user, cancellationToken);
 
             _logger.LogInformation("Dezaktywowano użytkownika o ID {UserId}", user.Id);

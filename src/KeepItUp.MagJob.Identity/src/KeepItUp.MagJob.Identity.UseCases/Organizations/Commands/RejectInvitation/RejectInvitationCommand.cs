@@ -3,27 +3,27 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitation;
 
 /// <summary>
-/// Komenda do odrzucenia zaproszenia do organizacji.
+/// Command to reject an invitation to an organization.
 /// </summary>
 public record RejectInvitationCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation identifier.
     /// </summary>
     public Guid InvitationId { get; init; }
 
     /// <summary>
-    /// Token zaproszenia.
+    /// Invitation token.
     /// </summary>
     public string Token { get; init; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator użytkownika odrzucającego zaproszenie.
+    /// User identifier rejecting the invitation.
     /// </summary>
     public Guid UserId { get; init; }
 }

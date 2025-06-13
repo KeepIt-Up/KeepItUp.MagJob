@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
 
 /// <summary>
-/// Handler dla komendy DeleteRoleCommand.
+/// Handler for the DeleteRoleCommand.
 /// </summary>
 public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Result>
 {
@@ -13,9 +13,9 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
     private readonly ILogger<DeleteRoleCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="DeleteRoleCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="DeleteRoleCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public DeleteRoleCommandHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
     }
 
     /// <summary>
-    /// Obsługuje komendę DeleteRoleCommand.
+    /// Handles the DeleteRoleCommand.
     /// </summary>
-    /// <param name="request">Komenda DeleteRoleCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">DeleteRoleCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -43,28 +42,23 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-
-            // Znajdź rolę do usunięcia
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
             }
 
-            // Sprawdź, czy rola nie jest jedną z domyślnych ról systemowych
             if (role.Name is "Admin" or "Member" or "Guest")
             {
                 return Result.Error("Nie można usunąć domyślnej roli systemowej.");
             }
 
-            // Sprawdź, czy rola nie jest przypisana do żadnego członka
             var membersWithRole = organization.Members.Where(m => m.HasRole(request.RoleId)).ToList();
             if (membersWithRole.Any())
             {
                 return Result.Error("Nie można usunąć roli, która jest przypisana do członków organizacji.");
             }
 
-            // Usuń rolę używając nowej metody repozytorium
             await _repository.DeleteRoleAsync(request.OrganizationId, request.RoleId, cancellationToken);
 
             _logger.LogInformation("Usunięto rolę o ID {RoleId} z organizacji o ID {OrganizationId}",

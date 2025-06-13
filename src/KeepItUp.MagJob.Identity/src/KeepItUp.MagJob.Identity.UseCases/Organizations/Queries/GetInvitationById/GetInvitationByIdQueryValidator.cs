@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetInvitationById;
 
 /// <summary>
-/// Walidator dla zapytania GetInvitationByIdQuery.
+/// Validator for the GetInvitationByIdQuery.
 /// </summary>
 public class GetInvitationByIdQueryValidator : AbstractValidator<GetInvitationByIdQuery>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetInvitationByIdQueryValidator"/>.
+    /// Initializes a new instance of the <see cref="GetInvitationByIdQueryValidator"/> class.
     /// </summary>
     public GetInvitationByIdQueryValidator()
     {

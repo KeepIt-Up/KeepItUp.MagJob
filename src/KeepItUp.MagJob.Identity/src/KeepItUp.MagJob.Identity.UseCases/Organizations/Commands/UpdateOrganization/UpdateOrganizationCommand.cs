@@ -3,27 +3,27 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganization;
 
 /// <summary>
-/// Komenda do aktualizacji istniejącej organizacji.
+/// Command to update an existing organization.
 /// </summary>
 public record UpdateOrganizationCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; init; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; init; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

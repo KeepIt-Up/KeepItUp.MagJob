@@ -1,17 +1,17 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationInvitations;
 
 /// <summary>
-/// Zapytanie o zaproszenia do organizacji.
+/// Query to get invitations to an organization.
 /// </summary>
 public class GetOrganizationInvitationsQuery : PaginationQuery<InvitationDto>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

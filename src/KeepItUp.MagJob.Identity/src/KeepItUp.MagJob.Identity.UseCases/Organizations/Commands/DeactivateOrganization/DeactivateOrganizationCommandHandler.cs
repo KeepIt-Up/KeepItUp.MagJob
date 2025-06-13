@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrganization;
 
 /// <summary>
-/// Handler dla komendy DeactivateOrganizationCommand.
+/// Handler for the DeactivateOrganizationCommand.
 /// </summary>
 public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOrganizationCommand, Result>
 {
@@ -13,9 +13,9 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
     private readonly ILogger<DeactivateOrganizationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="DeactivateOrganizationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="DeactivateOrganizationCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public DeactivateOrganizationCommandHandler(
         IOrganizationRepository repository,
@@ -26,34 +26,29 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
     }
 
     /// <summary>
-    /// Obsługuje komendę DeactivateOrganizationCommand.
+    /// Handles the DeactivateOrganizationCommand.
     /// </summary>
-    /// <param name="request">Komenda DeactivateOrganizationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">DeactivateOrganizationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(DeactivateOrganizationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.Id}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do dezaktywacji organizacji
             if (organization.OwnerId != request.UserId)
             {
                 return Result.Forbidden("Tylko właściciel organizacji może ją dezaktywować.");
             }
 
-            // Dezaktywuj organizację
             organization.Deactivate();
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Dezaktywowano organizację o ID {OrganizationId}", organization.Id);

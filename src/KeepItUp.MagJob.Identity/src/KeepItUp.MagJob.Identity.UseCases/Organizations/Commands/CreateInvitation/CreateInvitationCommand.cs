@@ -3,27 +3,27 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateInvitation;
 
 /// <summary>
-/// Komenda do tworzenia zaproszenia do organizacji.
+/// Command to create an invitation to an organization.
 /// </summary>
 public record CreateInvitationCommand : IRequest<Result<Guid>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Adres e-mail osoby zapraszanej.
+    /// Email address of the person being invited.
     /// </summary>
     public string Email { get; init; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator roli, która zostanie przypisana po akceptacji zaproszenia.
+    /// Role identifier to be assigned after accepting the invitation.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

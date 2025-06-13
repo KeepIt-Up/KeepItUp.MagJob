@@ -1,17 +1,17 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
 
 /// <summary>
-/// Zapytanie o role w organizacji.
+/// Query to get roles in an organization.
 /// </summary>
 public class GetRolesByOrganizationIdQuery : PaginationQuery<RoleDto>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationById;
 
 /// <summary>
-/// Handler dla zapytania GetOrganizationByIdQuery.
+/// Handler for the GetOrganizationByIdQuery.
 /// </summary>
 public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationByIdQuery, Result<OrganizationDto>>
 {
@@ -13,9 +13,9 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
     private readonly ILogger<GetOrganizationByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetOrganizationByIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetOrganizationByIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationByIdQueryHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetOrganizationByIdQuery.
+    /// Handles the GetOrganizationByIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetOrganizationByIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane organizacji.</returns>
+    /// <param name="request">GetOrganizationByIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Data of the organization.</returns>
     public async Task<Result<OrganizationDto>> Handle(GetOrganizationByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -43,7 +42,6 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
                 return Result<OrganizationDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma dostęp do organizacji
             //bool hasAccess = organization.OwnerId == request.UserId ||
             //                 organization.Members.Any(m => m.UserId == request.UserId);
 
@@ -52,7 +50,6 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
             //    return Result<OrganizationDto>.Forbidden("Brak dostępu do organizacji.");
             //}
 
-            // Pobierz role użytkownika w organizacji
             var userRoles = new List<string>();
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
             if (member != null)
@@ -61,11 +58,9 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
             }
             else if (organization.OwnerId == request.UserId)
             {
-                // Właściciel organizacji ma wszystkie role
                 userRoles = organization.Roles.Select(r => r.Name).ToList();
             }
 
-            // Mapuj organizację na DTO
             var organizationDto = new OrganizationDto
             {
                 Id = organization.Id,

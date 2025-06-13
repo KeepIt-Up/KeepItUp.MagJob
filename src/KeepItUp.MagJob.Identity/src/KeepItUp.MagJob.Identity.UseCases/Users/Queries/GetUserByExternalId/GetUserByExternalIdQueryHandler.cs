@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
 
 /// <summary>
-/// Handler dla zapytania GetUserByExternalIdQuery.
+/// Handler for the GetUserByExternalIdQuery.
 /// </summary>
 public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternalIdQuery, Result<UserDto>>
 {
@@ -13,9 +13,9 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
     private readonly ILogger<GetUserByExternalIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserByExternalIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetUserByExternalIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium użytkowników.</param>
+    /// <param name="repository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public GetUserByExternalIdQueryHandler(
         IUserRepository repository,
@@ -26,16 +26,15 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetUserByExternalIdQuery.
+    /// Handles the GetUserByExternalIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetUserByExternalIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane użytkownika.</returns>
+    /// <param name="request">GetUserByExternalIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>User data.</returns>
     public async Task<Result<UserDto>> Handle(GetUserByExternalIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz użytkownika z repozytorium
             var user = await _repository.GetByExternalIdAsync(request.ExternalId, cancellationToken);
 
             if (user == null)
@@ -43,7 +42,6 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
                 return Result<UserDto>.NotFound($"Nie znaleziono użytkownika o identyfikatorze zewnętrznym {request.ExternalId}.");
             }
 
-            // Mapuj użytkownika na DTO
             var userDto = new UserDto
             {
                 Id = user.Id,
@@ -61,11 +59,8 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
                 }).ToList() ?? new List<MembershipDto>()
             };
 
-            // Mapuj profil użytkownika na DTO (jeśli istnieje)
             try
             {
-                // Próbujemy uzyskać dostęp do właściwości profilu
-                // Jeśli profil istnieje i ma dostępne właściwości, utworzymy DTO
                 var phoneNumber = user.Profile?.PhoneNumber;
                 var address = user.Profile?.Address;
                 var profileImage = user.Profile?.ProfileImage;
@@ -79,7 +74,6 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
             }
             catch
             {
-                // Jeśli wystąpi wyjątek, ustawiamy pusty profil
                 userDto.Profile = new UserProfileDto
                 {
                     PhoneNumber = string.Empty,

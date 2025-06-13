@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationBanner;
 
 /// <summary>
-/// Handler dla komendy UpdateOrganizationBannerCommand.
+/// Handler for the UpdateOrganizationBannerCommand.
 /// </summary>
 public class UpdateOrganizationBannerCommandHandler : IRequestHandler<UpdateOrganizationBannerCommand, Result>
 {
@@ -13,9 +13,9 @@ public class UpdateOrganizationBannerCommandHandler : IRequestHandler<UpdateOrga
     private readonly ILogger<UpdateOrganizationBannerCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationBannerCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationBannerCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationBannerCommandHandler(
         IOrganizationRepository repository,
@@ -26,26 +26,23 @@ public class UpdateOrganizationBannerCommandHandler : IRequestHandler<UpdateOrga
     }
 
     /// <summary>
-    /// Obsługuje komendę UpdateOrganizationBannerCommand.
+    /// Handles the UpdateOrganizationBannerCommand.
     /// </summary>
-    /// <param name="request">Komenda UpdateOrganizationBannerCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">UpdateOrganizationBannerCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(UpdateOrganizationBannerCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdAsync(request.OrganizationId, cancellationToken);
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Aktualizuj banner organizacji
             organization.UpdateBanner(request.BannerUrl);
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Zaktualizowano banner organizacji o ID {OrganizationId}", organization.Id);

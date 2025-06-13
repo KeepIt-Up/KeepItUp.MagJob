@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 
 /// <summary>
-/// Komenda do usunięcia członka z organizacji.
+/// Command to remove a member from an organization.
 /// </summary>
 public record RemoveMemberCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika do usunięcia.
+    /// User identifier to remove.
     /// </summary>
     public Guid MemberUserId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid RequestingUserId { get; init; }
 }

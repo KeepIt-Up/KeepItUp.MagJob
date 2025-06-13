@@ -1,47 +1,47 @@
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 
 /// <summary>
-/// Data Transfer Object dla organizacji.
+/// Data Transfer Object for an organization.
 /// </summary>
 public class OrganizationDto
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// URL do logo organizacji.
+    /// URL of the organization logo.
     /// </summary>
     public string? LogoUrl { get; set; }
 
     /// <summary>
-    /// URL do bannera organizacji.
+    /// URL of the organization banner.
     /// </summary>
     public string? BannerUrl { get; set; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner identifier of the organization.
     /// </summary>
     public Guid OwnerId { get; set; }
 
     /// <summary>
-    /// Czy organizacja jest aktywna.
+    /// Whether the organization is active.
     /// </summary>
     public bool IsActive { get; set; }
 
     /// <summary>
-    /// Lista ról użytkownika w organizacji.
+    /// List of user roles in the organization.
     /// </summary>
     public List<string> UserRoles { get; set; } = new List<string>();
 }

@@ -3,37 +3,37 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 
 /// <summary>
-/// Komenda do aktualizacji istniejącej roli w organizacji.
+/// Command to update an existing role in an organization.
 /// </summary>
 public record UpdateRoleCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; init; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Role description.
     /// </summary>
     public string? Description { get; init; }
 
     /// <summary>
-    /// Kolor roli (w formacie HEX).
+    /// Role color (in HEX format).
     /// </summary>
     public string? Color { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateInvitation;
 
 /// <summary>
-/// Handler dla komendy CreateInvitationCommand.
+/// Handler for the CreateInvitationCommand.
 /// </summary>
 public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCommand, Result<Guid>>
 {
@@ -13,9 +13,9 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
     private readonly ILogger<CreateInvitationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateInvitationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="CreateInvitationCommandHandler"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public CreateInvitationCommandHandler(
         IOrganizationRepository organizationRepository,
@@ -26,28 +26,24 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
     }
 
     /// <summary>
-    /// Obsługuje komendę CreateInvitationCommand.
+    /// Handles the CreateInvitationCommand.
     /// </summary>
-    /// <param name="request">Komenda CreateInvitationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator utworzonego zaproszenia.</returns>
+    /// <param name="request">CreateInvitationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Identifier of the created invitation.</returns>
     public async Task<Result<Guid>> Handle(CreateInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _organizationRepository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Utwórz nowe zaproszenie
             var invitation = organization.CreateInvitation(request.Email, request.RoleId);
 
-            // Zapisz zmiany w repozytorium
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Utworzono zaproszenie o ID {InvitationId} dla adresu e-mail {Email} do organizacji {OrganizationId}",

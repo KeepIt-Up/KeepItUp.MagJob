@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRoleById;
 
 /// <summary>
-/// Zapytanie o rolę na podstawie identyfikatora.
+/// Query to get a role by its identifier.
 /// </summary>
 public record GetRoleByIdQuery : IRequest<Result<RoleDto>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

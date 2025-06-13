@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetInvitationById;
 
 /// <summary>
-/// Zapytanie o zaproszenie na podstawie jego identyfikatora.
+/// Query to get an invitation by its identifier.
 /// </summary>
 public record GetInvitationByIdQuery : IRequest<Result<InvitationDto>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation identifier.
     /// </summary>
     public Guid InvitationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrganization;
 
 /// <summary>
-/// Walidator dla komendy DeactivateOrganizationCommand.
+/// Validator for the DeactivateOrganizationCommand.
 /// </summary>
 public class DeactivateOrganizationCommandValidator : AbstractValidator<DeactivateOrganizationCommand>
 {
@@ -13,10 +13,10 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="DeactivateOrganizationCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="DeactivateOrganizationCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public DeactivateOrganizationCommandValidator(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository)
@@ -32,7 +32,6 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
             .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
 
-        // Sprawdzenie, czy użytkownik jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -43,7 +42,6 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
             })
             .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
 
-        // Sprawdzenie, czy organizacja jest aktywna
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -54,22 +52,22 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
     }
 
     /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

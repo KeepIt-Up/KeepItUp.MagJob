@@ -3,12 +3,12 @@ using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserOrganizations;
 
 /// <summary>
-/// Zapytanie o organizacje, do których należy użytkownik.
+/// Query to get organizations to which the user belongs.
 /// </summary>
 public class GetUserOrganizationsQuery : PaginationQuery<OrganizationDto>
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid UserId { get; init; }
 }

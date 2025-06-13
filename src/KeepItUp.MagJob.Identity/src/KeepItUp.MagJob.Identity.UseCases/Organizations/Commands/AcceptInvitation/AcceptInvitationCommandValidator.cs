@@ -6,7 +6,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AcceptInvitation;
 
 /// <summary>
-/// Walidator dla komendy AcceptInvitationCommand.
+/// Validator for the AcceptInvitationCommand.
 /// </summary>
 public class AcceptInvitationCommandValidator : AbstractValidator<AcceptInvitationCommand>
 {
@@ -14,10 +14,10 @@ public class AcceptInvitationCommandValidator : AbstractValidator<AcceptInvitati
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="AcceptInvitationCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="AcceptInvitationCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public AcceptInvitationCommandValidator(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository)
@@ -49,7 +49,6 @@ public class AcceptInvitationCommandValidator : AbstractValidator<AcceptInvitati
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
             .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
 
-        // Sprawdzenie, czy użytkownik nie jest już członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -60,7 +59,6 @@ public class AcceptInvitationCommandValidator : AbstractValidator<AcceptInvitati
             })
             .WithMessage("Użytkownik jest już członkiem tej organizacji.");
 
-        // Sprawdzenie, czy zaproszenie jest aktywne i czy token jest poprawny
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -72,35 +70,33 @@ public class AcceptInvitationCommandValidator : AbstractValidator<AcceptInvitati
                     return false;
                 }
 
-                // Sprawdzenie statusu zaproszenia
                 if (invitation.Status != InvitationStatus.Pending)
                 {
                     return false;
                 }
 
-                // Sprawdzenie tokenu
                 return invitation.Token == command.Token;
             })
             .WithMessage("Zaproszenie jest nieaktywne lub token jest nieprawidłowy.");
     }
 
     /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

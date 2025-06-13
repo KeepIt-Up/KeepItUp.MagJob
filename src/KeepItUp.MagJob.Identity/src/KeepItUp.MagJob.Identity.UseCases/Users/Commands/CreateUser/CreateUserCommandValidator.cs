@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 
 /// <summary>
-/// Walidator dla komendy CreateUserCommand.
+/// Validator for the CreateUserCommand.
 /// </summary>
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateUserCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="CreateUserCommandValidator"/> class.
     /// </summary>
     public CreateUserCommandValidator()
     {

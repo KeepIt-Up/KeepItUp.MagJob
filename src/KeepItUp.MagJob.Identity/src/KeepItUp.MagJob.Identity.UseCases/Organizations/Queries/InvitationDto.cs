@@ -1,57 +1,57 @@
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 
 /// <summary>
-/// DTO dla zaproszenia do organizacji.
+/// DTO for an invitation to an organization.
 /// </summary>
 public class InvitationDto
 {
     /// <summary>
-    /// Identyfikator zaproszenia.
+    /// Invitation identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Adres email zapraszanego użytkownika.
+    /// Email address of the invited user.
     /// </summary>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token zaproszenia.
+    /// Invitation token.
     /// </summary>
     public string Token { get; set; } = string.Empty;
 
     /// <summary>
-    /// Status zaproszenia.
+    /// Invitation status.
     /// </summary>
     public string Status { get; set; } = string.Empty;
 
     /// <summary>
-    /// Data wygaśnięcia zaproszenia.
+    /// Invitation expiration date.
     /// </summary>
     public DateTime ExpiresAt { get; set; }
 
     /// <summary>
-    /// Czy zaproszenie wygasło.
+    /// Whether the invitation has expired.
     /// </summary>
     public bool IsExpired { get; set; }
 
     /// <summary>
-    /// Rola przypisana do zaproszenia.
+    /// Role assigned to the invitation.
     /// </summary>
     public RoleDto? Role { get; set; }
 
     /// <summary>
-    /// Data utworzenia zaproszenia.
+    /// Creation date of the invitation.
     /// </summary>
     public DateTime CreatedAt { get; set; }
 
     /// <summary>
-    /// Identyfikator użytkownika, który utworzył zaproszenie.
+    /// User identifier who created the invitation.
     /// </summary>
     public Guid CreatedBy { get; set; }
 }

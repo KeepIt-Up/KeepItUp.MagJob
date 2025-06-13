@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 
 /// <summary>
-/// Komenda do aktualizacji logo organizacji.
+/// Command to update the logo of an organization.
 /// </summary>
 public record UpdateOrganizationLogoCommand : IRequest<Result>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// URL do logo organizacji.
+    /// Organization logo URL.
     /// </summary>
     public string LogoUrl { get; init; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

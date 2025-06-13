@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationMembers;
 
 /// <summary>
-/// Walidator dla zapytania GetOrganizationMembersQuery.
+/// Validator for the GetOrganizationMembersQuery.
 /// </summary>
 public class GetOrganizationMembersQueryValidator : AbstractValidator<GetOrganizationMembersQuery>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetOrganizationMembersQueryValidator"/>.
+    /// Initializes a new instance of the <see cref="GetOrganizationMembersQueryValidator"/> class.
     /// </summary>
     public GetOrganizationMembersQueryValidator()
     {

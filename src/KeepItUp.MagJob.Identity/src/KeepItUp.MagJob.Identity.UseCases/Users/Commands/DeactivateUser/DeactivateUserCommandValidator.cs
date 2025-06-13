@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.DeactivateUser;
 
 /// <summary>
-/// Walidator dla komendy DeactivateUserCommand.
+/// Validator for the DeactivateUserCommand.
 /// </summary>
 public class DeactivateUserCommandValidator : AbstractValidator<DeactivateUserCommand>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="DeactivateUserCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="DeactivateUserCommandValidator"/> class.
     /// </summary>
     public DeactivateUserCommandValidator()
     {

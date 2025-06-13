@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RejectInvitation;
 
 /// <summary>
-/// Handler dla komendy RejectInvitationCommand.
+/// Handler for the RejectInvitationCommand.
 /// </summary>
 public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCommand, Result>
 {
@@ -13,9 +13,9 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
     private readonly ILogger<RejectInvitationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="RejectInvitationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="RejectInvitationCommandHandler"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public RejectInvitationCommandHandler(
         IOrganizationRepository organizationRepository,
@@ -26,28 +26,24 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
     }
 
     /// <summary>
-    /// Obsługuje komendę RejectInvitationCommand.
+    /// Handles the RejectInvitationCommand.
     /// </summary>
-    /// <param name="request">Komenda RejectInvitationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">RejectInvitationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(RejectInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z zaproszeniami
             var organization = await _organizationRepository.GetByIdWithInvitationsAsync(request.OrganizationId, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Odrzuć zaproszenie
             organization.RejectInvitation(request.InvitationId);
 
-            // Zapisz zmiany
             await _organizationRepository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Odrzucono zaproszenie {InvitationId} do organizacji {OrganizationId}",

@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateInvitation;
 
 /// <summary>
-/// Walidator dla komendy CreateInvitationCommand.
+/// Validator for the CreateInvitationCommand.
 /// </summary>
 public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitationCommand>
 {
@@ -13,10 +13,10 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateInvitationCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="CreateInvitationCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public CreateInvitationCommandValidator(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository)
@@ -39,11 +39,9 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
             .MaximumLength(255).WithMessage("Adres e-mail nie może być dłuższy niż 255 znaków.")
             .MustAsync(async (command, email, context, cancellationToken) =>
             {
-                // Sprawdzamy, czy użytkownik o podanym adresie email nie jest już członkiem organizacji
                 var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
                 if (user == null)
                 {
-                    // Jeśli użytkownik nie istnieje, to nie może być członkiem organizacji
                     return true;
                 }
 
@@ -62,7 +60,6 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
             .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
 
-        // Sprawdzenie, czy użytkownik wykonujący operację jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -73,7 +70,6 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
             })
             .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
 
-        // Sprawdzenie, czy dla podanego adresu email nie istnieje już aktywne zaproszenie do tej organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -86,22 +82,22 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
     }
 
     /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

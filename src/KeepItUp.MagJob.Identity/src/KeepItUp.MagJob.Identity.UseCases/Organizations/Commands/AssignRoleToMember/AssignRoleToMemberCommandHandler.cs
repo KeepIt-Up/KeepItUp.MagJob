@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToMember;
 
 /// <summary>
-/// Handler dla komendy AssignRoleToMemberCommand.
+/// Handler for the AssignRoleToMemberCommand.
 /// </summary>
 public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemberCommand, Result>
 {
@@ -13,9 +13,9 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
     private readonly ILogger<AssignRoleToMemberCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="AssignRoleToMemberCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="AssignRoleToMemberCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public AssignRoleToMemberCommandHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
     }
 
     /// <summary>
-    /// Obsługuje komendę AssignRoleToMemberCommand.
+    /// Handles the AssignRoleToMemberCommand.
     /// </summary>
-    /// <param name="request">Komenda AssignRoleToMemberCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
+    /// <param name="request">AssignRoleToMemberCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
     public async Task<Result> Handle(AssignRoleToMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -43,7 +42,6 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do przypisywania ról
             if (organization.OwnerId != request.RequestingUserId)
             {
                 var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.RequestingUserId);
@@ -53,30 +51,25 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
                 }
             }
 
-            // Sprawdź, czy rola istnieje w organizacji
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
             }
 
-            // Sprawdź, czy użytkownik jest członkiem organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
             if (member == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
-            // Sprawdź, czy użytkownik już ma przypisaną tę rolę
             if (member.HasRole(request.RoleId))
             {
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} już ma przypisaną rolę o ID {request.RoleId}.");
             }
 
-            // Przypisz rolę członkowi organizacji
             member.AssignRole(request.RoleId);
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Przypisano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",

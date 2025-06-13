@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetInvitationById;
 
 /// <summary>
-/// Handler dla zapytania GetInvitationByIdQuery.
+/// Handler for the GetInvitationByIdQuery.
 /// </summary>
 public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQuery, Result<InvitationDto>>
 {
@@ -13,9 +13,9 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
     private readonly ILogger<GetInvitationByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetInvitationByIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetInvitationByIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetInvitationByIdQueryHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetInvitationByIdQuery.
+    /// Handles the GetInvitationByIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetInvitationByIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Zaproszenie do organizacji.</returns>
+    /// <param name="request">GetInvitationByIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Invitation to the organization.</returns>
     public async Task<Result<InvitationDto>> Handle(GetInvitationByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -43,7 +42,6 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
                 return Result<InvitationDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // // Sprawdź, czy użytkownik ma dostęp do organizacji
             // bool hasAccess = organization.OwnerId == request.UserId ||
             //                  await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
@@ -52,14 +50,12 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
             //     return Result<InvitationDto>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Znajdź zaproszenie
             var invitation = organization.Invitations.FirstOrDefault(i => i.Id == request.InvitationId);
             if (invitation == null)
             {
                 return Result<InvitationDto>.NotFound($"Nie znaleziono zaproszenia o ID {request.InvitationId} w organizacji.");
             }
 
-            // Utwórz DTO zaproszenia
             var invitationDto = new InvitationDto
             {
                 Id = invitation.Id,
@@ -70,7 +66,7 @@ public class GetInvitationByIdQueryHandler : IRequestHandler<GetInvitationByIdQu
                 ExpiresAt = invitation.ExpiresAt,
                 IsExpired = DateTime.UtcNow > invitation.ExpiresAt,
                 CreatedAt = invitation.CreatedAt,
-                CreatedBy = organization.OwnerId // Tymczasowo przypisujemy właściciela organizacji jako twórcę zaproszenia
+                CreatedBy = organization.OwnerId // TODO: Tymczasowo przypisujemy właściciela organizacji jako twórcę zaproszenia
             };
 
             return Result<InvitationDto>.Success(invitationDto);

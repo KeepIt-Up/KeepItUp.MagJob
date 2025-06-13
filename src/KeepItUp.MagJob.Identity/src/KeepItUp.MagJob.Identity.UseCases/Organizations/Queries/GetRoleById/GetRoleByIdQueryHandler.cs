@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRoleById;
 
 /// <summary>
-/// Handler dla zapytania GetRoleByIdQuery.
+/// Handler for the GetRoleByIdQuery.
 /// </summary>
 public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<RoleDto>>
 {
@@ -13,9 +13,9 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
     private readonly ILogger<GetRoleByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetRoleByIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetRoleByIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetRoleByIdQueryHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetRoleByIdQuery.
+    /// Handles the GetRoleByIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetRoleByIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane roli.</returns>
+    /// <param name="request">GetRoleByIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Data of the role.</returns>
     public async Task<Result<RoleDto>> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -43,7 +42,6 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
                 return Result<RoleDto>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma dostęp do organizacji
             // bool hasAccess = organization.OwnerId == request.UserId ||
             //                  organization.Members.Any(m => m.UserId == request.UserId);
 
@@ -52,14 +50,12 @@ public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<
             //     return Result<RoleDto>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Znajdź rolę
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
             if (role == null)
             {
                 return Result<RoleDto>.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
             }
 
-            // Mapuj rolę na DTO
             var roleDto = new RoleDto
             {
                 Id = role.Id,

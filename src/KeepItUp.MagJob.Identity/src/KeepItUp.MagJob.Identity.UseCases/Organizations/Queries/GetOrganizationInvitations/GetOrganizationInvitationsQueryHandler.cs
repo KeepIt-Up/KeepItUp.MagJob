@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizationInvitations;
 
 /// <summary>
-/// Handler dla zapytania GetOrganizationInvitationsQuery.
+/// Handler for the GetOrganizationInvitationsQuery.
 /// </summary>
 public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganizationInvitationsQuery, Result<PaginationResult<InvitationDto>>>
 {
@@ -15,9 +15,9 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
     private readonly ILogger<GetOrganizationInvitationsQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetOrganizationInvitationsQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetOrganizationInvitationsQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationInvitationsQueryHandler(
         IOrganizationRepository repository,
@@ -28,22 +28,20 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetOrganizationInvitationsQuery.
+    /// Handles the GetOrganizationInvitationsQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetOrganizationInvitationsQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista zaproszeń do organizacji z paginacją.</returns>
+    /// <param name="request">GetOrganizationInvitationsQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of invitations to the organization with pagination.</returns>
     public async Task<Result<PaginationResult<InvitationDto>>> Handle(GetOrganizationInvitationsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź czy organizacja istnieje
             if (!await _repository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
                 return Result<PaginationResult<InvitationDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
             // bool hasAccess = await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
             // if (!hasAccess)
@@ -51,7 +49,6 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
             //     return Result<PaginationResult<InvitationDto>>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Definiujemy selektor do mapowania Invitation na InvitationDto
             Expression<Func<Invitation, InvitationDto>> selector = i => new InvitationDto
             {
                 Id = i.Id,
@@ -62,13 +59,11 @@ public class GetOrganizationInvitationsQueryHandler : IRequestHandler<GetOrganiz
                 ExpiresAt = i.ExpiresAt,
                 IsExpired = i.IsExpired,
                 CreatedAt = i.CreatedAt,
-                CreatedBy = Guid.Empty // Tymczasowa wartość domyślna
+                CreatedBy = Guid.Empty // TODO: Tymczasowa wartość domyślna
             };
 
-            // Definiujemy filtr na Status.Pending
             Expression<Func<Invitation, bool>> filter = i => i.Status == InvitationStatus.Pending;
 
-            // Używamy repozytorium z paginacją
             var paginationResult = await _repository.GetInvitationsByOrganizationIdWithPaginationAsync(
                 request.OrganizationId,
                 selector,

@@ -3,47 +3,47 @@
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 
 /// <summary>
-/// Komenda do tworzenia nowego użytkownika.
+/// Command to create a new user.
 /// </summary>
 public record CreateUserCommand : IRequest<Result<Guid>>
 {
     /// <summary>
-    /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
+    /// External user identifier in the external system (Keycloak).
     /// </summary>
     public required Guid ExternalId { get; init; }
 
     /// <summary>
-    /// Adres e-mail użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; init; } = string.Empty;
 
     /// <summary>
-    /// Nazwa użytkownika.
+    /// User name.
     /// </summary>
     public string Username { get; init; } = string.Empty;
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; init; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; init; } = string.Empty;
 
     /// <summary>
-    /// Numer telefonu użytkownika (opcjonalny).
+    /// User phone number (optional).
     /// </summary>
     public string? PhoneNumber { get; init; }
 
     /// <summary>
-    /// Adres użytkownika (opcjonalny).
+    /// User address (optional).
     /// </summary>
     public string? Address { get; init; }
 
     /// <summary>
-    /// URL do zdjęcia profilowego użytkownika (opcjonalny).
+    /// URL of the user's profile picture (optional).
     /// </summary>
     public string? ProfileImageUrl { get; init; }
 }
