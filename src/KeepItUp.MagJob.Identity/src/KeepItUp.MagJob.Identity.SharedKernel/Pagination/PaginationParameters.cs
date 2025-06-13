@@ -1,7 +1,7 @@
 ﻿namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
 /// <summary>
-/// Parametry paginacji.
+/// Pagination parameters.
 /// </summary>
 public class PaginationParameters<T>
 {
@@ -10,12 +10,12 @@ public class PaginationParameters<T>
     private int _pageSize = DefaultPageSize;
 
     /// <summary>
-    /// Numer strony (indeksowany od 1).
+    /// Page number (indexed from 1).
     /// </summary>
     public int PageNumber { get; set; } = 1;
 
     /// <summary>
-    /// Liczba elementów na stronie.
+    /// Number of elements per page.
     /// </summary>
     public int PageSize
     {
@@ -24,43 +24,43 @@ public class PaginationParameters<T>
     }
 
     /// <summary>
-    /// Pole, po którym sortować.
+    /// Field to sort by.
     /// </summary>
     public string SortField { get; set; } = "Id";
 
     /// <summary>
-    /// Czy sortować rosnąco.
+    /// Whether to sort ascending.
     /// </summary>
     public bool Ascending { get; set; } = true;
 
     /// <summary>
-    /// Waliduje i normalizuje parametry paginacji
+    /// Validates and normalizes pagination parameters
     /// </summary>
-    /// <returns>Zwalidowane i znormalizowane parametry paginacji</returns>
+    /// <returns>Validated and normalized pagination parameters</returns>
     public PaginationParameters<T> Validate()
     {
-        // Zapewnia, że numer strony jest większy od 0
+        // Ensure that the page number is greater than 0
         if (PageNumber <= 0)
         {
             PageNumber = 1;
         }
 
-        // PageSize jest już walidowany w setterze
+        // PageSize is already validated in the setter
 
-        // Upewnia się, że pole sortowania nie jest null
+        // Ensure that the sort field is not null
         SortField = string.IsNullOrWhiteSpace(SortField) ? "Id" : SortField;
 
         return this;
     }
 
     /// <summary>
-    /// Tworzy nową instancję parametrów paginacji
+    /// Creates a new instance of pagination parameters
     /// </summary>
-    /// <param name="pageNumber">Numer strony</param>
-    /// <param name="pageSize">Rozmiar strony</param>
-    /// <param name="sortField">Pole sortowania</param>
-    /// <param name="ascending">Kierunek sortowania</param>
-    /// <returns>Nowa instancja parametrów paginacji</returns>
+    /// <param name="pageNumber">Page number</param>
+    /// <param name="pageSize">Page size</param>
+    /// <param name="sortField">Sort field</param>
+    /// <param name="ascending">Sorting direction</param>
+    /// <returns>New instance of pagination parameters</returns>
     public static PaginationParameters<T> Create(int pageNumber = 1, int pageSize = DefaultPageSize, string sortField = "Id", bool ascending = true)
     {
         return new PaginationParameters<T>
