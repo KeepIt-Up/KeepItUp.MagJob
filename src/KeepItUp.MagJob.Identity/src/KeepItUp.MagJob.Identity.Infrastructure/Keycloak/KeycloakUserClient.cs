@@ -6,15 +6,15 @@ using KeepItUp.MagJob.Identity.Core.Keycloak;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Klient do zarządzania użytkownikami w Keycloak.
+/// Client for managing users in Keycloak.
 /// </summary>
 public class KeycloakUserClient : BaseKeycloakClient
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakUserClient"/>.
+    /// Initializes a new instance of the <see cref="KeycloakUserClient"/> class.
     /// </summary>
-    /// <param name="httpClient">Klient HTTP.</param>
-    /// <param name="options">Opcje konfiguracji Keycloak.</param>
+    /// <param name="httpClient">HTTP client.</param>
+    /// <param name="options">Keycloak configuration options.</param>
     /// <param name="logger">Logger.</param>
     public KeycloakUserClient(
         HttpClient httpClient,
@@ -25,11 +25,11 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera użytkownika z Keycloak na podstawie identyfikatora.
+    /// Gets a user from Keycloak based on the identifier.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane użytkownika lub null, jeśli użytkownik nie istnieje.</returns>
+    /// <param name="userId">User identifier in Keycloak.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>User data or null if the user does not exist.</returns>
     public async Task<KeycloakUser?> GetByIdAsync(string userId, CancellationToken cancellationToken = default)
     {
         try
@@ -62,11 +62,11 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera użytkownika z Keycloak na podstawie adresu email.
+    /// Gets a user from Keycloak based on the email address.
     /// </summary>
-    /// <param name="email">Adres email użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane użytkownika lub null, jeśli użytkownik nie istnieje.</returns>
+    /// <param name="email">User email address.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>User data or null if the user does not exist.</returns>
     public async Task<KeycloakUser?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         try
@@ -95,13 +95,13 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera listę użytkowników z Keycloak.
+    /// Gets a list of users from Keycloak.
     /// </summary>
-    /// <param name="search">Opcjonalny parametr wyszukiwania.</param>
-    /// <param name="first">Indeks pierwszego elementu do pobrania.</param>
-    /// <param name="max">Maksymalna liczba elementów do pobrania.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista użytkowników.</returns>
+    /// <param name="search">Optional search parameter.</param>
+    /// <param name="first">Index of the first element to retrieve.</param>
+    /// <param name="max">Maximum number of elements to retrieve.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of users.</returns>
     public async Task<List<KeycloakUser>> GetUsersAsync(string? search = null, int first = 0, int max = 100, CancellationToken cancellationToken = default)
     {
         try
@@ -135,11 +135,11 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Tworzy nowego użytkownika w Keycloak.
+    /// Creates a new user in Keycloak.
     /// </summary>
-    /// <param name="user">Dane użytkownika do utworzenia.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator utworzonego użytkownika lub null w przypadku błędu.</returns>
+    /// <param name="user">User data to create.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>User identifier or null in case of an error.</returns>
     public async Task<string?> CreateUserAsync(KeycloakUser user, CancellationToken cancellationToken = default)
     {
         try
@@ -150,7 +150,7 @@ public class KeycloakUserClient : BaseKeycloakClient
 
             if (response.IsSuccessStatusCode)
             {
-                // Keycloak zwraca lokalizację utworzonego użytkownika w nagłówku Location
+                // Keycloak returns the location of the created user in the Location header
                 var locationHeader = response.Headers.Location;
                 if (locationHeader != null)
                 {
@@ -158,7 +158,7 @@ public class KeycloakUserClient : BaseKeycloakClient
                     return segments[segments.Length - 1];
                 }
 
-                // Jeśli nie ma nagłówka Location, pobierz użytkownika na podstawie adresu email
+                // If there is no Location header, get the user based on the email address
                 var createdUser = await GetByEmailAsync(user.Email, cancellationToken);
                 if (createdUser != null)
                 {
@@ -182,11 +182,11 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Aktualizuje dane użytkownika w Keycloak.
+    /// Updates the user's data in Keycloak.
     /// </summary>
-    /// <param name="user">Dane użytkownika do aktualizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="user">User data to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> UpdateUserAsync(KeycloakUser user, CancellationToken cancellationToken = default)
     {
         try
@@ -221,12 +221,12 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Aktualizuje status aktywności użytkownika w Keycloak.
+    /// Updates the user's enabled status in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="enabled">Czy użytkownik ma być aktywny.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier in Keycloak.</param>
+    /// <param name="enabled">Whether the user should be enabled.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> UpdateUserEnabledStatusAsync(string userId, bool enabled, CancellationToken cancellationToken = default)
     {
         try
@@ -265,12 +265,12 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Aktualizuje atrybuty użytkownika w Keycloak.
+    /// Updates the user's attributes in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="attributes">Atrybuty do zaktualizowania.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier in Keycloak.</param>
+    /// <param name="attributes">Attributes to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> UpdateUserAttributesAsync(string userId, Dictionary<string, List<string>> attributes, CancellationToken cancellationToken = default)
     {
         try
@@ -284,7 +284,7 @@ public class KeycloakUserClient : BaseKeycloakClient
 
             user.Attributes ??= new Dictionary<string, List<string>>();
 
-            // Aktualizuj lub dodaj nowe atrybuty
+            // Update or add new attributes
             foreach (var attribute in attributes)
             {
                 user.Attributes[attribute.Key] = attribute.Value;
@@ -300,32 +300,32 @@ public class KeycloakUserClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Dezaktywuje użytkownika w Keycloak.
+    /// Deactivates the user in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier in Keycloak.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> DeactivateUserAsync(string userId, CancellationToken cancellationToken = default)
     {
         return await UpdateUserEnabledStatusAsync(userId, false, cancellationToken);
     }
 
     /// <summary>
-    /// Aktywuje użytkownika w Keycloak.
+    /// Activates the user in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier in Keycloak.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> ActivateUserAsync(string userId, CancellationToken cancellationToken = default)
     {
         return await UpdateUserEnabledStatusAsync(userId, true, cancellationToken);
     }
 
     /// <summary>
-    /// Pobiera wszystkich użytkowników z Keycloak.
+    /// Gets all users from Keycloak.
     /// </summary>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista użytkowników.</returns>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of users.</returns>
     public async Task<List<KeycloakUser>> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -365,25 +365,25 @@ public class KeycloakUserClient : BaseKeycloakClient
                 return null;
             }
 
-            // Sprawdź, czy użytkownik ma atrybut picture
+            // Check if the user has the picture attribute
             if (user.Attributes != null && user.Attributes.TryGetValue("picture", out var pictures) && pictures.Count > 0)
             {
                 return pictures[0];
             }
 
-            // Sprawdź, czy użytkownik ma atrybut avatar_url (często używany przez GitHub)
+            // Check if the user has the avatar_url attribute (often used by GitHub)
             if (user.Attributes != null && user.Attributes.TryGetValue("avatar_url", out var avatarUrls) && avatarUrls.Count > 0)
             {
                 return avatarUrls[0];
             }
 
-            // Sprawdź, czy użytkownik ma atrybut profile_picture (używany przez niektóre IDP)
+            // Check if the user has the profile_picture attribute (used by some IDPs)
             if (user.Attributes != null && user.Attributes.TryGetValue("profile_picture", out var profilePictures) && profilePictures.Count > 0)
             {
                 return profilePictures[0];
             }
 
-            // Sprawdź, czy użytkownik ma atrybut photo_url (używany przez niektóre IDP)
+            // Check if the user has the photo_url attribute (used by some IDPs)
             if (user.Attributes != null && user.Attributes.TryGetValue("photo_url", out var photoUrls) && photoUrls.Count > 0)
             {
                 return photoUrls[0];

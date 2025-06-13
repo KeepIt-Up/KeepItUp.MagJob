@@ -2,89 +2,87 @@
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Opcje konfiguracji dla integracji z Keycloak
-/// Necesarry for IOptions<KeycloakAdminOptions>
+/// Configuration options for integration with Keycloak
 /// </summary>
 public sealed class KeycloakAdminOptions : KeycloakOptions;
 
 /// <summary>
-/// Opcje konfiguracji dla integracji z Keycloak
-/// Necesarry for IOptions<KeycloakClientOptions>
+/// Configuration options for integration with Keycloak
 /// </summary>
 public sealed class KeycloakClientOptions : KeycloakOptions;
 
 /// <summary>
-/// Opcje konfiguracji dla integracji z Keycloak
+/// Configuration options for integration with Keycloak
 /// </summary>
 public class KeycloakOptions
 {
     /// <summary>
-    /// Adres URL serwera Keycloak
+    /// Keycloak server URL
     /// </summary>
     public required string ServerUrl { get; set; }
 
     /// <summary>
-    /// Nazwa realmu w Keycloak
+    /// Keycloak realm name
     /// </summary>
     public required string Realm { get; set; }
 
     /// <summary>
-    /// Identyfikator klienta (client_id) używany do komunikacji z Keycloak
+    /// Keycloak client ID
     /// </summary>
     public required string ClientId { get; set; }
 
     /// <summary>
-    /// Sekret klienta (client_secret) używany do uwierzytelniania
+    /// Keycloak client secret
     /// </summary>
     public required string ClientSecret { get; set; } = string.Empty;
 
     /// <summary>
-    /// Adres URL do pobrania metadanych OpenID Connect
+    /// OpenID Connect metadata URL
     /// </summary>
     public string MetadataUrl => $"{ServerUrl}/realms/{Realm}/.well-known/openid-configuration";
 
     /// <summary>
-    /// Adres URL do uwierzytelniania
+    /// Authentication URL
     /// </summary>
     public string AuthorityUrl => $"{ServerUrl}/realms/{Realm}";
 
     /// <summary>
-    /// Adres URL do administracyjnego API Keycloak
+    /// Keycloak admin API URL
     /// </summary>
     public string AdminUrl => $"{ServerUrl}/admin/realms/{Realm}";
 
     /// <summary>
-    /// Określa, czy połączenie z Keycloak wymaga HTTPS
+    /// Specifies if the connection to Keycloak requires HTTPS
     /// </summary>
     public bool RequireHttps { get; set; } = true;
 
     /// <summary>
-    /// Czas ważności tokenu w sekundach
+    /// Token expiration time in seconds
     /// </summary>
     public int TokenExpirationSeconds { get; set; } = 300;
 
     /// <summary>
-    /// Maksymalny czas oczekiwania na odpowiedź z Keycloak w sekundach
+    /// Maximum timeout for Keycloak API requests in seconds
     /// </summary>
     public int TimeoutSeconds { get; set; } = 30;
 
     /// <summary>
-    /// Maksymalny czas oczekiwania na odpowiedź z Keycloak w sekundach (alias dla TimeoutSeconds)
+    /// Maximum timeout for Keycloak API requests in seconds (alias for TimeoutSeconds)
     /// </summary>
     public int MaxTimeoutSeconds => TimeoutSeconds;
 
     /// <summary>
-    /// Nazwa użytkownika administratora Keycloak
+    /// Keycloak admin username
     /// </summary>
     public string AdminUsername { get; set; } = string.Empty;
 
     /// <summary>
-    /// Hasło administratora Keycloak
+    /// Keycloak admin password
     /// </summary>
     public string AdminPassword { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identyfikator klienta używany do uwierzytelniania administratora (domyślnie "admin-cli")
+    /// Keycloak admin client ID (default: "admin-cli")
     /// </summary>
     public string AdminClientId { get; set; } = "admin-cli";
 }

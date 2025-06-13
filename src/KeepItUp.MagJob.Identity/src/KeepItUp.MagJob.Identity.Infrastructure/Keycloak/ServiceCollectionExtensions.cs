@@ -3,40 +3,40 @@
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Rozszerzenia dla IServiceCollection do rejestracji usług związanych z Keycloak
+/// Extensions for IServiceCollection to register Keycloak services
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Dodaje usługi związane z Keycloak do kontenera DI
+    /// Adds Keycloak services to the DI container
     /// </summary>
-    /// <param name="services">Kolekcja usług</param>
-    /// <param name="configuration">Konfiguracja</param>
-    /// <returns>Kolekcja usług</returns>
+    /// <param name="services">Collection of services</param>
+    /// <param name="configuration">Configuration</param>
+    /// <returns>Collection of services</returns>
     public static IServiceCollection AddKeycloakServices(this IServiceCollection services)
     {
-        // Konfiguracja opcji Keycloak
+        // Keycloak configuration options
         var serviceProvider = services.BuildServiceProvider();
         var keycloakAdminOptions = serviceProvider.GetRequiredService<IOptions<KeycloakAdminOptions>>().Value;
 
-        // Rejestracja klienta Keycloak
+        // Register Keycloak client
         services.AddHttpClient<IKeycloakClient, KeycloakClient>((serviceProvider, client) =>
         {
             client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
             client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
         });
 
-        // Rejestracja HttpClient dla zdarzeń Keycloak
+        // Register HttpClient for Keycloak events
         services.AddHttpClient("KeycloakEvents", (serviceProvider, client) =>
         {
             client.BaseAddress = new Uri(keycloakAdminOptions.ServerUrl);
             client.Timeout = TimeSpan.FromSeconds(keycloakAdminOptions.MaxTimeoutSeconds);
         });
 
-        // Rejestracja serwisu synchronizacji
+        // Register synchronization service
         services.AddScoped<IKeycloakSyncService, KeycloakSyncService>();
 
-        // Rejestracja nasłuchiwacza zdarzeń
+        // Register event listener
         services.AddHostedService<KeycloakEventListener>();
 
         return services;

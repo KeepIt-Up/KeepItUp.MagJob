@@ -5,14 +5,14 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Implementacja repozytorium użytkownika
+/// Implementation of the user repository
 /// </summary>
 public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _dbContext;
 
     /// <summary>
-    /// Inicjalizuje instancję repozytorium
+    /// Initializes the repository instance
     /// </summary>
     public UserRepository(AppDbContext dbContext)
     {
@@ -75,7 +75,7 @@ public class UserRepository : IUserRepository
     {
         try
         {
-            // Pobierz aktualną wersję użytkownika z bazy danych
+            // Get the current version of the user from the database
             var existingUser = await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
 
@@ -84,13 +84,13 @@ public class UserRepository : IUserRepository
                 throw new EntityNotFoundException($"User with ID {user.Id} not found.");
             }
 
-            // Aktualizacja daty logowania
+            // Update the login date
             if (user.LastLoginDate != existingUser.LastLoginDate)
             {
                 existingUser.UpdateLastLoginDate(user.LastLoginDate);
             }
 
-            // Aktualizacja statusu aktywności
+            // Update the activity status
             if (user.IsActive != existingUser.IsActive)
             {
                 if (user.IsActive)
@@ -103,8 +103,8 @@ public class UserRepository : IUserRepository
                 }
             }
 
-            // Pozostałe aktualizacje mogą być dodane tutaj w zależności od potrzeb
-            // np. UpdateProfile, UpdatePermissions, itp.
+            // Other updates can be added here depending on the needs
+            // e.g. UpdateProfile, UpdatePermissions, etc.
 
             await _dbContext.SaveChangesAsync(cancellationToken);
         }

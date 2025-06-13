@@ -21,12 +21,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     {
         base.OnModelCreating(modelBuilder);
 
-        // Zastosowanie konfiguracji z assembly
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // Utworzenie schematu "identity"
         modelBuilder.HasDefaultSchema(DataSchemaConstants.IDENTITY_SCHEMA);
-        // Dodanie rozszerzenia dla UUID
+
         modelBuilder.HasPostgresExtension("uuid-ossp");
     }
 
@@ -55,7 +53,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     }
 
     /// <summary>
-    /// Automatycznie aktualizuje pola CreatedAt i UpdatedAt dla encji dziedziczących z BaseEntity.
+    /// Automatically updates the CreatedAt and UpdatedAt fields for entities inheriting from BaseEntity.
     /// </summary>
     private void UpdateTimestamps()
     {
@@ -78,10 +76,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     }
 
     /// <summary>
-    /// Czyści śledzenie encji o określonym ID.
+    /// Clears the tracking of an entity with a specific ID.
     /// </summary>
-    /// <typeparam name="TEntity">Typ encji.</typeparam>
-    /// <param name="id">ID encji do usunięcia ze śledzenia.</param>
+    /// <typeparam name="TEntity">Type of the entity.</typeparam>
+    /// <param name="id">ID of the entity to remove from tracking.</param>
     public void DetachEntityById<TEntity>(Guid id) where TEntity : class
     {
         var entry = ChangeTracker.Entries<TEntity>()
@@ -94,7 +92,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     }
 
     /// <summary>
-    /// Czyści kontekst z wszystkich śledzonych encji.
+    /// Clears the context of all tracked entities.
     /// </summary>
     public void ClearChangeTracker()
     {

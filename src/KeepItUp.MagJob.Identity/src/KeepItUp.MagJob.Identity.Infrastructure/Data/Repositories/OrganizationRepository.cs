@@ -6,14 +6,14 @@ using KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Implementacja repozytorium organizacji
+/// Implementation of the organization repository
 /// </summary>
 public class OrganizationRepository : IOrganizationRepository
 {
     private readonly AppDbContext _dbContext;
 
     /// <summary>
-    /// Inicjalizuje instancję repozytorium
+    /// Initializes the repository instance
     /// </summary>
     public OrganizationRepository(AppDbContext dbContext)
     {
@@ -143,31 +143,31 @@ public class OrganizationRepository : IOrganizationRepository
     {
         try
         {
-            // Jeśli mamy do czynienia tylko z dodawaniem nowych ról, użyjmy bardziej bezpośredniego podejścia
+            // If we are only adding new roles, use a more direct approach
             var addedRoles = organization.Roles.ToList();
             if (addedRoles.Any())
             {
                 using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
                 try
                 {
-                    // Pobierz istniejące ID ról dla tej organizacji
+                    // Get the existing role IDs for this organization
                     var existingRoleIds = await _dbContext.Set<Role>()
                         .Where(r => r.OrganizationId == organization.Id)
                         .Select(r => r.Id)
                         .ToListAsync(cancellationToken);
 
-                    // Znajdź nowe role, które nie istnieją jeszcze w bazie danych
+                    // Find new roles that do not yet exist in the database
                     var newRoles = addedRoles.Where(r => !existingRoleIds.Contains(r.Id)).ToList();
                     if (newRoles.Any())
                     {
-                        // Dodaj nowe role bezpośrednio do tabeli Roles
+                        // Add new roles directly to the Roles table
                         await _dbContext.Set<Role>().AddRangeAsync(newRoles, cancellationToken);
 
-                        // Zaktualizuj bazową encję organizacji bez naruszania systemu optymistycznej współbieżności
+                        // Update the base organization entity without violating the optimistic concurrency system
                         var existingOrg = await _dbContext.Organizations.FindAsync(new object[] { organization.Id }, cancellationToken);
                         if (existingOrg != null)
                         {
-                            // Ustaw znacznik czasu aktualizacji
+                            // Set the update timestamp
                             existingOrg.Update(
                                 existingOrg.Name,
                                 existingOrg.Description,
@@ -189,8 +189,8 @@ public class OrganizationRepository : IOrganizationRepository
                 return;
             }
 
-            // Standardowa aktualizacja dla innych przypadków
-            // Pobierz aktualną wersję organizacji z bazy danych z dołączonymi rolami
+            // Standard update for other cases
+            // Get the current version of the organization from the database with attached roles
             var existingOrganization = await _dbContext.Organizations
                 .Include(o => o.Roles)
                 .FirstOrDefaultAsync(o => o.Id == organization.Id, cancellationToken);
@@ -200,7 +200,7 @@ public class OrganizationRepository : IOrganizationRepository
                 throw new EntityNotFoundException($"Organization with ID {organization.Id} not found.");
             }
 
-            // Aktualizuj podstawowe właściwości organizacji
+            // Update the basic organization properties
             existingOrganization.Update(
                 organization.Name,
                 organization.Description,
@@ -278,13 +278,13 @@ public class OrganizationRepository : IOrganizationRepository
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default)
     {
-        // Pobierz najpierw IQueryable dla członków danej organizacji
+        // Get the IQueryable for the members of the given organization
         var membersQuery = _dbContext.Set<Member>()
             .Where(m => m.OrganizationId == organizationId)
             .Include(m => m.Roles)
                 .ThenInclude(r => r.Permissions);
 
-        // Zastosuj paginację używając rozszerzenia PagedQueryableExtensions
+        // Apply pagination using the PagedQueryableExtensions extension
         return await membersQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
@@ -296,18 +296,18 @@ public class OrganizationRepository : IOrganizationRepository
         Expression<Func<Invitation, bool>>? filter = null,
         CancellationToken cancellationToken = default)
     {
-        // Pobierz IQueryable dla zaproszeń danej organizacji
+        // Get the IQueryable for the invitations of the given organization
         var invitationsQuery = _dbContext.Set<Invitation>()
             .AsNoTracking()
             .Where(i => i.OrganizationId == organizationId);
 
-        // Jeśli podano filtr, zastosuj go
+        // If a filter is provided, apply it
         if (filter != null)
         {
             invitationsQuery = invitationsQuery.Where(filter);
         }
 
-        // Zastosuj paginację używając rozszerzenia PagedQueryableExtensions
+        // Apply pagination using the PagedQueryableExtensions extension
         return await invitationsQuery.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
@@ -317,10 +317,10 @@ public class OrganizationRepository : IOrganizationRepository
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default)
     {
-        // Pobieramy IQueryable dla uprawnień
+        // Get the IQueryable for the permissions
         var query = _dbContext.Permissions.AsNoTracking();
 
-        // Zwracamy spaginowany wynik
+        // Return the paginated result
         return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
@@ -331,13 +331,13 @@ public class OrganizationRepository : IOrganizationRepository
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default)
     {
-        // Pobieramy IQueryable dla ról organizacji
+        // Get the IQueryable for the roles of the organization
         var query = _dbContext.Set<Role>()
             .AsNoTracking()
             .Include(r => r.Permissions)
             .Where(r => r.OrganizationId == organizationId);
 
-        // Zwracamy spaginowany wynik
+        // Return the paginated result
         return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
@@ -349,37 +349,37 @@ public class OrganizationRepository : IOrganizationRepository
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default)
     {
-        // Najpierw pobieramy członka organizacji aby uzyskać jego identyfikatory ról
+        // First, get the member of the organization to get its role IDs
         var member = await _dbContext.Set<Member>()
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.OrganizationId == organizationId && m.UserId == memberUserId, cancellationToken);
 
         if (member == null)
         {
-            // Jeśli członek nie istnieje, zwracamy pustą stronicowaną kolekcję
+            // If the member does not exist, return an empty paginated collection
             return PaginationResult<TDestination>.Create(
                 new List<TDestination>(),
                 0,
                 parameters);
         }
 
-        // Pobieramy identyfikatory ról członka
+        // Get the role IDs of the member
         var roleIds = member.RoleIds;
 
-        // Tworzymy zapytanie dla ról członka
+        // Create a query for the roles of the member
         var query = _dbContext.Set<Role>()
             .AsNoTracking()
             .Include(r => r.Permissions)
             .Where(r => r.OrganizationId == organizationId && roleIds.Contains(r.Id));
 
-        // Zwracamy spaginowany wynik
+        // Return the paginated result
         return await query.ToPaginationResultAsync(selector, parameters, cancellationToken);
     }
 
     /// <inheritdoc />
     public async Task UpdateRolePermissionsAsync(Guid roleId, IEnumerable<string> permissionNames, CancellationToken cancellationToken = default)
     {
-        // Znajdź rolę w bazie danych
+        // Find the role in the database
         var role = await _dbContext.Set<Role>()
             .Include(r => r.Permissions)
             .FirstOrDefaultAsync(r => r.Id == roleId, cancellationToken);
@@ -389,35 +389,35 @@ public class OrganizationRepository : IOrganizationRepository
             throw new EntityNotFoundException($"Role with ID {roleId} not found.");
         }
 
-        // Wyczyść obecne uprawnienia
+        // Clear the current permissions
         role.ClearPermissions();
 
-        // Pobierz uprawnienia na podstawie ich nazw
+        // Get the permissions based on their names
         var permissionsList = permissionNames.ToList();
         var permissions = await _dbContext.Permissions
             .Where(p => permissionsList.Contains(p.Name))
             .ToListAsync(cancellationToken);
 
-        // Dodaj nowe uprawnienia
+        // Add new permissions
         foreach (var permission in permissions)
         {
             role.AddPermission(permission);
         }
 
-        // Zapisz zmiany
+        // Save the changes
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>
-    /// Usuwa rolę z organizacji.
+    /// Delete the role from the organization.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="roleId">Identyfikator roli</param>
-    /// <param name="cancellationToken">Token anulowania</param>
+    /// <param name="organizationId">Organization ID</param>
+    /// <param name="roleId">Role ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
     public async Task DeleteRoleAsync(Guid organizationId, Guid roleId, CancellationToken cancellationToken = default)
     {
-        // Pobierz organizację z rolami i członkami
+        // Get the organization with roles and members
         var organization = await _dbContext.Organizations
             .Include(o => o.Roles)
             .Include(o => o.Members)
@@ -429,10 +429,10 @@ public class OrganizationRepository : IOrganizationRepository
             throw new EntityNotFoundException($"Organization with ID {organizationId} not found.");
         }
 
-        // Usuń rolę z organizacji przy użyciu metody domenowej
+        // Remove the role from the organization using the domain method
         organization.RemoveRole(roleId);
 
-        // Zapisz zmiany
+        // Save the changes
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

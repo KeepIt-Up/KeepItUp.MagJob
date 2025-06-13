@@ -5,17 +5,17 @@ using System.Text.Json;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Bazowa klasa dla klientów Keycloak, obsługująca uwierzytelnianie i wspólne funkcjonalności.
+/// Base class for Keycloak clients, handling authentication and common functionality.
 /// </summary>
 public abstract class BaseKeycloakClient
 {
     /// <summary>
-    /// Klient HTTP do komunikacji z API Keycloak.
+    /// HTTP client for communication with the Keycloak API.
     /// </summary>
     protected readonly HttpClient HttpClient;
 
     /// <summary>
-    /// Opcje konfiguracji Keycloak.
+    /// Keycloak configuration options.
     /// </summary>
     protected readonly KeycloakAdminOptions Options;
 
@@ -25,20 +25,20 @@ public abstract class BaseKeycloakClient
     protected readonly ILogger Logger;
 
     /// <summary>
-    /// Zapisany token dostępu.
+    /// Cached access token.
     /// </summary>
     private string? _cachedToken;
 
     /// <summary>
-    /// Data wygaśnięcia tokenu dostępu.
+    /// Access token expiration date.
     /// </summary>
     private DateTime _tokenExpiration = DateTime.MinValue;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="BaseKeycloakClient"/>.
+    /// Initializes a new instance of the <see cref="BaseKeycloakClient"/> class.
     /// </summary>
-    /// <param name="httpClient">Klient HTTP.</param>
-    /// <param name="options">Opcje konfiguracji Keycloak.</param>
+    /// <param name="httpClient">HTTP client.</param>
+    /// <param name="options">Keycloak configuration options.</param>
     /// <param name="logger">Logger.</param>
     protected BaseKeycloakClient(
         HttpClient httpClient,
@@ -54,9 +54,9 @@ public abstract class BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera token dostępu do API administratora Keycloak.
+    /// Gets the access token for the Keycloak admin API.
     /// </summary>
-    /// <param name="cancellationToken">Token anulowania.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Token dostępu.</returns>
     public async Task<string> GetAdminAccessTokenAsync(CancellationToken cancellationToken = default)
     {
@@ -111,9 +111,9 @@ public abstract class BaseKeycloakClient
     }
 
     /// <summary>
-    /// Konfiguruje nagłówek Authorization dla żądania.
+    /// Configures the Authorization header for the request.
     /// </summary>
-    /// <param name="cancellationToken">Token anulowania.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     protected async Task SetAuthorizationHeaderAsync(CancellationToken cancellationToken = default)
     {
         var token = await GetAdminAccessTokenAsync(cancellationToken);
@@ -121,13 +121,13 @@ public abstract class BaseKeycloakClient
     }
 
     /// <summary>
-    /// Obsługuje odpowiedź HTTP, sprawdzając jej status i deserializując zawartość.
+    /// Handles the HTTP response, checking its status and deserializing the content.
     /// </summary>
-    /// <typeparam name="T">Typ do którego ma być zdeserializowana odpowiedź.</typeparam>
-    /// <param name="response">Odpowiedź HTTP.</param>
-    /// <param name="errorMessage">Komunikat błędu w przypadku niepowodzenia.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Zdeserializowany obiekt lub default(T) w przypadku błędu.</returns>
+    /// <typeparam name="T">Type to which the response should be deserialized.</typeparam>
+    /// <param name="response">HTTP response.</param>
+    /// <param name="errorMessage">Error message in case of failure.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Deserialized object or default(T) in case of an error.</returns>
     protected async Task<T?> HandleResponseAsync<T>(HttpResponseMessage response, string errorMessage, CancellationToken cancellationToken = default)
     {
         if (!response.IsSuccessStatusCode)
