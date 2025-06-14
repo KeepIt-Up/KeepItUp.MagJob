@@ -35,20 +35,8 @@ public static class ServiceConfigs
         services.AddHttpClient();
         services.AddScoped<IKeycloakAdminService, KeycloakAdminService>();
 
-        if (builder.Environment.IsDevelopment())
-        {
-            // Use a local test email server
-            // See: https://ardalis.com/configuring-a-local-test-email-server/
-            services.AddScoped<IEmailSender, MimeKitEmailSender>();
+        services.AddScoped<IEmailSender, MimeKitEmailSender>();
 
-            // Otherwise use this:
-            //builder.Services.AddScoped<IEmailSender, FakeEmailSender>();
-
-        }
-        else
-        {
-            services.AddScoped<IEmailSender, MimeKitEmailSender>();
-        }
 
         builder.Services.AddHealthChecks();
 
