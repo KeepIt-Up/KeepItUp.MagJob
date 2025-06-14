@@ -24,7 +24,7 @@ public class PaginationResult<T>
     /// <summary>
     /// Current page number.
     /// </summary>
-    public int PageNumber { get; private set; }
+    public int CurrentPage { get; private set; }
 
     /// <summary>
     /// Page size.
@@ -34,12 +34,12 @@ public class PaginationResult<T>
     /// <summary>
     /// Whether there is a previous page.
     /// </summary>
-    public bool HasPrevious => PageNumber > 1;
+    public bool HasPrevious => CurrentPage > PaginationParameters<T>.DefaultPageNumber;
 
     /// <summary>
     /// Whether there is a next page.
     /// </summary>
-    public bool HasNext => PageNumber < TotalPages;
+    public bool HasNext => CurrentPage < TotalPages;
 
     /// <summary>
     /// Field by which the results are sorted.
@@ -51,11 +51,11 @@ public class PaginationResult<T>
     /// </summary>
     public bool Ascending { get; private set; }
 
-    private PaginationResult(List<T> items, int totalCount, int pageNumber, int pageSize, string sortField, bool ascending)
+    private PaginationResult(List<T> items, int totalCount, int currentPage, int pageSize, string sortField, bool ascending)
     {
         Items = items;
         TotalCount = totalCount;
-        PageNumber = pageNumber;
+        CurrentPage = currentPage;
         PageSize = pageSize;
         SortField = sortField;
         Ascending = ascending;
@@ -67,14 +67,14 @@ public class PaginationResult<T>
     /// </summary>
     /// <param name="items">Items on the current page</param>
     /// <param name="totalCount">Total number of items</param>
-    /// <param name="pageNumber">Page number</param>
+    /// <param name="currentPage">Page number</param>
     /// <param name="pageSize">Page size</param>
     /// <param name="sortField">Sort field</param>
     /// <param name="ascending">Sorting direction</param>
-    /// <returns>New PaginationResult object</returns>
-    public static PaginationResult<T> Create(List<T> items, int totalCount, int pageNumber, int pageSize, string sortField, bool ascending)
+    /// <returns>New PagedResult object</returns>
+    public static PaginationResult<T> Create(List<T> items, int totalCount, int currentPage, int pageSize, string sortField, bool ascending)
     {
-        return new PaginationResult<T>(items, totalCount, pageNumber, pageSize, sortField, ascending);
+        return new PaginationResult<T>(items, totalCount, currentPage, pageSize, sortField, ascending);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class PaginationResult<T>
     /// <param name="items">Items on the current page</param>
     /// <param name="totalCount">Total number of items</param>
     /// <param name="parameters">Pagination parameters</param>
-    /// <returns>New PaginationResult object</returns>
+    /// <returns>New PagedResult object</returns>
     public static PaginationResult<T> Create(List<T> items, int totalCount, PaginationParameters<T> parameters)
     {
         return new PaginationResult<T>(
@@ -98,15 +98,15 @@ public class PaginationResult<T>
     /// <summary>
     /// Creates an empty paginated result.
     /// </summary>
-    /// <returns>Empty PaginationResult object</returns>
+    /// <returns>Empty PagedResult object</returns>
     public static PaginationResult<T> Empty()
     {
         return new PaginationResult<T>(
             new List<T>(),
             0,
-            1,
-            10,
-            "Id",
-            true);
+            PaginationParameters<T>.DefaultPageNumber,
+            PaginationParameters<T>.DefaultPageSize,
+            PaginationParameters<T>.DefaultSortField,
+            PaginationParameters<T>.DefaultAscending);
     }
 }

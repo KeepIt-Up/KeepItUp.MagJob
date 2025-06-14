@@ -6,3 +6,4 @@ global using KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 global using MediatR;
 global using Serilog;
 global using Serilog.Extensions.Logging;
+global using KeepItUp.MagJob.Identity.SharedKernel.Web;

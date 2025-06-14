@@ -1,10 +1,16 @@
-﻿namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
+﻿using FastEndpoints;
+
+namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
 /// <summary>
-/// Interface for queries supporting pagination, compatible with MediatR.
+/// Base class for requests supporting pagination in the API.
 /// </summary>
 /// <typeparam name="TResult">Type of the result items</typeparam>
 public abstract class PaginationRequest<TResult>
 {
+    /// <summary>
+    /// Pagination parameters.
+    /// </summary>
+    [FromQuery]
     public PaginationParameters<TResult> PaginationParameters { get; set; } = new PaginationParameters<TResult>();
 }

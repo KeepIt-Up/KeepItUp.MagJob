@@ -1,5 +1,4 @@
-﻿using Ardalis.Specification;
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;

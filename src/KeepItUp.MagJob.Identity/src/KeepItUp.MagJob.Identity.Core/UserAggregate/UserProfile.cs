@@ -3,7 +3,7 @@ namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
 /// <summary>
 /// Represents the user's profile as a value object.
 /// </summary>
-public class UserProfile : ValueObject
+public record UserProfile
 {
     /// <summary>
     /// User's phone number.
@@ -37,7 +37,7 @@ public class UserProfile : ValueObject
     /// Returns the components used to compare object equality.
     /// </summary>
     /// <returns>Collection of components to compare.</returns>
-    protected override IEnumerable<object> GetEqualityComponents()
+    public IEnumerable<object> GetEqualityComponents()
     {
         yield return PhoneNumber ?? string.Empty;
         yield return Address ?? string.Empty;

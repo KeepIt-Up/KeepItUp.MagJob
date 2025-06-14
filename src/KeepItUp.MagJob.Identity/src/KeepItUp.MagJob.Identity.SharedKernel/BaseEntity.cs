@@ -1,19 +1,12 @@
-﻿namespace KeepItUp.MagJob.Identity.SharedKernel;
+﻿using KeepItUp.MagJob.Identity.SharedKernel.Core;
+
+namespace KeepItUp.MagJob.Identity.SharedKernel;
 
 /// <summary>
 /// Base class for all entities in the system.
 /// </summary>
 public abstract class BaseEntity : EntityBase<Guid>
 {
-    /// <summary>
-    /// Creation date of the entity.
-    /// </summary>
-    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
-
-    /// <summary>
-    /// Last update date of the entity.
-    /// </summary>
-    public DateTime? UpdatedAt { get; protected set; }
 
     /// <summary>
     /// Entity version for optimistic concurrency.

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
-using Ardalis.SharedKernel;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.SharedKernel.Core;
+using KeepItUp.MagJob.Identity.SharedKernel.Web;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;

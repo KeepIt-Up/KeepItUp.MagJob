@@ -1,4 +1,5 @@
 ﻿using KeepItUp.MagJob.Identity.Infrastructure.Data;
+using KeepItUp.MagJob.Identity.SharedKernel.Core;
 
 namespace KeepItUp.MagJob.Identity.IntegrationTests.Data;
 

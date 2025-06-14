@@ -1,3 +1,4 @@
+using KeepItUp.MagJob.Identity.SharedKernel.UseCases;
 
 namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
@@ -7,5 +8,8 @@ namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 /// <typeparam name="TResult">Type of the result items</typeparam>
 public abstract class PaginationQuery<TResult> : IQuery<Result<PaginationResult<TResult>>>
 {
+    /// <summary>
+    /// Pagination parameters.
+    /// </summary>
     public PaginationParameters<TResult> PaginationParameters { get; set; } = new PaginationParameters<TResult>();
 }
