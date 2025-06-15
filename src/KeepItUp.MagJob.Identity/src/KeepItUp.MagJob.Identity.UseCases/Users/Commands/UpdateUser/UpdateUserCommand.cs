@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 /// <summary>
 /// Command to update an existing user.
 /// </summary>
-public record UpdateUserCommand : IRequest<Result>
+public record UpdateUserCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// User identifier.

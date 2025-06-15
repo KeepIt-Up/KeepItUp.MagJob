@@ -10,22 +10,15 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Deactivates an organization with the given identifier.
 /// </remarks>
 public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<DeleteOrganizationRequest>
+    : BaseEndpoint<DeleteOrganizationRequest, EmptyResponse>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Delete(DeleteOrganizationRequest.Route);
         AllowAnonymous();
-        Description(b => b
-            .WithName("DeleteOrganization")
-            .Produces(204)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Deactivates an organization";
@@ -39,44 +32,16 @@ public class DeleteOrganization(IMediator mediator, ICurrentUserAccessor current
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Empty response in case of success.</returns>
-    public override async Task HandleAsync(DeleteOrganizationRequest req, CancellationToken ct)
+    protected override async Task<EmptyResponse> HandleEndpointAsync(DeleteOrganizationRequest req, CancellationToken ct)
     {
-        try
+        var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
+
+        var command = new DeactivateOrganizationCommand
         {
-            var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
+            Id = req.Id,
+            UserId = userGuid
+        };
 
-            var command = new DeactivateOrganizationCommand
-            {
-                Id = req.Id,
-                UserId = userGuid
-            };
-
-            var result = await mediator.Send(command, ct);
-
-            if (result.Status == ResultStatus.NotFound)
-            {
-                await SendNotFoundAsync(ct);
-                return;
-            }
-
-            if (result.Status == ResultStatus.Forbidden)
-            {
-                await SendForbiddenAsync(ct);
-                return;
-            }
-
-            if (result.Status == ResultStatus.Error)
-            {
-                await SendErrorsAsync(500, ct);
-                return;
-            }
-
-            await SendNoContentAsync(ct);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            AddError("Nie można zidentyfikować użytkownika");
-            await SendErrorsAsync(401, ct);
-        }
+        return await mediator.Send(command, ct);
     }
 }

@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 /// <summary>
 /// Handler for the RemoveMemberCommand.
 /// </summary>
-public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, Result>
+public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<RemoveMemberCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
     /// <param name="request">RemoveMemberCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {

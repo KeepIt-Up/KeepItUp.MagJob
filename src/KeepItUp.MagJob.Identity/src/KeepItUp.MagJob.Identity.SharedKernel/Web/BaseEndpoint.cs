@@ -45,10 +45,9 @@ public abstract class BaseEndpoint<TRequest, TResponse> : Endpoint<TRequest, Res
         Severity = ValidationSeverity.Error
       }).ToArray();
 
-      var result = Result<TResponse>.Invalid(validationErrors);
+      Response = Result<TResponse>.Invalid(validationErrors);
 
-      await SendAsync(result, StatusCodes.Status400BadRequest, ct);
-
+      return;
     }
 
     // If validation passed, proceed with the endpoint logic
@@ -58,5 +57,5 @@ public abstract class BaseEndpoint<TRequest, TResponse> : Endpoint<TRequest, Res
   /// <summary>
   /// Override this method in derived classes to implement endpoint business logic
   /// </summary>
-  protected abstract Task<Result<TResponse>> HandleEndpointAsync(TRequest req, CancellationToken ct);
+  protected abstract Task<TResponse> HandleEndpointAsync(TRequest req, CancellationToken ct);
 }

@@ -1,4 +1,4 @@
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 using KeepItUp.MagJob.Identity.Web.Services;
 
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
@@ -10,20 +10,15 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Creates a new organization with the given data.
 /// </remarks>
 public class CreateOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<CreateOrganizationRequest, CreateOrganizationResponse>
+    : BaseEndpoint<CreateOrganizationRequest, Guid>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Post(CreateOrganizationRequest.Route);
-        Description(b => b
-            .WithName("CreateOrganization")
-            .Produces<CreateOrganizationResponse>(201)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
             s.Summary = "Creates a new organization";
@@ -39,7 +34,7 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Response containing the data of the created organization.</returns>
-    public override async Task HandleAsync(CreateOrganizationRequest req, CancellationToken ct)
+    protected override async Task<Guid> HandleEndpointAsync(CreateOrganizationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -50,32 +45,6 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
             OwnerId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        var organizationId = result.Value;
-
-        Response = new CreateOrganizationResponse
-        {
-            Id = organizationId,
-            Name = req.Name,
-            Description = req.Description,
-            OwnerId = userId
-        };
+        return await mediator.Send(command, ct);
     }
 }

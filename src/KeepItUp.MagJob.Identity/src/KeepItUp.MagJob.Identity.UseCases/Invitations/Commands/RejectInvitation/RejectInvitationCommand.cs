@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Invitations.Commands.RejectInvitatio
 /// <summary>
 /// Command to reject an invitation.
 /// </summary>
-public record RejectInvitationCommand : IRequest<Result>
+public record RejectInvitationCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Invitation identifier.

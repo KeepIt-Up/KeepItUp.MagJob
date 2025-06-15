@@ -10,29 +10,21 @@ namespace KeepItUp.MagJob.Identity.Web.Invitations;
 /// Creates a new invitation to an organization for the given email address.
 /// </remarks>
 public class CreateInvitation(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-  : Endpoint<CreateInvitationRequest, CreateInvitationResponse>
+  : BaseEndpoint<CreateInvitationRequest, Guid>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Post(CreateInvitationRequest.Route);
         AllowAnonymous();
-        Description(b => b
-          .WithName("CreateInvitation")
-          .Produces(201)
-          .ProducesProblem(400)
-          .ProducesProblem(401)
-          .ProducesProblem(403)
-          .ProducesProblem(404)
-          .ProducesProblem(500));
         Summary(s =>
         {
-            s.Summary = "Tworzy zaproszenie do organizacji";
-            s.Description = "Tworzy nowe zaproszenie do organizacji dla podanego adresu email";
+            s.Summary = "Create an invitation to an organization";
+            s.Description = "Create an invitation to an organization for the given email address";
             s.ExampleRequest = new CreateInvitationRequest { OrganizationId = Guid.NewGuid(), Email = "example@example.com", RoleId = Guid.NewGuid() };
-            s.ResponseExamples[201] = new CreateInvitationResponse { Id = Guid.NewGuid(), Email = "example@example.com" };
+            s.ResponseExamples[201] = Guid.NewGuid();
         });
     }
 
@@ -42,7 +34,7 @@ public class CreateInvitation(IMediator mediator, ICurrentUserAccessor currentUs
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Response containing the identifier of the created invitation.</returns>
-    public override async Task HandleAsync(CreateInvitationRequest req, CancellationToken ct)
+    protected override async Task<Guid> HandleEndpointAsync(CreateInvitationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -54,40 +46,6 @@ public class CreateInvitation(IMediator mediator, ICurrentUserAccessor currentUs
             UserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        Response = new CreateInvitationResponse()
-        {
-            Id = result.Value,
-            Email = req.Email
-        };
+        return await mediator.Send(command, ct);
     }
 }

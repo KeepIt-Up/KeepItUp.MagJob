@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFro
 /// <summary>
 /// Command to revoke a role from a member of an organization.
 /// </summary>
-public record RevokeRoleFromMemberCommand : IRequest<Result>
+public record RevokeRoleFromMemberCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
 /// <summary>
 /// Command to delete a role from an organization.
 /// </summary>
-public record DeleteRoleCommand : IRequest<Result>
+public record DeleteRoleCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

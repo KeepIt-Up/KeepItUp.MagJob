@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeleteRole;
 /// <summary>
 /// Handler for the DeleteRoleCommand.
 /// </summary>
-public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Result>
+public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<DeleteRoleCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, Resul
     /// <param name="request">DeleteRoleCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
         try
         {

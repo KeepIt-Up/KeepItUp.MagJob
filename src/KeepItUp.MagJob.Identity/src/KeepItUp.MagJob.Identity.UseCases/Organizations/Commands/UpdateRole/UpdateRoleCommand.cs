@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 /// <summary>
 /// Command to update an existing role in an organization.
 /// </summary>
-public record UpdateRoleCommand : IRequest<Result>
+public record UpdateRoleCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

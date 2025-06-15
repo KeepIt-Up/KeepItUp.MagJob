@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrg
 /// <summary>
 /// Handler for the DeactivateOrganizationCommand.
 /// </summary>
-public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOrganizationCommand, Result>
+public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOrganizationCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<DeactivateOrganizationCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class DeactivateOrganizationCommandHandler : IRequestHandler<DeactivateOr
     /// <param name="request">DeactivateOrganizationCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(DeactivateOrganizationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(DeactivateOrganizationCommand request, CancellationToken cancellationToken)
     {
         try
         {

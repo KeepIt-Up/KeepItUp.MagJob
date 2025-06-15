@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganiz
 /// <summary>
 /// Handler for the UpdateOrganizationCommand.
 /// </summary>
-public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizationCommand, Result>
+public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizationCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<UpdateOrganizationCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
     /// <param name="request">UpdateOrganizationCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
     {
         try
         {

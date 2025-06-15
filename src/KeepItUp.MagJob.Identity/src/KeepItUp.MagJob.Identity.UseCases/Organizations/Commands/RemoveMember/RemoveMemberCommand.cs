@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 /// <summary>
 /// Command to remove a member from an organization.
 /// </summary>
-public record RemoveMemberCommand : IRequest<Result>
+public record RemoveMemberCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

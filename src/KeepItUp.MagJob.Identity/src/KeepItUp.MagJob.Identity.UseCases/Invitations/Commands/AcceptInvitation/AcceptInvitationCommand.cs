@@ -1,3 +1,4 @@
+using FastEndpoints;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Invitations.Commands.AcceptInvitation;
@@ -5,7 +6,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Invitations.Commands.AcceptInvitatio
 /// <summary>
 /// Command to accept an invitation.
 /// </summary>
-public record AcceptInvitationCommand : IRequest<Result<Guid>>
+public record AcceptInvitationCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Invitation identifier.

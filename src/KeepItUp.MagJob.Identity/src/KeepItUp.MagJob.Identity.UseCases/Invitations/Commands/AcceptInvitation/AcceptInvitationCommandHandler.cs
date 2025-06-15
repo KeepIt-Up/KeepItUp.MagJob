@@ -9,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Invitations.Commands.AcceptInvitatio
 /// <summary>
 /// Handler for the AcceptInvitationCommand.
 /// </summary>
-public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result<Guid>>
+public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCommand, Result<EmptyResponse>>
 {
     private readonly IInvitationRepository _invitationRepository;
     private readonly IOrganizationRepository _organizationRepository;
@@ -41,7 +41,7 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
     /// <param name="request">AcceptInvitationCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Member identifier.</returns>
-    public async Task<Result<Guid>> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -49,7 +49,7 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
 
             if (invitation == null)
             {
-                return Result<Guid>.NotFound($"Invitation with ID {request.InvitationId} not found.");
+                return Result<EmptyResponse>.NotFound($"Invitation with ID {request.InvitationId} not found.");
             }
 
             invitation.Accept();
@@ -59,31 +59,31 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
             var user = await _userRepository.GetByEmailAsync(invitation.Email, cancellationToken);
             if (user == null)
             {
-                return Result<Guid>.Error($"User with email {invitation.Email} not found.");
+                return Result<EmptyResponse>.Error($"User with email {invitation.Email} not found.");
             }
 
             var organization = await _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, cancellationToken);
             if (organization == null)
             {
-                return Result<Guid>.Error($"Organization with ID {invitation.OrganizationId} not found.");
+                return Result<EmptyResponse>.Error($"Organization with ID {invitation.OrganizationId} not found.");
             }
 
             var member = organization.Members.FirstOrDefault(m => m.UserId == user.Id);
             if (member == null)
             {
-                return Result<Guid>.Error("Member was not created successfully.");
+                return Result<EmptyResponse>.Error("Member was not created successfully.");
             }
 
             _logger.LogInformation("Użytkownik {UserId} zaakceptował zaproszenie {InvitationId} do organizacji {OrganizationId}, utworzono członka {MemberId}",
                 request.UserId, request.InvitationId, invitation.OrganizationId, member.Id);
 
-            return Result<Guid>.Success(member.Id);
+            return Result<EmptyResponse>.Success(new EmptyResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Błąd podczas akceptowania zaproszenia {InvitationId} przez użytkownika {UserId}",
                 request.InvitationId, request.UserId);
-            return Result<Guid>.Error("Wystąpił błąd podczas akceptowania zaproszenia: " + ex.Message);
+            return Result<EmptyResponse>.Error("Wystąpił błąd podczas akceptowania zaproszenia: " + ex.Message);
         }
     }
 }

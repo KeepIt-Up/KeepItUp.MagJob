@@ -43,14 +43,6 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
         AllowFileUploads();
         AllowFormData();
         AllowAnonymous();
-        Description(b => b
-            .WithName("UpdateUserProfilePicture")
-            .WithTags("Users")
-            .Produces<UpdateUserProfilePictureResponse>(200)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Updates the profile picture of a user";

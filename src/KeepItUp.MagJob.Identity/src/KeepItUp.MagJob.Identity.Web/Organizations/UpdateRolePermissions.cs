@@ -10,23 +10,15 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Updates the permissions of a role in an organization with the given identifier.
 /// </remarks>
 public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<UpdateRolePermissionsRequest>
+    : BaseEndpoint<UpdateRolePermissionsRequest, EmptyResponse>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Put(UpdateRolePermissionsRequest.Route);
         AllowAnonymous();
-        Description(b => b
-            .WithName("UpdateRolePermissions")
-            .Produces(204)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Updates the permissions of a role in an organization";
@@ -46,7 +38,7 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Empty response in case of success.</returns>
-    public override async Task HandleAsync(UpdateRolePermissionsRequest req, CancellationToken ct)
+    protected override async Task<EmptyResponse> HandleEndpointAsync(UpdateRolePermissionsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -58,36 +50,6 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
             UserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        await SendNoContentAsync(ct);
+        return await mediator.Send(command, ct);
     }
 }

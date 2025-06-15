@@ -10,7 +10,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRolePer
 public class UpdateRolePermissionsCommandHandler(
     IOrganizationRepository organizationRepository,
     ILogger<UpdateRolePermissionsCommandHandler> logger)
-    : IRequestHandler<UpdateRolePermissionsCommand, Result>
+    : IRequestHandler<UpdateRolePermissionsCommand, Result<EmptyResponse>>
 {
     /// <summary>
     /// Handles the UpdateRolePermissionsCommand.
@@ -18,7 +18,7 @@ public class UpdateRolePermissionsCommandHandler(
     /// <param name="request">UpdateRolePermissionsCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(UpdateRolePermissionsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(UpdateRolePermissionsCommand request, CancellationToken cancellationToken)
     {
         try
         {

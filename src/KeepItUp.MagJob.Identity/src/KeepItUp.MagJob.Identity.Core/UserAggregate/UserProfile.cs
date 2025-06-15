@@ -26,7 +26,7 @@ public record UserProfile
     /// <param name="phoneNumber">User's phone number.</param>
     /// <param name="address">User's address.</param>
     /// <param name="profileImage">URL of the user's profile picture.</param>
-    public UserProfile(string? phoneNumber, string? address, string? profileImage)
+    public UserProfile(string? phoneNumber, string? address, string? profileImage = null)
     {
         PhoneNumber = phoneNumber;
         Address = address;

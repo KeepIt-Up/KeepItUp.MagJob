@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRolePer
 /// <summary>
 /// Command to update the permissions of a role in an organization.
 /// </summary>
-public record UpdateRolePermissionsCommand : IRequest<Result>
+public record UpdateRolePermissionsCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

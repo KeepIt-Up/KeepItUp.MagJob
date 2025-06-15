@@ -37,12 +37,6 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
     public override void Configure()
     {
         Get("/users/me");
-        Description(b => b
-            .WithName("GetMe")
-            .Produces<GetUserByIdResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Pobiera dane zalogowanego użytkownika";

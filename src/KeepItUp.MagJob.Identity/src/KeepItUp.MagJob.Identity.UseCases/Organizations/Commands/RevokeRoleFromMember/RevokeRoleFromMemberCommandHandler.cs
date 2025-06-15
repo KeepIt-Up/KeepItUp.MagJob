@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFro
 /// <summary>
 /// Handler for the RevokeRoleFromMemberCommand.
 /// </summary>
-public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFromMemberCommand, Result>
+public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFromMemberCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<RevokeRoleFromMemberCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
     /// <param name="request">RevokeRoleFromMemberCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(RevokeRoleFromMemberCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(RevokeRoleFromMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {

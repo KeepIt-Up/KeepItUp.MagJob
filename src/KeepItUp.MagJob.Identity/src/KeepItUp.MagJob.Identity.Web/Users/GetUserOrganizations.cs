@@ -11,19 +11,15 @@ namespace KeepItUp.MagJob.Identity.Web.Users;
 /// <remarks>
 /// Gets all organizations the user belongs to.
 /// </remarks>
-[Authorize]
-public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetUserOrganizationsRequest, PaginationResult<OrganizationDto>>
+public class GetUserOrganizations(IMediator mediator)
+    : BaseEndpoint<GetUserOrganizationsRequest, PaginationResult<OrganizationDto>>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Get(GetUserOrganizationsRequest.Route);
-        Description(b => b
-            .WithName("GetUserOrganizations")
-            .Produces<PaginationResult<OrganizationDto>>(200));
         Summary(s =>
         {
             s.Summary = "Gets the organizations of a user";
@@ -42,36 +38,14 @@ public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor curre
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Response containing the list of organizations the user belongs to.</returns>
-    public override async Task HandleAsync(GetUserOrganizationsRequest req, CancellationToken ct)
+    protected override async Task<PaginationResult<OrganizationDto>> HandleEndpointAsync(GetUserOrganizationsRequest req, CancellationToken ct)
     {
-        var userId = currentUserAccessor.GetCurrentUserId();
-
-        if (userId == null)
-        {
-            await SendUnauthorizedAsync(ct);
-            return;
-        }
-
         var query = new GetUserOrganizationsQuery
         {
             UserId = req.Id,
             PaginationParameters = req.PaginationParameters
         };
 
-        var result = await mediator.Send(query, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        await SendOkAsync(result.Value, ct);
+        return await mediator.Send(query, ct);
     }
 }

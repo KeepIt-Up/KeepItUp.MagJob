@@ -1,3 +1,4 @@
+using FastEndpoints;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToM
 /// <summary>
 /// Handler for the AssignRoleToMemberCommand.
 /// </summary>
-public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemberCommand, Result>
+public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemberCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<AssignRoleToMemberCommandHandler> _logger;
@@ -31,7 +32,7 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
     /// <param name="request">AssignRoleToMemberCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(AssignRoleToMemberCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(AssignRoleToMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {

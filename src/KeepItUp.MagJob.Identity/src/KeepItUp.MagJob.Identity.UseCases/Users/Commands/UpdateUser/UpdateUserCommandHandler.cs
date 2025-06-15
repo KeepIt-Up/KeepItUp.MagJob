@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
 /// <summary>
 /// Handler for the UpdateUserCommand.
 /// </summary>
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result>
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<EmptyResponse>>
 {
     private readonly IUserRepository _repository;
     private readonly ILogger<UpdateUserCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
     /// <param name="request">UpdateUserCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -44,10 +44,15 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
 
             user.Update(request.FirstName, request.LastName);
 
-            user.UpdateProfile(
+            var profile = user.Profile?.WithUpdates(
                 request.PhoneNumber,
                 request.Address,
                 request.ProfileImageUrl);
+
+            if (profile != null)
+            {
+                user.UpdateProfile(profile.PhoneNumber, profile.Address, profile.ProfileImage);
+            }
 
             await _repository.UpdateAsync(user, cancellationToken);
 

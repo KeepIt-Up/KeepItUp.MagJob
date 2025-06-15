@@ -40,13 +40,6 @@ public class UpdateOrganizationLogo : Endpoint<UpdateOrganizationLogoRequest, Up
         Put(UpdateOrganizationLogoRequest.Route);
         AllowFileUploads();
         AllowFormData();
-        Description(d =>
-        {
-            d.WithName("UpdateOrganizationLogo");
-            d.WithTags("Organizations");
-            d.WithSummary("Updates the logo of an organization");
-            d.WithDescription("Updates the logo of an organization.");
-        });
     }
 
     /// <summary>

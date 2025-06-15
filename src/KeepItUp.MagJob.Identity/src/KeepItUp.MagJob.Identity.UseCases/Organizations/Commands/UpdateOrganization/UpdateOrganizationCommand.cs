@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganiz
 /// <summary>
 /// Command to update an existing organization.
 /// </summary>
-public record UpdateOrganizationCommand : IRequest<Result>
+public record UpdateOrganizationCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

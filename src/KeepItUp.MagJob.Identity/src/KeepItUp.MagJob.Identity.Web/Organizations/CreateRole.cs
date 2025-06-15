@@ -10,23 +10,15 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Creates a new role in an organization with the given identifier.
 /// </remarks>
 public class CreateRole(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<CreateRoleRequest, CreateRoleResponse>
+    : BaseEndpoint<CreateRoleRequest, Guid>
 {
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Post(CreateRoleRequest.Route);
         AllowAnonymous();
-        Description(b => b
-            .WithName("CreateRole")
-            .Produces(201)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Creates a new role in an organization";
@@ -52,7 +44,7 @@ public class CreateRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>Response containing the identifier of the created role.</returns>
-    public override async Task HandleAsync(CreateRoleRequest req, CancellationToken ct)
+    protected override async Task<Guid> HandleEndpointAsync(CreateRoleRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -65,40 +57,6 @@ public class CreateRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             UserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        Response = new CreateRoleResponse
-        {
-            Id = result.Value,
-            Name = req.Name
-        };
+        return await mediator.Send(command, ct);
     }
 }

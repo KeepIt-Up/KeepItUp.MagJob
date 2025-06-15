@@ -1,3 +1,4 @@
+using FastEndpoints;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToMember;
@@ -5,7 +6,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToM
 /// <summary>
 /// Command to assign a role to a member of an organization.
 /// </summary>
-public record AssignRoleToMemberCommand : IRequest<Result>
+public record AssignRoleToMemberCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

@@ -5,7 +5,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.DeactivateOrg
 /// <summary>
 /// Command to deactivate an organization.
 /// </summary>
-public record DeactivateOrganizationCommand : IRequest<Result>
+public record DeactivateOrganizationCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
     /// Organization identifier.

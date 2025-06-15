@@ -40,13 +40,6 @@ public class UpdateOrganizationBanner : Endpoint<UpdateOrganizationBannerRequest
         Put(UpdateOrganizationBannerRequest.Route);
         AllowFileUploads();
         AllowFormData();
-        Description(d =>
-        {
-            d.WithName("UpdateOrganizationBanner");
-            d.WithTags("Organizations");
-            d.WithSummary("Updates the banner of an organization");
-            d.WithDescription("Updates the banner of an organization.");
-        });
     }
 
     /// <summary>

@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 /// <summary>
 /// Handler for the UpdateRoleCommand.
 /// </summary>
-public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result>
+public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<UpdateRoleCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
     /// <param name="request">UpdateRoleCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
         try
         {

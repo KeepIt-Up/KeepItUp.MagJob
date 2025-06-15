@@ -7,7 +7,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Invitations.Commands.RejectInvitatio
 /// <summary>
 /// Handler for the RejectInvitationCommand.
 /// </summary>
-public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCommand, Result>
+public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCommand, Result<EmptyResponse>>
 {
     private readonly IInvitationRepository _invitationRepository;
     private readonly ILogger<RejectInvitationCommandHandler> _logger;
@@ -31,7 +31,7 @@ public class RejectInvitationCommandHandler : IRequestHandler<RejectInvitationCo
     /// <param name="request">RejectInvitationCommand.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Result of the operation.</returns>
-    public async Task<Result> Handle(RejectInvitationCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmptyResponse>> Handle(RejectInvitationCommand request, CancellationToken cancellationToken)
     {
         try
         {
