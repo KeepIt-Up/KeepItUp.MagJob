@@ -1,17 +1,16 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
-using KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUser;
-using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
+using KeepItUp.MagJob.Identity.UseCases.Users.Commands.UpdateUserProfilePicture;
 using KeepItUp.MagJob.Identity.Web.Services;
+using FluentValidation;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
 /// Endpoint to update the profile picture of a user.
 /// </summary>
-public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest, UpdateUserProfilePictureResponse>
+public class UpdateUserProfilePicture : BaseEndpoint<UpdateUserProfilePictureRequest, UpdateUserProfilePictureResponse>
 {
     private readonly IMediator _mediator;
-    private readonly IFileStorageService _fileStorageService;
     private readonly ICurrentUserAccessor _currentUserAccessor;
     private readonly ILogger<UpdateUserProfilePicture> _logger;
 
@@ -19,17 +18,14 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
     /// Initializes a new instance of the <see cref="UpdateUserProfilePicture"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="fileStorageService">File storage service.</param>
     /// <param name="currentUserAccessor">Current user accessor.</param>
     /// <param name="logger">Logger.</param>
     public UpdateUserProfilePicture(
         IMediator mediator,
-        IFileStorageService fileStorageService,
         ICurrentUserAccessor currentUserAccessor,
         ILogger<UpdateUserProfilePicture> logger)
     {
         _mediator = mediator;
-        _fileStorageService = fileStorageService;
         _currentUserAccessor = currentUserAccessor;
         _logger = logger;
     }
@@ -37,12 +33,11 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
     /// <summary>
     /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Put(UpdateUserProfilePictureRequest.Route);
         AllowFileUploads();
         AllowFormData();
-        AllowAnonymous();
         Summary(s =>
         {
             s.Summary = "Updates the profile picture of a user";
@@ -55,110 +50,24 @@ public class UpdateUserProfilePicture : Endpoint<UpdateUserProfilePictureRequest
     /// </summary>
     /// <param name="req">Request.</param>
     /// <param name="ct">Cancellation token.</param>
-    public override async Task HandleAsync(UpdateUserProfilePictureRequest req, CancellationToken ct)
+    protected override async Task<UpdateUserProfilePictureResponse> HandleEndpointAsync(UpdateUserProfilePictureRequest req, CancellationToken ct)
     {
-        var currentUserId = _currentUserAccessor.GetCurrentUserId();
+        var currentUserId = _currentUserAccessor.GetRequiredCurrentUserId();
 
-        if (!currentUserId.HasValue)
+        if (req.ProfilePictureFile == null || req.ProfilePictureFile.Length == 0)
         {
-            AddError("Użytkownik niezalogowany");
-            await SendErrorsAsync(StatusCodes.Status401Unauthorized, ct);
-            return;
+            throw new ValidationException("Profile picture file is required");
         }
 
-        var getUserQuery = new GetUserByIdQuery
+        var command = new UpdateUserProfilePictureCommand
         {
-            Id = req.UserId
+            UserId = req.UserId,
+            ProfilePictureFile = req.ProfilePictureFile,
+            CurrentUserId = currentUserId
         };
 
-        var userResult = await _mediator.Send(getUserQuery, ct);
+        var result = await _mediator.Send(command, ct);
 
-        if (!userResult.IsSuccess)
-        {
-            if (userResult.Status == ResultStatus.NotFound)
-            {
-                await SendNotFoundAsync(ct);
-                return;
-            }
-
-            foreach (var error in userResult.Errors)
-            {
-                AddError(error);
-            }
-
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-            return;
-        }
-
-        string? oldProfileImageUrl = userResult.Value.ProfileImageUrl();
-
-        try
-        {
-            if (req.ProfilePictureFile == null || req.ProfilePictureFile.Length == 0)
-            {
-                AddError("Nie przesłano pliku ze zdjęciem profilowym");
-                await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-                return;
-            }
-
-            string contentType = req.ProfilePictureFile.ContentType;
-            if (!(contentType.StartsWith("image/jpeg") || contentType.StartsWith("image/png") || contentType.StartsWith("image/gif")))
-            {
-                AddError("Dozwolone są tylko obrazy w formatach JPEG, PNG lub GIF");
-                await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-                return;
-            }
-
-            string profileImageUrl;
-            using (var stream = req.ProfilePictureFile.OpenReadStream())
-            {
-                profileImageUrl = await _fileStorageService.UploadFileAsync(
-                    stream,
-                    req.ProfilePictureFile.FileName,
-                    req.ProfilePictureFile.ContentType,
-                    "profile-pictures"
-                );
-            }
-
-            var command = new UpdateUserCommand
-            {
-                Id = req.UserId,
-                FirstName = userResult.Value.FirstName,
-                LastName = userResult.Value.LastName,
-                PhoneNumber = userResult.Value.PhoneNumber(),
-                Address = userResult.Value.Address(),
-                ProfileImageUrl = profileImageUrl
-            };
-
-            var result = await _mediator.Send(command, ct);
-
-            if (result.IsSuccess)
-            {
-                if (!string.IsNullOrEmpty(oldProfileImageUrl)
-                    && oldProfileImageUrl != profileImageUrl
-                    && await _fileStorageService.FileExistsAsync(oldProfileImageUrl))
-                {
-                    await _fileStorageService.DeleteFileAsync(oldProfileImageUrl);
-                }
-
-                await SendAsync(new UpdateUserProfilePictureResponse { ProfileImageUrl = profileImageUrl }, StatusCodes.Status200OK, ct);
-                return;
-            }
-
-            await _fileStorageService.DeleteFileAsync(profileImageUrl);
-
-            foreach (var error in result.Errors)
-            {
-                AddError(error);
-            }
-
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Błąd podczas aktualizacji zdjęcia profilowego użytkownika {UserId}", req.UserId);
-            AddError("Wystąpił błąd podczas przetwarzania pliku");
-            await SendErrorsAsync(StatusCodes.Status500InternalServerError, ct);
-        }
+        return new UpdateUserProfilePictureResponse { ProfileImageUrl = result };
     }
 }

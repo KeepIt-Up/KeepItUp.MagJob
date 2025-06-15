@@ -1,5 +1,4 @@
-﻿
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
@@ -7,6 +6,7 @@ using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 using KeepItUp.MagJob.Identity.Infrastructure.FileStorage;
 using KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
+using KeepItUp.MagJob.Identity.Infrastructure.Services;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 public static class InfrastructureServiceExtensions
@@ -29,6 +29,7 @@ public static class InfrastructureServiceExtensions
     services
         .AddSingleton<IFileStorageService, LocalFileStorageService>()
         .AddSingleton<IUserProfilePictureService, UserProfilePictureService>()
+        .AddScoped<IFileValidationService, FileValidationService>()
         .AddScoped<IOrganizationRepository, OrganizationRepository>()
         .AddScoped<IUserRepository, UserRepository>();
 

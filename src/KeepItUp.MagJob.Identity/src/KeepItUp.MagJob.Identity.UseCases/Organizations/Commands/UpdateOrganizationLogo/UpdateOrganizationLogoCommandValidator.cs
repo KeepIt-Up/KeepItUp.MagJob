@@ -25,21 +25,15 @@ public class UpdateOrganizationLogoCommandValidator : AbstractValidator<UpdateOr
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
         RuleFor(x => x.OrganizationId)
-            .NotEmpty().WithMessage("Identyfikator organizacji jest wymagany.")
-            .MustAsync(OrganizationExists).WithMessage("Organizacja o podanym identyfikatorze nie istnieje.")
-            .MustAsync(async (id, cancellationToken) =>
-            {
-                var organization = await _organizationRepository.GetByIdAsync(id, cancellationToken);
-                return organization != null && organization.IsActive;
-            }).WithMessage("Organizacja jest nieaktywna.");
+            .NotEmpty().WithMessage("Organization identifier is required.")
+            .MustAsync(OrganizationExists).WithMessage("Organization with the given identifier does not exist.");
 
-        RuleFor(x => x.LogoUrl)
-            .NotEmpty().WithMessage("URL logo jest wymagany.")
-            .Must(BeValidUrl).WithMessage("Podany URL logo jest nieprawidłowy.");
+        RuleFor(x => x.LogoFile)
+            .NotNull().WithMessage("Logo file is required.");
 
         RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
-            .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
+            .NotEmpty().WithMessage("User identifier is required.")
+            .MustAsync(UserExists).WithMessage("User with the given identifier does not exist.");
 
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
@@ -49,23 +43,7 @@ public class UpdateOrganizationLogoCommandValidator : AbstractValidator<UpdateOr
                     command.UserId,
                     cancellationToken);
             })
-            .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
-    }
-
-    /// <summary>
-    /// Checks if the given URL is valid.
-    /// </summary>
-    /// <param name="url">URL to check.</param>
-    /// <returns>True if the URL is valid; otherwise false.</returns>
-    private bool BeValidUrl(string url)
-    {
-        if (string.IsNullOrEmpty(url))
-        {
-            return false;
-        }
-
-        return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
-               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            .WithMessage("User performing the operation is not a member of this organization.");
     }
 
     /// <summary>

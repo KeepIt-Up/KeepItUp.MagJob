@@ -1,11 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 
 /// <summary>
 /// Command to update the logo of an organization.
 /// </summary>
-public record UpdateOrganizationLogoCommand : IRequest<Result>
+public record UpdateOrganizationLogoCommand : IRequest<Result<string>>
 {
     /// <summary>
     /// Organization identifier.
@@ -13,9 +14,9 @@ public record UpdateOrganizationLogoCommand : IRequest<Result>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Organization logo URL.
+    /// Organization logo file.
     /// </summary>
-    public string LogoUrl { get; init; } = string.Empty;
+    public IFormFile LogoFile { get; init; } = null!;
 
     /// <summary>
     /// User identifier performing the operation.
