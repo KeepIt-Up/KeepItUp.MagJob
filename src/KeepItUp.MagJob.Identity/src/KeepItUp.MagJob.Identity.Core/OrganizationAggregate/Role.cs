@@ -1,5 +1,3 @@
-
-
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 /// <summary>
@@ -85,8 +83,6 @@ public class Role : BaseEntity
         Name = name;
         Description = description;
         Color = color;
-
-        base.Update();
     }
 
     /// <summary>
@@ -104,9 +100,6 @@ public class Role : BaseEntity
         }
 
         _permissions.Add(permission);
-
-        // Call the Update method from the base class
-        base.Update();
     }
 
     /// <summary>
@@ -125,9 +118,6 @@ public class Role : BaseEntity
         }
 
         _permissions.Remove(permission);
-
-        // Call the Update method from the base class
-        base.Update();
     }
 
     /// <summary>
@@ -148,7 +138,5 @@ public class Role : BaseEntity
     public void ClearPermissions()
     {
         _permissions.Clear();
-
-        base.Update();
     }
 }

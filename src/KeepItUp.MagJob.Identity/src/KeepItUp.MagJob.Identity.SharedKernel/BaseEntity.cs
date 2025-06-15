@@ -7,19 +7,12 @@ namespace KeepItUp.MagJob.Identity.SharedKernel;
 /// </summary>
 public abstract class BaseEntity : EntityBase<Guid>
 {
-
-    /// <summary>
-    /// Entity version for optimistic concurrency.
-    /// </summary>
-    public byte[] RowVersion { get; protected set; } = Array.Empty<byte>();
-
     /// <summary>
     /// Updates the last modification date of the entity.
     /// </summary>
     protected void Update()
     {
         UpdatedAt = DateTime.UtcNow;
-        RowVersion = Guid.NewGuid().ToByteArray();
     }
 
     /// <summary>
@@ -28,7 +21,6 @@ public abstract class BaseEntity : EntityBase<Guid>
     protected BaseEntity()
     {
         Id = Guid.NewGuid();
-        RowVersion = Guid.NewGuid().ToByteArray();
     }
 
     /// <summary>

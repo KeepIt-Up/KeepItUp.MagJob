@@ -164,10 +164,7 @@ public class Organization : BaseEntity, IAggregateRoot
             BannerUrl = bannerUrl;
         }
 
-        // Call the Update method from the base class
-        base.Update();
-
-        RegisterDomainEvent(new OrganizationUpdatedEvent(Id, Name, OwnerId));
+        RegisterDomainEventAndUpdate(new OrganizationUpdatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
@@ -178,10 +175,7 @@ public class Organization : BaseEntity, IAggregateRoot
     {
         LogoUrl = logoUrl;
 
-        // Call the Update method from the base class
-        base.Update();
-
-        RegisterDomainEvent(new OrganizationLogoUpdatedEvent(Id, LogoUrl));
+        RegisterDomainEventAndUpdate(new OrganizationLogoUpdatedEvent(Id, LogoUrl));
     }
 
     /// <summary>
@@ -192,10 +186,7 @@ public class Organization : BaseEntity, IAggregateRoot
     {
         BannerUrl = bannerUrl;
 
-        // Call the Update method from the base class
-        base.Update();
-
-        RegisterDomainEvent(new OrganizationBannerUpdatedEvent(Id, BannerUrl));
+        RegisterDomainEventAndUpdate(new OrganizationBannerUpdatedEvent(Id, BannerUrl));
     }
 
     /// <summary>
@@ -208,10 +199,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         IsActive = false;
 
-        // Call the Update method from the base class
-        base.Update();
-
-        RegisterDomainEvent(new OrganizationDeactivatedEvent(Id, Name, OwnerId));
+        RegisterDomainEventAndUpdate(new OrganizationDeactivatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
@@ -224,10 +212,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         IsActive = true;
 
-        // Call the Update method from the base class
-        base.Update();
-
-        RegisterDomainEvent(new OrganizationActivatedEvent(Id, Name, OwnerId));
+        RegisterDomainEventAndUpdate(new OrganizationActivatedEvent(Id, Name, OwnerId));
     }
 
     /// <summary>
@@ -252,9 +237,7 @@ public class Organization : BaseEntity, IAggregateRoot
         {
             existingMember.AssignRole(roleId, role);
 
-            base.Update();
-
-            RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
+            RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
             return existingMember;
         }
 
@@ -264,9 +247,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _members.Add(member);
 
-        base.Update();
-
-        RegisterDomainEvent(new MemberAddedEvent(Id, userId, roleId));
+        RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, roleId));
 
         return member;
     }
@@ -292,9 +273,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _members.Remove(member);
 
-        base.Update();
-
-        RegisterDomainEvent(new MemberRemovedEvent(Id, userId));
+        RegisterDomainEventAndUpdate(new MemberRemovedEvent(Id, userId));
     }
 
     /// <summary>
@@ -320,9 +299,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         member.AssignRole(roleId);
 
-        base.Update();
-
-        RegisterDomainEvent(new MemberRoleAssignedEvent(Id, userId, roleId));
+        RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
     }
 
     /// <summary>
@@ -351,9 +328,7 @@ public class Organization : BaseEntity, IAggregateRoot
             throw new InvalidOperationException("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
         }
 
-        base.Update();
-
-        RegisterDomainEvent(new MemberRoleRevokedEvent(Id, userId, roleId));
+        RegisterDomainEventAndUpdate(new MemberRoleRevokedEvent(Id, userId, roleId));
     }
 
     /// <summary>
@@ -371,9 +346,7 @@ public class Organization : BaseEntity, IAggregateRoot
         var role = Role.Create(name, Id, description, color);
         _roles.Add(role);
 
-        Update();
-
-        RegisterDomainEvent(new RoleCreatedEvent(Id, role.Id, role.Name));
+        RegisterDomainEventAndUpdate(new RoleCreatedEvent(Id, role.Id, role.Name));
 
         return role;
     }
@@ -399,9 +372,7 @@ public class Organization : BaseEntity, IAggregateRoot
 
         _roles.Remove(role);
 
-        base.Update();
-
-        RegisterDomainEvent(new RoleDeletedEvent(Id, roleId, role.Name));
+        RegisterDomainEventAndUpdate(new RoleDeletedEvent(Id, roleId, role.Name));
     }
 
     /// <summary>
@@ -417,8 +388,6 @@ public class Organization : BaseEntity, IAggregateRoot
         {
             existingMember.AssignRole(roleId);
 
-            base.Update();
-
             RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
 
             return existingMember;
@@ -426,8 +395,6 @@ public class Organization : BaseEntity, IAggregateRoot
 
         var member = Member.Create(userId, Id, roleId);
         _members.Add(member);
-
-        base.Update();
 
         RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, roleId));
 

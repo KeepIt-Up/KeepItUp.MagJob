@@ -21,8 +21,5 @@ public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguratio
 
         builder.Property(e => e.UpdatedAt)
             .IsRequired(false);
-
-        builder.Property(e => e.RowVersion)
-            .IsRowVersion();
     }
 }
