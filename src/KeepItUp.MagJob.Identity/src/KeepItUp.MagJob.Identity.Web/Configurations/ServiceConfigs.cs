@@ -37,10 +37,9 @@ public static class ServiceConfigs
 
         services.AddScoped<IEmailSender, MimeKitEmailSender>();
 
+        services.AddHealthCheckConfigs(builder.Configuration, logger);
 
-        builder.Services.AddHealthChecks();
-
-        logger.LogInformation("{Project} services registered", "FastEndpoints, Mediatr, Validation, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin and Email Sender");
+        logger.LogInformation("{Project} services registered", "FastEndpoints, Mediatr, Validation, CORS, Authorization, CurrentUserAccessor, KeycloakAdmin, Email Sender and Health Checks");
 
         return services;
     }

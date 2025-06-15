@@ -27,7 +27,7 @@ public static class MiddlewareConfig
             app.UseHsts();
         }
 
-        app.MapHealthChecks("/health");
+        app.MapHealthCheckEndpoints();
 
         app.UseCors(CorsConfig.CorsPolicyName);
 
