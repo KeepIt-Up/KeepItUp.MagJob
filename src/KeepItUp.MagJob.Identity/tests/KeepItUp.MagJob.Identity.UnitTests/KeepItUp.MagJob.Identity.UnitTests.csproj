@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />
@@ -24,6 +25,9 @@
     </PackageReference>
     <PackageReference Include="ReportGenerator" />
     <PackageReference Include="xunit" />
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="AutoFixture.Xunit2" />
+    <PackageReference Include="Bogus" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +43,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.Core\KeepItUp.MagJob.Identity.Core.csproj" />
     <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.UseCases\KeepItUp.MagJob.Identity.UseCases.csproj" />
+    <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>
