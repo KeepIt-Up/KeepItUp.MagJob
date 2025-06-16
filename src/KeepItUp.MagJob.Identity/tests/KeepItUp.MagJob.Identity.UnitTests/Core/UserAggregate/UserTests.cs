@@ -9,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UnitTests.Core.UserAggregate;
 /// Simplified unit tests for User aggregate.
 /// Tests core business logic without complex domain event management.
 /// </summary>
-public class SimpleUserTests
+public class UserTests
 {
     /// <summary>
     /// Tests for User creation.
