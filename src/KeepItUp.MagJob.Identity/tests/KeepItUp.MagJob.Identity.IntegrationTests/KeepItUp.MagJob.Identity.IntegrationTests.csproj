@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.Infrastructure\KeepItUp.MagJob.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.Web\KeepItUp.MagJob.Identity.Web.csproj" />
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.UnitTests\KeepItUp.MagJob.Identity.UnitTests.csproj" />
   </ItemGroup>
 

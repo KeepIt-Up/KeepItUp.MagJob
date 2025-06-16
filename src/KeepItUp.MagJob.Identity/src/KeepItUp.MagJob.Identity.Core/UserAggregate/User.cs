@@ -186,6 +186,27 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
+    /// Updates the user's profile with full replacement (null values clear the fields).
+    /// </summary>
+    /// <param name="phoneNumber">New phone number or null to clear.</param>
+    /// <param name="address">New address or null to clear.</param>
+    /// <param name="profileImage">New profile picture URL or null to clear.</param>
+    public void UpdateProfileFull(string? phoneNumber, string? address, string? profileImage)
+    {
+        // Create new profile with the provided values (null values are allowed)
+        var newProfile = new UserProfile(phoneNumber, address, profileImage);
+
+        // Check if the profile actually changed
+        if (Profile != null && newProfile.Equals(Profile))
+        {
+            return; // No changes
+        }
+
+        Profile = newProfile;
+        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+    }
+
+    /// <summary>
     /// Updates the user's permissions.
     /// </summary>
     /// <param name="permissions">List of permissions</param>

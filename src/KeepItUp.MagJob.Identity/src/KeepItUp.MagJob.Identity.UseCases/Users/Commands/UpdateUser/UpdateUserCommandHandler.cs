@@ -44,15 +44,11 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Resul
 
             user.Update(request.FirstName, request.LastName);
 
-            var profile = user.Profile?.WithUpdates(
+            // Use UpdateProfileFull which treats null values as clearing the fields
+            user.UpdateProfileFull(
                 request.PhoneNumber,
                 request.Address,
                 request.ProfileImageUrl);
-
-            if (profile != null)
-            {
-                user.UpdateProfile(profile.PhoneNumber, profile.Address, profile.ProfileImage);
-            }
 
             await _repository.UpdateAsync(user, cancellationToken);
 

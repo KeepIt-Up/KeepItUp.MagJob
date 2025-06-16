@@ -41,10 +41,10 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
         public async Task Should_AcceptInvitation_When_AllEntitiesExistAndMemberExists()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
             var memberRole = organization.AddRole("Member", "Member role");
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
 
             // Add member to organization (simulating that event handler already processed)
             var member = organization.AddMember(user.Id, memberRole.Id);
@@ -62,7 +62,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act
@@ -79,7 +79,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             await _invitationRepository.Received(1).GetByIdAsync(command.InvitationId, Arg.Any<CancellationToken>());
             await _invitationRepository.Received(1).UpdateAsync(invitation, Arg.Any<CancellationToken>());
             await _userRepository.Received(1).GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>());
-            await _organizationRepository.Received(1).GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
+            await _organizationRepository.Received(1).GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -164,7 +164,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns((Organization?)null);
 
             // Act
@@ -183,14 +183,14 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
         }
 
         [Fact]
-        public async Task Should_ReturnError_When_MemberWasNotCreated()
+        public async Task Should_AcceptInvitation_When_MemberWillBeCreatedAsynchronously()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
 
-            // Don't add member to organization - simulating that event handler hasn't processed yet
+            // Note: Member creation is handled by event handler asynchronously, so we don't add member here
 
             var command = new AcceptInvitationCommand
             {
@@ -205,7 +205,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act
@@ -213,15 +213,13 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
 
             // Assert
             result.Should().NotBeNull();
-            result.IsSuccess.Should().BeFalse();
-            result.Status.Should().Be(ResultStatus.Error);
-            result.Errors.Should().Contain(e => e.Contains("Member was not created successfully"));
+            result.IsSuccess.Should().BeTrue();
 
             // Verify all steps were performed
             invitation.Status.Should().Be(InvitationStatus.Accepted);
             await _invitationRepository.Received(1).UpdateAsync(invitation, Arg.Any<CancellationToken>());
             await _userRepository.Received(1).GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>());
-            await _organizationRepository.Received(1).GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
+            await _organizationRepository.Received(1).GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
         }
 
         [Fact]
@@ -317,10 +315,10 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
         public async Task Should_LogSuccess_When_InvitationIsAcceptedSuccessfully()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
             var adminRole = organization.AddRole("Admin", "Admin role");
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
             var member = organization.AddMember(user.Id, adminRole.Id);
 
             var command = new AcceptInvitationCommand
@@ -336,7 +334,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act
@@ -358,10 +356,10 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
         public async Task Should_UseCorrectCancellationToken_When_Provided()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
             var guestRole = organization.AddRole("Guest", "Guest role");
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
             var member = organization.AddMember(user.Id, guestRole.Id);
 
             var command = new AcceptInvitationCommand
@@ -378,7 +376,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, cancellationToken)
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, cancellationToken)
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, cancellationToken)
                 .Returns(organization);
 
             // Act
@@ -391,17 +389,17 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             await _invitationRepository.Received(1).GetByIdAsync(command.InvitationId, cancellationToken);
             await _invitationRepository.Received(1).UpdateAsync(invitation, cancellationToken);
             await _userRepository.Received(1).GetByEmailAsync(invitation.Email, cancellationToken);
-            await _organizationRepository.Received(1).GetByIdWithMembersAsync(invitation.OrganizationId, cancellationToken);
+            await _organizationRepository.Received(1).GetByIdAsync(invitation.OrganizationId, cancellationToken);
         }
 
         [Fact]
         public async Task Should_CallCorrectRepositoryMethods_When_HandlingCommand()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
             var memberRole = organization.AddRole("Member", "Member role");
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
             var member = organization.AddMember(user.Id, memberRole.Id);
 
             var command = new AcceptInvitationCommand
@@ -417,7 +415,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act
@@ -426,9 +424,8 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             // Assert
             result.IsSuccess.Should().BeTrue();
 
-            // Verify that GetByIdWithMembersAsync was called (not just GetByIdAsync)
-            await _organizationRepository.Received(1).GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
-            await _organizationRepository.DidNotReceive().GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
+            // Verify that GetByIdAsync was called
+            await _organizationRepository.Received(1).GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>());
 
             // Verify GetByEmailAsync was called on user repository
             await _userRepository.Received(1).GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>());
@@ -439,10 +436,10 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
         public async Task Should_AcceptInvitationAndEmitDomainEvent_When_ValidCommand()
         {
             // Arrange
-            var user = UserMother.ValidUser();
             var organization = OrganizationMother.ValidOrganization();
             var memberRole = organization.AddRole("Member", "Member role");
-            var invitation = InvitationMother.ValidInvitation();
+            var invitation = InvitationMother.InvitationForOrganization(organization.Id);
+            var user = UserMother.UserWithEmail(invitation.Email);
             var member = organization.AddMember(user.Id, memberRole.Id);
 
             var command = new AcceptInvitationCommand
@@ -458,7 +455,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(invitation.Email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act
@@ -485,7 +482,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             var user = UserMother.UserWithEmail(email);
             var organization = OrganizationMother.ValidOrganization();
             var adminRole = organization.AddRole("Admin", "Admin role");
-            var invitation = InvitationMother.InvitationWithEmail(email);
+            var invitation = Invitation.Create(organization.Id, email, adminRole.Id);
             var member = organization.AddMember(user.Id, adminRole.Id);
 
             var command = new AcceptInvitationCommand
@@ -501,7 +498,7 @@ public class AcceptInvitationCommandHandlerTests : BaseUnitTest
             _userRepository.GetByEmailAsync(email, Arg.Any<CancellationToken>())
                 .Returns(user);
 
-            _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
+            _organizationRepository.GetByIdAsync(invitation.OrganizationId, Arg.Any<CancellationToken>())
                 .Returns(organization);
 
             // Act

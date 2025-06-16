@@ -77,7 +77,7 @@ public static class InvitationMother
     public static Invitation AcceptedInvitation()
     {
         var invitation = ValidInvitation();
-        invitation.Accept();
+        invitation.Accept(invitation.Token);
         return invitation;
     }
 

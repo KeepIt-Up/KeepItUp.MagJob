@@ -59,10 +59,21 @@ public static class MiddlewareConfig
         {
             var context = services.GetRequiredService<AppDbContext>();
             var logger = services.GetRequiredService<ILogger<Program>>();
+            var configuration = services.GetRequiredService<IConfiguration>();
 
-            logger.LogInformation("Applying migrations...");
-            await context.Database.MigrateAsync();
-            logger.LogInformation("Migrations applied successfully");
+            // Skip migrations if configured (e.g., in tests)
+            var skipMigrations = configuration.GetValue<bool>("Database:SkipMigrations", false);
+
+            if (!skipMigrations)
+            {
+                logger.LogInformation("Applying migrations...");
+                await context.Database.MigrateAsync();
+                logger.LogInformation("Migrations applied successfully");
+            }
+            else
+            {
+                logger.LogInformation("Skipping migrations (Database:SkipMigrations = true)");
+            }
 
             await SeedData.InitializeAsync(context);
         }

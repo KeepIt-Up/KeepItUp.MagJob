@@ -1,6 +1,7 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+using KeepItUp.MagJob.Identity.Core.InvitationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Infrastructure.Data;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 using KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
@@ -31,7 +32,8 @@ public static class InfrastructureServiceExtensions
         .AddSingleton<IUserProfilePictureService, UserProfilePictureService>()
         .AddScoped<IFileValidationService, FileValidationService>()
         .AddScoped<IOrganizationRepository, OrganizationRepository>()
-        .AddScoped<IUserRepository, UserRepository>();
+        .AddScoped<IUserRepository, UserRepository>()
+        .AddScoped<IInvitationRepository, InvitationRepository>();
 
     // Add Keycloak services
     services.AddKeycloakServices();

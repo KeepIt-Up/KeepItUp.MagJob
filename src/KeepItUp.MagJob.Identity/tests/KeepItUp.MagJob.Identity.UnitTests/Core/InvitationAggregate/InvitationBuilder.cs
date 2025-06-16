@@ -159,7 +159,7 @@ public class InvitationBuilder
         // Apply post-creation actions
         if (_shouldAccept)
         {
-            invitation.Accept();
+            invitation.Accept(invitation.Token);
         }
         else if (_shouldReject)
         {

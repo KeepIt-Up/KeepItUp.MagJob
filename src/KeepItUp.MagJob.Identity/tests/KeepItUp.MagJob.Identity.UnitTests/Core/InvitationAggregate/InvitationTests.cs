@@ -116,7 +116,7 @@ public class InvitationTests
             var invitation = InvitationMother.ValidInvitation();
 
             // Act
-            invitation.Accept();
+            invitation.Accept(invitation.Token);
 
             // Assert
             invitation.Status.Should().Be(InvitationStatus.Accepted);
@@ -129,7 +129,7 @@ public class InvitationTests
             var invitation = InvitationMother.ValidInvitation();
 
             // Act
-            invitation.Accept();
+            invitation.Accept(invitation.Token);
 
             // Assert
             invitation.DomainEvents.Should().Contain(e => e is InvitationAcceptedEvent);
@@ -142,7 +142,7 @@ public class InvitationTests
             var invitation = InvitationMother.AcceptedInvitation();
 
             // Act & Assert
-            var action = () => invitation.Accept();
+            var action = () => invitation.Accept(invitation.Token);
             action.Should().Throw<InvalidOperationException>()
                 .WithMessage("Tylko oczekujące zaproszenia mogą zostać zaakceptowane.");
         }
@@ -154,7 +154,7 @@ public class InvitationTests
             var invitation = InvitationMother.RejectedInvitation();
 
             // Act & Assert
-            var action = () => invitation.Accept();
+            var action = () => invitation.Accept(invitation.Token);
             action.Should().Throw<InvalidOperationException>();
         }
 
@@ -165,9 +165,22 @@ public class InvitationTests
             var invitation = InvitationMother.ExpiredInvitation();
 
             // Act & Assert
-            var action = () => invitation.Accept();
+            var action = () => invitation.Accept(invitation.Token);
             action.Should().Throw<InvalidOperationException>()
                 .WithMessage("Nie można zaakceptować wygasłego zaproszenia.");
+        }
+
+        [Fact]
+        public void Should_ThrowInvalidOperationException_When_TokenIsInvalid()
+        {
+            // Arrange
+            var invitation = InvitationMother.ValidInvitation();
+            var invalidToken = "invalid-token";
+
+            // Act & Assert
+            var action = () => invitation.Accept(invalidToken);
+            action.Should().Throw<InvalidOperationException>()
+                .WithMessage("Nieprawidłowy token zaproszenia.");
         }
     }
 

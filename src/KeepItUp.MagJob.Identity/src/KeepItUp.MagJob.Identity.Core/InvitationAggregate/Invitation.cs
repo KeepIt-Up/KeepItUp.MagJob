@@ -78,8 +78,11 @@ public class Invitation : BaseEntity, IAggregateRoot
     /// <summary>
     /// Accepts the invitation.
     /// </summary>
-    public void Accept()
+    /// <param name="token">Invitation token for verification.</param>
+    public void Accept(string token)
     {
+        Guard.Against.NullOrEmpty(token, nameof(token));
+
         if (Status != InvitationStatus.Pending)
         {
             throw new InvalidOperationException("Tylko oczekujące zaproszenia mogą zostać zaakceptowane.");
@@ -88,6 +91,11 @@ public class Invitation : BaseEntity, IAggregateRoot
         if (IsExpired)
         {
             throw new InvalidOperationException("Nie można zaakceptować wygasłego zaproszenia.");
+        }
+
+        if (Token != token)
+        {
+            throw new InvalidOperationException("Nieprawidłowy token zaproszenia.");
         }
 
         Status = InvitationStatus.Accepted;

@@ -52,30 +52,28 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
                 return Result<EmptyResponse>.NotFound($"Invitation with ID {request.InvitationId} not found.");
             }
 
-            invitation.Accept();
+            invitation.Accept(request.Token);
 
             await _invitationRepository.UpdateAsync(invitation, cancellationToken);
 
+            // Verify that user exists (for logging purposes)
             var user = await _userRepository.GetByEmailAsync(invitation.Email, cancellationToken);
             if (user == null)
             {
                 return Result<EmptyResponse>.Error($"User with email {invitation.Email} not found.");
             }
 
-            var organization = await _organizationRepository.GetByIdWithMembersAsync(invitation.OrganizationId, cancellationToken);
+            // Verify that organization exists (for logging purposes)
+            var organization = await _organizationRepository.GetByIdAsync(invitation.OrganizationId, cancellationToken);
             if (organization == null)
             {
                 return Result<EmptyResponse>.Error($"Organization with ID {invitation.OrganizationId} not found.");
             }
 
-            var member = organization.Members.FirstOrDefault(m => m.UserId == user.Id);
-            if (member == null)
-            {
-                return Result<EmptyResponse>.Error("Member was not created successfully.");
-            }
+            // Note: Member creation is handled by InvitationAcceptedEventHandler
 
-            _logger.LogInformation("Użytkownik {UserId} zaakceptował zaproszenie {InvitationId} do organizacji {OrganizationId}, utworzono członka {MemberId}",
-                request.UserId, request.InvitationId, invitation.OrganizationId, member.Id);
+            _logger.LogInformation("Użytkownik {UserId} zaakceptował zaproszenie {InvitationId} do organizacji {OrganizationId}",
+                request.UserId, request.InvitationId, invitation.OrganizationId);
 
             return Result<EmptyResponse>.Success(new EmptyResponse());
         }
