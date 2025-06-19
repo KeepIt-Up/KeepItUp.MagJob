@@ -36,6 +36,24 @@ public class UpdateRolePermissionsCommandHandler(
                 return Result.NotFound($"Nie znaleziono roli o identyfikatorze {request.RoleId} w organizacji.");
             }
 
+            bool isOwner = organization.OwnerId == request.UserId;
+            bool isAdmin = false;
+
+            var organizationWithMembers = await organizationRepository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
+            if (organizationWithMembers != null)
+            {
+                var member = organizationWithMembers.Members.FirstOrDefault(m => m.UserId == request.UserId);
+                if (member != null)
+                {
+                    isAdmin = member.Roles.Any(r => r.Name == "Admin");
+                }
+            }
+
+            if (!isOwner && !isAdmin)
+            {
+                return Result.Forbidden("Brak uprawnień do aktualizacji uprawnień roli.");
+            }
+
             await organizationRepository.UpdateRolePermissionsAsync(request.RoleId, request.Permissions, cancellationToken);
 
             return Result.Success();

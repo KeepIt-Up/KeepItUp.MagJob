@@ -20,7 +20,7 @@ public class FileValidationService : IFileValidationService
 
         if (file.Length > maxSizeInBytes)
         {
-            throw new ArgumentException($"{fileType} file size cannot exceed {maxSizeInBytes / 1024 / 1024}MB.");
+            throw new ArgumentException($"{fileType} file size cannot exceed {maxSizeInBytes / (1024 * 1024)}MB.");
         }
 
         if (!AllowedImageTypes.Contains(file.ContentType.ToLowerInvariant()))

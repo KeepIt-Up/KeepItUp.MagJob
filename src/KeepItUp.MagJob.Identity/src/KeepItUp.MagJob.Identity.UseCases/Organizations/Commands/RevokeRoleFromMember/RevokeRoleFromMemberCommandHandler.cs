@@ -70,6 +70,11 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} nie ma przypisanej roli o ID {request.RoleId}.");
             }
 
+            if (request.MemberUserId == organization.OwnerId && role.Name == "Admin")
+            {
+                return Result.Error("Nie można odebrać roli właściciela organizacji.");
+            }
+
             if (member.Roles.Count == 1)
             {
                 return Result.Error("Nie można odebrać ostatniej roli użytkownikowi. Użytkownik musi mieć przypisaną co najmniej jedną rolę.");

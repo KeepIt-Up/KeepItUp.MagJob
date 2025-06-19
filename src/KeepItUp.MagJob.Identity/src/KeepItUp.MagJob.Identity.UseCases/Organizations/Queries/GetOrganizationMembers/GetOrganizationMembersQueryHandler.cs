@@ -46,12 +46,12 @@ public class GetOrganizationMembersQueryHandler : IRequestHandler<GetOrganizatio
                 return Result<PaginationResult<MemberDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            //bool hasAccess = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
+            bool hasAccess = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
-            //if (!hasAccess)
-            //{
-            //    return Result<PaginationResult<MemberDto>>.Forbidden("Brak dostępu do organizacji.");
-            //}
+            if (!hasAccess)
+            {
+                return Result<PaginationResult<MemberDto>>.Forbidden("Brak dostępu do organizacji.");
+            }
 
             Expression<Func<Core.OrganizationAggregate.Member, MemberDto>> memberSelector = member => new MemberDto
             {

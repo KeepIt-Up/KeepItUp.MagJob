@@ -42,6 +42,11 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.Id}.");
             }
 
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return Result.Error("Nazwa organizacji jest wymagana.");
+            }
+
             if (organization.OwnerId != request.UserId)
             {
                 var isMember = organization.Members.Any(m => m.UserId == request.UserId &&
@@ -49,7 +54,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
 
                 if (!isMember)
                 {
-                    return Result.Forbidden("Brak uprawnień do aktualizacji organizacji.");
+                    return Result.Forbidden("Brak uprawnień do aktualizacji tej organizacji.");
                 }
             }
 

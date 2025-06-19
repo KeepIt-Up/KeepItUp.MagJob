@@ -60,11 +60,22 @@ public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrgani
                 return Result<string>.Error("Cannot update logo for inactive organization.");
             }
 
-            // Check if user has permission to update organization logo
-            var hasMembership = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
-            if (!hasMembership)
+            bool isOwner = organization.OwnerId == request.UserId;
+            bool isAdmin = false;
+
+            var organizationWithMembers = await _organizationRepository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
+            if (organizationWithMembers != null)
             {
-                return Result<string>.Forbidden("User does not have permission to update this organization.");
+                var member = organizationWithMembers.Members.FirstOrDefault(m => m.UserId == request.UserId);
+                if (member != null)
+                {
+                    isAdmin = member.Roles.Any(r => r.Name == "Admin");
+                }
+            }
+
+            if (!isOwner && !isAdmin)
+            {
+                return Result<string>.Forbidden("User does not have permission to update organization logo.");
             }
 
             var oldLogoUrl = organization.LogoUrl;

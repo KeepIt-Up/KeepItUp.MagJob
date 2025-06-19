@@ -41,14 +41,6 @@ public class DeactivateOrganizationCommandValidator : AbstractValidator<Deactiva
                     cancellationToken);
             })
             .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
-
-        RuleFor(x => x)
-            .MustAsync(async (command, cancellationToken) =>
-            {
-                var organization = await _organizationRepository.GetByIdAsync(command.Id, cancellationToken);
-                return organization != null && organization.IsActive;
-            })
-            .WithMessage("Organizacja jest już nieaktywna.");
     }
 
     /// <summary>

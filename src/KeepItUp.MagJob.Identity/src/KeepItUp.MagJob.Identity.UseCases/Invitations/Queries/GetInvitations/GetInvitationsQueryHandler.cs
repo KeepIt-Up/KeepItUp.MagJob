@@ -65,8 +65,8 @@ public class GetInvitationsQueryHandler : IRequestHandler<GetInvitationsQuery, R
             };
 
             Expression<Func<Invitation, bool>> filter = i =>
-                request.OrganizationId != null ? i.OrganizationId == request.OrganizationId : true &&
-                request.Email != null ? i.Email == request.Email : true;
+                (request.OrganizationId == null || i.OrganizationId == request.OrganizationId) &&
+                (string.IsNullOrEmpty(request.Email) || i.Email == request.Email);
 
             var paginationResult = await _invitationRepository.GetByOrganizationIdWithPaginationAsync(
                 selector,

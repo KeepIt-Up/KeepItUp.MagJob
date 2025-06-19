@@ -69,7 +69,7 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} już ma przypisaną rolę o ID {request.RoleId}.");
             }
 
-            member.AssignRole(request.RoleId);
+            member.AssignRole(request.RoleId, role);
 
             await _repository.UpdateAsync(organization, cancellationToken);
 
