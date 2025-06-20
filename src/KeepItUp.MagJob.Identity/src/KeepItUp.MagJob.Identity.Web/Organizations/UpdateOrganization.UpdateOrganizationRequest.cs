@@ -22,4 +22,9 @@ public class UpdateOrganizationRequest
     /// Organization description.
     /// </summary>
     public string? Description { get; set; }
+
+    /// <summary>
+    /// Whether the organization should be active.
+    /// </summary>
+    public bool IsActive { get; set; } = true;
 }

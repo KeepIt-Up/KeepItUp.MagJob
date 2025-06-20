@@ -55,6 +55,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization.Id,
                 Name = "Updated Name",
                 Description = "Updated description",
+                IsActive = true,
                 UserId = owner.Id
             };
 
@@ -95,6 +96,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = nonExistentOrganizationId,
                 Name = "New Name",
                 Description = "New description",
+                IsActive = true,
                 UserId = user.Id
             };
 
@@ -145,6 +147,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization.Id,
                 Name = "Updated Name",
                 Description = "Updated description",
+                IsActive = true,
                 UserId = nonOwner.Id
             };
 
@@ -197,6 +200,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization2.Id,
                 Name = "Organization 1", // Same name as organization1
                 Description = "Updated description",
+                IsActive = true,
                 UserId = owner.Id
             };
 
@@ -240,6 +244,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization.Id,
                 Name = "Updated Name",
                 Description = "Updated description",
+                IsActive = true,
                 // LogoUrl and BannerUrl not provided - should remain unchanged
                 UserId = owner.Id
             };
@@ -291,6 +296,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization.Id,
                 Name = "", // Empty name
                 Description = "Updated description",
+                IsActive = true,
                 UserId = owner.Id
             };
 
@@ -334,6 +340,7 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
                 Id = organization.Id,
                 Name = "Test Organization", // Same name
                 Description = "Updated description",
+                IsActive = true,
                 UserId = owner.Id
             };
 
@@ -348,6 +355,72 @@ public class UpdateOrganizationCommandHandlerTests : BaseIntegrationTest
             updatedOrganization.Should().NotBeNull();
             updatedOrganization!.Name.Should().Be("Test Organization");
             updatedOrganization.Description.Should().Be("Updated description");
+        }
+
+        [Fact]
+        public async Task Should_UpdateIsActiveStatus_When_StatusIsChanged()
+        {
+            // Arrange
+            var owner = User.Create(
+                "Owner",
+                "User",
+                "owner@example.com",
+                "owner",
+                Guid.NewGuid());
+
+            await DbContext.Users.AddAsync(owner);
+            await SaveAndClearAsync();
+
+            var organization = Organization.Create(
+                "Test Organization",
+                owner.Id,
+                "Test description",
+                null,
+                null);
+
+            organization.InitializeRoles();
+            organization.InitializeOwner();
+
+            await DbContext.Organizations.AddAsync(organization);
+            await SaveAndClearAsync();
+
+            // Act - Deactivate organization
+            var deactivateCommand = new UpdateOrganizationCommand
+            {
+                Id = organization.Id,
+                Name = "Test Organization",
+                Description = "Test description",
+                IsActive = false,
+                UserId = owner.Id
+            };
+
+            var deactivateResult = await Mediator.Send(deactivateCommand);
+
+            // Assert - Organization should be deactivated
+            deactivateResult.IsSuccess.Should().BeTrue();
+
+            var deactivatedOrganization = await DbContext.Organizations.FindAsync(organization.Id);
+            deactivatedOrganization.Should().NotBeNull();
+            deactivatedOrganization!.IsActive.Should().BeFalse();
+
+            // Act - Reactivate organization
+            var reactivateCommand = new UpdateOrganizationCommand
+            {
+                Id = organization.Id,
+                Name = "Test Organization",
+                Description = "Test description",
+                IsActive = true,
+                UserId = owner.Id
+            };
+
+            var reactivateResult = await Mediator.Send(reactivateCommand);
+
+            // Assert - Organization should be active again
+            reactivateResult.IsSuccess.Should().BeTrue();
+
+            var reactivatedOrganization = await DbContext.Organizations.FindAsync(organization.Id);
+            reactivatedOrganization.Should().NotBeNull();
+            reactivatedOrganization!.IsActive.Should().BeTrue();
         }
     }
 }

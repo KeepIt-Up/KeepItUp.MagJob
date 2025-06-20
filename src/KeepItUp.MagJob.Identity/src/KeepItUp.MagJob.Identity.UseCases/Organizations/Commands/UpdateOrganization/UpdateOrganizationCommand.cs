@@ -23,6 +23,11 @@ public record UpdateOrganizationCommand : IRequest<Result<EmptyResponse>>
     public string? Description { get; init; }
 
     /// <summary>
+    /// Whether the organization should be active.
+    /// </summary>
+    public bool IsActive { get; init; } = true;
+
+    /// <summary>
     /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }

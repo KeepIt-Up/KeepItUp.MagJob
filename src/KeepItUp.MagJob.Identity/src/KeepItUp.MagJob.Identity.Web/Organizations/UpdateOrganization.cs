@@ -23,7 +23,7 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
         {
             s.Summary = "Updates an existing organization";
             s.Description = "Updates an existing organization with the given identifier";
-            s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji" };
+            s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji", IsActive = true };
             s.ResponseExamples[200] = new UpdateOrganizationResponse { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji", OwnerId = Guid.NewGuid() };
         });
     }
@@ -43,6 +43,7 @@ public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor current
             Id = req.Id,
             Name = req.Name,
             Description = req.Description,
+            IsActive = req.IsActive,
             UserId = userGuid
         };
 

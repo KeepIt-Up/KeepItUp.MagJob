@@ -68,7 +68,7 @@ public class UpdateOrganizationCommandHandler : IRequestHandler<UpdateOrganizati
                 }
             }
 
-            organization.Update(request.Name, request.Description);
+            organization.UpdateWithStatus(request.Name, request.Description, request.IsActive);
 
             await _repository.UpdateAsync(organization, cancellationToken);
 

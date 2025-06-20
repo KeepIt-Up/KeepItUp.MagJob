@@ -216,6 +216,31 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
+    /// Updates the organization's data including activity status.
+    /// This method properly handles status changes through domain methods.
+    /// </summary>
+    /// <param name="name">Name of the organization.</param>
+    /// <param name="description">Description of the organization.</param>
+    /// <param name="isActive">Whether the organization should be active.</param>
+    /// <param name="logoUrl">URL of the organization's logo.</param>
+    /// <param name="bannerUrl">URL of the organization's banner.</param>
+    public void UpdateWithStatus(string name, string? description, bool isActive, string? logoUrl = null, string? bannerUrl = null)
+    {
+        // Update basic properties first
+        Update(name, description, logoUrl, bannerUrl);
+
+        // Handle status changes through domain methods
+        if (isActive && !IsActive)
+        {
+            Activate();
+        }
+        else if (!isActive && IsActive)
+        {
+            Deactivate();
+        }
+    }
+
+    /// <summary>
     /// Adds a new member to the organization.
     /// </summary>
     /// <param name="userId">User ID.</param>

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using KeepItUp.MagJob.Identity.Core.Exceptions;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
@@ -133,70 +134,9 @@ public class OrganizationRepository : IOrganizationRepository
     {
         try
         {
-            // If we are only adding new roles, use a more direct approach
-            var addedRoles = organization.Roles.ToList();
-            if (addedRoles.Any())
-            {
-                using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
-                try
-                {
-                    // Get the existing role IDs for this organization
-                    var existingRoleIds = await _dbContext.Set<Role>()
-                        .Where(r => r.OrganizationId == organization.Id)
-                        .Select(r => r.Id)
-                        .ToListAsync(cancellationToken);
-
-                    // Find new roles that do not yet exist in the database
-                    var newRoles = addedRoles.Where(r => !existingRoleIds.Contains(r.Id)).ToList();
-                    if (newRoles.Any())
-                    {
-                        // Add new roles directly to the Roles table
-                        await _dbContext.Set<Role>().AddRangeAsync(newRoles, cancellationToken);
-
-                        // Update the base organization entity without violating the optimistic concurrency system
-                        var existingOrg = await _dbContext.Organizations.FindAsync(new object[] { organization.Id }, cancellationToken);
-                        if (existingOrg != null)
-                        {
-                            // Set the update timestamp
-                            existingOrg.Update(
-                                existingOrg.Name,
-                                existingOrg.Description,
-                                existingOrg.LogoUrl,
-                                existingOrg.BannerUrl);
-                        }
-
-                        await _dbContext.SaveChangesAsync(cancellationToken);
-                    }
-
-                    await transaction.CommitAsync(cancellationToken);
-                }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                    throw;
-                }
-
-                return;
-            }
-
-            // Standard update for other cases
-            // Get the current version of the organization from the database with attached roles
-            var existingOrganization = await _dbContext.Organizations
-                .Include(o => o.Roles)
-                .FirstOrDefaultAsync(o => o.Id == organization.Id, cancellationToken);
-
-            if (existingOrganization == null)
-            {
-                throw new EntityNotFoundException($"Organization with ID {organization.Id} not found.");
-            }
-
-            // Update the basic organization properties
-            existingOrganization.Update(
-                organization.Name,
-                organization.Description,
-                organization.LogoUrl,
-                organization.BannerUrl);
-
+            // Simple update using EF Core change tracking
+            // Domain methods should handle all business logic and state changes
+            _dbContext.Organizations.Update(organization);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
@@ -333,12 +273,26 @@ public class OrganizationRepository : IOrganizationRepository
 
         // Get the permissions based on their names
         var permissionsList = permissionNames.ToList();
-        var permissions = await _dbContext.Permissions
+        var existingPermissions = await _dbContext.Permissions
             .Where(p => permissionsList.Contains(p.Name))
             .ToListAsync(cancellationToken);
 
-        // Add new permissions
-        foreach (var permission in permissions)
+        // Znajdź nazwy uprawnień, które nie istnieją w bazie danych
+        var missingPermissionNames = permissionsList.Except(existingPermissions.Select(p => p.Name)).ToList();
+
+        // Utwórz nowe uprawnienia dla brakujących nazw
+        var newPermissions = missingPermissionNames.Select(name => new Permission(name)).ToList();
+        if (newPermissions.Any())
+        {
+            await _dbContext.Permissions.AddRangeAsync(newPermissions, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        // Połącz istniejące i nowe uprawnienia
+        var allPermissions = existingPermissions.Concat(newPermissions).ToList();
+
+        // Add permissions
+        foreach (var permission in allPermissions)
         {
             role.AddPermission(permission);
         }
