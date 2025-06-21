@@ -44,4 +44,4 @@ public class MemberDto
     /// Role przypisane do członka.
     /// </summary>
     public List<RoleDto> Roles { get; set; } = new List<RoleDto>();
-} 
+}

@@ -18,14 +18,14 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
     public override void Configure()
     {
         Post(CreateOrganizationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
         Description(b => b
             .WithName("CreateOrganization")
             .Produces<CreateOrganizationResponse>(201)
             .ProducesProblem(400)
             .ProducesProblem(401)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Tworzy nową organizację";
             s.Description = "Tworzy nową organizację z podanymi danymi";
             s.ExampleRequest = new CreateOrganizationRequest { Name = "Nazwa organizacji", Description = "Opis organizacji" };
@@ -70,7 +70,7 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
 
         // Zakładamy, że result.Value to Guid (identyfikator utworzonej organizacji)
         var organizationId = result.Value;
-        
+
         Response = new CreateOrganizationResponse
         {
             Id = organizationId,

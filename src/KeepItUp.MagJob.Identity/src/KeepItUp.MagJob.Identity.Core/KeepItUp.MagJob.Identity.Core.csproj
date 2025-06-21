@@ -6,9 +6,12 @@
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="Ardalis.SharedKernel" />
     <PackageReference Include="Ardalis.SmartEnum" />
-    <PackageReference Include="Ardalis.Specification" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeepItUp.MagJob.Identity.SharedKernel\KeepItUp.MagJob.Identity.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

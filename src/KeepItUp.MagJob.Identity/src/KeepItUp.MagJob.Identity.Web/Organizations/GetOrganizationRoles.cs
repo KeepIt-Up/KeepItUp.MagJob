@@ -1,3 +1,4 @@
+using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
 using KeepItUp.MagJob.Identity.Web.Services;
 
@@ -11,7 +12,7 @@ namespace KeepItUp.MagJob.Identity.Web.Organizations;
 /// Pobiera wszystkie role przypisane do organizacji o podanym identyfikatorze.
 /// </remarks>
 public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetOrganizationRolesRequest, GetOrganizationRolesResponse>
+    : Endpoint<GetOrganizationRolesRequest, PaginationResult<RoleDto>>
 {
     /// <summary>
     /// Konfiguruje endpoint.
@@ -27,7 +28,8 @@ public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor curre
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Pobiera role organizacji";
             s.Description = "Pobiera wszystkie role przypisane do organizacji o podanym identyfikatorze";
             s.ExampleRequest = new GetOrganizationRolesRequest { OrganizationId = Guid.NewGuid() };
@@ -70,11 +72,7 @@ public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor curre
             return;
         }
 
-        Response = new GetOrganizationRolesResponse
-        {
-            OrganizationId = req.OrganizationId,
-            Roles = result.Value
-        };
+        Response = result.Value;
 
         await SendOkAsync(Response, ct);
     }

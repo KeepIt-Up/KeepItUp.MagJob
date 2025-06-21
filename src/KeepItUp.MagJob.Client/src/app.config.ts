@@ -3,10 +3,11 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
-import { tokenInterceptor } from './app/core/interceptors/token.interceptor';
-import { AuthService } from './app/core/services/auth.service';
-import { heroIcons } from './app/shared/icons/icons';
+import { tokenInterceptorFn } from '@core/interceptors/token.interceptor';
+import { heroIconsProvider } from '@core/providers/hero-icons-provider';
 import { provideNgIconsConfig } from '@ng-icons/core';
+import { appInitializerFn } from '@core/initializers/app.initializer';
+import { ngIconsConfig } from '@core/configs/ng-icon.config';
 
 import {
   CalendarDateFormatter,
@@ -25,19 +26,12 @@ export function momentAdapterFactory() {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(withInterceptors([tokenInterceptor])),
+    provideHttpClient(withInterceptors([tokenInterceptorFn])),
     provideRouter(routes, withComponentInputBinding()),
     provideOAuthClient(),
-    provideAppInitializer(() => {
-      const authService = inject(AuthService);
-      return authService.initAuth();
-    }),
-    provideNgIconsConfig({
-      size: '1.5em',
-      color: 'currentColor',
-      strokeWidth: 2,
-    }),
-    heroIcons,
+    provideAppInitializer(appInitializerFn),
+    provideNgIconsConfig(ngIconsConfig),
+    heroIconsProvider,
     { provide: LOCALE_ID, useValue: 'en-US' },
     { provide: DateAdapter, useFactory: momentAdapterFactory },
     { provide: CalendarDateFormatter, useClass: CalendarNativeDateFormatter },

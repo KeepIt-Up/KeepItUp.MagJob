@@ -4,8 +4,9 @@ import { OrganizationSidebarComponent } from '@organizations/components/organiza
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
-import { OrganizationService } from '@organizations/services/organization.service';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
+import { OrganizationContextService } from '@organizations/services/organization-context.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-organization',
@@ -15,20 +16,21 @@ import { ScrollControlService } from '@shared/services/scroll-control.service';
     NavbarComponent,
     ErrorAlertComponent,
     SpinnerComponent,
+    AsyncPipe,
   ],
   templateUrl: './organization.component.html',
 })
 export class OrganizationComponent implements OnInit {
   @Input() organizationId!: string;
-  private organizationService = inject(OrganizationService);
+  private organizationContextService = inject(OrganizationContextService);
   private scrollControlService = inject(ScrollControlService);
 
-  state$ = this.organizationService.state$;
+  organizationContext$ = this.organizationContextService.organizationContext$;
   sidebarExpanded = false;
   scrollable = this.scrollControlService.scrollable$;
 
   ngOnInit(): void {
-    this.organizationService.getOrganization(this.organizationId).subscribe();
+    this.organizationContextService.loadOrganization(this.organizationId).subscribe();
   }
 
   sidebarExpandedChange(expanded: boolean) {

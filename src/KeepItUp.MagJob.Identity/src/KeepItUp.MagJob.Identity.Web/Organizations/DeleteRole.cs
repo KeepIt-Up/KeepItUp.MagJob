@@ -27,7 +27,8 @@ public class DeleteRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             .ProducesProblem(403)
             .ProducesProblem(404)
             .ProducesProblem(500));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Usuwa rolę z organizacji";
             s.Description = "Usuwa rolę z organizacji o podanym identyfikatorze";
             s.ExampleRequest = new DeleteRoleRequest { OrganizationId = Guid.NewGuid(), RoleId = Guid.NewGuid() };

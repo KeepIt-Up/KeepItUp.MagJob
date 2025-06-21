@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateRole;
 /// </summary>
 public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<UpdateRoleCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +18,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public UpdateRoleCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<UpdateRoleCommandHandler> logger)
     {
         _repository = repository;
@@ -39,9 +36,9 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
@@ -59,15 +56,11 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
 
             // Znajdź rolę do aktualizacji
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
-            }
-
-            // Sprawdź, czy nazwa roli nie jest już używana przez inną rolę
-            if (organization.Roles.Any(r => r.Name == request.Name && r.Id != request.RoleId))
-            {
-                return Result.Error($"Rola o nazwie '{request.Name}' już istnieje w organizacji.");
             }
 
             // Sprawdź, czy rola nie jest jedną z domyślnych ról systemowych
@@ -84,7 +77,6 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Zaktualizowano rolę o ID {RoleId} w organizacji o ID {OrganizationId}",
                 request.RoleId, organization.Id);
@@ -97,4 +89,4 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, Resul
             return Result.Error("Wystąpił błąd podczas aktualizacji roli: " + ex.Message);
         }
     }
-} 
+}

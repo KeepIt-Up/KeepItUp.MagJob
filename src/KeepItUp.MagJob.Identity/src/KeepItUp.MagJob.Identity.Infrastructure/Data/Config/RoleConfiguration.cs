@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -34,11 +32,21 @@ public class RoleConfiguration : BaseEntityConfiguration<Role>
                 {
                     j.HasKey("RoleId", "PermissionId");
                     j.ToTable(DataSchemaConstants.ROLE_PERMISSIONS_TABLE, DataSchemaConstants.IDENTITY_SCHEMA);
+
+                    // Add indexes for join table
+                    j.HasIndex("RoleId");
+                    j.HasIndex("PermissionId");
                 });
 
         // Indeksy
-        builder.HasIndex(r => new { r.Name, r.OrganizationId }).IsUnique();
+        builder.HasIndex(r => new { r.Id, r.OrganizationId }).IsUnique();
+
+        // Indeks dla szybkiego wyszukiwania po OrganizationId
+        builder.HasIndex(r => r.OrganizationId);
+
+        // Indeks dla wyszukiwania ról po nazwie
+        builder.HasIndex(r => r.Name);
     }
 
     protected override string GetTableName() => DataSchemaConstants.ROLES_TABLE;
-} 
+}

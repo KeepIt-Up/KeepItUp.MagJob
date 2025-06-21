@@ -1,19 +1,19 @@
 import { HttpRequest, HttpHandlerFn, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { inject } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthService } from '@core/services/auth.service';
 import { environment } from '@environments/environment';
 
-export const tokenInterceptor: HttpInterceptorFn = (
+export const tokenInterceptorFn: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ): Observable<HttpEvent<unknown>> => {
-  const oauthService = inject(OAuthService);
+  const authService = inject(AuthService);
 
-  // Dodaj token tylko do żądań do naszego API
+  // Add token only to requests to API
   if (request.url.startsWith(environment.apiUrl)) {
-    if (oauthService.hasValidAccessToken()) {
-      request = addToken(request, oauthService.getAccessToken());
+    if (authService.hasValidAccessToken()) {
+      request = addToken(request, authService.getAccessToken());
     }
   }
 

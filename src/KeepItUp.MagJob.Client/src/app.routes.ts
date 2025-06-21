@@ -12,15 +12,12 @@ import { MembersTableComponent } from '@pages/organization/members-table/member-
 import { InvitationTableComponent } from '@pages/organization/invitation-table/invitation-table.component';
 import { OrganizationComponent } from '@pages/organization/organization.component';
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
+import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.component';
+import { NotFoundComponent } from '@pages/not-found/not-found.component';
 import { CalendarPageComponent } from './app/pages/calendar-page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
-  {
-    path: 'organization/create',
-    component: CreateOrganizationComponent,
-    canActivate: [authGuard],
-  },
   {
     path: 'organization/:organizationId',
     component: OrganizationComponent,
@@ -52,8 +49,21 @@ export const routes: Routes = [
     component: LandingComponent,
   },
   {
+    path: 'create-organization',
+    component: CreateOrganizationComponent,
+    canActivate: [authGuard],
+  },
+  {
     path: 'help',
     component: HelpComponent,
   },
-  { path: '**', redirectTo: 'landing' },
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
+  },
+  {
+    path: '404',
+    component: NotFoundComponent,
+  },
+  { path: '**', redirectTo: '404' },
 ];

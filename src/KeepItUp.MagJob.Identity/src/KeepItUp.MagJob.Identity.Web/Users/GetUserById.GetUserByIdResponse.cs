@@ -1,3 +1,5 @@
+﻿using KeepItUp.MagJob.Identity.UseCases.Users.Queries;
+
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
@@ -13,7 +15,7 @@ public class GetUserByIdResponse
     /// <summary>
     /// Zewnętrzny identyfikator użytkownika (np. z Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres email użytkownika.
@@ -34,4 +36,14 @@ public class GetUserByIdResponse
     /// Czy użytkownik jest aktywny.
     /// </summary>
     public bool IsActive { get; set; }
-} 
+
+    /// <summary>
+    /// URL do zdjęcia profilowego użytkownika.
+    /// </summary>
+    public string? ProfileImageUrl { get; set; }
+
+    /// <summary>
+    /// Lista organizacji, do których należy użytkownik.
+    /// </summary>
+    public List<MembershipDto> Memberships { get; set; } = new();
+}

@@ -31,13 +31,13 @@ describe('AlertComponent', () => {
     // Initially hidden
     componentRef.setInput('showActionButtons', false);
     fixture.detectChanges();
-    let buttons = fixture.nativeElement.querySelectorAll('button');
+    const buttons = fixture.nativeElement.querySelectorAll('button');
     expect(buttons.length).toBe(0);
 
     // Show buttons
     componentRef.setInput('showActionButtons', true);
     fixture.detectChanges();
-    buttons = fixture.nativeElement.querySelectorAll('button');
+    const buttons = fixture.nativeElement.querySelectorAll('button');
     expect(buttons.length).toBe(2);
   });
 
@@ -87,13 +87,13 @@ describe('AlertComponent', () => {
     // Initially visible
     componentRef.setInput('alertVisible', true);
     fixture.detectChanges();
-    let alertElement = fixture.nativeElement.querySelector(`[role="alert"]`);
+    const alertElement = fixture.nativeElement.querySelector(`[role="alert"]`);
     expect(alertElement).toBeTruthy();
 
     // Hide alert
     componentRef.setInput('alertVisible', false);
     fixture.detectChanges();
-    alertElement = fixture.nativeElement.querySelector(`[role="alert"]`);
+    const alertElement = fixture.nativeElement.querySelector(`[role="alert"]`);
     expect(alertElement).toBeFalsy();
   });
 });

@@ -1,25 +1,24 @@
-﻿using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.ContributorAggregate;
-using KeepItUp.MagJob.Identity.UseCases.Contributors.Create;
-using MediatR;
-using System.Reflection;
+﻿using System.Reflection;
+using Ardalis.SharedKernel;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
 public static class MediatrConfigs
 {
-  public static IServiceCollection AddMediatrConfigs(this IServiceCollection services)
-  {
-    var mediatRAssemblies = new[]
-      {
-        Assembly.GetAssembly(typeof(Contributor)), // Core
-        Assembly.GetAssembly(typeof(CreateContributorCommand)) // UseCases
+    public static IServiceCollection AddMediatrConfigs(this IServiceCollection services)
+    {
+        var mediatRAssemblies = new[]
+                  {
+        Assembly.GetAssembly(typeof(Organization)), // Core
+        Assembly.GetAssembly(typeof(CreateOrganizationCommand)) // UseCases
       };
 
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(mediatRAssemblies!))
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>))
-            .AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(mediatRAssemblies!))
+                .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>))
+                .AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher>();
 
-    return services;
-  }
+        return services;
+    }
 }

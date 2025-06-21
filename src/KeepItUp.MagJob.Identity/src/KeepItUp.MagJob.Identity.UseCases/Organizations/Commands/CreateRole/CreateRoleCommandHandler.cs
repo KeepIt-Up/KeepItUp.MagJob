@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateRole;
 /// </summary>
 public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Result<Guid>>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<CreateRoleCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +18,7 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Resul
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public CreateRoleCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<CreateRoleCommandHandler> logger)
     {
         _repository = repository;
@@ -39,29 +36,13 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Resul
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do tworzenia ról
-            if (organization.OwnerId != request.UserId)
-            {
-                var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.UserId);
-                if (requestingMember == null || !requestingMember.Roles.Any(r => r.Name == "Admin"))
-                {
-                    return Result<Guid>.Forbidden("Brak uprawnień do tworzenia ról w organizacji.");
-                }
-            }
-
-            // Sprawdź, czy rola o podanej nazwie już istnieje w organizacji
-            if (organization.Roles.Any(r => r.Name == request.Name))
-            {
-                return Result<Guid>.Error($"Rola o nazwie '{request.Name}' już istnieje w organizacji.");
-            }
 
             // Utwórz nową rolę
             var role = organization.AddRole(
@@ -71,7 +52,6 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Resul
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Utworzono nową rolę o ID {RoleId} w organizacji o ID {OrganizationId}",
                 role.Id, organization.Id);
@@ -84,4 +64,4 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Resul
             return Result<Guid>.Error("Wystąpił błąd podczas tworzenia roli: " + ex.Message);
         }
     }
-} 
+}

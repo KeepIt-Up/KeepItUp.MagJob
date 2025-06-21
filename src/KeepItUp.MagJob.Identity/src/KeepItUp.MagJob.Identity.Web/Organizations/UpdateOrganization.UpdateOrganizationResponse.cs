@@ -24,4 +24,4 @@ public class UpdateOrganizationResponse
     /// Identyfikator właściciela organizacji.
     /// </summary>
     public Guid OwnerId { get; set; }
-} 
+}

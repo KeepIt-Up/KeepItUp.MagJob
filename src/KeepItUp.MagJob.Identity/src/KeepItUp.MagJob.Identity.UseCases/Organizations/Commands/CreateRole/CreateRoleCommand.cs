@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateRole;
@@ -32,4 +31,4 @@ public record CreateRoleCommand : IRequest<Result<Guid>>
     /// Identyfikator użytkownika wykonującego operację.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

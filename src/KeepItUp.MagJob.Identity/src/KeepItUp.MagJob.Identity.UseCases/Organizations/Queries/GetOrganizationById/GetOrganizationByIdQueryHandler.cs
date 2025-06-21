@@ -1,8 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
+﻿using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetOrganizatio
 /// </summary>
 public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationByIdQuery, Result<OrganizationDto>>
 {
-    private readonly IReadRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<GetOrganizationByIdQueryHandler> _logger;
 
     /// <summary>
@@ -22,7 +18,7 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public GetOrganizationByIdQueryHandler(
-        IReadRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<GetOrganizationByIdQueryHandler> logger)
     {
         _repository = repository;
@@ -40,8 +36,7 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
             {
@@ -49,13 +44,13 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
             }
 
             // Sprawdź, czy użytkownik ma dostęp do organizacji
-            bool hasAccess = organization.OwnerId == request.UserId ||
-                             organization.Members.Any(m => m.UserId == request.UserId);
+            //bool hasAccess = organization.OwnerId == request.UserId ||
+            //                 organization.Members.Any(m => m.UserId == request.UserId);
 
-            if (!hasAccess)
-            {
-                return Result<OrganizationDto>.Forbidden("Brak dostępu do organizacji.");
-            }
+            //if (!hasAccess)
+            //{
+            //    return Result<OrganizationDto>.Forbidden("Brak dostępu do organizacji.");
+            //}
 
             // Pobierz role użytkownika w organizacji
             var userRoles = new List<string>();
@@ -78,7 +73,9 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
                 Description = organization.Description,
                 OwnerId = organization.OwnerId,
                 IsActive = organization.IsActive,
-                UserRoles = userRoles
+                UserRoles = userRoles,
+                BannerUrl = organization.BannerUrl,
+                LogoUrl = organization.LogoUrl
             };
 
             return Result<OrganizationDto>.Success(organizationDto);
@@ -89,4 +86,4 @@ public class GetOrganizationByIdQueryHandler : IRequestHandler<GetOrganizationBy
             return Result<OrganizationDto>.Error("Wystąpił błąd podczas pobierania organizacji: " + ex.Message);
         }
     }
-} 
+}

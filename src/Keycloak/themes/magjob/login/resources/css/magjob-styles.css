@@ -1,0 +1,1244 @@
+:root {
+  --color-primary: rgb(68, 187, 164);
+  --color-primary-50: rgb(237, 250, 247);
+  --color-primary-100: rgb(210, 242, 234);
+  --color-primary-200: rgb(169, 229, 215);
+  --color-primary-300: rgb(118, 209, 190);
+  --color-primary-400: rgb(68, 187, 164);
+  --color-primary-500: rgb(42, 161, 138);
+  --color-primary-600: rgb(31, 130, 113);
+  --color-primary-700: rgb(28, 104, 92);
+  --color-primary-800: rgb(26, 84, 74);
+  --color-primary-900: rgb(24, 70, 63);
+  --color-primary-950: rgb(10, 41, 36);
+
+  /* Light Mode Colors */
+  --color-background: var(--color-background-light);
+  --color-surface: var(--color-surface-light);
+  --color-text-primary: var(--color-text-primary-light);
+  --color-text-secondary: var(--color-text-secondary-light);
+  --color-border: var(--color-border-light);
+  --color-input-bg: var(--color-surface-light);
+
+  --color-background-light: #f9fafb;
+  --color-background-dark: #111827;
+
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #1f2937;
+
+  --color-text-primary-light: #1e293b;
+  --color-text-secondary-light: #64748b;
+  --color-text-primary-dark: #f9fafb;
+  --color-text-secondary-dark: #9ca3af;
+
+  --color-border-light: #e2e8f0;
+  --color-border-dark: #374151;
+
+  --color-input-bg-light: #ffffff;
+  --color-input-bg-dark: #1f2937;
+
+  --primary-color: #556cef;
+  --text-color: #2a2a2a;
+  --border-color: #e1e1e1;
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --error-color: #e74c3c;
+  --success-color: #2ecc71;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --border-radius: 6px;
+  --form-width: 360px;
+
+  /* Zmienne dla przycisków zgodnie z button.component.scss */
+  --btn-gap: 0.5rem;
+  --btn-transition: all 0.2s ease-in-out;
+  --btn-disabled-opacity: 0.6;
+
+  /* Button sizes */
+  --btn-sm-height: 2.25rem;
+  --btn-sm-padding: 0.5rem 1rem;
+  --btn-sm-font-size: 0.875rem;
+  --btn-sm-font-weight: 500;
+  --btn-sm-border-radius: 0.375rem;
+  --btn-sm-icon-size: 1.25rem;
+
+  --btn-md-height: 2.75rem;
+  --btn-md-padding: 0.5rem 1rem;
+  --btn-md-font-size: 0.875rem;
+  --btn-md-font-weight: 500;
+  --btn-md-border-radius: 0.5rem;
+  --btn-md-icon-size: 1.5rem;
+
+  --btn-lg-height: 3rem;
+  --btn-lg-padding: 0.5rem 1.5rem;
+  --btn-lg-font-size: 1rem;
+  --btn-lg-font-weight: 600;
+  --btn-lg-border-radius: 0.75rem;
+  --btn-lg-icon-size: 1.5rem;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  --color-background: var(--color-background-dark);
+  --color-surface: var(--color-surface-dark);
+  --color-text-primary: var(--color-text-primary-dark);
+  --color-text-secondary: var(--color-text-secondary-dark);
+  --color-border: var(--color-border-dark);
+  --color-input-bg: var(--color-input-bg-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  body.auto-mode {
+    --color-background: var(--color-background-dark);
+    --color-surface: var(--color-surface-dark);
+    --color-text-primary: var(--color-text-primary-dark);
+    --color-text-secondary: var(--color-text-secondary-dark);
+    --color-border: var(--color-border-dark);
+    --color-input-bg: var(--color-input-bg-dark);
+  }
+}
+
+/* Toggle dla trybu ciemnego */
+.theme-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* General Body Styling */
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.login-pf {
+  background: none;
+}
+
+.login-pf body {
+  background: var(--color-background);
+  background-size: cover;
+  height: 100%;
+}
+
+/* Card Styling */
+.card-pf {
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  padding: 2rem;
+  max-width: 450px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.login-pf-page .card-pf {
+  margin-bottom: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  border: none;
+  max-width: none;
+}
+
+/* Header Styling */
+.login-pf-page {
+  padding: 0.5rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.login-pf-container {
+  width: 100%;
+  max-width: 1024px;
+}
+
+.login-pf-header {
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+#kc-page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0;
+  text-align: center;
+  transition: color 0.3s;
+}
+
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-top: 0;
+  position: relative;
+}
+
+.kc-logo-text {
+  background-image: url(../img/logo.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  height: 60px;
+  width: 200px;
+  margin: 30px auto 0;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.control-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-primary);
+  transition: color 0.3s;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.3s, color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(68, 187, 164, 0.15);
+}
+
+body.dark-mode .form-control {
+  background-color: var(--color-surface-dark);
+}
+
+/* Alert Styling */
+.alert {
+  position: relative;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.alert-error {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+
+.alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.alert-warning {
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
+
+/* Ciemny motyw dla alertów */
+body.dark-mode .alert-error {
+  color: #ea868f;
+  background-color: #2c0b0e;
+  border-color: #842029;
+}
+
+body.dark-mode .alert-success {
+  color: #75b798;
+  background-color: #051b11;
+  border-color: #0f5132;
+}
+
+body.dark-mode .alert-warning {
+  color: #ffda6a;
+  background-color: #332701;
+  border-color: #664d03;
+}
+
+body.dark-mode .alert-info {
+  color: #6edff6;
+  background-color: #032830;
+  border-color: #055160;
+}
+
+/* Button Styling - zaktualizowane zgodnie z button.component.scss */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: var(--btn-transition);
+  gap: var(--btn-gap);
+
+  /* Domyślny rozmiar - medium */
+  height: var(--btn-md-height);
+  padding: var(--btn-md-padding);
+  font-size: var(--btn-md-font-size);
+  font-weight: var(--btn-md-font-weight);
+  border-radius: var(--btn-md-border-radius);
+
+  /* Pełna szerokość dla przycisków formularza */
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: var(--btn-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-500);
+}
+
+.btn-primary:focus:not(:disabled) {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(68, 187, 164, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  background-color: var(--color-primary-600);
+}
+
+/* Outline Button */
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: rgba(68, 187, 164, 0.1);
+}
+
+.btn-outline:focus:not(:disabled) {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(68, 187, 164, 0.4);
+}
+
+.btn-outline:active:not(:disabled) {
+  background-color: rgba(68, 187, 164, 0.2);
+}
+
+/* Text Button */
+.btn-text {
+  background-color: transparent;
+  color: var(--color-primary);
+  padding: 0;
+  border: none;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.btn-text:hover:not(:disabled) {
+  background-color: transparent;
+  color: var(--color-primary-700);
+  text-decoration: underline;
+}
+
+.btn-text:focus:not(:disabled) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Button Sizes */
+.btn-sm {
+  height: var(--btn-sm-height);
+  padding: var(--btn-sm-padding);
+  font-size: var(--btn-sm-font-size);
+  font-weight: var(--btn-sm-font-weight);
+  border-radius: var(--btn-sm-border-radius);
+}
+
+.btn-lg {
+  height: var(--btn-lg-height);
+  padding: var(--btn-lg-padding);
+  font-size: var(--btn-lg-font-size);
+  font-weight: var(--btn-lg-font-weight);
+  border-radius: var(--btn-lg-border-radius);
+}
+
+/* Link Styling */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+a:hover {
+  color: var(--color-primary-700);
+  text-decoration: underline;
+}
+
+/* Login Form Specific */
+#kc-form-buttons {
+  margin-top: 1.5rem;
+}
+
+#kc-form-buttons .btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+}
+
+.login-pf-signup {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  transition: color 0.3s;
+}
+
+/* Remember Me Checkbox */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox input[type="checkbox"] {
+  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox input[type="checkbox"]:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.checkbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 3px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.checkbox input[type="checkbox"] + span {
+  margin-left: 0.5rem;
+}
+
+.login-forgot-password {
+  font-size: 0.875rem;
+}
+
+/* Password Show/Hide Toggle */
+.login-show-password {
+  position: absolute;
+  right: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+  pointer-events: auto;
+  width: 24px;
+  height: 24px;
+}
+
+.login-show-password a {
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  width: 24px;
+  height: 24px;
+  transition: color 0.3s;
+}
+
+.login-show-password a:hover {
+  color: var(--color-primary);
+}
+
+.login-show-password a svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+}
+
+/* Form group with password has relative positioning */
+.form-group:has(input[type="password"]) {
+  position: relative;
+}
+
+/* Social Login */
+.social-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color 0.3s;
+}
+
+.social-divider span {
+  margin: 0 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  transition: color 0.3s;
+}
+
+/* Social Media Buttons */
+#kc-social-providers {
+  margin-top: 1rem;
+}
+
+.kc-social-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.kc-social-link {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.kc-social-link a {
+  text-decoration: none;
+}
+
+.kc-social-link a:hover {
+  text-decoration: none;
+}
+
+.zocial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--btn-md-height);
+  padding: var(--btn-md-padding);
+  font-size: var(--btn-md-font-size);
+  font-weight: var(--btn-md-font-weight);
+  border-radius: var(--btn-md-border-radius);
+  text-decoration: none;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--btn-transition);
+  gap: var(--btn-gap);
+  box-sizing: border-box;
+}
+
+/* Google button styling */
+.zocial.google {
+  background-color: transparent;
+  border: 1px solid #4285F4;
+  color: #4285F4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.zocial.google svg {
+  color: #4285F4;
+  min-width: 20px;
+}
+
+.zocial.google:hover {
+  background-color: rgba(66, 133, 244, 0.1);
+  text-decoration: none;
+}
+
+.zocial.google:hover span {
+  text-decoration: none;
+}
+
+.zocial.google:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.4);
+}
+
+.zocial.google:active {
+  background-color: rgba(66, 133, 244, 0.2);
+}
+
+/* Error Message Styling */
+.error-message {
+  display: block;
+  font-size: 0.75rem;
+  color: #842029;
+  margin-top: 0.25rem;
+  transition: color 0.3s;
+}
+
+body.dark-mode .error-message {
+  color: #ea868f;
+}
+
+input[aria-invalid="true"] {
+  border-color: #842029;
+}
+
+body.dark-mode input[aria-invalid="true"] {
+  border-color: #ea868f;
+}
+
+input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 2px rgba(132, 32, 41, 0.15);
+}
+
+body.dark-mode input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 2px rgba(234, 134, 143, 0.15);
+}
+
+/* Alert Styling - custom alerts for validation */
+.alert-error, .alert-warning, .alert-info, .alert-success {
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+}
+
+.pf-c-alert {
+  display: none; /* Hide validation alerts */
+  font-size: 0.75rem;
+  color: #842029;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+}
+
+.pf-c-alert__icon {
+  margin-right: 0.5rem;
+}
+
+/* Field level validation messages */
+.form-group .error-message {
+  color: #842029;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+  .login-pf-container {
+    max-width: 100%;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .split-card {
+    flex-direction: column;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Całkowite ukrycie grafiki i powiązanych elementów na mniejszych urządzeniach */
+  .card-image,
+  .card-image-overlay,
+  .card-image-title,
+  .card-image-text {
+    display: none !important;
+  }
+
+  .card-content {
+    width: 100%;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+
+  /* Zapewnienie właściwego box-sizingu dla wszystkich elementów */
+  .btn, .form-control, .password-input-wrapper, .zocial, input, button, a.zocial {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Google signin button fix */
+  .zocial.google, a.zocial {
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+/* Poprawiona responsywność ogólna */
+@media (max-width: 767px) {
+  .login-pf-page {
+    padding: 0;
+    min-height: 90vh;
+  }
+
+  .login-pf-container {
+    width: 100%;
+    padding: 0 0.25rem;
+    max-width: 100%;
+  }
+
+  .split-card {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 0.5rem;
+    margin: 0 auto;
+  }
+
+  .card-content {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  #kc-page-title {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+    width: 100%;
+  }
+
+  /* Poprawiona szerokość wszystkich interaktywnych elementów */
+  .btn, .form-control, .password-input-wrapper, input, button, a {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Logo */
+#kc-header {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.kc-logo-text {
+  background-image: url(../img/logo.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  height: 60px;
+  width: 200px;
+  margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary-light);
+}
+
+/* Registration Link Styling */
+.registration-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary-light);
+}
+
+/* Password Field Styling */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-input-wrapper .form-control {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  width: 24px;
+  height: 24px;
+}
+
+.password-toggle-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.5;
+  color: var(--color-text-secondary-light);
+}
+
+.password-toggle-icon:hover svg {
+  color: var(--color-primary);
+}
+
+/* Form group with password has relative positioning */
+.form-group {
+  position: relative;
+}
+
+/* Back to login link */
+.back-to-login {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.back-to-login:hover {
+  background: none;
+}
+
+/* Reset password instructions */
+.reset-instructions {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-top: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Submit button position for reset password form */
+#kc-reset-password-form #kc-form-buttons {
+  margin-top: 1.5rem;
+}
+
+#kc-reset-password-form .form-group:first-child {
+  margin-bottom: 1.5rem;
+}
+
+/* Zmiana koloru przycisku Submit na formularzu resetowania hasła */
+#kc-reset-password-form .btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+#kc-reset-password-form .btn-primary:hover {
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+}
+
+/* Linki "Back to Login" i "Sign In" - ujednolicone style */
+.login-pf-signup a,
+.back-to-login {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.login-pf-signup a:hover,
+.back-to-login:hover {
+  color: var(--color-primary-700);
+  text-decoration: underline;
+  background: none;
+}
+
+/* Style dla pól autouzupełnianych przez przeglądarkę */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  -webkit-box-shadow: 0 0 0 30px var(--color-primary-50) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--color-text-primary);
+  border-radius: 0.375rem;
+}
+
+/* Dodatkowe styles dla trybu ciemnego */
+body.dark-mode input:-webkit-autofill,
+body.dark-mode input:-webkit-autofill:hover,
+body.dark-mode input:-webkit-autofill:focus,
+body.dark-mode input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  -webkit-box-shadow: 0 0 0 30px var(--color-primary-950) inset !important;
+  border-color: var(--color-primary-700) !important;
+  border-radius: 0.375rem;
+}
+
+/* Usuwam niepotrzebne styles dla pierwszej linii */
+input:-webkit-autofill::first-line {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Password Strength Indicator */
+.password-strength-container {
+  width: 100%;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.password-strength-container.active {
+  display: block;
+}
+
+.password-strength-meter {
+  height: 5px;
+  background-color: #e2e8f0;
+  border-radius: 2.5px;
+  position: relative;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+}
+
+.password-strength-meter-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 2.5px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength-meter-fill.very-weak {
+  width: 20%;
+  background-color: #ef4444;
+}
+
+.password-strength-meter-fill.weak {
+  width: 40%;
+  background-color: #f97316;
+}
+
+.password-strength-meter-fill.medium {
+  width: 60%;
+  background-color: #facc15;
+}
+
+.password-strength-meter-fill.strong {
+  width: 80%;
+  background-color: #84cc16;
+}
+
+.password-strength-meter-fill.very-strong {
+  width: 100%;
+  background-color: #22c55e;
+}
+
+.password-strength-text {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+/* Ciemny motyw dla wskaźnika siły hasła */
+body.dark-mode .password-strength-meter {
+  background-color: #374151;
+}
+
+/* Rozszerzone karty z grafiką */
+.split-card {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--color-surface);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.card-image {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 450px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: none;
+  overflow: hidden;
+}
+
+.card-image-login {
+  background-image: url(../img/login-illustration.svg);
+}
+
+.card-image-register {
+  background-image: url(../img/register-illustration.svg);
+}
+
+.card-image-reset {
+  background-image: url(../img/reset-illustration.svg);
+}
+
+.card-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: auto;
+  padding: 2.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0) 100%);
+  color: white;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.card-image-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  word-break: break-word;
+}
+
+.card-image-text {
+  font-size: 1.125rem;
+  opacity: 0.95;
+  max-width: 90%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card-content {
+  flex: 1;
+  padding: 2.5rem;
+  position: relative;
+}
+
+/* Usuwam pionową kreskę oddzielającą */
+.card-content::before {
+  display: none;
+}
+
+/* Background pattern with work icons */
+.login-pf-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: url(../img/background-pattern.svg);
+  background-repeat: repeat;
+  background-size: 2000px 2000px;
+  opacity: 0.03;
+  pointer-events: none;
+  filter: none;
+}
+
+/* Adjust background opacity for dark mode */
+body.dark-mode .login-pf-page::before {
+  opacity: 0.08;
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  body.auto-mode .login-pf-page::before {
+    opacity: 0.08;
+    filter: invert(1);
+  }
+}
+
+/* Ukrywanie obrazka na stronie resetowania hasła */
+.card-image-reset {
+  display: none;
+}
+
+/* Error page styling */
+.login-pf-page .split-card {
+  flex-direction: row;
+}
+
+/* Basic styling for card-content - zastosowane do wszystkich kart */
+.login-pf-page .split-card .card-content {
+  padding: 2.5rem;
+  flex: 1;
+}
+
+/* Proste stylowanie strony błędu */
+#kc-error-message {
+  width: 100%;
+  text-align: center;
+}
+
+#kc-error-message .instruction {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+/* Stylowanie nagłówka h1 na wszystkich stronach */
+.login-pf-page h1#kc-page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+/* Dodajemy klasę 'error-page' do body za pomocą JavaScript */
+.error-page .split-card {
+  flex-direction: column !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+}
+
+.error-page .card-image {
+  display: none !important;
+}
+
+.error-page .card-content {
+  width: 100% !important;
+  padding: 2.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+/* Skrypt do wykrywania strony błędu i dodawania klasy */
+/* Dodajemy na końcu pliku CSS skrypt, który zostanie wykonany po załadowaniu strony */
+.dark-mode .error-page .split-card {
+  background-color: var(--color-surface-dark);
+  border-color: var(--color-border-dark);
+}
+
+.dark-mode .error-page #kc-page-title {
+  color: var(--color-text-primary-dark);
+}
+
+.dark-mode .error-page #kc-error-message .instruction {
+  color: var(--color-text-secondary-dark);
+}
+

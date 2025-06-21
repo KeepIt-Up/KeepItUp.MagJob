@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using MediatR;
-
-namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
+﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
 
 /// <summary>
 /// DTO dla uprawnienia.
@@ -27,10 +24,10 @@ public class PermissionDto
 /// <summary>
 /// Zapytanie o wszystkie dostępne uprawnienia w systemie.
 /// </summary>
-public record GetPermissionsQuery : IRequest<Result<List<PermissionDto>>>
+public class GetPermissionsQuery : PaginationQuery<PermissionDto>
 {
     /// <summary>
     /// Identyfikator użytkownika wykonującego zapytanie.
     /// </summary>
     public Guid UserId { get; init; }
-} 
+}

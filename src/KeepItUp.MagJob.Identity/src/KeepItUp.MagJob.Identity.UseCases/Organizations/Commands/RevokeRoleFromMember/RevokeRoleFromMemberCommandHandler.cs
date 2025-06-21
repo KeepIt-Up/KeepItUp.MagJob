@@ -1,7 +1,4 @@
-using Ardalis.Result;
-using Ardalis.SharedKernel;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Specifications;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,7 +9,7 @@ namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFro
 /// </summary>
 public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFromMemberCommand, Result>
 {
-    private readonly IRepository<Organization> _repository;
+    private readonly IOrganizationRepository _repository;
     private readonly ILogger<RevokeRoleFromMemberCommandHandler> _logger;
 
     /// <summary>
@@ -21,7 +18,7 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
     /// <param name="repository">Repozytorium organizacji.</param>
     /// <param name="logger">Logger.</param>
     public RevokeRoleFromMemberCommandHandler(
-        IRepository<Organization> repository,
+        IOrganizationRepository repository,
         ILogger<RevokeRoleFromMemberCommandHandler> logger)
     {
         _repository = repository;
@@ -39,9 +36,9 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
         try
         {
             // Pobierz organizację z repozytorium
-            var organization = await _repository.FirstOrDefaultAsync(
-                new OrganizationWithRolesSpec(request.OrganizationId), cancellationToken);
+            var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
+            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
@@ -57,21 +54,25 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 }
             }
 
-            // Sprawdź, czy rola istnieje w organizacji
+            // Pobierz rolę z organizacji
             var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+
+            // Walidator powinien zapewnić, że rola istnieje
             if (role == null)
             {
                 return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
             }
 
-            // Sprawdź, czy użytkownik jest członkiem organizacji
+            // Pobierz członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
+
+            // Walidator powinien zapewnić, że członek istnieje
             if (member == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
-            // Sprawdź, czy użytkownik ma przypisaną tę rolę
+            // Walidator powinien zapewnić, że użytkownik ma przypisaną tę rolę
             if (!member.HasRole(request.RoleId))
             {
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} nie ma przypisanej roli o ID {request.RoleId}.");
@@ -84,11 +85,10 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
             }
 
             // Odbierz rolę członkowi organizacji
-            organization.RevokeRoleFromMember(request.MemberUserId, request.RoleId);
+            member.RemoveRole(request.RoleId);
 
             // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Odebrano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",
                 request.RoleId, request.MemberUserId, organization.Id);
@@ -101,4 +101,4 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
             return Result.Error("Wystąpił błąd podczas odbierania roli: " + ex.Message);
         }
     }
-} 
+}

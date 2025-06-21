@@ -32,7 +32,7 @@ export class MembersTableComponent {
 
   onGetData() {
     this.memberService
-      .getMembersByOrganizationId('0193eaf4-48a4-7723-9c4c-f3e6ec5cba4c')
+      .getMembersByOrganizationId('9fce6f8f-7f24-4236-9418-9c4645b36fb9')
       .subscribe();
   }
 

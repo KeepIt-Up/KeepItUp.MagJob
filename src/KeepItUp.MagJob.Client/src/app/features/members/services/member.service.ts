@@ -74,8 +74,7 @@ export class MemberService {
   }
 
   getMembersByOrganizationId(organizationId: string) {
-    const query = { Id: organizationId };
-    return this.api.getMembers(query, this.membersPaginationOptions$()).pipe(
+    return this.api.getMembers(organizationId, this.membersPaginationOptions$()).pipe(
       tap((response: PaginatedResponse<Member>) => {
         this.memberStateService.setData(response);
       }),
@@ -83,16 +82,17 @@ export class MemberService {
   }
 
   searchMembers(name: string, organizationId: string) {
-    const query = { organizationId, name };
-    return this.api.searchMembers(query, this.memberSearchPaginationOptions$()).pipe(
-      tap((response: PaginatedResponse<Member>) => {
-        this.memberSearchStateService.setData(response.items);
-        this.memberSearchStateService.setMetadata({ endOfData: response.hasNextPage });
-      }),
-      catchError(() => {
-        this.notificationService.show('Failed to search members', 'error');
-        return EMPTY;
-      }),
-    );
+    return this.api
+      .searchMembers(organizationId, { name }, this.memberSearchPaginationOptions$())
+      .pipe(
+        tap((response: PaginatedResponse<Member>) => {
+          this.memberSearchStateService.setData(response.items);
+          this.memberSearchStateService.setMetadata({ endOfData: response.hasNextPage });
+        }),
+        catchError(() => {
+          this.notificationService.show('Failed to search members', 'error');
+          return EMPTY;
+        }),
+      );
   }
 }

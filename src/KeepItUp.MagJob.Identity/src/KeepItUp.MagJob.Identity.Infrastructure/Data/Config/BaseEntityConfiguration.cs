@@ -1,6 +1,4 @@
-using KeepItUp.MagJob.Identity.Core.SharedKernel;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using KeepItUp.MagJob.Identity.SharedKernel;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
@@ -24,6 +22,10 @@ public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguratio
 
         builder.Property(e => e.UpdatedAt)
             .IsRequired(false);
+
+        // Konfiguracja optymistycznej współbieżności
+        builder.Property(e => e.RowVersion)
+            .IsRowVersion();
     }
 
     /// <summary>
@@ -31,4 +33,4 @@ public abstract class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguratio
     /// </summary>
     /// <returns>Nazwa tabeli.</returns>
     protected abstract string GetTableName();
-} 
+}

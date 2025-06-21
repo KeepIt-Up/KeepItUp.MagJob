@@ -1,4 +1,4 @@
-namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries;
+﻿namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries;
 
 /// <summary>
 /// Data Transfer Object dla użytkownika.
@@ -13,7 +13,7 @@ public class UserDto
     /// <summary>
     /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
     /// </summary>
-    public string ExternalId { get; set; } = string.Empty;
+    public Guid ExternalId { get; set; }
 
     /// <summary>
     /// Adres e-mail użytkownika.
@@ -39,6 +39,11 @@ public class UserDto
     /// Profil użytkownika.
     /// </summary>
     public UserProfileDto? Profile { get; set; }
+
+    /// <summary>
+    /// Lista członkostw użytkownika w organizacjach.
+    /// </summary>
+    public List<MembershipDto> Memberships { get; set; } = new();
 }
 
 /// <summary>
@@ -60,4 +65,30 @@ public class UserProfileDto
     /// URL do zdjęcia profilowego użytkownika.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
-} 
+}
+
+/// <summary>
+/// Data Transfer Object dla członkostwa użytkownika w organizacji.
+/// </summary>
+public class MembershipDto
+{
+    /// <summary>
+    /// Identyfikator członkostwa.
+    /// </summary>
+    public Guid MemberId { get; set; }
+
+    /// <summary>
+    /// Identyfikator organizacji.
+    /// </summary>
+    public Guid OrganizationId { get; set; }
+
+    /// <summary>
+    /// Data dołączenia do organizacji.
+    /// </summary>
+    public DateTime JoinedAt { get; set; }
+
+    /// <summary>
+    /// Lista identyfikatorów ról przypisanych do członka.
+    /// </summary>
+    public List<string> Roles { get; set; } = new();
+}
