@@ -27,6 +27,9 @@ public class GetShiftEditRequestResponse {
     @Schema(description = "New start time of the shift", example = "2025-01-16T08:00:00")
     private LocalDateTime startTime;
 
+    @Schema(description = "Reason for the shift edit", example = "Shift extended due to workload")
+    private String description;
+
     @Schema(description = "New end time of the shift", example = "2025-01-16T08:00:00")
     private LocalDateTime endTime;
 

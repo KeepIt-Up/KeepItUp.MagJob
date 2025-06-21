@@ -41,7 +41,7 @@ public class GetShiftsResponse {
         private String description;
 
         @Schema(description = "Member entity")
-        private Member member;
+        private BigInteger memberId;
 
         @Schema(description = "GetShiftEditRequestResponse DTO")
         private List<GetShiftEditRequestResponse> shiftEditRequests;

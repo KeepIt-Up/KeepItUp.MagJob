@@ -21,7 +21,7 @@ public class ShiftsToResponseFunction implements BiFunction<Page<Shift>, Integer
                                 .startTime(shift.getStartTime())
                                 .endTime(shift.getEndTime())
                                 .description(shift.getDescription())
-                                .member(shift.getMember())
+                                .memberId(shift.getMemberId())
                                 .shiftEditRequests(shift.getShiftEditRequests().stream()
                                         .map(shiftEditRequest -> GetShiftEditRequestResponse.builder()
                                                 .id(shiftEditRequest.getId())

@@ -30,6 +30,9 @@ public class PostShiftEditRequest {
     @Schema(description = "Reason for the shift edit", example = "Shift extended due to workload")
     private String status;
 
+    @Schema(description = "Reason for the shift edit", example = "Shift extended due to workload")
+    private String description;
+
     @Schema(description = "Shift ID", example = "1")
     private BigInteger shiftId;
 }

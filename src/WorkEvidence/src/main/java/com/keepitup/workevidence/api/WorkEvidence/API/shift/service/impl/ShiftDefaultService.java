@@ -32,6 +32,7 @@ public class ShiftDefaultService implements ShiftService {
 
         shift.setStartTime(LocalDateTime.now());
         shift.setEndTime(LocalDateTime.now().plusHours(8));
+        shift.setMemberId(shift.getMemberId());
 
         return Optional.of(shiftRepository.save(shift));
     }

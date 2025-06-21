@@ -38,9 +38,8 @@ public class Shift {
     @Column(name="description")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name="Member")
-    private Member member;
+    @Column(name="MemberID",nullable=false)
+    private BigInteger memberId;
 
     @OneToMany(mappedBy = "shift")
     private List<ShiftEditRequest> shiftEditRequests;

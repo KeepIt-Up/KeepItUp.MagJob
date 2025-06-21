@@ -15,6 +15,7 @@ public class ShiftEditRequestToResponseFunction implements Function<ShiftEditReq
                 .status(shiftEditRequest.getStatus())
                 .startTime(shiftEditRequest.getStartTime())
                 .endTime(shiftEditRequest.getEndTime())
+                .description(shiftEditRequest.getDescription())
                 .build();
     }
 }

@@ -15,6 +15,7 @@ public class UpdateShiftEditRequestFunction implements BiFunction<ShiftEditReque
                 .status(patchShiftEditRequest.getStatus())
                 .startTime(patchShiftEditRequest.getStartTime())
                 .endTime(patchShiftEditRequest.getEndTime())
+                .description(patchShiftEditRequest.getDescription())
                 .build();
     }
 }

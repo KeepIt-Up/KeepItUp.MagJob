@@ -18,6 +18,7 @@ public class ShiftEditRequestsToResponseFunction implements BiFunction<Page<Shif
                                 .status(shiftEditRequest.getStatus())
                                 .startTime(shiftEditRequest.getStartTime())
                                 .endTime(shiftEditRequest.getEndTime())
+                                .description(shiftEditRequest.getDescription())
                                 .build())
                         .toList())
                 .count(count)
