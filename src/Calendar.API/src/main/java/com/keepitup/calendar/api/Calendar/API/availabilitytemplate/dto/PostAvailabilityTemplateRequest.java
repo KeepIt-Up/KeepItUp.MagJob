@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto;
 
 
+import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.dto.PostTimeEntryTemplateRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -21,9 +22,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Schema(description = "GetTimeEntryResponses DTO")
 public class PostAvailabilityTemplateRequest {
-    @Schema(description = "id")
-    private UUID id;
-
     @Schema(description = "PostAvailabilityTemplateRequest name value")
     private String name;
 

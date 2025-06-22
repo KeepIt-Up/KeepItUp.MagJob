@@ -1,9 +1,11 @@
 package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -21,8 +23,8 @@ import java.util.UUID;
 @Entity
 public class AvailabilityTemplate {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
-    @SequenceGenerator(name = "memberSequenceGenerator")
+    @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
     private UUID id;
 
     @NotNull
@@ -41,6 +43,12 @@ public class AvailabilityTemplate {
     @Column(name = "numberOfDays", nullable = false)
     private Integer numberOfDays;
 
-    @OneToMany(mappedBy = "AvailabilityTemplate")
+    @OneToMany(
+            mappedBy = "availabilityTemplate",
+            cascade = CascadeType.ALL, // Cascade ALL operations to children
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    @ToString.Exclude
     private List<TimeEntryTemplate> timeEntryTemplates;
 }

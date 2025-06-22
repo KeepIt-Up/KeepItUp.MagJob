@@ -324,6 +324,11 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("_permissions")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Permissions");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -383,6 +388,12 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.HasOne("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Organization", null)
                         .WithMany("Members")
                         .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KeepItUp.MagJob.Identity.Core.UserAggregate.User", null)
+                        .WithMany("Memberships")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -468,6 +479,11 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.Navigation("Members");
 
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.UserAggregate.User", b =>
+                {
+                    b.Navigation("Memberships");
                 });
 #pragma warning restore 612, 618
         }

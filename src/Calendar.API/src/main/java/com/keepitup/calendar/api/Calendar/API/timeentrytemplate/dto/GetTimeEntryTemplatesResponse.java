@@ -16,7 +16,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Schema(description = "GetTimeEntryTemplatesResponse DTO")
 public class GetTimeEntryTemplatesResponse {
-
     @Getter
     @Setter
     @Builder

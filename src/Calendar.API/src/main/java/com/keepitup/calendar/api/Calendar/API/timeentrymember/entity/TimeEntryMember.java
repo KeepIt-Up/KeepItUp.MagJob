@@ -20,11 +20,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "time_entry_members")
 public class TimeEntryMember {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
-    @SequenceGenerator(name = "memberSequenceGenerator")
-    private BigInteger id;
+    @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
+    private UUID id;
 
     @NotNull
     @Column(name = "status", nullable = false)

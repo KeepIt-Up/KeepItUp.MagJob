@@ -9,9 +9,9 @@ import java.util.function.BiFunction;
 @Component
 public class UpdateTimeEntryTemplateWithRequestFunction implements BiFunction<TimeEntryTemplate, PatchTimeEntryTemplateRequest, TimeEntryTemplate> {
     @Override
-    public TimeEntryTemplate apply(TimeEntryTemplate organization, PatchTimeEntryTemplateRequest request) {
+    public TimeEntryTemplate apply(TimeEntryTemplate timeEntryTemplate, PatchTimeEntryTemplateRequest request) {
         return TimeEntryTemplate.builder()
-                .id(organization.getId())
+                .id(timeEntryTemplate.getId())
                 .build();
     }
 }

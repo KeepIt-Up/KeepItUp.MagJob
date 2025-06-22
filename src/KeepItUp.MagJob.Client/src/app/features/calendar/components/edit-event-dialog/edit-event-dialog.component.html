@@ -1,0 +1,68 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+    <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">Edit Event</h3>
+    <form class="space-y-4">
+      <div>
+        <label for="editEventTitle" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Title
+        </label>
+        <input
+          id="editEventTitle"
+          type="text"
+          [(ngModel)]="event.title"
+          name="editEventTitle"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          placeholder="Event title"
+        />
+      </div>
+      <div>
+        <label for="editEventStart" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Start Date & Time
+        </label>
+        <input
+          id="editEventStart"
+          type="datetime-local"
+          [(ngModel)]="event.start"
+          name="editEventStart"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        />
+      </div>
+      <div>
+        <label for="editEventEnd" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          End Date & Time
+        </label>
+        <input
+          id="editEventEnd"
+          type="datetime-local"
+          [(ngModel)]="event.end"
+          name="editEventEnd"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        />
+      </div>
+      <div>
+        <label for="editEventDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Description
+        </label>
+        <textarea
+          id="editEventDescription"
+          [(ngModel)]="event.description"
+          name="editEventDescription"
+          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          rows="3"
+          placeholder="Event description"
+        ></textarea>
+      </div>
+    </form>
+    <div class="flex justify-end gap-2 mt-6">
+      <button
+        class="btn-nav bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
+        (click)="onCancel()"
+      >
+        Cancel
+      </button>
+      <button class="btn-nav bg-blue-500 hover:bg-blue-600 text-white" (click)="onSave()">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div> 

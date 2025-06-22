@@ -16,6 +16,8 @@ import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.componen
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
 import { WorkEvidenceComponent } from '@pages/workevidence/workevidence.component';
 import { ShiftComponent } from '@pages/shift/shift.component';
+import { CalendarPageComponent } from './app/pages/calendar-page';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
   {
@@ -40,6 +42,7 @@ export const routes: Routes = [
       { path: 'organizations', component: UserOrganizationsComponent },
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
+      { path: 'calendar', component: CalendarPageComponent },
       { path: '**', redirectTo: 'organizations' },
     ],
   },

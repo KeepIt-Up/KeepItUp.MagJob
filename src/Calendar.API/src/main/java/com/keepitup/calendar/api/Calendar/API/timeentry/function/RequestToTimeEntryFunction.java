@@ -11,7 +11,6 @@ public class RequestToTimeEntryFunction implements Function<PostTimeEntryRequest
     @Override
     public TimeEntry apply(PostTimeEntryRequest request) {
         return TimeEntry.builder()
-                .id(request.getId())
                 .startDateTime(request.getStartDateTime())
                 .endDateTime(request.getEndDateTime())
                 .build();

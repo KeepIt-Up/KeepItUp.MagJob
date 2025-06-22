@@ -1,0 +1,18 @@
+// .mwl-calendar-week-view-event {
+//   height: 100% !important;
+//   display: block !important;
+// }
+
+// mwl-calendar-week-view-event {
+//   display: block;  /* Makes it a block-level element */
+//   height: 100%;    /* Takes full height of parent */
+// }
+
+.cal-event-container mwl-calendar-week-view-event {
+  display: block;
+  height: 100%;
+}
+
+.cal-event-container mwl-calendar-week-view-event > .cal-event {
+  height: 100%;
+}
