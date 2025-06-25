@@ -21,6 +21,7 @@ public class ShiftToResponseFunction implements Function<Shift, GetShiftResponse
                         .status(shiftEditRequest.getStatus())
                         .startTime(shiftEditRequest.getStartTime())
                         .endTime(shiftEditRequest.getEndTime())
+                        .description(shiftEditRequest.getDescription())
                         .build())
                 .collect(Collectors.toList());
 

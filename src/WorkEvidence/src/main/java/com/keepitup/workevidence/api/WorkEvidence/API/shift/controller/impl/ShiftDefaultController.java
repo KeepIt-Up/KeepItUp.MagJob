@@ -66,14 +66,13 @@ public class ShiftDefaultController implements ShiftController {
     }
 
     @Override
-    public GetEndShiftResponse endShift(BigInteger id, PatchEndShiftRequest request) {
+    public GetEndShiftResponse endShift(BigInteger id) {
         Optional<Shift> shift = service.findById(id);
 
         if (shift.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found");
         }
-        Shift updatedShift = updateShiftWithRequest.apply(shift.get(), request);
-        service.endShift(id, updatedShift);
+        service.endShift(id);
         return null;
     }
 

@@ -628,7 +628,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
   // Dodaj metodę do pobierania wszystkich pracowników
   loadAllEmployees() {
     this.error = null;
-    const maxId = 10; // Maksymalne id do pobrania
+    const maxId = 100; // Maksymalne id do pobrania
     for (let id = 1; id <= maxId; id++) {
       this.shiftService.getShiftById(id.toString()).subscribe({
         next: (shift) => {

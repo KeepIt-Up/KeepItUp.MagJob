@@ -50,6 +50,10 @@
                                 <span class="font-medium">{{ currentShift.startTime | date:'medium' }}</span>
                             </div>
                             <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">Czas zakończenia:</span>
+                                <span class="font-medium">{{ currentShift.endTime | date:'medium' }}</span>
+                            </div>
+                            <div class="flex justify-between">
                                 <span class="text-gray-700 dark:text-gray-300">Opis:</span>
                                 <span class="font-medium">{{ currentShift.description || '-' }}</span>
                             </div>
@@ -144,7 +148,6 @@
                                             <span class="font-medium">Proponowane godziny:</span><br>
                                             Od: {{ request.startTime | date:'medium' }}<br>
                                             Do: {{ request.endTime | date:'medium' }}<br>
-                                            <span class="font-medium">Opis:</span> {{ request.description || '-' }}
                                         </div>
                                         <div *ngIf="request.description" class="text-sm text-gray-600 dark:text-gray-400">
                                             <span class="font-medium">Uzasadnienie zmiany:</span><br>

@@ -38,14 +38,7 @@ public interface ShiftController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftId,
-            @Parameter(
-                    name = "EndShiftRequest",
-                    description = "DTO for ending a shift",
-                    schema = @Schema(implementation = PatchEndShiftRequest.class),
-                    required = true
-            )
-            @RequestBody PatchEndShiftRequest endShiftRequest
+            BigInteger shiftId
     );
 
     @Operation(summary = "Delete a shift")

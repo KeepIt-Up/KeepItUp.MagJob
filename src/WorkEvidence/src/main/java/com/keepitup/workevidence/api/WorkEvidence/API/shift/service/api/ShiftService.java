@@ -10,7 +10,7 @@ public interface ShiftService {
 
     Optional<Shift> startShift(Shift shift);
 
-    Optional<Shift> endShift(BigInteger shiftId, Shift shift);
+    Optional<Shift> endShift(BigInteger shiftId);
 
     void deleteShift(BigInteger shiftId);
 

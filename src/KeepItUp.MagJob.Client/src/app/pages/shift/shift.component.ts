@@ -78,11 +78,15 @@ export class ShiftComponent implements OnInit, OnDestroy {
     
     this.shiftApiService.getActiveShift().subscribe({
       next: (shift) => {
-        console.log('Received shift:', shift);
-        console.log('Shift edit requests:', shift.shiftEditRequests);
-        if (shift.shiftEditRequests?.length > 0) {
-          console.log('First edit request:', shift.shiftEditRequests[0]);
+
+        if (shift.endTime) {
+          // Zmiana zakończona, nie ustawiaj currentShift
+          this.currentShift = null;
+          this.editRequests = [];
+          this.isLoading = false;
+          return;
         }
+
         this.currentShift = shift;
         this.editRequests = shift.shiftEditRequests || [];
         this.isLoading = false;
@@ -120,12 +124,11 @@ export class ShiftComponent implements OnInit, OnDestroy {
       next: (shift) => {
         this.currentShift = shift;
         this.editRequests = shift.shiftEditRequests || [];
-        this.description = '';
+        this.description = shift.description || '';
         this.isLoading = false;
       },
       error: (err) => {
         this.error = 'Nie udało się rozpocząć zmiany. Spróbuj ponownie.';
-        console.error('Error starting shift:', err);
         this.isLoading = false;
       }
     });
@@ -182,6 +185,7 @@ export class ShiftComponent implements OnInit, OnDestroy {
           next: (shift: Shift) => {
             this.currentShift = shift;
             this.editRequests = shift.shiftEditRequests || [];
+            console.log('Edit requests:', this.editRequests);
           },
           error: (err: Error) => {
             this.error = 'Nie udało się odświeżyć danych zmiany.';

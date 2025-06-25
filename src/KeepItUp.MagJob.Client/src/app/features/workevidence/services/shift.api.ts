@@ -49,7 +49,7 @@ export class ShiftApiService {
 
     endShift(shiftId: string): Observable<void> {
         return this.http
-            .post<void>(`${this.apiUrl}/shifts/${shiftId}/end`, {})
+            .put<void>(`${this.apiUrl}/shifts/end/${shiftId}`, {})
             .pipe(
                 catchError((error: HttpErrorResponse) => {
                     console.error('Error ending shift:', {

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import java.time.ZoneId;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ public class ShiftDefaultService implements ShiftService {
 
     @Override
     @Transactional
-    public Optional<Shift> endShift(BigInteger shiftId, Shift shift) {
+    public Optional<Shift> endShift(BigInteger shiftId) {
 
         Shift existingShift = shiftRepository.findById(shiftId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Shift not found"));
@@ -49,7 +50,11 @@ public class ShiftDefaultService implements ShiftService {
             throw new ResponseStatusException(CONFLICT, "The shift has already ended.");
         }
 
-        existingShift.setEndTime(LocalDateTime.now());
+        if (existingShift.getEndTime().isBefore(existingShift.getStartTime())) {
+            throw new ResponseStatusException(CONFLICT, "Wrong shift time");
+        }
+
+        existingShift.setEndTime(LocalDateTime.now(ZoneId.of("Europe/Warsaw")));
         return Optional.of(shiftRepository.save(existingShift));
     }
 
