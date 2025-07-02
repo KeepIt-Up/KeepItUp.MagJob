@@ -117,7 +117,7 @@ public interface AvailabilityTemplateController {
     );
 
     @Operation(summary = "Get AvailabilityTemplates by User")
-    @PostMapping("api/availabilitytemplates/{userId}")
+    @PostMapping("api/myavailabilitytemplates")
     @ResponseStatus(HttpStatus.OK)
     GetAvailabilityTemplatesResponse getAvailabilityTemplatesByUser(
             @Parameter(
@@ -137,9 +137,7 @@ public interface AvailabilityTemplateController {
                     description = "AvailabilityTemplates userId value",
                     required = true
             )
-            @PathVariable("userId")
+            @RequestBody
             UUID userId
     );
-
-
 }

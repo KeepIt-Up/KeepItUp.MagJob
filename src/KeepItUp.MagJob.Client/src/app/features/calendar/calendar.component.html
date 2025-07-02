@@ -47,6 +47,14 @@
           <span>Add Event</span>
         </span>
       </button>
+
+      <button class="btn-nav bg-blue-500 hover:bg-blue-600 text-white" (click)="openAvailabilityTemplateDialog()">
+        <span class="flex items-center gap-2">
+          <i class="bi bi-plus-lg"></i>
+          <span>Create Availability Template</span>
+        </span>
+      </button>
+
     </div>
     <div class="flex items-center gap-2">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -139,4 +147,19 @@
     (confirm)="onConfirmDelete()"
     (cancel)="onCancelDelete()"
   ></app-delete-confirmation-dialog>
+
+  <app-availability-template-dialog 
+    *ngIf="showAvailabilityTemplateDialog"
+    [events]="events"
+    (save)="onSaveAvailabilityTemplate($event)"
+    (cancel)="onCancelAvailabilityTemplate()">
+  </app-availability-template-dialog>
+
+  <div *ngIf="showSuccessAlert" class="success-alert">
+    <div class="alert-content">
+      <i class="bi bi-check-circle-fill"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button class="close-alert" (click)="showSuccessAlert = false">×</button>
+  </div>
 </div>

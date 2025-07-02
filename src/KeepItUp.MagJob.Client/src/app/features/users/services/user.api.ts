@@ -39,6 +39,8 @@ export class UserApiService {
     });
   }
 
+  
+
   getAll(query: Record<any, any>, paginationOptions: PaginationOptions<User>) {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<User>>(`${this.apiUrl}`, {

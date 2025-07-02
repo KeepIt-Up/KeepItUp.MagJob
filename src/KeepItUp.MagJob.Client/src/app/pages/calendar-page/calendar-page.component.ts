@@ -10,7 +10,6 @@ import {
 
 @Component({
   selector: 'app-calendar-page',
-  // selector: 'app-demo-component',
   standalone: true,
   imports: [CommonModule, CalendarComponent, CalendarModule],
   providers: [CalendarUtils, CalendarA11y, CalendarEventTitleFormatter],

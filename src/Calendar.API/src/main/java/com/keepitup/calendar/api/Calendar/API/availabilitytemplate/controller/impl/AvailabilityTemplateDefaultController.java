@@ -80,6 +80,9 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
     @Override
     public GetAvailabilityTemplateResponse createAvailabilityTemplates(PostAvailabilityTemplateRequest postAvailabilityTemplateRequest) {
         AvailabilityTemplate availabilityTemplate = requestToAvailabilityTemplate.apply(postAvailabilityTemplateRequest);
+        var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
+        availabilityTemplate.setUserId(loggedInUserId);
         AvailabilityTemplate availabilityTemplateCreated = service.create(availabilityTemplate);
 
         for(TimeEntryTemplate timeEntryTemplate: postAvailabilityTemplateRequest.getTimeEntryTemplates()){
@@ -129,9 +132,6 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
 
         return availabilityTemplatesToResponse.apply(availabilityTemplates, count);
     }
-
-
-
 
     @Override
     public GetAvailabilityTemplateResponse updateAvailabilityTemplate(UUID id, PatchAvailabilityTemplateRequest patchAvailabilityTemplateRequest) {

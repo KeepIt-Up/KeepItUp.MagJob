@@ -15,6 +15,7 @@ import { CreateOrganizationComponent } from '@pages/organization/create-organiza
 import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.component';
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
 import { CalendarPageComponent } from './app/pages/calendar-page';
+import { AvailabilityTemplatesComponent } from './app/pages/availability-templates/availability-templates.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -41,6 +42,7 @@ export const routes: Routes = [
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
       { path: 'calendar', component: CalendarPageComponent },
+      { path: 'availability-templates', component: AvailabilityTemplatesComponent },
       { path: '**', redirectTo: 'organizations' },
     ],
   },
