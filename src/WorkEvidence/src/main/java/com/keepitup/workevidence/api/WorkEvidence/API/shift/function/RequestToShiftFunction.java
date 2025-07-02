@@ -17,6 +17,7 @@ public class RequestToShiftFunction implements Function<PostStartShiftRequest, S
         return Shift.builder()
                 .startTime(request.getStartTime())
                 .description(request.getDescription())
+                .memberId(request.getMemberId())
                 .build();
     }
 }

@@ -70,6 +70,7 @@ public class ShiftEditRequestDefaultService implements ShiftEditRequestService {
             Shift originalShift = shiftEditRequest.getShift();
             originalShift.setStartTime(shiftEditRequest.getStartTime());
             originalShift.setEndTime(shiftEditRequest.getEndTime());
+            originalShift.setDescription(shiftEditRequest.getDescription());
             shiftRepository.save(originalShift);
         }
 

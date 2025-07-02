@@ -36,6 +36,10 @@ public class ShiftEditRequest {
     @Column(name = "endTime", nullable = false)
     private LocalDateTime endTime;
 
+    @NotNull
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @ManyToOne
     @JoinColumn(name="Shift")
     private Shift shift;

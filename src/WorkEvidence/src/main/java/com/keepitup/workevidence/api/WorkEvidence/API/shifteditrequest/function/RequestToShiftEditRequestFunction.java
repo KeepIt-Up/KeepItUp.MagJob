@@ -14,6 +14,7 @@ public class RequestToShiftEditRequestFunction implements Function<PostShiftEdit
                 .status(postShiftEditRequest.getStatus())
                 .startTime(postShiftEditRequest.getNewStartTime())
                 .endTime(postShiftEditRequest.getNewEndTime())
+                .description(postShiftEditRequest.getDescription())
                 .build();
     }
 }

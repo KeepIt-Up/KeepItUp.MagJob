@@ -22,4 +22,7 @@ public class PostStartShiftRequest {
 
     @Schema(description = "Additional details about the shift", example = "Morning shift at warehouse")
     private String description;
+
+    @Schema(description = "Member ID", example = "1234567890")
+    private BigInteger memberId;
 }

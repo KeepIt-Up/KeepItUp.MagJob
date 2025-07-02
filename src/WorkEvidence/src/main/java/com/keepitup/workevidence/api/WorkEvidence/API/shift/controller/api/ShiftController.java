@@ -14,7 +14,7 @@ import java.math.BigInteger;
 public interface ShiftController {
 
     @Operation(summary = "Start a new shift")
-    @PostMapping("/api/shifts/start")
+    @PostMapping("shifts/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     GetShiftResponse startShift(
@@ -28,7 +28,7 @@ public interface ShiftController {
     );
 
     @Operation(summary = "End an existing shift")
-    @PutMapping("/api/shifts/end/{id}")
+    @PutMapping("/shifts/end/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     GetEndShiftResponse endShift(
@@ -62,7 +62,7 @@ public interface ShiftController {
     );
 
     @Operation(summary = "Get a shift by ID")
-    @GetMapping("/api/shifts/{id}")
+    @GetMapping("shifts/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     GetShiftResponse getShift(
