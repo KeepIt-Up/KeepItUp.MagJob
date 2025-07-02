@@ -50,7 +50,7 @@ public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcc
                 return;
             }
 
-            var organization = await _organizationRepository.GetByIdAsync(notification.OrganizationId, cancellationToken);
+            var organization = await _organizationRepository.GetByIdWithMembersAndRolesAsync(notification.OrganizationId, cancellationToken);
 
             if (organization == null)
             {

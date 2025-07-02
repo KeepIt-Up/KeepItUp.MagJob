@@ -72,6 +72,9 @@ public class AssignRoleToMemberCommandHandlerTests : BaseIntegrationTest
         // Assert
         result.IsSuccess.Should().BeTrue();
 
+        // Clear change tracker to ensure fresh data
+        DbContext.ChangeTracker.Clear();
+
         // Verify the role was assigned in the MemberRoles table
         var memberEntity = await DbContext.Members
             .Include(m => m.Roles)
@@ -79,8 +82,15 @@ public class AssignRoleToMemberCommandHandlerTests : BaseIntegrationTest
 
         memberEntity.Should().NotBeNull();
 
-        // Check if the role was assigned
+        // Debug: Check what roles the member has
+        var roleNames = memberEntity!.Roles.Select(r => r.Name).ToList();
+        Console.WriteLine($"Member has roles: {string.Join(", ", roleNames)}");
+        Console.WriteLine($"Looking for admin role ID: {adminRole.Id}");
+        Console.WriteLine($"Member roles IDs: {string.Join(", ", memberEntity.Roles.Select(r => r.Id))}");
+
+        // Check if the role was assigned - member should have both Member and Admin roles
         memberEntity!.Roles.Should().Contain(r => r.Id == adminRole.Id);
+        memberEntity!.Roles.Should().HaveCountGreaterThan(1, "Member should have both Member and Admin roles");
     }
 
     [Fact]

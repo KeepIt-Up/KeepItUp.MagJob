@@ -1,4 +1,5 @@
 using FastEndpoints;
+using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -52,31 +53,31 @@ public class AssignRoleToMemberCommandHandler : IRequestHandler<AssignRoleToMemb
                 }
             }
 
-            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
-            if (role == null)
-            {
-                return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
-            }
-
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
             if (member == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
+            // Check if the member already has this role
             if (member.HasRole(request.RoleId))
             {
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} już ma przypisaną rolę o ID {request.RoleId}.");
             }
 
-            member.AssignRole(request.RoleId, role);
+            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+            if (role == null)
+            {
+                return Result.NotFound("Nie znaleziono roli.");
+            }
 
-            await _repository.UpdateAsync(organization, cancellationToken);
+            // Use direct SQL insert as a workaround for EF Core many-to-many tracking issues
+            await _repository.AddRoleToMemberAsync(member.Id, request.RoleId, cancellationToken);
 
             _logger.LogInformation("Przypisano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",
                 request.RoleId, request.MemberUserId, organization.Id);
 
-            return Result.Success();
+            return Result.Success(new EmptyResponse());
         }
         catch (Exception ex)
         {

@@ -164,4 +164,20 @@ public interface IOrganizationRepository
         Expression<Func<Role, TDestination>> selector,
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Adds a role to a member using direct SQL as a workaround for EF Core many-to-many issues.
+    /// </summary>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task AddRoleToMemberAsync(Guid memberId, Guid roleId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a role from a member using direct SQL as a workaround for EF Core many-to-many issues.
+    /// </summary>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task RemoveRoleFromMemberAsync(Guid memberId, Guid roleId, CancellationToken cancellationToken = default);
 }

@@ -51,13 +51,6 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 }
             }
 
-            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
-
-            if (role == null)
-            {
-                return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
-            }
-
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
 
             if (member == null)
@@ -70,24 +63,32 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} nie ma przypisanej roli o ID {request.RoleId}.");
             }
 
-            if (request.MemberUserId == organization.OwnerId && role.Name == "Admin")
+            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+            if (role == null)
             {
-                return Result.Error("Nie można odebrać roli właściciela organizacji.");
+                return Result.NotFound("Nie znaleziono roli.");
             }
 
-            if (member.Roles.Count == 1)
+            // Check if this is the last role for the member
+            if (member.Roles.Count == 1 && member.HasRole(request.RoleId))
             {
-                return Result.Error("Nie można odebrać ostatniej roli użytkownikowi. Użytkownik musi mieć przypisaną co najmniej jedną rolę.");
+                return Result.Error("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
             }
 
-            member.RemoveRole(request.RoleId);
+            // Check if this is an attempt to revoke owner role (but only after checking if it's the last role)
+            if (role.Name.Equals("Admin", StringComparison.OrdinalIgnoreCase) &&
+                organization.OwnerId == request.MemberUserId &&
+                member.Roles.Count > 1)
+            {
+                return Result.Error("Nie można odebrać roli właściciela.");
+            }
 
-            await _repository.UpdateAsync(organization, cancellationToken);
+            await _repository.RemoveRoleFromMemberAsync(member.Id, request.RoleId, cancellationToken);
 
             _logger.LogInformation("Odebrano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",
                 request.RoleId, request.MemberUserId, organization.Id);
 
-            return Result.Success();
+            return Result.Success(new EmptyResponse());
         }
         catch (Exception ex)
         {

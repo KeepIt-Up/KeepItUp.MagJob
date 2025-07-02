@@ -221,7 +221,7 @@ public class CreateOrganizationCommandHandlerTests : BaseIntegrationTest
         member.UserId.Should().Be(user.Id);
 
         var adminRole = organization.Roles.First(r => r.Name == "Admin");
-        member.RoleIds.Should().Contain(adminRole.Id);
+        member.HasRole(adminRole.Id).Should().BeTrue();
     }
 
     [Fact]

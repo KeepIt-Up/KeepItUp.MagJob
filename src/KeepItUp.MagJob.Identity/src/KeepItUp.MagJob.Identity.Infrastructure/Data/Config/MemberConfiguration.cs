@@ -20,19 +20,6 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
 
         builder.Property(m => m.JoinedAt)
             .IsRequired();
-
-        // Configure the collection of RoleIds
-        builder.Property<List<Guid>>("_roleIds")
-            .HasColumnName("RoleIds")
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(id => Guid.Parse(id))
-                    .ToList(),
-                new ValueComparer<List<Guid>>(
-                    (c1, c2) => c1!.SequenceEqual(c2!),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
         #endregion
 
         #region Relationships
@@ -53,6 +40,7 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
                     j.HasIndex("RoleId");
                 });
         #endregion
+
         #region Indexes
         builder.HasIndex(m => new { m.UserId, m.OrganizationId }).IsUnique();
 

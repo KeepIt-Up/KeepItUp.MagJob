@@ -57,9 +57,7 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
                 return Result<MemberDto>.NotFound($"Nie znaleziono członka o ID użytkownika {request.MemberUserId} w organizacji.");
             }
 
-            var roleIds = member.RoleIds;
-            var roles = organization.Roles
-                .Where(r => roleIds.Contains(r.Id))
+            var roles = member.Roles
                 .Select(r => new RoleDto
                 {
                     Id = r.Id,

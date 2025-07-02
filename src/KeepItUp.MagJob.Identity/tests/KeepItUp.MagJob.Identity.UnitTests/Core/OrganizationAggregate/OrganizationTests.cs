@@ -280,8 +280,8 @@ public class OrganizationTests
             organization.Members.Should().HaveCount(1);
             var ownerMember = organization.Members.First();
             ownerMember.UserId.Should().Be(organization.OwnerId);
-            var adminRoleId = organization.Roles.First(r => r.Name == "Admin").Id;
-            ownerMember.RoleIds.Should().Contain(adminRoleId);
+            var adminRole = organization.Roles.First(r => r.Name == "Admin");
+            ownerMember.HasRole(adminRole.Id).Should().BeTrue();
         }
 
         [Fact]
@@ -329,7 +329,7 @@ public class OrganizationTests
             organization.AssignRoleToMember(member.UserId, guestRole.Id);
 
             // Assert
-            member.RoleIds.Should().Contain(guestRole.Id);
+            member.HasRole(guestRole.Id).Should().BeTrue();
         }
 
         [Fact]
@@ -348,8 +348,8 @@ public class OrganizationTests
             organization.RevokeRoleFromMember(member.UserId, adminRole.Id);
 
             // Assert
-            member.RoleIds.Should().NotContain(adminRole.Id);
-            member.RoleIds.Should().Contain(guestRole.Id);
+            member.HasRole(adminRole.Id).Should().BeFalse();
+            member.HasRole(guestRole.Id).Should().BeTrue();
         }
     }
 

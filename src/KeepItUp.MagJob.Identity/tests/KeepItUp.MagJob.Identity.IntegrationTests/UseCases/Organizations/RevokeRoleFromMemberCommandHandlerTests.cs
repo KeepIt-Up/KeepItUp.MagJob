@@ -54,7 +54,7 @@ public class RevokeRoleFromMemberCommandHandlerTests : BaseIntegrationTest
         organization.AddMember(member.Id, memberRole.Id);
         // Add admin role to the member (so they have both Member and Admin roles)
         var organizationMember = organization.Members.First(m => m.UserId == member.Id);
-        organizationMember.AssignRole(adminRole.Id, adminRole);
+        organizationMember.AssignRole(adminRole);
 
         await DbContext.Organizations.AddAsync(organization);
         await SaveAndClearAsync();
@@ -395,6 +395,6 @@ public class RevokeRoleFromMemberCommandHandlerTests : BaseIntegrationTest
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Status.Should().Be(ResultStatus.Error);
-        result.Errors.Should().Contain(e => e.Contains("Nie można odebrać roli właściciela"));
+        result.Errors.Should().Contain(e => e.Contains("Nie można usunąć ostatniej roli przypisanej do członka organizacji."));
     }
 }

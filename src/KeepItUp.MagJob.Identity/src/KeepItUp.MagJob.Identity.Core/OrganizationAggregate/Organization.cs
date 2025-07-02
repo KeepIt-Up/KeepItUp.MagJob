@@ -130,10 +130,7 @@ public class Organization : BaseEntity, IAggregateRoot
         }
 
         // Add the owner as an admin
-        var ownerMember = Member.Create(OwnerId, Id, adminRole.Id);
-
-        // Explicitly set references for navigation between Member and Role
-        ownerMember.Roles.Add(adminRole);
+        var ownerMember = Member.Create(OwnerId, Id, adminRole);
 
         _members.Add(ownerMember);
 
@@ -260,15 +257,13 @@ public class Organization : BaseEntity, IAggregateRoot
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            existingMember.AssignRole(roleId, role);
+            existingMember.AssignRole(role);
 
             RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
             return existingMember;
         }
 
-        var member = Member.Create(userId, Id, roleId);
-
-        member.SyncRoles(_roles);
+        var member = Member.Create(userId, Id, role);
 
         _members.Add(member);
 
@@ -311,7 +306,8 @@ public class Organization : BaseEntity, IAggregateRoot
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
-        if (!_roles.Any(r => r.Id == roleId))
+        var role = _roles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
         {
             throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
         }
@@ -322,7 +318,7 @@ public class Organization : BaseEntity, IAggregateRoot
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie jest członkiem organizacji.");
         }
 
-        member.AssignRole(roleId);
+        member.AssignRole(role);
 
         RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
     }
@@ -348,7 +344,13 @@ public class Organization : BaseEntity, IAggregateRoot
             throw new InvalidOperationException($"Użytkownik o ID {userId} nie posiada roli o ID {roleId}.");
         }
 
-        if (!member.RemoveRole(roleId))
+        var role = _roles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+        {
+            throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
+        }
+
+        if (!member.RemoveRole(role))
         {
             throw new InvalidOperationException("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
         }
@@ -401,24 +403,32 @@ public class Organization : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
+    /// Adds a member to the organization from an accepted invitation.
     /// </summary>
     /// <param name="userId">User ID of the person accepting the invitation.</param>
+    /// <param name="roleId">Role ID to assign to the member.</param>
     public Member AddMemberFromInvitation(Guid userId, Guid roleId)
     {
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(roleId, nameof(roleId));
 
+        var role = _roles.FirstOrDefault(r => r.Id == roleId);
+        if (role == null)
+        {
+            throw new InvalidOperationException($"Rola o ID {roleId} nie istnieje w organizacji.");
+        }
+
         var existingMember = _members.FirstOrDefault(m => m.UserId == userId);
         if (existingMember != null)
         {
-            existingMember.AssignRole(roleId);
+            existingMember.AssignRole(role);
 
             RegisterDomainEventAndUpdate(new MemberRoleAssignedEvent(Id, userId, roleId));
 
             return existingMember;
         }
 
-        var member = Member.Create(userId, Id, roleId);
+        var member = Member.Create(userId, Id, role);
         _members.Add(member);
 
         RegisterDomainEventAndUpdate(new MemberAddedEvent(Id, userId, roleId));

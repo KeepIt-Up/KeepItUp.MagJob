@@ -55,7 +55,7 @@ public class GetUserByExternalIdQueryHandler : IRequestHandler<GetUserByExternal
                     MemberId = m.Id,
                     OrganizationId = m.OrganizationId,
                     JoinedAt = m.JoinedAt,
-                    Roles = m.RoleIds.Select(r => r.ToString()).ToList()
+                    Roles = m.GetRoleIds().Select(r => r.ToString()).ToList()
                 }).ToList() ?? new List<MembershipDto>()
             };
 
