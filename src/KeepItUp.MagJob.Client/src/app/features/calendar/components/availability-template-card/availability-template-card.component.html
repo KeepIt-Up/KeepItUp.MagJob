@@ -36,4 +36,17 @@
       </div>
     </div>
   }
+
+  <div class="mt-6 pt-4 border-t border-gray-100">
+    <app-button variant="primary" size="sm" (click)="openCreateGraphicDialog()" class="w-full">
+      Create Graphic
+    </app-button>
+  </div>
 </div>
+
+<app-create-graphic-dialog
+  [template]="template"
+  [isOpen]="isDialogOpen"
+  (close)="closeCreateGraphicDialog()"
+  (graphicCreated)="onGraphicCreated()"
+></app-create-graphic-dialog>

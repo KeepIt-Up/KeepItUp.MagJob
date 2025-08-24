@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.Graphic.controller.api;
 
 import com.keepitup.calendar.api.Calendar.API.Graphic.dto.*;
+import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.dto.GetAvailabilityTemplatesResponse;
 import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -113,7 +114,7 @@ public interface GraphicController {
     );
 
     @Operation(summary = "Get Graphics by User")
-    @PostMapping("api/graphics/{userId}")
+    @PostMapping("api/mygraphics")
     @ResponseStatus(HttpStatus.OK)
     GetGraphicsResponse getGraphicsByUser(
             @Parameter(
@@ -130,10 +131,10 @@ public interface GraphicController {
             int size,
             @Parameter(
                     name = "userId",
-                    description = "Graphics userId value",
+                    description = "AvailabilityTemplates userId value",
                     required = true
             )
-            @PathVariable("userId")
+            @RequestBody
             UUID userId
     );
 

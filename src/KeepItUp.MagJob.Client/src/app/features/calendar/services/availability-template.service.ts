@@ -27,7 +27,13 @@ export class AvailabilityTemplateService {
         this.notificationService.show('Availability template created successfully', 'success');
       }),
       catchError(error => {
-        this.stateService.setError(error);
+        if (error instanceof Error) {
+          this.stateService.setError(error);
+        } else {
+          this.stateService.setError(
+            new Error(typeof error === 'string' ? error : 'Unknown error'),
+          );
+        }
         this.notificationService.show('Failed to create availability template', 'error');
         return throwError(() => error);
       }),

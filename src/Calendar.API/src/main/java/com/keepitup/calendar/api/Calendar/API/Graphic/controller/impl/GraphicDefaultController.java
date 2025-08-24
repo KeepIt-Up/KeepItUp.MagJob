@@ -100,7 +100,8 @@ public class GraphicDefaultController implements GraphicController {
     public GetGraphicsResponse getGraphicsByUser(int page, int size, UUID userId) {
         var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
         UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
-
+        System.out.println(loggedInUserId);
+        System.out.println(userId);
         if (!loggedInUserId.equals(userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
@@ -108,6 +109,7 @@ public class GraphicDefaultController implements GraphicController {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         Optional<Page<Graphic>> countOptional = service.findAllGraphicsByUser(userId, pageRequest);
+        System.out.println(countOptional);
         Integer count = countOptional
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)).getNumberOfElements();
 
@@ -115,7 +117,7 @@ public class GraphicDefaultController implements GraphicController {
 
         Page<Graphic> Graphics = GraphicsOptional
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+        System.out.println(Graphics);
         return GraphicsToResponse.apply(Graphics, count);
     }
 
@@ -136,12 +138,18 @@ public class GraphicDefaultController implements GraphicController {
         AvailabilityTemplate avt = availabilityTemplateService.find(graphicPost.getAvailabilityTemplateId()).
           orElseThrow(() -> new RuntimeException("Availability Template doesn't exist")
           );
-//        avt.setTimeEntryTemplates(null);
+
         System.out.println(avt);
         List<TimeEntryTemplate> timeEntryTemplates = timeEntryTemplateService
             .findAllTimeEntryTemplatesByAvailabilityTemplate(avt)
             .orElse(Collections.emptyList());
         System.out.println("TETA: " + timeEntryTemplates);
+
+        // First create and persist the graphic
+        Graphic graphic = postCreateAndPopulateGraphicToResponseFunction.apply(graphicPost);
+        Graphic createdGraphic = service.create(graphic);
+
+        // Now create and persist time entries with proper relationship
         List<TimeEntry> timeEntries = new ArrayList<>();
         if (!timeEntryTemplates.isEmpty()) {
             for (TimeEntryTemplate template : timeEntryTemplates) {
@@ -149,27 +157,27 @@ public class GraphicDefaultController implements GraphicController {
                   .plusDays(template.getStartDayOffset())
                   .atTime(template.getStartTime());
 
-                LocalDateTime endDateTime =  graphicPost.getStartDate()
+                LocalDateTime endDateTime = graphicPost.getStartDate()
                   .plusDays(template.getEndDayOffset())
                   .atTime(template.getEndTime());
 
                 TimeEntry timeEntry = TimeEntry.builder()
                   .startDateTime(startDateTime)
                   .endDateTime(endDateTime)
+                  .graphic(createdGraphic) // Set the relationship
                   .build();
 
-                System.out.println("TE:" +timeEntry.getStartDateTime());
-//                timeEntryService.create(timeEntry);
+                System.out.println("TE:" + timeEntry.getStartDateTime());
+                // Actually persist each TimeEntry
+                timeEntryService.create(timeEntry);
                 timeEntries.add(timeEntry);
             }
         }
 
-        Graphic graphic = postCreateAndPopulateGraphicToResponseFunction.apply(graphicPost);
-        graphic.setTimeEntries(timeEntries);
-        Graphic createdGraphic = service.create(graphic);
         System.out.println(timeEntries);
+        // Return the graphic with all its time entries
         return graphicToResponseFunction.apply(
-            service.find(createdGraphic.getId())
+            service.find(createdGraphic.getId()) // Use new method that fetches time entries
                .orElseThrow(() -> new RuntimeException("Graphic not found with ID: " + createdGraphic.getId()))
         );
     }

@@ -26,7 +26,7 @@ public class Graphic {
 
     @NonNull
     @Column(name = "managerId", nullable = false)
-    private BigInteger managerId;
+    private UUID managerId;
 
     @OneToMany
     private List<TimeEntryMember> timeEntryMembers;

@@ -59,7 +59,6 @@ export class AvailabilityTemplatesService {
         tap({
           next: response => {
             this.templatesState.next(createSuccessState(response.availabilityTemplateResponseList));
-            // Since the backend doesn't provide pagination info, we'll set basic pagination
             this.paginationState.next({
               currentPage: page,
               totalPages: 1,

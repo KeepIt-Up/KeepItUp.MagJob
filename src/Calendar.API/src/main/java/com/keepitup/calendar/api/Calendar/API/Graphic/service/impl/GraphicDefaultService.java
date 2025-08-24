@@ -25,7 +25,7 @@ public class GraphicDefaultService implements GraphicService {
 
     @Override
     public Optional<Page<Graphic>> findAllGraphicsByUser(UUID userId, PageRequest pageRequest) {
-        return Optional.empty();
+        return Optional.of(graphicRepository.findAllByManagerId(userId, pageRequest));
     }
 
     @Override
@@ -40,7 +40,6 @@ public class GraphicDefaultService implements GraphicService {
 
     @Override
     public Optional<Graphic> find(UUID id) {
-
       return graphicRepository.findById(id);
     }
 

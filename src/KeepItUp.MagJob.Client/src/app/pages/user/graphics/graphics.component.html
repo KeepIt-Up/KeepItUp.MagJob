@@ -1,0 +1,79 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">My Graphics</h1>
+          <p class="mt-2 text-gray-600">Manage your created graphics and team assignments</p>
+        </div>
+        <app-button variant="primary" routerLink="/user/availability-templates">
+          Create New Graphic
+        </app-button>
+      </div>
+    </div>
+
+    @if (isLoading && graphics.length === 0) {
+      <div class="flex justify-center items-center py-12">Loading</div>
+    } @else if (error && graphics.length === 0) {
+      <div class="text-center py-12">
+        <div class="text-red-600 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Error Loading Graphics</h3>
+        <p class="text-gray-600 mb-4">{{ error }}</p>
+        <app-button variant="primary" (click)="reload()"> Try Again </app-button>
+      </div>
+    } @else if (graphics.length === 0) {
+      <!-- Empty State -->
+      <div class="text-center py-12">
+        <div class="text-gray-400 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+            />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No Graphics Found</h3>
+        <p class="text-gray-600 mb-6">
+          You haven't created any graphics yet. Create one from an availability template.
+        </p>
+        <app-button variant="primary" routerLink="/user/availability-templates">
+          Create Your First Graphic
+        </app-button>
+      </div>
+    } @else {
+      <!-- Graphics Grid -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (graphic of graphics; track graphic.id) {
+          <app-graphic-card [graphic]="graphic"></app-graphic-card>
+        }
+      </div>
+
+      <!-- Load More Button -->
+      @if (hasMorePages) {
+        <div class="text-center mt-8">
+          <app-button [disabled]="isLoading" (click)="loadMore()">
+            {{ isLoading ? 'Loading...' : 'Load More' }}
+          </app-button>
+        </div>
+      }
+
+      <!-- Error message for load more -->
+      @if (error && graphics.length > 0) {
+        <div class="text-center mt-4">
+          <p class="text-red-600 text-sm">{{ error }}</p>
+        </div>
+      }
+    }
+  </div>
+</div>
