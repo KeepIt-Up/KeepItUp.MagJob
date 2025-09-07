@@ -39,6 +39,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseWebSockets();
 
 await app.UseOcelot();
 

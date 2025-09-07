@@ -2,6 +2,8 @@ package com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.se
 
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chat.entity.Chat;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.entity.ChatMember;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.entity.ChatMessage;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.repository.api.ChatMessageRepository;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.repository.api.ChatMemberRepository;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.service.api.ChatMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,15 @@ import java.util.UUID;
 @Service
 public class ChatMemberDefaultService implements ChatMemberService {
     private final ChatMemberRepository chatMemberRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Autowired
     public ChatMemberDefaultService(
-            ChatMemberRepository chatMemberRepository
+            ChatMemberRepository chatMemberRepository,
+            ChatMessageRepository chatMessageRepository
     ) {
         this.chatMemberRepository = chatMemberRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @Override
@@ -67,7 +72,15 @@ public class ChatMemberDefaultService implements ChatMemberService {
 
     @Override
     public void delete(UUID id) {
-        chatMemberRepository.findById(id).ifPresent(chatMemberRepository::delete);
+        chatMemberRepository.findById(id).ifPresent(chatMember -> {
+            if (chatMember.getChatMessages() != null && !chatMember.getChatMessages().isEmpty()) {
+                for (ChatMessage message : chatMember.getChatMessages()) {
+                    message.setChatMember(null);
+                }
+                chatMessageRepository.saveAll(chatMember.getChatMessages());
+            }
+            chatMemberRepository.delete(chatMember);
+        });
     }
 
     @Override

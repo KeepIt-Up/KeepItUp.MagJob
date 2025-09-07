@@ -1,6 +1,7 @@
 package com.keepitup.chat.notification.api.ChatAndNotification.API.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -18,14 +19,15 @@ import java.util.List;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "queue");
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chats", "/notifications")
-               .setAllowedOrigins("*")
+        registry.addEndpoint("/ws")
+               .setAllowedOrigins("http://localhost:80", "http://localhost:4200", "http://127.0.0.1:80")
+               .setAllowedOriginPatterns("*")
                .withSockJS();
     }
 
@@ -35,7 +37,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         resolver.setDefaultMimeType(MimeTypeUtils.APPLICATION_JSON);
         
         var converter = new MappingJackson2MessageConverter();
-        converter.setObjectMapper(new ObjectMapper());
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        converter.setObjectMapper(objectMapper);
         converter.setContentTypeResolver(resolver);
         
         messageConverters.add(converter);

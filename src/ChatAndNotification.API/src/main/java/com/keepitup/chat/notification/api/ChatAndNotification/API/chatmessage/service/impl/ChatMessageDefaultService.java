@@ -35,14 +35,19 @@ public class ChatMessageDefaultService implements ChatMessageService {
 
     @Override
     public ChatMessage create(ChatMessage chatMessage) {
-//        String firstName = chatMessage.getChatMember().getMember().getUser().getFirstname();
-//        String lastName = chatMessage.getChatMember().getMember().getUser().getLastname();
-//
-//        chatMessage.setDateOfCreation(LocalDate.now());
-//        chatMessage.setFirstAndLastName(String.join(" ", firstName, lastName));
-//        chatMessageRepository.save(chatMessage);
-//        return chatMessage;
-        return null;
+        chatMessage.setDateOfCreation(LocalDate.now());
+
+        if (chatMessage.getViewedBy() == null) {
+            chatMessage.setViewedBy(new java.util.ArrayList<>());
+        }
+
+        if (chatMessage.getFirstAndLastName() == null
+                && chatMessage.getChatMember() != null
+                && chatMessage.getChatMember().getNickname() != null) {
+            chatMessage.setFirstAndLastName(chatMessage.getChatMember().getNickname());
+        }
+
+        return chatMessageRepository.save(chatMessage);
     }
 
     @Override

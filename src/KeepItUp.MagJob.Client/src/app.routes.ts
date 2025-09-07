@@ -14,6 +14,7 @@ import { OrganizationComponent } from '@pages/organization/organization.componen
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
 import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.component';
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
+import { ChatsComponent } from './app/features/chats/chats.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -26,6 +27,7 @@ export const routes: Routes = [
       { path: 'members', component: MembersTableComponent },
       { path: 'invitations', component: InvitationTableComponent },
       { path: 'roles', component: RolesManagementComponent },
+      { path: 'chats', component: ChatsComponent },
       { path: 'settings', component: OrganizationProfilComponent },
       { path: '**', redirectTo: 'members' },
     ],

@@ -13,7 +13,6 @@ import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.fu
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.function.RequestToChatMessageFunction;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.function.UpdateChatMessageWithRequestFunction;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.service.impl.ChatMessageDefaultService;
-//import com.keepitup.chat.notification.api.ChatAndNotification.API.configuration.SecurityService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,7 +33,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
     private final ChatMessageDefaultService chatMessageService;
     private final ChatDefaultService chatService;
     private final ChatMemberDefaultService chatMemberService;
-    //private final SecurityService securityService;
     private final RequestToChatMessageFunction requestToChatMessageFunction;
     private final UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction;
     private final ChatMessagesToResponseFunction chatMessagesToResponseFunction;
@@ -42,7 +42,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
             ChatMessageDefaultService chatMessageService,
             ChatDefaultService chatService,
             ChatMemberDefaultService chatMemberService,
-            //SecurityService securityService,
             RequestToChatMessageFunction requestToChatMessageFunction,
             UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction,
             ChatMessagesToResponseFunction chatMessagesToResponseFunction
@@ -50,7 +49,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
        this.chatMessageService = chatMessageService;
        this.chatService = chatService;
        this.chatMemberService = chatMemberService;
-       //this.securityService = securityService;
        this.requestToChatMessageFunction = requestToChatMessageFunction;
        this.updateChatMessageWithRequestFunction = updateChatMessageWithRequestFunction;
        this.chatMessagesToResponseFunction = chatMessagesToResponseFunction;
@@ -62,33 +60,35 @@ public class ChatMessageDefaultController implements ChatMessageController {
         Chat chat = chatService.find(chatId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-//        if (!securityService.isChatMember(chat)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
         Integer count = chatMessageService.findAllByChat(chat, Pageable.unpaged()).getNumberOfElements();
 
         return chatMessagesToResponseFunction.apply(chatMessageService.findAllByChat(chat, pageRequest), count);
     }
 
     @Override
+    @MessageMapping("/chat/{chatId}/sendMessage")
+    @SendTo("/topic/chat/{chatId}")
     public ChatMessage sendMessage(
             @DestinationVariable UUID chatId,
             PostChatMessageRequest postChatMessageRequest
     ) {
+        log.info("Received WebSocket message for chat: " + chatId);
+        log.info("Message content: " + postChatMessageRequest.getContent());
+        log.info("ChatMember ID: " + postChatMessageRequest.getChatMember());
+        
         Chat chat = chatService.find(postChatMessageRequest.getChat()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
-
-//        if (!securityService.isChatMember(chat)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
 
         chatMemberService.find(postChatMessageRequest.getChatMember()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
-        return chatMessageService.create(requestToChatMessageFunction.apply(postChatMessageRequest));
+        ChatMessage createdMessage = chatMessageService.create(requestToChatMessageFunction.apply(postChatMessageRequest));
+        log.info("Created message with ID: " + createdMessage.getId());
+        log.info("Broadcasting to topic: /topic/chat/" + chatId);
+        
+        return createdMessage;
     }
 
     @Override
@@ -104,15 +104,13 @@ public class ChatMessageDefaultController implements ChatMessageController {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
-//        if (!securityService.isChatMember(chat)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
         chatMessageService.update(updateChatMessageWithRequestFunction.apply(chatMessage, patchChatMessageRequest));
     }
 
+    @MessageMapping("/chat/{chatId}/messageViewed")
+    @SendTo("/topic/chat/{chatId}/viewed")
     public void handleViewedMessage(
-            UUID chatId,
+            @DestinationVariable UUID chatId,
             PatchChatMessageWebSocketRequest patchChatMessageWebSocketRequest
     ) {
         ChatMessage chatMessage = chatMessageService.find(patchChatMessageWebSocketRequest.getChatMessageId()).orElseThrow(
@@ -122,10 +120,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
         Chat chat = chatService.find(chatId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
-
-//        if (!securityService.isChatMember(chat)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
 
         PatchChatMessageRequest patchChatMessageRequest = new PatchChatMessageRequest();
         patchChatMessageRequest.setViewedBy(patchChatMessageWebSocketRequest.getViewedBy());

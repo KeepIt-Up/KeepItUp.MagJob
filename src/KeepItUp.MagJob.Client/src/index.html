@@ -6,6 +6,21 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Node.js polyfills for WebSocket libraries -->
+    <script>
+      // Polyfill for global variable (needed for @stomp/stompjs and sockjs-client)
+      window.global = window;
+      
+      // Polyfill for process variable
+      window.process = {
+        env: { NODE_ENV: 'production' },
+        version: '',
+        versions: { node: '' }
+      };
+      
+      // Polyfill for Buffer
+      window.Buffer = window.Buffer || require('buffer').Buffer;
+    </script>
     <!-- Dark mode initialization script -->
     <script>
       // Check for saved theme preference or use the system preference

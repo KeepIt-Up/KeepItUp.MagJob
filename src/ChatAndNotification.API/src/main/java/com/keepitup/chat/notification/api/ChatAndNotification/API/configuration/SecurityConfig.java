@@ -30,7 +30,12 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String jwtIssuerUri;
 
-    private static final AntPathRequestMatcher[] permitAllList = {};
+    private static final AntPathRequestMatcher[] permitAllList = {
+            new AntPathRequestMatcher("/ws/**"),
+            new AntPathRequestMatcher("/topic/**"),
+            new AntPathRequestMatcher("/app/**"),
+            new AntPathRequestMatcher("/chat/**")
+    };
 
     private static final AntPathRequestMatcher[] authenticatedList = {
             new AntPathRequestMatcher("/api/chats"),
@@ -49,7 +54,6 @@ public class SecurityConfig {
             new AntPathRequestMatcher("/api/messages/{id}"),
             new AntPathRequestMatcher("/api/chat/{chatId}/sendMessage"),
             new AntPathRequestMatcher("/api/chat/{chatId}/messageViewed"),
-            new AntPathRequestMatcher("/chat/**"),
             new AntPathRequestMatcher("/api/members/{memberId}/role-members"),
             new AntPathRequestMatcher("/api/notifications"),
             new AntPathRequestMatcher("/api/notifications/seen/{seen}"),
@@ -71,6 +75,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(permitAllList).permitAll()
                         .requestMatchers(authenticatedList).authenticated()
@@ -93,15 +98,15 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
-                jwtIssuerUri + "/protocol/openid-connect/certs")
+                        jwtIssuerUri + "/protocol/openid-connect/certs")
                 .build();
-        
+
         OAuth2TokenValidator<Jwt> withSignature = new DelegatingOAuth2TokenValidator<>(
                 new JwtTimestampValidator(),
                 new JwtClaimValidator<>(JwtClaimNames.ISS, iss ->
-                    iss.equals("http://localhost:18080/realms/magjob-realm") ||
-                    iss.equals("http://keycloak:8080/realms/magjob-realm") ||
-                    iss.equals("http://host.docker.internal:18080/realms/magjob-realm")
+                        iss.equals("http://localhost:18080/realms/keepitup-magjob") ||
+                        iss.equals("http://keycloak:8080/realms/keepitup-magjob") ||
+                        iss.equals("http://host.docker.internal:18080/realms/keepitup-magjob")
                 )
         );
 

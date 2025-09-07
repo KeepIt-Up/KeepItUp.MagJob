@@ -160,4 +160,17 @@ public interface ChatMemberController {
             UUID id
     );
 
+    @Operation(summary = "Delete chat member (leave chat)")
+    @DeleteMapping("api/chat-members/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteChatMember(
+            @Parameter(
+                    name = "id",
+                    description = "Chat Member id value",
+                    required = true
+            )
+            @PathVariable("id")
+            UUID id
+    );
+
 }

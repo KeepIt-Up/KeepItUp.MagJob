@@ -44,12 +44,12 @@ public class ChatMessage {
     @Column(name = "attachment")
     private byte[] attachment;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "chat_id", nullable = true)
     private Chat chat;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_member")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "chat_member", nullable = true)
     private ChatMember chatMember;
 
     @Column(name = "first_and_last_name")

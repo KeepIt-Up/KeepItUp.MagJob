@@ -1,0 +1,77 @@
+<div class="flex bg-gray-50 chats-container">
+  <!-- Chat List Sidebar -->
+  <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
+    <!-- Header with Create Chat Button -->
+    <div class="p-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">Chats</h2>
+        <button
+          (click)="onCreateChat()"
+          class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          New Chat
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat List -->
+    <div class="flex-1 overflow-y-auto chat-list-container">
+      <app-chat-list
+        [chats]="chats"
+        [selectedChat]="selectedChat"
+        [loading]="loading"
+        (chatSelect)="onChatSelect($event)"
+      ></app-chat-list>
+    </div>
+  </div>
+
+  <!-- Chat Messages Area -->
+  <div class="flex-1 flex flex-col">
+    <app-chat-messages
+      *ngIf="selectedChat"
+      [chat]="selectedChat"
+      [organizationId]="organizationId"
+      [currentMemberId]="currentMemberId"
+      (chatLeft)="onChatLeft($event)"
+    ></app-chat-messages>
+
+    <!-- Empty State -->
+    <div *ngIf="!selectedChat" class="flex-1 flex items-center justify-center">
+      <div class="text-center">
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          ></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No chat selected</h3>
+        <p class="mt-1 text-sm text-gray-500">Choose a chat from the list to start messaging.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Chat Modal -->
+  <app-chat-create-modal
+    *ngIf="showCreateModal"
+    [isOpen]="showCreateModal"
+    [organizationId]="organizationId"
+    [currentMemberId]="currentMemberId ?? ''"
+    (chatCreated)="onChatCreated($event)"
+    (closeModal)="onModalClose()"
+  ></app-chat-create-modal>
+</div>

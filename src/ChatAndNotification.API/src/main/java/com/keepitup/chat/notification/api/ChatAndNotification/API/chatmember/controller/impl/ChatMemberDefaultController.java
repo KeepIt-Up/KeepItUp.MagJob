@@ -223,4 +223,13 @@ public class ChatMemberDefaultController implements ChatMemberController {
 
         chatService.addAdmin(chatMember.getChat(), chatMember);
     }
+
+    @Override
+    public void deleteChatMember(UUID id) {
+        ChatMember chatMember = chatMemberService.find(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // Usuwamy członka z czatu
+        chatMemberService.delete(id);
+    }
 }
