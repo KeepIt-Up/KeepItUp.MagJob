@@ -12,6 +12,7 @@ import { ChatService } from '../../services/chat.service';
 import { MemberService } from '@members/services/member.service';
 import { PaginatedResponse } from '@shared/components/pagination/pagination.component';
 import { Member } from '@members/models/member';
+import { UserContextService } from '@users/services/user-context.service';
 import { ChatMemberService } from '../../services/chat-member.service';
 
 @Component({
@@ -32,6 +33,7 @@ export class ChatCreateModalComponent implements OnInit {
   private chatService = inject(ChatService);
   private memberService = inject(MemberService);
   private chatMemberService = inject(ChatMemberService);
+  private userContextService = inject(UserContextService);
 
   chatForm!: FormGroup;
   members: Member[] = [];
@@ -93,10 +95,18 @@ export class ChatCreateModalComponent implements OnInit {
     if (this.chatForm.valid && !this.submitting) {
       this.submitting = true;
 
+      const currentUser = this.userContextService.getCurrentUser();
+      if (!currentUser) {
+        console.error('Current user not found');
+        this.submitting = false;
+        return;
+      }
+
       const request: CreateChatRequest = {
         title: this.chatForm.value.title,
         organizationId: this.organizationId,
         memberId: this.currentMemberId,
+        nickname: `${currentUser.firstName} ${currentUser.lastName}`,
       };
 
       this.chatService.createChat(request).subscribe({

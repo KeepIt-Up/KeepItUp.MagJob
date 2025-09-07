@@ -56,7 +56,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
 
     @Override
     public GetChatMessagesResponse getChatMessagesByChat(int page, int size, UUID chatId) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateOfCreation"));
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "dateOfCreation"));
         Chat chat = chatService.find(chatId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 

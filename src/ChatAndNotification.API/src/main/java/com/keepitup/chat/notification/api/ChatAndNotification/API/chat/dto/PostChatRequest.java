@@ -23,4 +23,7 @@ public class PostChatRequest {
 
     @Schema(description = "Member id value")
     private UUID memberId;
+
+    @Schema(description = "Member nickname")
+    private String nickname;
 }

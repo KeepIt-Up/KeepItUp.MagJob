@@ -140,7 +140,7 @@ public class ChatDefaultController implements ChatController {
         if (createdChat.isPresent()) {
             chatMemberService.create(ChatMember.builder()
                     .chat(createdChat.get())
-                    .nickname("Test")
+                    .nickname(postChatRequest.getNickname())
                     .memberId(postChatRequest.getMemberId())
                     .build());
 

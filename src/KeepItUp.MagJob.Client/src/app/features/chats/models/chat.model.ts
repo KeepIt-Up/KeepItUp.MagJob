@@ -39,6 +39,7 @@ export interface CreateChatRequest {
   title: string;
   organizationId: string;
   memberId: string;
+  nickname: string;
 }
 
 export interface SendMessageRequest {
