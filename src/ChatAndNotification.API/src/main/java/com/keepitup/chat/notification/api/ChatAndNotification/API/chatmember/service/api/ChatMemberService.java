@@ -12,9 +12,7 @@ import java.util.UUID;
 public interface ChatMemberService {
     Page<ChatMember> findAllByMemberId(UUID memberId, Pageable pageable);
 
-    Page<ChatMember> findAllAcceptedMembers(Chat chat, Pageable pageable);
-
-    Page<ChatMember> findAllPendingInvitationMembers(Chat chat, Pageable pageable);
+    Page<ChatMember> findAllByChat(Chat chat, Pageable pageable);
 
     Page<Chat> findAllChatsByMemberId(UUID memberId, Pageable pageable);
 
@@ -23,8 +21,6 @@ public interface ChatMemberService {
     Optional<ChatMember> findByMemberIdAndChat(UUID memberId, Chat chat);
 
     void create(ChatMember chatMember);
-
-    void acceptInvitation(ChatMember chatMember);
 
     void delete(UUID id);
 

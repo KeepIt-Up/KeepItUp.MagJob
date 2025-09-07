@@ -89,9 +89,9 @@ public class ChatMemberDefaultController implements ChatMemberController {
 //            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 //        }
 
-        Integer count = chatMemberService.findAllAcceptedMembers(chat, Pageable.unpaged()).getNumberOfElements();
+        Integer count = chatMemberService.findAllByChat(chat, Pageable.unpaged()).getNumberOfElements();
 
-        return chatMembersToResponseFunction.apply(chatMemberService.findAllAcceptedMembers(chat, pageRequest), count);
+        return chatMembersToResponseFunction.apply(chatMemberService.findAllByChat(chat, pageRequest), count);
     }
 
     @Override
@@ -137,51 +137,6 @@ public class ChatMemberDefaultController implements ChatMemberController {
         return chatMemberToResponseFunction.apply(chatMemberAfterUpdate);
     }
 
-    @Override
-    public void acceptInvitation(AcceptInvitationToChatRequest request) {
-        Chat chat = chatService.find(request.getChat())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-//            Member member = memberService.find(request.getMember())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-//        if (!securityService.getCurrentMember(chat.getOrganization()).equals(member)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
-        ChatMember invitation = chatMemberService.findByMemberIdAndChat(request.getMember(), chat)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        messagingTemplate.convertAndSend(
-                Constants.CHAT_DEFAULT_WEBSOCKET_ENDPOINT + chat.getId(),
-                String.join(Constants.CHAT_JOIN_MESSAGE, invitation.getNickname())
-        );
-
-        chatMemberService.acceptInvitation(invitation);
-    }
-
-    @Override
-    public void rejectInvitation(AcceptInvitationToChatRequest request) {
-        Chat chat = chatService.find(request.getChat())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-//        Member member = memberService.find(request.getMember())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-//        if (!securityService.getCurrentMember(chat.getOrganization()).equals(member)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
-        ChatMember invitation = chatMemberService.findByMemberIdAndChat(request.getMember(), chat)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        messagingTemplate.convertAndSend(
-                Constants.CHAT_LEAVE_MESSAGE + invitation.getChat().getId(),
-                String.join(Constants.CHAT_DELETE_ADMIN_MESSAGE, invitation.getNickname())
-        );
-
-        chatMemberService.delete(invitation.getId());
-    }
 
     @Override
     public void removeAdminAccess(UUID id) {

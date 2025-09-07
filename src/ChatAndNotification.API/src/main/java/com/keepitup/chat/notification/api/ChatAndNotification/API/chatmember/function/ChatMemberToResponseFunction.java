@@ -13,7 +13,6 @@ public class ChatMemberToResponseFunction implements Function<ChatMember, GetCha
         return GetChatMemberResponse.builder()
                 .id(chatMember.getId())
                 .nickname(chatMember.getNickname())
-                .isInvitationAccepted(chatMember.getIsInvitationAccepted())
                 .memberId(chatMember.getMemberId())
                 .chat(GetChatMemberResponse.Chat.builder()
                         .id(chatMember.getChat().getId())

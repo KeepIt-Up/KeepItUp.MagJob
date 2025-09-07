@@ -105,6 +105,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
     if (!chat.chatMembers || chat.chatMembers.length === 0) {
       this.loadChatMembers(chat);
     }
+
+    console.log('chat.chatMembers', chat.chatMembers);
   }
 
   onCreateChat(): void {
@@ -135,7 +137,6 @@ export class ChatsComponent implements OnInit, OnDestroy {
             id: cm.id,
             nickname: cm.nickname,
             memberId: cm.memberId,
-            isInvitationAccepted: true,
             isAdmin: false,
           })),
         };

@@ -154,7 +154,6 @@ export class ChatCreateModalComponent implements OnInit {
             id: cm.id,
             nickname: cm.nickname,
             memberId: cm.memberId,
-            isInvitationAccepted: true,
             isAdmin: false,
           })),
         };

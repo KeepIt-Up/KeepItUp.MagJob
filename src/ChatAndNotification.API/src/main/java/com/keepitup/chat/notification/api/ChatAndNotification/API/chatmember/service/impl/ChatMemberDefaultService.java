@@ -34,13 +34,8 @@ public class ChatMemberDefaultService implements ChatMemberService {
     }
 
     @Override
-    public Page<ChatMember> findAllAcceptedMembers(Chat chat, Pageable pageable) {
-        return chatMemberRepository.findAllByChatAndIsInvitationAccepted(chat, true, pageable);
-    }
-
-    @Override
-    public Page<ChatMember> findAllPendingInvitationMembers(Chat chat, Pageable pageable) {
-        return chatMemberRepository.findAllByChatAndIsInvitationAccepted(chat, false, pageable);
+    public Page<ChatMember> findAllByChat(Chat chat, Pageable pageable) {
+        return chatMemberRepository.findAllByChat(chat, pageable);
     }
 
     @Override
@@ -60,13 +55,6 @@ public class ChatMemberDefaultService implements ChatMemberService {
 
     @Override
     public void create(ChatMember chatMember) {
-        chatMember.setIsInvitationAccepted(false);
-        chatMemberRepository.save(chatMember);
-    }
-
-    @Override
-    public void acceptInvitation(ChatMember chatMember) {
-        chatMember.setIsInvitationAccepted(true);
         chatMemberRepository.save(chatMember);
     }
 

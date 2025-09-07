@@ -34,8 +34,6 @@ public class ChatMember {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "is_invitation_accepted")
-    private Boolean isInvitationAccepted;
 
     @Column(name = "memberId")
     private UUID memberId;

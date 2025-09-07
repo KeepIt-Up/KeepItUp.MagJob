@@ -138,7 +138,7 @@ public class ChatDefaultController implements ChatController {
         Optional<Chat> createdChat = chatService.findByTitle(postChatRequest.getTitle());
 
         if (createdChat.isPresent()) {
-            chatMemberService.acceptInvitation(ChatMember.builder()
+            chatMemberService.create(ChatMember.builder()
                     .chat(createdChat.get())
                     .nickname("Test")
                     .memberId(postChatRequest.getMemberId())

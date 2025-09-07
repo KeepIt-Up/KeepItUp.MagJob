@@ -13,7 +13,6 @@ public class UpdateChatMemberWithRequestFunction implements BiFunction<ChatMembe
         return ChatMember.builder()
                 .id(chatMember.getId())
                 .nickname(patchChatMemberRequest.getNickname())
-                .isInvitationAccepted(chatMember.getIsInvitationAccepted())
                 .memberId(chatMember.getMemberId())
                 .chat(chatMember.getChat())
                 .build();

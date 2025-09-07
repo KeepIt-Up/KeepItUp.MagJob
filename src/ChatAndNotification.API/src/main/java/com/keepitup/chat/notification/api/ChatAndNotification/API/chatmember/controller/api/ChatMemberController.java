@@ -105,34 +105,6 @@ public interface ChatMemberController {
             PatchChatMemberRequest patchChatMemberRequest
     );
 
-    @Operation(summary = "Accept Invitation to chat")
-    @PostMapping("/api/chat-members/accept")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    void acceptInvitation(
-            @Parameter(
-                    name = "AcceptInvitationToChatRequest",
-                    description = "AcceptInvitationToChatRequest DTO",
-                    schema = @Schema(implementation = AcceptInvitationToChatRequest.class),
-                    required = true
-            )
-            @RequestBody
-            AcceptInvitationToChatRequest request
-    );
-
-    @Operation(summary = "Reject Invitation to chat")
-    @PostMapping("/api/chat-members/reject")
-    @ResponseStatus(HttpStatus.OK)
-    void rejectInvitation(
-            @Parameter(
-                    name = "AcceptInvitationToChatRequest",
-                    description = "AcceptInvitationToChatRequest DTO",
-                    schema = @Schema(implementation = AcceptInvitationToChatRequest.class),
-                    required = true
-            )
-            @RequestBody
-            AcceptInvitationToChatRequest request
-    );
 
     @Operation(summary = "Remove admin access from chat member")
     @PostMapping("api/chat-members/{id}/admin/remove")

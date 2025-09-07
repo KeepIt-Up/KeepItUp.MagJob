@@ -41,6 +41,4 @@ public class GetChatMemberResponse {
     @Schema(description = "Chat member nickname value")
     private String nickname;
 
-    @Schema(description = "Chat member is invitation accepted value")
-    private Boolean isInvitationAccepted;
 }

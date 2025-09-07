@@ -11,7 +11,6 @@ export interface ChatMember {
   id: string;
   nickname?: string;
   memberId: string;
-  isInvitationAccepted: boolean;
   isAdmin: boolean;
   member?: {
     id: string;
