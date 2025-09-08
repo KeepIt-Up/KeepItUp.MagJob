@@ -12,6 +12,7 @@ import {
   ChatMessagesResponse,
 } from '../models/chat.model';
 import { WebSocketService } from './websocket.service';
+import { UserContextService } from '../../users/services/user-context.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ import { WebSocketService } from './websocket.service';
 export class ChatService {
   private http = inject(HttpClient);
   private webSocketService = inject(WebSocketService);
+  private userContextService = inject(UserContextService);
 
   private readonly apiUrl = `${environment.apiUrl}/api/chat/api`;
   private readonly wsUrl = `${environment.apiUrl}/ws`;
@@ -65,11 +67,17 @@ export class ChatService {
   }
 
   sendMessage(request: SendMessageRequest): void {
+    const currentUser = this.userContextService.getCurrentUser();
+    const firstAndLastName = currentUser
+      ? `${currentUser.firstName} ${currentUser.lastName}`.trim()
+      : undefined;
+
     const backendRequest = {
       content: request.content,
       chat: request.chatId,
       chatMember: request.chatMemberId,
       attachment: request.attachment,
+      firstAndLastName: firstAndLastName,
     };
 
     console.log('ChatService sending message:', {

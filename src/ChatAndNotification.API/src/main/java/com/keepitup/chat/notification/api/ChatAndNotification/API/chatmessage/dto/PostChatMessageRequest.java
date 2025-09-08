@@ -21,6 +21,9 @@ public class PostChatMessageRequest {
     @Schema(description = "ChatMessage attachment")
     private byte[] attachment;
 
+    @Schema(description = "ChatMessage first and last name of author")
+    private String firstAndLastName;
+
     @Schema(description = "ChatMessage chatMember id value")
     private UUID chatMember;
 

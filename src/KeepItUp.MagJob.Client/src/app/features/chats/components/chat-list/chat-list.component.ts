@@ -28,6 +28,15 @@ export class ChatListComponent {
     return 'No messages yet';
   }
 
+  getLastMessageAuthor(chat: Chat): string | null {
+    if (!chat.lastMessage) return null;
+    return (
+      chat.lastMessage.firstAndLastName ||
+      chat.lastMessage.chatMember?.nickname ||
+      null
+    );
+  }
+
   getChatMembersCount(chat: Chat): number {
     return chat.chatMembers?.length || 0;
   }
