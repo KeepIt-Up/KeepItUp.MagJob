@@ -18,7 +18,7 @@ public class ChatMessagesToResponseFunction implements BiFunction<Page<ChatMessa
                                 .content(chatMessage.getContent())
                                 .attachment(chatMessage.getAttachment())
                                 .dateOfCreation(chatMessage.getDateOfCreation())
-                                .chatMemberId(chatMessage.getChatMember().getId())
+                                .chatMemberId(chatMessage.getChatMember() != null ? chatMessage.getChatMember().getId() : null)
                                 .viewedBy(chatMessage.getViewedBy())
                                 .firstAndLastName(chatMessage.getFirstAndLastName())
                                 .build())
