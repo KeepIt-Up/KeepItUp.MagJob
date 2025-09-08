@@ -127,29 +127,44 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
   isOwnMessage(message: ChatMessage): boolean {
     if (!this.currentMemberId || !message.chatMember?.memberId) {
-      console.log('isOwnMessage - missing IDs:', {
-        currentMemberId: this.currentMemberId,
-        messageChatMemberId: message.chatMember?.memberId,
-      });
+      // console.log('isOwnMessage - missing IDs:', {
+      //   currentMemberId: this.currentMemberId,
+      //   messageChatMemberId: message.chatMember?.memberId,
+      // });
       return false;
     }
 
     const isOwn = message.chatMember.memberId === this.currentMemberId;
-    console.log('isOwnMessage debug:', {
-      messageId: message.id,
-      messageChatMemberId: message.chatMember.memberId,
-      currentMemberId: this.currentMemberId,
-      isOwn: isOwn,
-      messageContent: message.content.substring(0, 20) + '...',
-    });
+    // console.log('isOwnMessage debug:', {
+    //   messageId: message.id,
+    //   messageChatMemberId: message.chatMember.memberId,
+    //   currentMemberId: this.currentMemberId,
+    //   isOwn: isOwn,
+    //   messageContent: message.content.substring(0, 20) + '...',
+    // });
     return isOwn;
   }
 
-  formatMessageTime(date: Date): string {
-    return new Date(date).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  formatMessageTime(date: Date | string): string {
+    let parsed: Date;
+    
+    if (typeof date === 'string') {
+      parsed = new Date(date + 'Z');
+    } else {
+      parsed = new Date(date);
+    }
+
+    if (isNaN(parsed.getTime())) {
+      return '';
+    }
+
+    const dd = String(parsed.getDate()).padStart(2, '0');
+    const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+    const yyyy = parsed.getFullYear();
+    const hh = String(parsed.getHours()).padStart(2, '0');
+    const min = String(parsed.getMinutes()).padStart(2, '0');
+
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
   }
 
   private scrollToBottom(): void {

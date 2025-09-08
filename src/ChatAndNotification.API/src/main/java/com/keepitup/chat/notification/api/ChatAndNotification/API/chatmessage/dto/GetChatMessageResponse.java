@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ public class GetChatMessageResponse {
     private String content;
 
     @Schema(description = "ChatMessage date of creation")
-    private LocalDate dateOfCreation;
+    private LocalDateTime dateOfCreation;
 
     @Schema(description = "ChatMessage viewedBy")
     private List<String> viewedBy;

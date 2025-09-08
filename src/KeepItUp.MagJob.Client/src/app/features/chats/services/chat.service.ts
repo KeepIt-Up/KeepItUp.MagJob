@@ -59,6 +59,14 @@ export class ChatService {
   getChatMessages(chatId: string, page = 0, size = 50): Observable<ChatMessagesResponse> {
     return this.http.get<ChatMessagesResponse>(
       `${this.apiUrl}/chats/${chatId}/chat-messages?page=${page}&size=${size}`,
+    ).pipe(
+      map(response => ({
+        ...response,
+        chatMessages: response.chatMessages.map(msg => ({
+          ...msg,
+          dateOfCreation: new Date(msg.dateOfCreation)
+        }))
+      }))
     );
   }
 
@@ -96,7 +104,32 @@ export class ChatService {
         next: message => {
           try {
             console.log('Raw WebSocket message received:', message);
-            const chatMessage = JSON.parse(message.body) as ChatMessage;
+            const rawMessage = JSON.parse(message.body);
+            console.log('Raw message dateOfCreation:', rawMessage.dateOfCreation, 'type:', typeof rawMessage.dateOfCreation);
+            
+            let parsedDate: Date;
+            if (rawMessage.dateOfCreation) {
+              if (Array.isArray(rawMessage.dateOfCreation)) {
+                const [year, month, day, hour, minute, second, nanoseconds] = rawMessage.dateOfCreation;
+                console.log('Parsing array date:', { year, month, day, hour, minute, second, nanoseconds });
+                
+                const milliseconds = Math.floor(nanoseconds / 1000000);
+                
+                parsedDate = new Date(year, month - 1, day, hour, minute, second, milliseconds);
+                console.log('Parsed date result:', parsedDate);
+              } else if (typeof rawMessage.dateOfCreation === 'string') {
+                parsedDate = new Date(rawMessage.dateOfCreation);
+              } else {
+                parsedDate = new Date(rawMessage.dateOfCreation);
+              }
+            } else {
+              parsedDate = new Date();
+            }
+            
+            const chatMessage: ChatMessage = {
+              ...rawMessage,
+              dateOfCreation: parsedDate
+            };
             console.log('Parsed message via WebSocket:', chatMessage);
             this.addMessage(chatMessage);
           } catch (error) {

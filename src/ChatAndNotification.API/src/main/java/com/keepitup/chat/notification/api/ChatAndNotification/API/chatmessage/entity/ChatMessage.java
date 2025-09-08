@@ -7,7 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +35,7 @@ public class ChatMessage {
     private String content;
 
     @Column(name = "date_of_creation")
-    private LocalDate dateOfCreation;
+    private LocalDateTime dateOfCreation;
 
     @ElementCollection
     private List<String> viewedBy;
