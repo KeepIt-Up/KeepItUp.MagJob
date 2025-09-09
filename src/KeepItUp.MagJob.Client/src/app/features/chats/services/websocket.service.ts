@@ -8,6 +8,13 @@ export interface WebSocketMessage {
   payload: unknown;
 }
 
+export interface TypingMessage {
+  type: 'TYPING_START' | 'TYPING_STOP';
+  chatId: string;
+  memberId: string;
+  memberName: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,6 +23,7 @@ export class WebSocketService {
   private messageSubject = new Subject<WebSocketMessage>();
   private connectionSubject = new Subject<boolean>();
   private subscriptions = new Map<string, StompSubscription>();
+  private typingDebounceMap = new Map<string, ReturnType<typeof setTimeout>>();
 
   constructor() {}
 
@@ -94,6 +102,35 @@ export class WebSocketService {
     });
   }
 
+  sendTypingEvent(
+    chatId: string,
+    memberId: string,
+    memberName: string,
+    type: 'TYPING_START' | 'TYPING_STOP',
+  ): void {
+    const typingMessage: TypingMessage = {
+      type,
+      chatId,
+      memberId,
+      memberName,
+    };
+
+    const key = `${chatId}-${memberId}-${type}`;
+    if (this.typingDebounceMap.has(key)) {
+      clearTimeout(this.typingDebounceMap.get(key));
+    }
+
+    const timeoutId = setTimeout(
+      () => {
+        this.send(`/app/chat/${chatId}/typing`, typingMessage);
+        this.typingDebounceMap.delete(key);
+      },
+      type === 'TYPING_START' ? 100 : 0,
+    );
+
+    this.typingDebounceMap.set(key, timeoutId);
+  }
+
   unsubscribe(topic: string): void {
     const subscription = this.subscriptions.get(topic);
     if (subscription) {
@@ -113,6 +150,9 @@ export class WebSocketService {
       this.client = null;
       this.connectionSubject.next(false);
     }
+
+    this.typingDebounceMap.forEach(timeoutId => clearTimeout(timeoutId));
+    this.typingDebounceMap.clear();
   }
 
   isConnected(): boolean {

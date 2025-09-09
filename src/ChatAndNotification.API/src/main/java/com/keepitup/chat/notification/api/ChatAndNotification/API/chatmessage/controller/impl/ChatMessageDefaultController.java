@@ -8,6 +8,7 @@ import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dt
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageWebSocketRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PostChatMessageRequest;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.TypingEventRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.entity.ChatMessage;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.function.ChatMessagesToResponseFunction;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.function.RequestToChatMessageFunction;
@@ -125,5 +126,26 @@ public class ChatMessageDefaultController implements ChatMessageController {
         patchChatMessageRequest.setViewedBy(patchChatMessageWebSocketRequest.getViewedBy());
 
         chatMessageService.update(updateChatMessageWithRequestFunction.apply(chatMessage, patchChatMessageRequest));
+    }
+
+    @Override
+    @MessageMapping("/chat/{chatId}/typing")
+    @SendTo("/topic/chat/{chatId}/typing")
+    public TypingEventRequest handleTypingEvent(
+            @DestinationVariable UUID chatId,
+            TypingEventRequest typingEventRequest
+    ) {
+        log.info("Received typing event for chat: " + chatId);
+        log.info("Typing event type: " + typingEventRequest.getType());
+        log.info("Member: " + typingEventRequest.getMemberName() + " (ID: " + typingEventRequest.getMemberId() + ")");
+        log.info("Timestamp: " + typingEventRequest.getTimestamp());
+        
+        // Sprawdź czy chat istnieje
+        chatService.find(chatId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+
+        // Zwróć event do wszystkich subskrybentów
+        return typingEventRequest;
     }
 }

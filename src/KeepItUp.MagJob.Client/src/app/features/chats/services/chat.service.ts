@@ -10,6 +10,8 @@ import {
   SendMessageRequest,
   ChatListResponse,
   ChatMessagesResponse,
+  TypingEvent,
+  TypingUser,
 } from '../models/chat.model';
 import { WebSocketService } from './websocket.service';
 import { UserContextService } from '../../users/services/user-context.service';
@@ -28,10 +30,12 @@ export class ChatService {
   private _chatsSubject = new BehaviorSubject<Chat[]>([]);
   private selectedChatSubject = new BehaviorSubject<Chat | null>(null);
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
+  private typingUsersSubject = new BehaviorSubject<TypingUser[]>([]);
 
   public chats$ = this._chatsSubject.asObservable();
   public selectedChat$ = this.selectedChatSubject.asObservable();
   public messages$ = this.messagesSubject.asObservable();
+  public typingUsers$ = this.typingUsersSubject.asObservable();
 
   public get chatsSubject() {
     return this._chatsSubject;
@@ -196,5 +200,73 @@ export class ChatService {
 
   disconnect(): void {
     this.webSocketService.disconnect();
+  }
+
+  // Typing indicator methods
+  sendTypingStart(chatId: string, memberId: string, memberName: string): void {
+    this.webSocketService.sendTypingEvent(chatId, memberId, memberName, 'TYPING_START');
+  }
+
+  sendTypingStop(chatId: string, memberId: string, memberName: string): void {
+    this.webSocketService.sendTypingEvent(chatId, memberId, memberName, 'TYPING_STOP');
+  }
+
+  subscribeToTypingEvents(chatId: string): void {
+    console.log('Subscribing to typing events for chat:', chatId);
+    this.webSocketService.subscribe(`/topic/chat/${chatId}/typing`).subscribe({
+      next: message => {
+        try {
+          const typingEvent: TypingEvent = JSON.parse(message.body);
+          console.log('Typing event received:', typingEvent);
+          this.handleTypingEvent(typingEvent);
+        } catch (error) {
+          console.error('Error parsing typing event:', error);
+        }
+      },
+      error: error => {
+        console.error('Typing events subscription error:', error);
+      },
+    });
+  }
+
+  private handleTypingEvent(event: TypingEvent): void {
+    const currentTypingUsers = this.typingUsersSubject.value;
+    let updatedTypingUsers: TypingUser[];
+
+    if (event.type === 'TYPING_START') {
+      // Dodaj użytkownika do listy piszących (lub zaktualizuj timestamp)
+      const existingUserIndex = currentTypingUsers.findIndex(user => user.memberId === event.memberId);
+      const newUser: TypingUser = {
+        memberId: event.memberId,
+        memberName: event.memberName,
+        timestamp: new Date(),
+      };
+
+      if (existingUserIndex >= 0) {
+        // Zaktualizuj tylko timestamp, nie dodawaj nowego użytkownika
+        updatedTypingUsers = [...currentTypingUsers];
+        updatedTypingUsers[existingUserIndex] = newUser;
+      } else {
+        updatedTypingUsers = [...currentTypingUsers, newUser];
+      }
+    } else {
+      // Usuń użytkownika z listy piszących
+      updatedTypingUsers = currentTypingUsers.filter(user => user.memberId !== event.memberId);
+    }
+
+    this.typingUsersSubject.next(updatedTypingUsers);
+
+    // Automatycznie usuń użytkownika po 5 sekundach (dla TYPING_START)
+    if (event.type === 'TYPING_START') {
+      setTimeout(() => {
+        const currentUsers = this.typingUsersSubject.value;
+        const filteredUsers = currentUsers.filter(user => user.memberId !== event.memberId);
+        this.typingUsersSubject.next(filteredUsers);
+      }, 5000);
+    }
+  }
+
+  clearTypingUsers(): void {
+    this.typingUsersSubject.next([]);
   }
 }

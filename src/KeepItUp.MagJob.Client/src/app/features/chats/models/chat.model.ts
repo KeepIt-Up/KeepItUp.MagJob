@@ -58,3 +58,16 @@ export interface ChatMessagesResponse {
   chatMessages: ChatMessage[];
   count: number;
 }
+
+export interface TypingEvent {
+  type: 'TYPING_START' | 'TYPING_STOP';
+  chatId: string;
+  memberId: string;
+  memberName: string;
+}
+
+export interface TypingUser {
+  memberId: string;
+  memberName: string;
+  timestamp: Date;
+}

@@ -13,7 +13,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { Chat, ChatMessage, SendMessageRequest, ChatMember } from '../../models/chat.model';
+import {
+  Chat,
+  ChatMessage,
+  SendMessageRequest,
+  ChatMember,
+  TypingUser,
+} from '../../models/chat.model';
 import { ChatService } from '../../services/chat.service';
 import { ChatMemberService } from '../../services/chat-member.service';
 import { ChatAddMembersModalComponent } from '../chat-add-members-modal/chat-add-members-modal.component';
@@ -43,11 +49,14 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   loading = false;
   showDropdown = false;
   showAddMembersModal = false;
+  typingUsers: TypingUser[] = [];
+  private typingTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
     console.log('ChatMessagesComponent ngOnInit - currentMemberId:', this.currentMemberId);
     this.loadMessages();
     this.subscribeToMessages();
+    this.subscribeToTypingEvents();
   }
 
   ngOnDestroy(): void {
@@ -120,6 +129,59 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     } else if (event.key === 'Enter' && event.shiftKey) {
       return;
     }
+  }
+
+  onInputChange(): void {
+    this.handleTyping();
+  }
+
+  private handleTyping(): void {
+    const currentChatMember = this.chat.chatMembers?.find(
+      member => member.memberId === this.currentMemberId,
+    );
+
+    if (!currentChatMember) {
+      return;
+    }
+
+    // Wyczyść poprzedni timeout
+    if (this.typingTimeout) {
+      clearTimeout(this.typingTimeout);
+    }
+
+    // Wyślij TYPING_START tylko jeśli nie jesteś już na liście piszących
+    if (this.currentMemberId && !this.isCurrentlyTyping()) {
+      this.chatService.sendTypingStart(
+        this.chat.id,
+        this.currentMemberId,
+        currentChatMember.nickname ?? 'Unknown User',
+      );
+    }
+
+    // Ustaw timeout na TYPING_STOP po 2 sekundach bez pisania
+    this.typingTimeout = setTimeout(() => {
+      if (this.currentMemberId) {
+        this.chatService.sendTypingStop(
+          this.chat.id,
+          this.currentMemberId,
+          currentChatMember.nickname ?? 'Unknown User',
+        );
+      }
+    }, 2000);
+  }
+
+  private isCurrentlyTyping(): boolean {
+    return this.typingUsers.some(user => user.memberId === this.currentMemberId);
+  }
+
+  private subscribeToTypingEvents(): void {
+    this.chatService.typingUsers$.pipe(takeUntil(this.destroy$)).subscribe(typingUsers => {
+      // Filtruj siebie z listy piszących
+      this.typingUsers = typingUsers.filter(user => user.memberId !== this.currentMemberId);
+    });
+
+    // Subskrybuj do typing events dla tego chatu
+    this.chatService.subscribeToTypingEvents(this.chat.id);
   }
 
   onTextareaInput(event: Event): void {

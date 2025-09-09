@@ -4,6 +4,7 @@ import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dt
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageWebSocketRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PostChatMessageRequest;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.TypingEventRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.entity.ChatMessage;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.configuration.PageConfig;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,5 +63,15 @@ public interface ChatMessageController {
             @Parameter(name = "id", description = "Message id value", required = true)
             @PathVariable("id") UUID id,
             @RequestBody PatchChatMessageRequest patchChatMessageRequest
+    );
+
+    @MessageMapping("/chat/{chatId}/typing")
+    @SendTo("/topic/chat/{chatId}/typing")
+    TypingEventRequest handleTypingEvent(
+            @Parameter(name = "chatId", description = "Chat id value", required = true)
+            @DestinationVariable("chatId") UUID chatId,
+            @Parameter(name = "TypingEventRequest", description = "TypingEventRequest DTO", 
+                      schema = @Schema(implementation = TypingEventRequest.class), required = true)
+            TypingEventRequest typingEventRequest
     );
 }

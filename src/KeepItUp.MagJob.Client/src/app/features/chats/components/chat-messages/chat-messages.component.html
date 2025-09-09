@@ -155,6 +155,24 @@
     </div>
   </div>
 
+  <!-- Typing Indicator -->
+  <div *ngIf="typingUsers.length > 0" class="typing-indicator px-4 py-2 bg-gray-100 border-t">
+    <div class="flex items-center space-x-2 text-sm text-gray-600">
+      <div class="flex space-x-1">
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      </div>
+      <span>
+        <span *ngFor="let user of typingUsers; let last = last">
+          <strong>{{ user.memberName }}</strong><span *ngIf="!last">, </span>
+        </span>
+        <span *ngIf="typingUsers.length === 1"> pisze...</span>
+        <span *ngIf="typingUsers.length > 1"> piszą...</span>
+      </span>
+    </div>
+  </div>
+
   <!-- Message Input -->
   <div class="message-input-container p-4 bg-gray-50">
     <div class="flex items-end space-x-3">
@@ -162,7 +180,7 @@
         <textarea
           [(ngModel)]="newMessage"
           (keypress)="onKeyPress($event)"
-          (input)="onTextareaInput($event)"
+          (input)="onTextareaInput($event); onInputChange()"
           placeholder="Type your message..."
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-hidden"
           rows="1"
