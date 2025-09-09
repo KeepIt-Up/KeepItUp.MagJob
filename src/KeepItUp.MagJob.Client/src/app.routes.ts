@@ -14,8 +14,8 @@ import { OrganizationComponent } from '@pages/organization/organization.componen
 import { CreateOrganizationComponent } from '@pages/organization/create-organization/create-organization.component';
 import { UnauthorizedComponent } from '@pages/unauthorized/unauthorized.component';
 import { NotFoundComponent } from '@pages/not-found/not-found.component';
-import { WorkEvidenceComponent } from '@pages/workevidence/workevidence.component';
-import { ShiftComponent } from '@pages/shift/shift.component';
+import { WorkEvidenceComponent } from './app/features/workevidence/workevidence.component';
+import { ShiftComponent } from './app/features/shift/shift.component';
 import { CalendarPageComponent } from './app/pages/calendar-page';
 
 export const routes: Routes = [
@@ -43,20 +43,14 @@ export const routes: Routes = [
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
       { path: 'calendar', component: CalendarPageComponent },
+      { path: 'workevidence', component: WorkEvidenceComponent },
+      { path: 'shift', component: ShiftComponent },
       { path: '**', redirectTo: 'organizations' },
     ],
   },
   {
     path: 'landing',
     component: LandingComponent,
-  },
-  {
-    path: 'workevidence',
-    component: WorkEvidenceComponent,
-  },
-  {
-    path: 'shift',
-    component: ShiftComponent,
   },
   {
     path: 'create-organization',

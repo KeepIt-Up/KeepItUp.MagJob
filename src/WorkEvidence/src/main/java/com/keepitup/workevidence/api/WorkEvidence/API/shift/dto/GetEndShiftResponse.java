@@ -18,7 +18,7 @@ import java.util.UUID;
 public class GetEndShiftResponse {
 
     @Schema(description = "Unique identifier of the shift", example = "123e4567-e89b-12d3-a456-426614174000")
-    private BigInteger id;
+    private UUID id;
 
     @Schema(description = "End time of the shift", example = "2025-01-16T16:00:00")
     private LocalDateTime endTime;

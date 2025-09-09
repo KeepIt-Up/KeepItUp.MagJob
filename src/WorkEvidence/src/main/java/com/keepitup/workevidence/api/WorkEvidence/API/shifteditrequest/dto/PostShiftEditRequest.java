@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PostShiftEditRequest {
 
     @Schema(description = "ID of the shift edit request", example = "123e4567-e89b-12d3-a456-426614174000")
-    private BigInteger id;
+    private UUID id;
 
     @Schema(description = "New start time of the shift", example = "2025-01-16T08:00:00")
     private LocalDateTime newStartTime;
@@ -34,5 +34,5 @@ public class PostShiftEditRequest {
     private String description;
 
     @Schema(description = "Shift ID", example = "1")
-    private BigInteger shiftId;
+    private UUID shiftId;
 }

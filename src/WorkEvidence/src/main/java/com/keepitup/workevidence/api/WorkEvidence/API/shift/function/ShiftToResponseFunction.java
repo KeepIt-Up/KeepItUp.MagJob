@@ -30,6 +30,7 @@ public class ShiftToResponseFunction implements Function<Shift, GetShiftResponse
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
                 .description(shift.getDescription())
+                .status(shift.isStatus())
                 .memberId(shift.getMemberId())
                 .shiftEditRequests(shiftEditRequestResponse)
                 .build();

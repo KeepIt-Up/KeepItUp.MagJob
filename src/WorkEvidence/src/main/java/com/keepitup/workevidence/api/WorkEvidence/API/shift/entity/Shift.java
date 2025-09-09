@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,9 +23,9 @@ import java.util.List;
 public class Shift {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "memberSequenceGenerator")
-    @SequenceGenerator(name = "memberSequenceGenerator")
-    private BigInteger id;
+    @Column(length = 254, unique = true, nullable = false, updatable = false)
+    @GeneratedValue(generator = "UUID")
+    private UUID id;
 
     @NotNull
     @Column(name = "startTime", nullable = false)
@@ -35,11 +36,15 @@ public class Shift {
     private LocalDateTime endTime;
 
     @NotNull
+    @Column(name="status", nullable = false)
+    private boolean status;
+
+    @NotNull
     @Column(name="description")
     private String description;
 
     @Column(name="MemberID",nullable=false)
-    private BigInteger memberId;
+    private UUID memberId;
 
     @OneToMany(mappedBy = "shift")
     private List<ShiftEditRequest> shiftEditRequests;

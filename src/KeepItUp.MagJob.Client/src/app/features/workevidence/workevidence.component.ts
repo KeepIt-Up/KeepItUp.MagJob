@@ -6,9 +6,12 @@ import { NgIcon } from '@ng-icons/core';
 import { AuthService } from '@core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Shift } from '../../features/workevidence/models/shift.model';
-import { ShiftApiService } from '../../features/workevidence/services/shift.api';
+import { Shift } from '../shift/models/shift.model';
+import { ShiftApiService } from '../shift/services/shift.api';
 import Chart from 'chart.js/auto';
+import { UserService } from '../users/services/user.service';
+import { Organization } from '@organizations/models/organization.model';
+import { OrganizationApiService } from '@organizations/services/organization.api.service';
 
 
 interface WorkEntry {
@@ -26,6 +29,7 @@ interface WorkEntry {
   }
   
   interface Employee {
+    id: string;
     name: string;
     workEntries: WorkEntry[];
     showDetails: boolean;
@@ -33,11 +37,10 @@ interface WorkEntry {
   }
 
 
-
 @Component({
   selector: 'app-workevidence',
   standalone: true,
-  imports: [NavbarComponent, ButtonComponent, NgIcon, FooterComponent, CommonModule, FormsModule],
+  imports: [NavbarComponent, ButtonComponent, FooterComponent, CommonModule, FormsModule],
   templateUrl: './workevidence.component.html',
   styleUrl: './workevidence.component.scss',
 })
@@ -48,6 +51,8 @@ export class WorkEvidenceComponent implements AfterViewInit {
 
   readonly authService = inject(AuthService);
   readonly shiftService = inject(ShiftApiService);
+  private userService = inject(UserService);
+  private organizationService = inject(OrganizationApiService);
   
   // View mode and date selection
   viewMode: 'month' | 'week' | 'custom' = 'month';
@@ -56,6 +61,9 @@ export class WorkEvidenceComponent implements AfterViewInit {
   selectedYear: number = new Date().getFullYear();
   startDate: string = '';
   endDate: string = '';
+  selectedOrganizationId: string | null = null;
+  organizations: Organization[] = [];
+  organizationMembers: { uuid: string, name: string }[] = [];
 
   // Search functionality
   searchQuery: string = '';
@@ -85,43 +93,62 @@ export class WorkEvidenceComponent implements AfterViewInit {
   testShift: Shift | null = null;
   error: string | null = null;
   //tabela pracowników do testowania
-  employees: Employee[] = [
-    {
-      name: 'Jan Kowalski',
-      workEntries: [
-        { date: '2025-01-01', startTime: '08:00', endTime: '16:21' },
-        { date: '2025-01-02', startTime: '08:15', endTime: '16:30' },
-        { date: '2025-01-03', startTime: '08:00', endTime: '16:00' },
-        { date: '2025-01-04', startTime: '08:30', endTime: '16:45' },
-        { date: '2025-01-05', startTime: '08:00', endTime: '16:15' },
-        { date: '2025-01-08', startTime: '08:00', endTime: '16:00' },
-        { date: '2025-01-09', startTime: '08:15', endTime: '16:30' },
-        { date: '2025-01-10', startTime: '08:00', endTime: '16:00' },
-        { date: '2025-01-11', startTime: '08:30', endTime: '16:45' },
-        { date: '2025-01-12', startTime: '08:00', endTime: '16:15' }
-      ],
-      showDetails: false
-    },
-    {
-      name: 'Anna Nowak',
-      workEntries: [
-        { date: '2025-05-01', startTime: '09:00', endTime: '15:30' },
-        { date: '2025-01-02', startTime: '09:15', endTime: '15:45' },
-        { date: '2025-01-03', startTime: '09:00', endTime: '15:30' },
-        { date: '2025-01-04', startTime: '09:30', endTime: '15:45' },
-        { date: '2025-01-05', startTime: '09:00', endTime: '15:15' },
-        { date: '2025-01-08', startTime: '09:00', endTime: '15:30' },
-        { date: '2025-01-09', startTime: '09:15', endTime: '15:45' },
-        { date: '2025-01-10', startTime: '09:00', endTime: '15:30' },
-        { date: '2025-01-11', startTime: '09:30', endTime: '15:45' },
-        { date: '2025-01-12', startTime: '09:00', endTime: '15:15' }
-      ],
-      showDetails: false
-    }
-  ];
+  employees: Employee[] = [];
 
   sortDirection = 'asc';
   sortedEmployees = [...this.employees];
+
+  ngOnInit() {
+  this.userService.getUserOrganizations().subscribe({
+    next: (response) => {
+      this.organizations = response.items;
+      if (this.organizations.length > 0) {
+        this.selectedOrganizationId = this.organizations[0].id;
+        this.onOrganizationChange(); // automatycznie pobierz członków pierwszej organizacji
+      }
+    },
+    error: (err) => {
+      this.error = 'Nie udało się pobrać organizacji użytkownika.';
+      console.error(err);
+    }
+  });
+  }
+
+  onOrganizationChange() {
+    const selectedOrg = this.organizations.find(org => org.id === this.selectedOrganizationId);
+    if (!selectedOrg) {
+      this.employees = [];
+      this.sortedEmployees = [];
+      return;
+    }
+    console.log('Selected organization:', selectedOrg);
+    // Pobierz członków organizacji przez API
+    this.organizationService.getMembers(
+      selectedOrg.id,
+      {},
+      { pageNumber: 1, pageSize: 100, sortField: 'fullName', ascending: true }
+    ).subscribe({
+      next: (response) => {
+        console.log('Pobrano członków organizacji response:', response.items);
+        // response.items to tablica Member
+        this.employees = response.items.map(member => ({
+          id: member.userId,
+          name: member.firstName + ' ' + member.lastName,
+          workEntries: [],
+          showDetails: false
+        }));
+        console.log('Mapped employees:', this.employees);
+        this.sortedEmployees = [...this.employees];
+        this.loadWorkEntriesForEmployees();
+      },
+      error: (err) => {
+        this.employees = [];
+        this.sortedEmployees = [];
+        this.error = 'Nie udało się pobrać członków organizacji.';
+        console.error(err);
+      }
+    });
+  }
 
   getCurrentWeek(): number {
     const now = new Date();
@@ -253,18 +280,6 @@ export class WorkEvidenceComponent implements AfterViewInit {
     return date;
   }
 
-  loadTestShift() {
-    this.error = null;
-    this.testShift = null;
-    this.shiftService.getShiftById('1').subscribe({
-      next: (shift) => {
-        this.testShift = shift;
-      },
-      error: (err) => {
-        this.error = 'Błąd podczas pobierania zmiany: ' + (err?.message || err);
-      }
-    });
-  }
 
   sortEmployees() {
     this.sortedEmployees = [...this.employees].sort((a, b) => {
@@ -551,7 +566,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
     this.chart.data.labels = labels;
     this.chart.data.datasets[0].data = data;
     this.chart.data.datasets[0].label = 'Przepracowane godziny';
-    this.chart.update('none'); // Wyłącz animację przy aktualizacji
+    this.chart.update('none');
     console.log('Chart updated');
   }
 
@@ -564,18 +579,15 @@ export class WorkEvidenceComponent implements AfterViewInit {
     const selectedWeek = weekGroups.find(group => group.weekNumber === weekNumber);
     
     if (selectedWeek) {
-      // Sortuj wpisy po dacie
       const sortedEntries = [...selectedWeek.entries].sort((a, b) => 
         new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
-      // Przygotuj dane do wykresu
       const labels = sortedEntries.map(entry => 
         new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' })
       );
       const data = sortedEntries.map(entry => this.getEntryDuration(entry) / 60);
 
-      // Aktualizuj wykres
       if (this.chart) {
         this.chart.data.labels = labels;
         this.chart.data.datasets[0].data = data;
@@ -626,43 +638,26 @@ export class WorkEvidenceComponent implements AfterViewInit {
   }
 
   // Dodaj metodę do pobierania wszystkich pracowników
-  loadAllEmployees() {
+  loadWorkEntriesForEmployees() {
     this.error = null;
-    const maxId = 100; // Maksymalne id do pobrania
-    for (let id = 1; id <= maxId; id++) {
-      this.shiftService.getShiftById(id.toString()).subscribe({
-        next: (shift) => {
-          if (shift && shift.memberId) {
-            const existingEmployee = this.employees.find(emp => emp.name === `Pracownik ${shift.memberId}`);
-            if (existingEmployee) {
-              // Dodaj nowy wpis do istniejącego pracownika
-              existingEmployee.workEntries.push({
-                date: new Date(shift.startTime).toISOString().split('T')[0],
-                startTime: new Date(shift.startTime).toTimeString().split(' ')[0].substring(0, 5),
-                endTime: new Date(shift.endTime).toTimeString().split(' ')[0].substring(0, 5)
-              });
-            } else {
-              // Utwórz nowego pracownika
-              const newEmployee: Employee = {
-                name: `Pracownik ${shift.memberId}`,
-                workEntries: [
-                  {
-                    date: new Date(shift.startTime).toISOString().split('T')[0],
-                    startTime: new Date(shift.startTime).toTimeString().split(' ')[0].substring(0, 5),
-                    endTime: new Date(shift.endTime).toTimeString().split(' ')[0].substring(0, 5)
-                  }
-                ],
-                showDetails: false
-              };
-              this.employees.push(newEmployee);
-            }
-            this.sortedEmployees = [...this.employees];
-          }
+    if (!this.employees || this.employees.length === 0) return;
+    console.log('Loading work entries for employees:', this.employees);
+    this.employees.forEach(employee => {
+      console.log(`Loading work entries for employee: ${employee.name} (ID: ${employee.id})`);
+      this.shiftService.getAllShiftsForMember(employee.id).subscribe({
+        next: (shifts: Shift[]) => {
+          employee.workEntries = shifts.map(shift => ({
+            date: new Date(shift.startTime).toISOString().split('T')[0],
+            startTime: new Date(shift.startTime).toTimeString().substring(0, 5),
+            endTime: new Date(shift.endTime).toTimeString().substring(0, 5)
+          }));
+          this.sortedEmployees = [...this.employees];
         },
         error: (err) => {
-          console.error(`Błąd podczas pobierania pracownika o id ${id}:`, err);
+          console.error(`Błąd podczas pobierania wpisów pracy dla pracownika ${employee.name}:`, err);
         }
       });
-    }
+    });
+    console.log('Finished initiating load for all employees', this.employees);
   }
 } 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '@environments/environment';
 import { BaseApiService } from '@shared/services/base-api.service';
-import { ShiftEditRequest } from '../models/shiftEditRequest.model';
+import { ShiftEditRequest } from '../../shift/models/shiftEditRequest.model';
 import {
   PaginatedResponse,
   PaginationOptions,

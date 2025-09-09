@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @Log
@@ -55,12 +56,12 @@ public class ShiftEditRequestDefaultConroller implements ShiftEditRequestControl
     }
 
     @Override
-    public void deleteShiftEditRequest(BigInteger id) {
+    public void deleteShiftEditRequest(UUID id) {
         service.delete(id);
     }
 
     @Override
-    public GetShiftEditRequestResponse getShiftEditRequest(BigInteger id) {
+    public GetShiftEditRequestResponse getShiftEditRequest(UUID id) {
         Optional<ShiftEditRequest> shiftEditRequest = service.findById(id);
 
         if(shiftEditRequest.isPresent()) {
@@ -70,7 +71,7 @@ public class ShiftEditRequestDefaultConroller implements ShiftEditRequestControl
         }
     }
     @Override
-    public GetShiftEditRequestsResponse getEditRequests(BigInteger shiftId, int page, int size) {
+    public GetShiftEditRequestsResponse getEditRequests(UUID shiftId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Integer count = service.findByShiftId(shiftId, pageRequest).getNumberOfElements();
 
@@ -78,7 +79,7 @@ public class ShiftEditRequestDefaultConroller implements ShiftEditRequestControl
     }
 
     @Override
-    public GetShiftEditRequestResponse updateShiftEditRequest(BigInteger id, PatchShiftEditRequest request) {
+    public GetShiftEditRequestResponse updateShiftEditRequest(UUID id, PatchShiftEditRequest request) {
         ShiftEditRequest shiftEditRequest = service.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift edit request not found"));
 

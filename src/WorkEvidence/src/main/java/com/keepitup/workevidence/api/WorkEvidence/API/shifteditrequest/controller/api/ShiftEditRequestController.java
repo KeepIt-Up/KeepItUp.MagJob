@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.UUID;
 
 @Tag(name = "ShiftEditRequest Controller")
 public interface ShiftEditRequestController {
@@ -28,7 +29,7 @@ public interface ShiftEditRequestController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftEditRequestId
+            UUID shiftEditRequestId
     );
 
     @Operation(summary = "Get all shift edit requests")
@@ -42,7 +43,7 @@ public interface ShiftEditRequestController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftId,
+            UUID shiftId,
 
             @RequestParam(defaultValue = "0")
             int page,
@@ -73,7 +74,7 @@ public interface ShiftEditRequestController {
                 required = true
         )
         @PathVariable("id")
-        BigInteger shiftEditRequestId
+        UUID shiftEditRequestId
     );
 
     @Operation(summary = "Uppdate a shift edit request")
@@ -86,7 +87,7 @@ public interface ShiftEditRequestController {
                 required = true
         )
         @PathVariable("id")
-        BigInteger shiftEditRequestId,
+        UUID shiftEditRequestId,
         @Parameter(
                 name = "UpdateShiftEditRequest",
                 description = "DTO for updating a shift edit request",

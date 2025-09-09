@@ -6,13 +6,15 @@ import { NgIcon } from '@ng-icons/core';
 import { AuthService } from '@core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Shift } from '../../features/workevidence/models/shift.model';
-import { ShiftApiService } from '../../features/workevidence/services/shift.api';
-import { ShiftEditRequestService } from '../../features/workevidence/services/shiftEditRequest.service';
-import { ShiftEditRequest } from '../../features/workevidence/models/shiftEditRequest.model';
+import { Shift } from './models/shift.model';
+import { ShiftApiService } from './services/shift.api';
+import { ShiftEditRequestService } from '../workevidence/services/shiftEditRequest.service';
+import { ShiftEditRequest } from './models/shiftEditRequest.model';
 import { PaginatedResponse } from '@shared/components/pagination/pagination.component';
 import Chart from 'chart.js/auto';
 import { Subscription } from 'rxjs';
+import { UserContextService } from '@users/services/user-context.service';
+import { UserService } from '@users/services/user.service';
 
 @Component({
   selector: 'app-shift',
@@ -24,13 +26,13 @@ import { Subscription } from 'rxjs';
     FormsModule,
     NavbarComponent,
     ButtonComponent,
-    FooterComponent,
-    NgIcon
+    FooterComponent
   ]
 })
 export class ShiftComponent implements OnInit, OnDestroy {
   private shiftApiService = inject(ShiftApiService);
   private shiftEditRequestService = inject(ShiftEditRequestService);
+  private userService = inject(UserService);
   private subscription = new Subscription();
   
   currentShift: Shift | null = null;
@@ -78,15 +80,7 @@ export class ShiftComponent implements OnInit, OnDestroy {
     
     this.shiftApiService.getActiveShift().subscribe({
       next: (shift) => {
-
-        if (shift.endTime) {
-          // Zmiana zakończona, nie ustawiaj currentShift
-          this.currentShift = null;
-          this.editRequests = [];
-          this.isLoading = false;
-          return;
-        }
-
+        console.log('Active shift:', shift);
         this.currentShift = shift;
         this.editRequests = shift.shiftEditRequests || [];
         this.isLoading = false;
@@ -103,6 +97,7 @@ export class ShiftComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
+    console.log(this.currentShift);
   }
 
   startShift() {
@@ -111,13 +106,15 @@ export class ShiftComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const memberId = this.userService.userContext!.id;
+
     this.isLoading = true;
     this.error = null;
 
     const payload = {
       startTime: new Date().toISOString(),
       description: this.description,
-      memberId: 1
+      memberId: memberId
     };
 
     this.shiftApiService.startShift(payload).subscribe({

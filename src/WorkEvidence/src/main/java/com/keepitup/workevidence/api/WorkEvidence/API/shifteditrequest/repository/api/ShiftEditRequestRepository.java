@@ -9,6 +9,6 @@ import java.math.BigInteger;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ShiftEditRequestRepository extends JpaRepository<ShiftEditRequest, BigInteger> {
-    Page<ShiftEditRequest> findByShiftId(BigInteger shiftId, Pageable pageable);
+public interface ShiftEditRequestRepository extends JpaRepository<ShiftEditRequest, UUID> {
+    Page<ShiftEditRequest> findByShiftId(UUID shiftId, Pageable pageable);
 }

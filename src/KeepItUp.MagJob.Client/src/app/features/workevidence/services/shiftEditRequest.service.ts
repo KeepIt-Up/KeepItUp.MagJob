@@ -6,7 +6,7 @@ import {
   PaginatedResponse,
   PaginationOptions,
 } from '@shared/components/pagination/pagination.component';
-import { ShiftEditRequest } from '../models/shiftEditRequest.model';
+import { ShiftEditRequest } from '../../shift/models/shiftEditRequest.model';
 import { ShiftEditRequestApiService } from './shiftEditRequest.api.service';
 import {
   CreateShiftEditPayload,

@@ -8,6 +8,7 @@ import lombok.*;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -29,7 +30,7 @@ public class GetShiftsResponse {
     public static class Shift {
 
         @Schema(description = "Unique identifier of the shift", example = "123e4567-e89b-12d3-a456-426614174000")
-        private BigInteger id;
+        private UUID id;
 
         @Schema(description = "Start time of the shift", example = "2025-01-16T08:00:00")
         private LocalDateTime startTime;
@@ -41,7 +42,10 @@ public class GetShiftsResponse {
         private String description;
 
         @Schema(description = "Member entity")
-        private BigInteger memberId;
+        private UUID memberId;
+
+        @Schema(description = "Status of the shift", example = "true")
+        private boolean status;
 
         @Schema(description = "GetShiftEditRequestResponse DTO")
         private List<GetShiftEditRequestResponse> shiftEditRequests;

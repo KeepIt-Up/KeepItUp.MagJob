@@ -6,5 +6,6 @@ export interface Shift {
   endTime: string;
   description?: string;
   memberId: string;
+  status: boolean;
   shiftEditRequests: ShiftEditRequest[];
 }

@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ShiftEditRequestService {
-    Optional<ShiftEditRequest> findById(BigInteger id);
+    Optional<ShiftEditRequest> findById(UUID id);
     ShiftEditRequest save(ShiftEditRequest shiftEditRequest);
-    void delete(BigInteger id);
-    Page<ShiftEditRequest> findByShiftId(BigInteger shiftId, Pageable pageable);
+    void delete(UUID id);
+    Page<ShiftEditRequest> findByShiftId(UUID shiftId, Pageable pageable);
 
     ShiftEditRequest update(ShiftEditRequest shiftEditRequest, PatchShiftEditRequest request);
 }

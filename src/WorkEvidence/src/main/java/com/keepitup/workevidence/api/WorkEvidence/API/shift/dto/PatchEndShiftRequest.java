@@ -18,7 +18,7 @@ import java.util.UUID;
 public class PatchEndShiftRequest {
 
     @Schema(description = "Shift ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    private BigInteger shiftId;
+    private UUID shiftId;
 
     @Schema(description = "End time of the shift", example = "2025-01-16T16:00:00")
     private LocalDateTime endTime;

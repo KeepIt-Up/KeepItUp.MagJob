@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,5 +25,5 @@ public class PostStartShiftRequest {
     private String description;
 
     @Schema(description = "Member ID", example = "1234567890")
-    private BigInteger memberId;
+    private UUID memberId;
 }

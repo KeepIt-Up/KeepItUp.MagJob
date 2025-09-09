@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.UUID;
 
 @Tag(name = "Shift Controller")
 public interface ShiftController {
@@ -38,7 +39,7 @@ public interface ShiftController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftId
+            UUID shiftId
     );
 
     @Operation(summary = "Delete a shift")
@@ -51,7 +52,7 @@ public interface ShiftController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftId
+            UUID shiftId
     );
 
     @Operation(summary = "Get a shift by ID")
@@ -65,8 +66,35 @@ public interface ShiftController {
                     required = true
             )
             @PathVariable("id")
-            BigInteger shiftId
+            UUID shiftId
     );
 
+    @Operation(summary = "Get all active shifts from a user")
+    @GetMapping("shifts/active/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetShiftResponse getActiveShifts(
+            @Parameter(
+                    name = "memberId",
+                    description = "Member ID",
+                    required = true
+            )
+            @PathVariable("memberId")
+            UUID memberId
+    );
+
+    @Operation(summary = "Get all shifts from a user")
+    @GetMapping("shifts/all/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetShiftsResponse getAllShifts(
+            @Parameter(
+                    name = "memberId",
+                    description = "Member ID",
+                    required = true
+            )
+            @PathVariable("memberId")
+            UUID memberId
+    );
 
 }

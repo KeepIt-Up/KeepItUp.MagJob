@@ -3,6 +3,7 @@ package com.keepitup.workevidence.api.WorkEvidence.API.shift.controller.impl;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.controller.api.ShiftController;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.dto.GetEndShiftResponse;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.dto.GetShiftResponse;
+import com.keepitup.workevidence.api.WorkEvidence.API.shift.dto.GetShiftsResponse;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.dto.PatchEndShiftRequest;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.dto.PostStartShiftRequest;
 import com.keepitup.workevidence.api.WorkEvidence.API.shift.entity.Shift;
@@ -16,7 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigInteger;
 import java.util.Optional;
-
+import java.util.UUID;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 @RestController
 @Log
@@ -56,7 +60,7 @@ public class ShiftDefaultController implements ShiftController {
     }
 
     @Override
-    public void deleteShift(BigInteger id) {
+    public void deleteShift(UUID id) {
         Optional<Shift> shift = service.findById(id);
 
         if(shift.isEmpty()) {
@@ -66,7 +70,7 @@ public class ShiftDefaultController implements ShiftController {
     }
 
     @Override
-    public GetEndShiftResponse endShift(BigInteger id) {
+    public GetEndShiftResponse endShift(UUID id) {
         Optional<Shift> shift = service.findById(id);
 
         if (shift.isEmpty()) {
@@ -77,7 +81,7 @@ public class ShiftDefaultController implements ShiftController {
     }
 
     @Override
-    public GetShiftResponse getShift(BigInteger id) {
+    public GetShiftResponse getShift(UUID id) {
         Optional<Shift> shift = service.findById(id);
 
         if (shift.isEmpty()) {
@@ -86,5 +90,21 @@ public class ShiftDefaultController implements ShiftController {
         return shiftToResponse.apply(shift.get());
     }
 
+    @Override
+    public GetShiftResponse getActiveShifts(UUID memberId) {
+        Optional<Shift> shift = service.getActiveShifts(memberId);
+        if (shift.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found");
+        }
+        return shiftToResponse.apply(shift.get());
+    }
 
+    @Override
+    public GetShiftsResponse getAllShifts(UUID memberId) {
+        Optional<List<Shift>> shifts = service.getAllShifts(memberId);
+        if (shifts.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Shifts not found");
+        }
+        return shiftsToResponse.apply(shifts.get());
+    }
 }

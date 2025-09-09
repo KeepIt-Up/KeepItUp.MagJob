@@ -34,7 +34,7 @@ public class ShiftEditRequestDefaultService implements ShiftEditRequestService {
 
     @Override
     @Transactional
-    public void delete(BigInteger id) {
+    public void delete(UUID id) {
         ShiftEditRequest existing = shiftEditRequestRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Shift edit not found"));
         shiftEditRequestRepository.delete(existing);
@@ -48,13 +48,13 @@ public class ShiftEditRequestDefaultService implements ShiftEditRequestService {
 
     @Override
     @Transactional
-    public Optional<ShiftEditRequest> findById(BigInteger id) {
+    public Optional<ShiftEditRequest> findById(UUID id) {
         return shiftEditRequestRepository.findById(id);
     }
 
     @Override
     @Transactional
-    public Page<ShiftEditRequest> findByShiftId(BigInteger shiftId, Pageable pageable) {
+    public Page<ShiftEditRequest> findByShiftId(UUID shiftId, Pageable pageable) {
         return shiftEditRequestRepository.findByShiftId(shiftId, pageable);
     }
 

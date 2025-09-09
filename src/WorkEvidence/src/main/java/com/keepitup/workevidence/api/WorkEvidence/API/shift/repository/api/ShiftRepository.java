@@ -11,5 +11,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ShiftRepository extends JpaRepository<Shift, BigInteger> {
+public interface ShiftRepository extends JpaRepository<Shift, UUID> {
+    Optional<Shift> findByMemberIdAndStatusTrue(UUID memberId);
+
+    Optional<java.util.List<Shift>> findAllByMemberId(UUID memberId);
 }

@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PatchShiftEditRequest {
 
     @Schema(description = "ID of the shift edit request", example = "123e4567-e89b-12d3-a456-426614174000")
-    private BigInteger id;
+    private UUID id;
 
     @Schema(description = "Status of the shift edit request", example = "PENDING")
     private String status;
