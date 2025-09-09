@@ -13,14 +13,15 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { Chat, ChatMessage, SendMessageRequest } from '../../models/chat.model';
+import { Chat, ChatMessage, SendMessageRequest, ChatMember } from '../../models/chat.model';
 import { ChatService } from '../../services/chat.service';
 import { ChatMemberService } from '../../services/chat-member.service';
+import { ChatAddMembersModalComponent } from '../chat-add-members-modal/chat-add-members-modal.component';
 
 @Component({
   selector: 'app-chat-messages',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ChatAddMembersModalComponent],
   templateUrl: './chat-messages.component.html',
   styleUrls: ['./chat-messages.component.scss'],
 })
@@ -35,11 +36,13 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   @ViewChild('dropdownMenu') dropdownMenuRef!: ElementRef<HTMLElement>;
+  @ViewChild(ChatAddMembersModalComponent) addMembersModal!: ChatAddMembersModalComponent;
 
   messages: ChatMessage[] = [];
   newMessage = '';
   loading = false;
   showDropdown = false;
+  showAddMembersModal = false;
 
   ngOnInit(): void {
     console.log('ChatMessagesComponent ngOnInit - currentMemberId:', this.currentMemberId);
@@ -147,7 +150,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
   formatMessageTime(date: Date | string): string {
     let parsed: Date;
-    
+
     if (typeof date === 'string') {
       parsed = new Date(date + 'Z');
     } else {
@@ -246,5 +249,32 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+
+  openAddMembersModal(): void {
+    this.showAddMembersModal = true;
+    this.showDropdown = false;
+
+    setTimeout(() => {
+      if (this.addMembersModal) {
+        console.log('Modal opened, triggering member load...');
+        this.addMembersModal.loadMembersManually();
+      }
+    }, 100);
+  }
+
+  closeAddMembersModal(): void {
+    this.showAddMembersModal = false;
+  }
+
+  onMembersAdded(addedMembers: ChatMember[]): void {
+    if (!this.chat.chatMembers) {
+      this.chat.chatMembers = [];
+    }
+    this.chat.chatMembers.push(...addedMembers);
+
+    this.showAddMembersModal = false;
+
+    console.log('Members added to chat:', addedMembers);
   }
 }

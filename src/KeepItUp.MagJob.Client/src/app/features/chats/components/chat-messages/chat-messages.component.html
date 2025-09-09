@@ -56,6 +56,20 @@
         >
           <div class="py-1">
             <button
+              (click)="openAddMembersModal()"
+              class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Dodaj członków
+            </button>
+            <button
               (click)="leaveChat()"
               class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
             >
@@ -171,4 +185,13 @@
       </button>
     </div>
   </div>
+
+  <!-- Add Members Modal -->
+  <app-chat-add-members-modal
+    [isOpen]="showAddMembersModal"
+    [chat]="chat"
+    [organizationId]="organizationId"
+    (membersAdded)="onMembersAdded($event)"
+    (closeModal)="closeAddMembersModal()"
+  ></app-chat-add-members-modal>
 </div>
