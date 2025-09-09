@@ -15,7 +15,7 @@ public interface AvailabilityTemplateService {
     List<AvailabilityTemplate> findAll();
 
     Page<AvailabilityTemplate> findAll(Pageable pageable);
-
+    Page<AvailabilityTemplate> findAllByUserId(UUID userId, Pageable pageable);
     Optional<AvailabilityTemplate> find(UUID id);
     AvailabilityTemplate create(AvailabilityTemplate availabilityTemplate);
 

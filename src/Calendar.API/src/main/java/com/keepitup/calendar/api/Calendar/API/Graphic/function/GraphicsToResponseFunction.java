@@ -15,9 +15,14 @@ public class GraphicsToResponseFunction implements BiFunction<Page<Graphic>, Int
     public GetGraphicsResponse apply(Page<Graphic> entities, Integer count) {
         return GetGraphicsResponse.builder()
                 .graphicsResponse(
-                        entities
-                                .stream()
-                                .map(timeEntry -> GetGraphicResponse.builder().build())
+                        entities.stream()
+                                .map(graphic -> GetGraphicResponse.builder()
+                                        .id(graphic.getId())
+                                        .name(graphic.getName())
+                                        .managerId(graphic.getManagerId())
+                                        .timeEntryMembers(graphic.getTimeEntryMembers())
+                                        .timeEntries(graphic.getTimeEntries())
+                                        .build())
                                 .toList()
                 )
                 .count(count)

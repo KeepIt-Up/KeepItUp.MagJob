@@ -22,6 +22,7 @@ public class AvailabilityTemplateToResponseFunction implements Function<Availabi
                 .organizationId(availabilityTemplate.getOrganizationId())
                 .startDayOfWeek(availabilityTemplate.getStartDayOfWeek())
                 .timeEntryTemplates(availabilityTemplate.getTimeEntryTemplates())
+                .userId(availabilityTemplate.getUserId())
                 .build();
     }
 }

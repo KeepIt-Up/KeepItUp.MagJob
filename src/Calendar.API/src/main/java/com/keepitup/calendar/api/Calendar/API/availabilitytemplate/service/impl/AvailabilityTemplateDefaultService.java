@@ -3,7 +3,6 @@ package com.keepitup.calendar.api.Calendar.API.availabilitytemplate.service.impl
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.repository.api.AvailabilityTemplateRepository;
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.service.api.AvailabilityTemplateService;
 import com.keepitup.calendar.api.Calendar.API.availabilitytemplate.entity.AvailabilityTemplate;
-import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntryTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +24,7 @@ public class AvailabilityTemplateDefaultService implements AvailabilityTemplateS
 
     @Override
     public Optional<Page<AvailabilityTemplate>> findAllAvailabilityTemplatesByUser(UUID userId, PageRequest pageRequest) {
-        return Optional.empty();
+        return Optional.ofNullable(availabilityTemplateRepository.findAllByUserId(userId, pageRequest));
     }
 
     @Override
@@ -39,10 +38,12 @@ public class AvailabilityTemplateDefaultService implements AvailabilityTemplateS
     }
 
     @Override
+    public Page<AvailabilityTemplate> findAllByUserId(UUID userId, Pageable pageable) {
+        return availabilityTemplateRepository.findAllByUserId(userId, pageable);
+    }
+
+    @Override
     public Optional<AvailabilityTemplate> find(UUID id) {
-        System.out.println("there there");
-      System.out.println(availabilityTemplateRepository.findById(id).isPresent());
-      System.out.println(availabilityTemplateRepository.findById(id).get().getName());
         return availabilityTemplateRepository.findById(id);
     }
 

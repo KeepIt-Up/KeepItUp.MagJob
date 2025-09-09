@@ -51,4 +51,8 @@ public class AvailabilityTemplate {
     @JsonManagedReference
     @ToString.Exclude
     private List<TimeEntryTemplate> timeEntryTemplates;
+
+    @NotNull
+    @Column(name = "userId", nullable = false)
+    private UUID userId;
 }

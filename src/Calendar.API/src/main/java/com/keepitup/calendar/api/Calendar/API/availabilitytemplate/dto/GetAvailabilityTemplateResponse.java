@@ -35,4 +35,7 @@ public class GetAvailabilityTemplateResponse {
 
     @Schema(description = "GetAvailibityTemplateRequest timeEntryTemplates value")
     private List<TimeEntryTemplate> timeEntryTemplates;
+
+    @Schema(description = "GetAvailibityTemplateRequest userId value")
+    private UUID userId;
 }

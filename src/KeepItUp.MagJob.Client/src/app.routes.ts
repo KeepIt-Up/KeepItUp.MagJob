@@ -17,6 +17,8 @@ import { NotFoundComponent } from '@pages/not-found/not-found.component';
 import { WorkEvidenceComponent } from './app/features/workevidence/workevidence.component';
 import { ShiftComponent } from './app/features/shift/shift.component';
 import { CalendarPageComponent } from './app/pages/calendar-page';
+import { AvailabilityTemplatesComponent } from './app/pages/availability-templates/availability-templates.component';
+import { GraphicsComponent } from './app/pages/user/graphics/graphics.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -39,12 +41,31 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'organizations', pathMatch: 'full' },
+      {
+        path: 'graphics',
+        component: GraphicsComponent,
+      },
+      {
+        path: 'graphics/:id',
+        loadComponent: () =>
+          import('./app/pages/user/graphic-detail/graphic-detail.component').then(
+            m => m.GraphicDetailComponent,
+          ),
+      },
+      {
+        path: 'graphics/:id/manage-members',
+        loadComponent: () =>
+          import('./app/pages/user/graphic-manage-members/graphic-manage-members.component').then(
+            m => m.GraphicManageMembersComponent,
+          ),
+      },
       { path: 'organizations', component: UserOrganizationsComponent },
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
       { path: 'calendar', component: CalendarPageComponent },
       { path: 'workevidence', component: WorkEvidenceComponent },
       { path: 'shift', component: ShiftComponent },
+      { path: 'availability-templates', component: AvailabilityTemplatesComponent },
       { path: '**', redirectTo: 'organizations' },
     ],
   },

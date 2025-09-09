@@ -128,9 +128,9 @@ public class SecurityConfig {
         OAuth2TokenValidator<Jwt> withSignature = new DelegatingOAuth2TokenValidator<>(
                 new JwtTimestampValidator(),
                 new JwtClaimValidator<>(JwtClaimNames.ISS, iss ->
-                        iss.equals("http://localhost:18080/realms/magjob-realm") ||
-                        iss.equals("http://keycloak:8080/realms/magjob-realm") ||
-                        iss.equals("http://host.docker.internal:18080/realms/magjob-realm")
+                        iss.equals("http://localhost:18080/realms/keepitup-magjob") ||
+                        iss.equals("http://keycloak:8080/realms/keepitup-magjob") ||
+                        iss.equals("http://host.docker.internal:18080/realms/keepitup-magjob")
                 )
         );
 

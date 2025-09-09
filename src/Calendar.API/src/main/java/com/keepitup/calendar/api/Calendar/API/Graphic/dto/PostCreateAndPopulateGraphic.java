@@ -33,7 +33,7 @@ public class PostCreateAndPopulateGraphic {
     private String name;
 
     @Schema(description = "PostCreateAndPopulateGraphic managerId value")
-    private BigInteger managerId;
+    private UUID managerId;
 
     @Schema(description = "PostCreateAndPopulateGraphic startDate value")
     private LocalDate startDate;

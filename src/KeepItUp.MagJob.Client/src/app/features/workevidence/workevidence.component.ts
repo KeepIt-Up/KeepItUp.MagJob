@@ -37,6 +37,7 @@ interface WorkEntry {
   }
 
 
+
 @Component({
   selector: 'app-workevidence',
   standalone: true,
@@ -45,7 +46,6 @@ interface WorkEntry {
   styleUrl: './workevidence.component.scss',
 })
 export class WorkEvidenceComponent implements AfterViewInit {
-
   @ViewChild('workHoursChart') chartRef!: ElementRef;
   public chart: Chart | null = null;
 
@@ -66,8 +66,8 @@ export class WorkEvidenceComponent implements AfterViewInit {
   organizationMembers: { uuid: string, name: string }[] = [];
 
   // Search functionality
-  searchQuery: string = '';
-  showAllEmployees: boolean = true;
+  searchQuery = '';
+  showAllEmployees = true;
 
   // Month and week options
   months = [
@@ -82,12 +82,12 @@ export class WorkEvidenceComponent implements AfterViewInit {
     { value: 9, label: 'Wrzesień' },
     { value: 10, label: 'Październik' },
     { value: 11, label: 'Listopad' },
-    { value: 12, label: 'Grudzień' }
+    { value: 12, label: 'Grudzień' },
   ];
 
   weeks = Array.from({ length: 52 }, (_, i) => ({
     value: i + 1,
-    label: `Tydzień ${i + 1}`
+    label: `Tydzień ${i + 1}`,
   }));
 
   testShift: Shift | null = null;
@@ -168,10 +168,10 @@ export class WorkEvidenceComponent implements AfterViewInit {
   getEntryDuration(entry: WorkEntry): number {
     const [startHours, startMinutes] = entry.startTime.split(':').map(Number);
     const [endHours, endMinutes] = entry.endTime.split(':').map(Number);
-    
+
     const startTotalMinutes = startHours * 60 + startMinutes;
     const endTotalMinutes = endHours * 60 + endMinutes;
-    
+
     return endTotalMinutes - startTotalMinutes;
   }
 
@@ -186,7 +186,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
     entries.forEach(entry => {
       const date = new Date(entry.date);
       const weekNumber = this.getWeekNumber(date);
-      
+
       if (!entriesByWeek.has(weekNumber)) {
         entriesByWeek.set(weekNumber, []);
       }
@@ -203,7 +203,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
         startDate,
         endDate,
         entries: weekEntries,
-        isExpanded: false
+        isExpanded: false,
       });
     });
 
@@ -232,7 +232,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
 
   loadData() {
     this.error = null;
-    
+
     if (!this.authService.hasValidAccessToken()) {
       this.error = 'Nie jesteś zalogowany. Zaloguj się najpierw.';
       this.authService.initLoginFlow();
@@ -364,10 +364,10 @@ export class WorkEvidenceComponent implements AfterViewInit {
 
   private initializeChart() {
     console.log('Initializing chart...');
-    if (this.chartRef && this.chartRef.nativeElement) {
+    if (this.chartRef?.nativeElement) {
       console.log('Chart canvas found');
       const ctx = this.chartRef.nativeElement.getContext('2d');
-      
+
       // Destroy existing chart if it exists
       if (this.chart) {
         this.chart.destroy();
@@ -380,23 +380,25 @@ export class WorkEvidenceComponent implements AfterViewInit {
         type: 'bar',
         data: {
           labels: [],
-          datasets: [{
-            label: 'Przepracowane godziny',
-            data: [],
-            backgroundColor: primaryColor,
-            borderWidth: 2,
-            borderRadius: 5,
-            barThickness: 20,
-            maxBarThickness: 30,
-            minBarLength: 5
-          }]
+          datasets: [
+            {
+              label: 'Przepracowane godziny',
+              data: [],
+              backgroundColor: primaryColor,
+              borderWidth: 2,
+              borderRadius: 5,
+              barThickness: 20,
+              maxBarThickness: 30,
+              minBarLength: 5,
+            },
+          ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           animation: {
             duration: 1000,
-            easing: 'easeInOutQuart'
+            easing: 'easeInOutQuart',
           },
           scales: {
             x: {
@@ -406,19 +408,19 @@ export class WorkEvidenceComponent implements AfterViewInit {
                 color: '#fff',
                 font: {
                   size: 14,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
-                padding: { top: 10 }
+                padding: { top: 10 },
               },
               grid: {
-                display: false
+                display: false,
               },
               ticks: {
                 color: '#fff',
                 font: {
-                  size: 12
-                }
-              }
+                  size: 12,
+                },
+              },
             },
             y: {
               title: {
@@ -427,24 +429,24 @@ export class WorkEvidenceComponent implements AfterViewInit {
                 color: '#fff',
                 font: {
                   size: 14,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
-                padding: { bottom: 10 }
+                padding: { bottom: 10 },
               },
               beginAtZero: true,
               grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
+                color: 'rgba(255, 255, 255, 0.1)',
               },
               ticks: {
                 color: '#fff',
                 font: {
-                  size: 12
+                  size: 12,
                 },
-                callback: function(value) {
+                callback: function (value) {
                   return value + 'h';
-                }
-              }
-            }
+                },
+              },
+            },
           },
           plugins: {
             legend: {
@@ -454,10 +456,10 @@ export class WorkEvidenceComponent implements AfterViewInit {
                 color: '#fff',
                 font: {
                   size: 14,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
-                padding: 20
-              }
+                padding: 20,
+              },
             },
             tooltip: {
               backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -466,38 +468,38 @@ export class WorkEvidenceComponent implements AfterViewInit {
               bodyColor: '#fff',
               titleFont: {
                 size: 14,
-                weight: 'bold'
+                weight: 'bold',
               },
               bodyFont: {
-                size: 13
+                size: 13,
               },
               callbacks: {
-                label: (context) => `${context.parsed.y.toFixed(1)} godzin`,
-                title: (context) => {
+                label: context => `${context.parsed.y.toFixed(1)} godzin`,
+                title: context => {
                   const label = context[0].label;
                   return `Okres: ${label}`;
-                }
-              }
-            }
+                },
+              },
+            },
           },
           onClick: (event, elements) => {
             if (elements && elements.length > 0) {
               const index = elements[0].index;
               const label = this.chart?.data.labels?.[index];
-              
+
               if (this.chart?.data.datasets[0].label?.includes('Rozkład dni')) {
                 // Jeśli jesteśmy w widoku szczegółowym, wróć do widoku tygodniowego
                 this.resetToWeeklyView();
-              } else if (label && label.toString().startsWith('Tydzień')) {
+              } else if (label?.toString().startsWith('Tydzień')) {
                 // Jeśli jesteśmy w widoku tygodniowym, pokaż szczegóły tygodnia
                 const weekNumber = parseInt(label.toString().split(' ')[1]);
                 this.showWeekDetails(weekNumber);
               }
             }
-          }
-        }
+          },
+        },
       });
-      
+
       console.log('Chart initialized');
     } else {
       console.log('Chart canvas not found');
@@ -506,7 +508,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
 
   private updateChartData(employee: Employee) {
     console.log('Updating chart data for employee:', employee.name);
-    
+
     // Initialize chart if it doesn't exist
     if (!this.chart) {
       this.initializeChart();
@@ -533,14 +535,15 @@ export class WorkEvidenceComponent implements AfterViewInit {
       const startDate = new Date(this.startDate);
       const endDate = new Date(this.endDate);
       const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (daysDiff <= 14) { // Jeśli okres jest krótszy niż 2 tygodnie
+
+      if (daysDiff <= 14) {
+        // Jeśli okres jest krótszy niż 2 tygodnie
         // Pokaż dane dzienne
-        const sortedEntries = [...entries].sort((a, b) => 
-          new Date(a.date).getTime() - new Date(b.date).getTime()
+        const sortedEntries = [...entries].sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
-        labels = sortedEntries.map(entry => 
-          new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' })
+        labels = sortedEntries.map(entry =>
+          new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' }),
         );
         data = sortedEntries.map(entry => this.getEntryDuration(entry) / 60);
       } else {
@@ -551,11 +554,11 @@ export class WorkEvidenceComponent implements AfterViewInit {
       }
     } else {
       // Dla widoku tygodniowego zawsze pokazuj dane dzienne
-      const sortedEntries = [...entries].sort((a, b) => 
-        new Date(a.date).getTime() - new Date(b.date).getTime()
+      const sortedEntries = [...entries].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
       );
-      labels = sortedEntries.map(entry => 
-        new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' })
+      labels = sortedEntries.map(entry =>
+        new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' }),
       );
       data = sortedEntries.map(entry => this.getEntryDuration(entry) / 60);
     }
@@ -577,12 +580,14 @@ export class WorkEvidenceComponent implements AfterViewInit {
     const entries = this.getCurrentPeriodEntries(selectedEmployee);
     const weekGroups = this.getWeekGroups(entries);
     const selectedWeek = weekGroups.find(group => group.weekNumber === weekNumber);
-    
+
     if (selectedWeek) {
+      // Sortuj wpisy po dacie
       const sortedEntries = [...selectedWeek.entries].sort((a, b) => 
         new Date(a.date).getTime() - new Date(b.date).getTime()
       );
 
+      // Przygotuj dane do wykresu
       const labels = sortedEntries.map(entry => 
         new Date(entry.date).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' })
       );
@@ -620,9 +625,7 @@ export class WorkEvidenceComponent implements AfterViewInit {
     }
 
     const query = this.searchQuery.toLowerCase().trim();
-    return this.sortedEmployees.filter(emp => 
-      emp.name.toLowerCase().includes(query)
-    );
+    return this.sortedEmployees.filter(emp => emp.name.toLowerCase().includes(query));
   }
 
   toggleShowAll() {
@@ -660,4 +663,4 @@ export class WorkEvidenceComponent implements AfterViewInit {
     });
     console.log('Finished initiating load for all employees', this.employees);
   }
-} 
+}

@@ -1,0 +1,48 @@
+<app-header [title]="'Availability Templates'">
+  <app-button type="button" variant="primary" color="success" (click)="reload()">
+    Refresh
+  </app-button>
+</app-header>
+
+<div class="max-w-7xl mx-auto p-4">
+  @if (templatesState$ | async; as state) {
+    @if (state.loading) {
+      <div class="flex justify-center items-center py-12">
+        <app-spinner></app-spinner>
+      </div>
+    } @else if (state.error) {
+      <div class="py-8">
+        <app-error-alert
+          title="Failed to load availability templates"
+          [error]="state.error"
+        ></app-error-alert>
+      </div>
+    } @else if (state.data) {
+      @if (state.data.length === 0) {
+        <div class="text-center py-12">
+          <div class="text-gray-500 mb-4">
+            <i class="bi bi-calendar-x text-6xl"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No availability templates found</h3>
+          <p class="text-gray-600">You don't have access to any availability templates yet.</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (template of state.data; track template.id) {
+            <app-availability-template-card [template]="template"></app-availability-template-card>
+          }
+        </div>
+
+        @if (paginationState$ | async; as pagination) {
+          @if (pagination.hasNextPage) {
+            <div class="flex justify-center mt-8">
+              <app-button type="button" variant="outline" color="primary" (click)="loadMore()">
+                Load More
+              </app-button>
+            </div>
+          }
+        }
+      }
+    }
+  }
+</div>

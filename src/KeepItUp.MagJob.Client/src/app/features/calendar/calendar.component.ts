@@ -1,4 +1,10 @@
-import { Component, ChangeDetectionStrategy, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnInit,
+  CUSTOM_ELEMENTS_SCHEMA,
+  inject,
+} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import {
   CalendarEvent,
@@ -13,12 +19,15 @@ import {
 import { Subject } from 'rxjs';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import moment from 'moment';
 import { CalendarEventExtended } from './models/calendar-event.model';
 import { AddEventDialogComponent } from './components/add-event-dialog/add-event-dialog.component';
 import { EditEventDialogComponent } from './components/edit-event-dialog/edit-event-dialog.component';
 import { DeleteConfirmationDialogComponent } from './components/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { AvailabilityTemplateService } from './services/availability-template.service';
+import { AvailabilityTemplate } from './models/availability-template.model';
+import { AvailabilityTemplateDialogComponent } from './components/availability-template-dialog/availability-template-dialog.component';
+import { CalendarToTemplateFunction } from './function/calendar-to-template-function';
 
 @Component({
   selector: 'app-calendar',
@@ -31,8 +40,14 @@ import { DeleteConfirmationDialogComponent } from './components/delete-confirmat
     AddEventDialogComponent,
     EditEventDialogComponent,
     DeleteConfirmationDialogComponent,
+    AvailabilityTemplateDialogComponent,
   ],
-  providers: [CalendarUtils, CalendarA11y, CalendarEventTitleFormatter],
+  providers: [
+    CalendarUtils,
+    CalendarA11y,
+    CalendarEventTitleFormatter,
+    AvailabilityTemplateService,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendar.component.html',
@@ -63,20 +78,32 @@ export class CalendarComponent implements OnInit {
   actions: CalendarEventAction[] = [
     {
       label: '<i class="bi bi-pencil-fill"></i>',
-      onClick: ({ event, sourceEvent }: { event: CalendarEvent; sourceEvent: MouseEvent | KeyboardEvent }): void => {
+      onClick: ({
+        event,
+        sourceEvent,
+      }: {
+        event: CalendarEvent;
+        sourceEvent: MouseEvent | KeyboardEvent;
+      }): void => {
         if (event.end) {
           this.editEvent(event as CalendarEventExtended);
         }
-      }
+      },
     },
     {
       label: '<i class="bi bi-trash-fill"></i>',
-      onClick: ({ event, sourceEvent }: { event: CalendarEvent; sourceEvent: MouseEvent | KeyboardEvent }): void => {
+      onClick: ({
+        event,
+        sourceEvent,
+      }: {
+        event: CalendarEvent;
+        sourceEvent: MouseEvent | KeyboardEvent;
+      }): void => {
         if (event.end) {
           this.deleteEvent(event as CalendarEventExtended);
         }
-      }
-    }
+      },
+    },
   ];
 
   events: CalendarEventExtended[] = [
@@ -146,6 +173,13 @@ export class CalendarComponent implements OnInit {
       actions: this.actions,
     },
   ];
+
+  // Add new properties for availability template functionality
+  showAvailabilityTemplateDialog = false;
+  showSuccessAlert = false;
+  successMessage = '';
+  private AvailabilityTemplateService = inject(AvailabilityTemplateService);
+  private calendarToTemplateFunction = inject(CalendarToTemplateFunction);
 
   ngOnInit(): void {
     this.viewDate = new Date();
@@ -264,4 +298,47 @@ export class CalendarComponent implements OnInit {
     console.log('Event times changed:', event);
     this.refresh.next();
   }
-} 
+
+  // Add new methods for availability template functionality
+  openAvailabilityTemplateDialog(): void {
+    console.log('Calendar events before opening dialog:', this.events);
+    
+    // If events are empty, this might be why
+    if (!this.events || this.events.length === 0) {
+      console.warn('No events available to create a template from!');
+      // Maybe show a message to the user?
+    }
+    
+    this.showAvailabilityTemplateDialog = true;
+  }
+  onSaveAvailabilityTemplate(template: AvailabilityTemplate): void {
+    const events = this.events;
+
+    // Assuming template.name and template.organizationId exist
+    const templateWithEvents = this.calendarToTemplateFunction.convertEventsToTemplate(
+      events,
+      template.name,
+      template.organizationId,
+      template.startDayOfWeek || 'MONDAY',
+      template.numberOfDays || 7,
+      template.userId,
+    );
+
+    this.AvailabilityTemplateService.createAvailabilityTemplate(templateWithEvents).subscribe({
+      next: response => {
+        console.log('Template created:', response);
+        this.showAvailabilityTemplateDialog = false;
+        this.successMessage = `Availability template "${response.name}" was successfully saved!`;
+        this.showSuccessAlert = true;
+        setTimeout(() => (this.showSuccessAlert = false), 5000); // Hide alert after 5 seconds
+      },
+      error: error => {
+        console.error('Error creating availability template:', error);
+      },
+    });
+  }
+
+  onCancelAvailabilityTemplate(): void {
+    this.showAvailabilityTemplateDialog = false;
+  }
+}
