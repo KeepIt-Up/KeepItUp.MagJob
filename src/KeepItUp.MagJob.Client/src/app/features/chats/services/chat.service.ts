@@ -61,17 +61,19 @@ export class ChatService {
   }
 
   getChatMessages(chatId: string, page = 0, size = 50): Observable<ChatMessagesResponse> {
-    return this.http.get<ChatMessagesResponse>(
-      `${this.apiUrl}/chats/${chatId}/chat-messages?page=${page}&size=${size}`,
-    ).pipe(
-      map(response => ({
-        ...response,
-        chatMessages: response.chatMessages.map(msg => ({
-          ...msg,
-          dateOfCreation: new Date(msg.dateOfCreation)
-        }))
-      }))
-    );
+    return this.http
+      .get<ChatMessagesResponse>(
+        `${this.apiUrl}/chats/${chatId}/chat-messages?page=${page}&size=${size}`,
+      )
+      .pipe(
+        map(response => ({
+          ...response,
+          chatMessages: response.chatMessages.map(msg => ({
+            ...msg,
+            dateOfCreation: new Date(msg.dateOfCreation),
+          })),
+        })),
+      );
   }
 
   createChat(request: CreateChatRequest): Observable<Chat> {
@@ -108,17 +110,31 @@ export class ChatService {
         next: message => {
           try {
             console.log('Raw WebSocket message received:', message);
-            const rawMessage = JSON.parse(message.body);
-            console.log('Raw message dateOfCreation:', rawMessage.dateOfCreation, 'type:', typeof rawMessage.dateOfCreation);
-            
+            const rawMessage: any = JSON.parse(message.body);
+            console.log(
+              'Raw message dateOfCreation:',
+              rawMessage.dateOfCreation,
+              'type:',
+              typeof rawMessage.dateOfCreation,
+            );
+
             let parsedDate: Date;
             if (rawMessage.dateOfCreation) {
               if (Array.isArray(rawMessage.dateOfCreation)) {
-                const [year, month, day, hour, minute, second, nanoseconds] = rawMessage.dateOfCreation;
-                console.log('Parsing array date:', { year, month, day, hour, minute, second, nanoseconds });
-                
+                const [year, month, day, hour, minute, second, nanoseconds] =
+                  rawMessage.dateOfCreation;
+                console.log('Parsing array date:', {
+                  year,
+                  month,
+                  day,
+                  hour,
+                  minute,
+                  second,
+                  nanoseconds,
+                });
+
                 const milliseconds = Math.floor(nanoseconds / 1000000);
-                
+
                 parsedDate = new Date(year, month - 1, day, hour, minute, second, milliseconds);
                 console.log('Parsed date result:', parsedDate);
               } else if (typeof rawMessage.dateOfCreation === 'string') {
@@ -129,10 +145,31 @@ export class ChatService {
             } else {
               parsedDate = new Date();
             }
-            
+
             const chatMessage: ChatMessage = {
-              ...rawMessage,
-              dateOfCreation: parsedDate
+              id: rawMessage.id,
+              content: rawMessage.content,
+              dateOfCreation: parsedDate,
+              viewedBy: rawMessage.viewedBy || [],
+              attachment: rawMessage.attachment,
+              firstAndLastName: rawMessage.firstAndLastName,
+              chatMember: {
+                id: rawMessage.chatMember.id,
+                nickname: rawMessage.chatMember.nickname,
+                memberId: rawMessage.chatMember.memberId,
+                isAdmin: false, // Default value since it's not in the response
+                member: {
+                  id: rawMessage.chatMember.memberId,
+                  fullName: rawMessage.firstAndLastName,
+                  firstName: rawMessage.firstAndLastName?.split(' ')[0] || '',
+                  lastName: rawMessage.firstAndLastName?.split(' ').slice(1).join(' ') || '',
+                },
+              },
+              chat: {
+                id: rawMessage.chat.id,
+                title: rawMessage.chat.title,
+                organizationId: rawMessage.chat.organizationId,
+              },
             };
             console.log('Parsed message via WebSocket:', chatMessage);
             this.addMessage(chatMessage);
@@ -190,7 +227,32 @@ export class ChatService {
   private loadChatMessages(chatId: string): void {
     this.getChatMessages(chatId).subscribe({
       next: response => {
-        this.messagesSubject.next(response.chatMessages || []);
+        const mappedMessages: ChatMessage[] = (response.chatMessages || []).map(msg => ({
+          id: msg.id,
+          content: msg.content,
+          dateOfCreation: new Date(msg.dateOfCreation),
+          viewedBy: msg.viewedBy || [],
+          attachment: msg.attachment,
+          firstAndLastName: msg.firstAndLastName,
+          chatMember: {
+            id: msg.chatMember?.id || '',
+            nickname: msg.chatMember?.nickname,
+            memberId: msg.chatMember?.memberId || '',
+            isAdmin: false, // Default value since it's not in the response
+            member: {
+              id: msg.chatMember?.memberId || '',
+              fullName: msg.firstAndLastName || '',
+              firstName: msg.firstAndLastName?.split(' ')[0] || '',
+              lastName: msg.firstAndLastName?.split(' ').slice(1).join(' ') || '',
+            },
+          },
+          chat: {
+            id: msg.chat?.id || '',
+            title: msg.chat?.title || '',
+            organizationId: msg.chat?.organizationId || '',
+          },
+        }));
+        this.messagesSubject.next(mappedMessages);
       },
       error: error => {
         console.error('Error loading chat messages:', error);
@@ -202,7 +264,6 @@ export class ChatService {
     this.webSocketService.disconnect();
   }
 
-  // Typing indicator methods
   sendTypingStart(chatId: string, memberId: string, memberName: string): void {
     this.webSocketService.sendTypingEvent(chatId, memberId, memberName, 'TYPING_START');
   }
@@ -234,8 +295,9 @@ export class ChatService {
     let updatedTypingUsers: TypingUser[];
 
     if (event.type === 'TYPING_START') {
-      // Dodaj użytkownika do listy piszących (lub zaktualizuj timestamp)
-      const existingUserIndex = currentTypingUsers.findIndex(user => user.memberId === event.memberId);
+      const existingUserIndex = currentTypingUsers.findIndex(
+        user => user.memberId === event.memberId,
+      );
       const newUser: TypingUser = {
         memberId: event.memberId,
         memberName: event.memberName,
@@ -243,24 +305,25 @@ export class ChatService {
       };
 
       if (existingUserIndex >= 0) {
-        // Zaktualizuj tylko timestamp, nie dodawaj nowego użytkownika
         updatedTypingUsers = [...currentTypingUsers];
         updatedTypingUsers[existingUserIndex] = newUser;
       } else {
         updatedTypingUsers = [...currentTypingUsers, newUser];
       }
     } else {
-      // Usuń użytkownika z listy piszących
-      updatedTypingUsers = currentTypingUsers.filter(user => user.memberId !== event.memberId);
+      updatedTypingUsers = currentTypingUsers.filter(
+        user => user.memberId !== event.memberId,
+      );
     }
 
     this.typingUsersSubject.next(updatedTypingUsers);
 
-    // Automatycznie usuń użytkownika po 5 sekundach (dla TYPING_START)
     if (event.type === 'TYPING_START') {
       setTimeout(() => {
         const currentUsers = this.typingUsersSubject.value;
-        const filteredUsers = currentUsers.filter(user => user.memberId !== event.memberId);
+        const filteredUsers = currentUsers.filter(
+          user => user.memberId !== event.memberId,
+        );
         this.typingUsersSubject.next(filteredUsers);
       }, 5000);
     }

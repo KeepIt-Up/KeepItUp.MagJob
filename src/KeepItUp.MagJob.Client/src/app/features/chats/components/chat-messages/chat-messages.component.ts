@@ -53,7 +53,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   private typingTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
-    console.log('ChatMessagesComponent ngOnInit - currentMemberId:', this.currentMemberId);
     this.loadMessages();
     this.subscribeToMessages();
     this.subscribeToTypingEvents();
@@ -92,12 +91,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   sendMessage(): void {
     if (!this.newMessage.trim()) return;
 
-    console.log('Sending message:', {
-      chat: this.chat,
-      chatMembers: this.chat.chatMembers,
-      currentMemberId: this.currentMemberId,
-    });
-
     const currentChatMember = this.chat.chatMembers?.find(
       member => member.memberId === this.currentMemberId,
     );
@@ -116,7 +109,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       chatMemberId: currentChatMember.id,
     };
 
-    console.log('Sending request:', request);
     this.chatService.sendMessage(request);
     this.newMessage = '';
     this.scrollToBottomSmooth();
@@ -144,12 +136,10 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Wyczyść poprzedni timeout
     if (this.typingTimeout) {
       clearTimeout(this.typingTimeout);
     }
 
-    // Wyślij TYPING_START tylko jeśli nie jesteś już na liście piszących
     if (this.currentMemberId && !this.isCurrentlyTyping()) {
       this.chatService.sendTypingStart(
         this.chat.id,
@@ -158,7 +148,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Ustaw timeout na TYPING_STOP po 2 sekundach bez pisania
     this.typingTimeout = setTimeout(() => {
       if (this.currentMemberId) {
         this.chatService.sendTypingStop(
@@ -176,11 +165,9 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
   private subscribeToTypingEvents(): void {
     this.chatService.typingUsers$.pipe(takeUntil(this.destroy$)).subscribe(typingUsers => {
-      // Filtruj siebie z listy piszących
       this.typingUsers = typingUsers.filter(user => user.memberId !== this.currentMemberId);
     });
 
-    // Subskrybuj do typing events dla tego chatu
     this.chatService.subscribeToTypingEvents(this.chat.id);
   }
 
@@ -192,21 +179,16 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
   isOwnMessage(message: ChatMessage): boolean {
     if (!this.currentMemberId || !message.chatMember?.memberId) {
-      // console.log('isOwnMessage - missing IDs:', {
-      //   currentMemberId: this.currentMemberId,
-      //   messageChatMemberId: message.chatMember?.memberId,
-      // });
+      console.log('isOwnMessage - missing IDs:', {
+        currentMemberId: this.currentMemberId,
+        messageChatMemberId: message.chatMember?.memberId,
+        messageId: message.id,
+        messageContent: message.content?.substring(0, 20) + '...',
+      });
       return false;
     }
 
     const isOwn = message.chatMember.memberId === this.currentMemberId;
-    // console.log('isOwnMessage debug:', {
-    //   messageId: message.id,
-    //   messageChatMemberId: message.chatMember.memberId,
-    //   currentMemberId: this.currentMemberId,
-    //   isOwn: isOwn,
-    //   messageContent: message.content.substring(0, 20) + '...',
-    // });
     return isOwn;
   }
 
@@ -296,7 +278,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     if (confirm('Czy na pewno chcesz opuścić ten czat?')) {
       this.chatMemberService.deleteChatMember(currentChatMember.id).subscribe({
         next: () => {
-          console.log('Successfully left chat');
           this.showDropdown = false;
 
           this.chatService.removeChat(this.chat.id);
@@ -319,7 +300,6 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       if (this.addMembersModal) {
-        console.log('Modal opened, triggering member load...');
         this.addMembersModal.loadMembersManually();
       }
     }, 100);
@@ -336,7 +316,5 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     this.chat.chatMembers.push(...addedMembers);
 
     this.showAddMembersModal = false;
-
-    console.log('Members added to chat:', addedMembers);
   }
 }

@@ -61,48 +61,31 @@ export class ChatAddMembersModalComponent implements OnInit, OnChanges {
 
   ngOnChanges = (changes: SimpleChanges): void => {
     if (changes['isOpen']?.currentValue === true) {
-      console.log('Modal opened via ngOnChanges');
       this.loadMembers();
     }
     if (changes['chat']?.currentValue) {
-      console.log('Chat changed via ngOnChanges');
       this.loadMembers();
     }
     if (changes['organizationId']?.currentValue) {
-      console.log('OrganizationId changed via ngOnChanges');
       this.loadMembers();
     }
   };
 
   public loadMembersManually = (): void => {
-    console.log('Loading members manually called');
     this.loadMembers();
   };
 
   private loadMembers = (): void => {
     if (!this.organizationId || !this.chat) {
-      console.log(
-        'Missing required data - organizationId:',
-        this.organizationId,
-        'chat:',
-        this.chat,
-      );
       return;
     }
 
     this.loading = true;
-    console.log('Loading members for organizationId:', this.organizationId);
-    console.log('Current chat:', this.chat);
-    console.log('Current chat members:', this.chat.chatMembers);
 
     this.memberService.getMembersByOrganizationId(this.organizationId).subscribe({
       next: (members: PaginatedResponse<Member>) => {
-        console.log('Loaded members:', members);
-
         const currentChatMemberIds = this.chat.chatMembers?.map(cm => cm.memberId) ?? [];
-        console.log('Current chat member IDs:', currentChatMemberIds);
         this.members = members.items.filter(m => !currentChatMemberIds.includes(m.id));
-        console.log('Filtered members to add:', this.members);
         this.loading = false;
       },
       error: error => {
@@ -147,7 +130,6 @@ export class ChatAddMembersModalComponent implements OnInit, OnChanges {
 
         this.chatMemberService.createChatMember(chatMemberRequest).subscribe({
           next: chatMemberResponse => {
-
             const chatMember: ChatMember = {
               id: chatMemberResponse.id,
               nickname: chatMemberResponse.nickname,

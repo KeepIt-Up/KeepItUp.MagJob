@@ -31,12 +31,6 @@ public class GetChatMessagesResponse {
         @Schema(description = "ChatMessage content")
         private String content;
 
-        @Schema(description = "ChatMember id value")
-        private UUID chatMemberId;
-
-        @Schema(description = "Chat id value")
-        private UUID chatId;
-
         @Schema(description = "ChatMessage viewedBy")
         private List<String> viewedBy;
 
@@ -48,6 +42,48 @@ public class GetChatMessagesResponse {
 
         @Schema(description = "ChatMessage date of creation")
         private LocalDateTime dateOfCreation;
+
+        @Schema(description = "Chat Member class value")
+        private ChatMember chatMember;
+
+        @Schema(description = "Chat class value")
+        private Chat chat;
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
+        @ToString
+        @EqualsAndHashCode
+        public static class ChatMember {
+            @Schema(description = "Chat Member id value")
+            private UUID id;
+
+            @Schema(description = "Chat Member nickname name")
+            private String nickname;
+
+            @Schema(description = "Member id value")
+            private UUID memberId;
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor(access = AccessLevel.PRIVATE)
+        @ToString
+        @EqualsAndHashCode
+        public static class Chat {
+            @Schema(description = "Chat id value")
+            private UUID id;
+
+            @Schema(description = "Chat title name")
+            private String title;
+
+            @Schema(description = "Organization id value")
+            private UUID organizationId;
+        }
     }
 
     @Singular

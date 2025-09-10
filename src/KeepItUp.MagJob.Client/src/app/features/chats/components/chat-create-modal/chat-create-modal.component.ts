@@ -61,8 +61,6 @@ export class ChatCreateModalComponent implements OnInit {
 
   private loadMembers(): void {
     this.loading = true;
-    console.log('organizationId', this.organizationId);
-    console.log('currentMemberId', this.currentMemberId);
     this.memberService.getMembersByOrganizationId(this.organizationId).subscribe({
       next: (members: PaginatedResponse<Member>) => {
         this.members = members.items.filter(m => m.id !== this.currentMemberId);
@@ -167,7 +165,7 @@ export class ChatCreateModalComponent implements OnInit {
             isAdmin: false,
           })),
         };
-        
+
         this.chatCreated.emit(chatWithMembers);
         this.resetForm();
         this.submitting = false;

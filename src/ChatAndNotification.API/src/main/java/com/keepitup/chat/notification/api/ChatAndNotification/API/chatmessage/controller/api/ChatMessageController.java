@@ -1,5 +1,6 @@
 package com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.controller.api;
 
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.GetChatMessageResponse;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.GetChatMessagesResponse;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageWebSocketRequest;
@@ -23,7 +24,6 @@ import java.util.UUID;
 public interface ChatMessageController {
     PageConfig pageConfig = new PageConfig();
 
-    // HTTP endpoint - pobieranie wiadomości
     @Operation(summary = "Get Chat Messages By Chat")
     @GetMapping("api/chats/{id}/chat-messages")
     @ResponseStatus(HttpStatus.OK)
@@ -39,7 +39,7 @@ public interface ChatMessageController {
 
     @MessageMapping("/chat/{chatId}/sendMessage")
     @SendTo("/topic/chat/{chatId}")
-    ChatMessage sendMessage(
+    GetChatMessageResponse sendMessage(
             @Parameter(name = "chatId", description = "Chat id value", required = true)
             @DestinationVariable("chatId") UUID chatId,
             @Parameter(name = "PostChatMessageRequest", description = "PostChatMessageRequest DTO", 

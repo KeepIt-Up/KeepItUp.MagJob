@@ -35,6 +35,12 @@ public class GetChatMessageResponse {
     @Schema(description = "ChatMessage attachment")
     private byte[] attachment;
 
+    @Schema(description = "Chat Member class value")
+    private ChatMember chatMember;
+
+    @Schema(description = "Chat class value")
+    private Chat chat;
+
     @Getter
     @Setter
     @Builder
@@ -70,10 +76,4 @@ public class GetChatMessageResponse {
         @Schema(description = "Organization id value")
         private UUID organizationId;
     }
-
-    @Schema(description = "Chat Member class value")
-    private ChatMember chatMember;
-
-    @Schema(description = "Chat class value")
-    private Chat chat;
 }

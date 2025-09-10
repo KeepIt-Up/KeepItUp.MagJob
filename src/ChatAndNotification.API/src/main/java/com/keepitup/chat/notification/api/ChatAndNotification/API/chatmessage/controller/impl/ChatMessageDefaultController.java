@@ -2,8 +2,10 @@ package com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.c
 
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chat.entity.Chat;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chat.service.impl.ChatDefaultService;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.entity.ChatMember;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmember.service.impl.ChatMemberDefaultService;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.controller.api.ChatMessageController;
+import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.GetChatMessageResponse;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.GetChatMessagesResponse;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageRequest;
 import com.keepitup.chat.notification.api.ChatAndNotification.API.chatmessage.dto.PatchChatMessageWebSocketRequest;
@@ -69,7 +71,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
     @Override
     @MessageMapping("/chat/{chatId}/sendMessage")
     @SendTo("/topic/chat/{chatId}")
-    public ChatMessage sendMessage(
+    public GetChatMessageResponse sendMessage(
             @DestinationVariable UUID chatId,
             PostChatMessageRequest postChatMessageRequest
     ) {
@@ -81,7 +83,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
-        chatMemberService.find(postChatMessageRequest.getChatMember()).orElseThrow(
+        ChatMember chatMember = chatMemberService.find(postChatMessageRequest.getChatMember()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
@@ -89,7 +91,26 @@ public class ChatMessageDefaultController implements ChatMessageController {
         log.info("Created message with ID: " + createdMessage.getId());
         log.info("Broadcasting to topic: /topic/chat/" + chatId);
         
-        return createdMessage;
+        GetChatMessageResponse response = GetChatMessageResponse.builder()
+                .id(createdMessage.getId())
+                .content(createdMessage.getContent())
+                .attachment(createdMessage.getAttachment())
+                .viewedBy(createdMessage.getViewedBy())
+                .firstAndLastName(createdMessage.getFirstAndLastName())
+                .dateOfCreation(createdMessage.getDateOfCreation())
+                .chatMember(GetChatMessageResponse.ChatMember.builder()
+                        .id(chatMember.getId())
+                        .nickname(chatMember.getNickname())
+                        .memberId(chatMember.getMemberId())
+                        .build())
+                .chat(GetChatMessageResponse.Chat.builder()
+                        .id(chat.getId())
+                        .title(chat.getTitle())
+                        .organizationId(chat.getOrganizationId())
+                        .build())
+                .build();
+        
+        return response;
     }
 
     @Override
@@ -140,12 +161,10 @@ public class ChatMessageDefaultController implements ChatMessageController {
         log.info("Member: " + typingEventRequest.getMemberName() + " (ID: " + typingEventRequest.getMemberId() + ")");
         log.info("Timestamp: " + typingEventRequest.getTimestamp());
         
-        // Sprawdź czy chat istnieje
         chatService.find(chatId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
-        // Zwróć event do wszystkich subskrybentów
         return typingEventRequest;
     }
 }
