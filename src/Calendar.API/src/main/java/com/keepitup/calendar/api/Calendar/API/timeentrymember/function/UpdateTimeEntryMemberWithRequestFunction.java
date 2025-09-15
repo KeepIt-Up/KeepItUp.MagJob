@@ -13,8 +13,8 @@ public class UpdateTimeEntryMemberWithRequestFunction implements BiFunction<Time
         return TimeEntryMember.builder()
                 .id(timeEntryMember.getId())
                 .timeEntry(timeEntryMember.getTimeEntry())
-                .member(timeEntryMember.getMember())
-                .status(timeEntryMember.getStatus())
+                .memberId(request.getMemberId() != null ? request.getMemberId() : timeEntryMember.getMemberId())
+                .status(request.getStatus() != null ? request.getStatus() : timeEntryMember.getStatus())
                 .build();
     }
 }

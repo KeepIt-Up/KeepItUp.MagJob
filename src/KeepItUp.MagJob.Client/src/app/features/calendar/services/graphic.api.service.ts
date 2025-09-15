@@ -6,7 +6,12 @@ import {
   PostCreateAndPopulateGraphic,
   CreateGraphicResponse,
 } from '../models/post-create-and-populate-graphic.model';
-import { GraphicResponse, GetGraphicsResponse } from '../models/graphic.model';
+import {
+  GraphicResponse,
+  GetGraphicsResponse,
+  CreateTimeEntryMembersBulkRequest,
+  TimeEntryMemberResponse,
+} from '../models/graphic.model';
 
 @Injectable({
   providedIn: 'root',
@@ -55,6 +60,20 @@ export class GraphicApiService {
   removeMemberFromTimeEntry(timeEntryId: string, memberId: string): Observable<void> {
     return this.httpClient.delete<void>(
       `${this.apiUrl}/timeentries/${timeEntryId}/members/${memberId}`,
+    );
+  }
+
+  createTimeEntryMembersBulk(
+    request: CreateTimeEntryMembersBulkRequest,
+  ): Observable<TimeEntryMemberResponse[]> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.httpClient.post<TimeEntryMemberResponse[]>(
+      `${this.apiUrl}/timeentrymembers/bulk`,
+      request,
+      { headers },
     );
   }
 }

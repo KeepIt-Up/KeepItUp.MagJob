@@ -29,10 +29,9 @@ public class TimeEntryMember {
     @Column(name = "status", nullable = false)
     private String status;
 
-    // Many-to-One relationship with Member
-    @ManyToOne
-    @JoinColumn(name = "member")
-    private Member member;
+    @NotNull
+    @Column(name = "member_id", nullable = false)
+    private UUID memberId;
 
     // Many-to-One relationship with TimeEntry
     @ManyToOne

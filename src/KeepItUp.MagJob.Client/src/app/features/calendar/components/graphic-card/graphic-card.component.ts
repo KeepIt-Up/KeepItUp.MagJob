@@ -25,7 +25,7 @@ export class GraphicCardComponent {
 
   getUniqueMembersCount(): number {
     const uniqueUserIds = new Set(
-      this.graphic.timeEntryMembers?.map(member => member.userId) || [],
+      this.graphic.timeEntryMembers?.map(member => member.memberId) || [],
     );
     return uniqueUserIds.size;
   }

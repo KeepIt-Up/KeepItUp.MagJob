@@ -12,9 +12,10 @@ public class TimeEntryMemberToResponseFunction implements Function<TimeEntryMemb
     @Override
     public GetTimeEntryMemberResponse apply(TimeEntryMember timeEntryMember) {
         return GetTimeEntryMemberResponse.builder()
+                .id(timeEntryMember.getId())
                 .status(timeEntryMember.getStatus())
                 .timeEntry(timeEntryMember.getTimeEntry())
-                .member(timeEntryMember.getMember())
+                .memberId(timeEntryMember.getMemberId())
                 .build();
     }
 }

@@ -2,7 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GraphicApiService } from './graphic.api.service';
 import { UserContextService } from '../../../features/users/services/user-context.service';
-import { GraphicResponse, GetGraphicsResponse } from '../models/graphic.model';
+import {
+  GraphicResponse,
+  GetGraphicsResponse,
+  CreateTimeEntryMembersBulkRequest,
+  TimeEntryMemberResponse,
+} from '../models/graphic.model';
 
 @Injectable({
   providedIn: 'root',
@@ -32,5 +37,11 @@ export class GraphicsService {
 
   removeMemberFromTimeEntry(timeEntryId: string, memberId: string): Observable<void> {
     return this.graphicApiService.removeMemberFromTimeEntry(timeEntryId, memberId);
+  }
+
+  createTimeEntryMembersBulk(
+    request: CreateTimeEntryMembersBulkRequest,
+  ): Observable<TimeEntryMemberResponse[]> {
+    return this.graphicApiService.createTimeEntryMembersBulk(request);
   }
 }

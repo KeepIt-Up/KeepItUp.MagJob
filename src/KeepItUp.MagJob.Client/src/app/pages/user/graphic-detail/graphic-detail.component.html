@@ -86,7 +86,7 @@
             <div class="ml-4">
               <p class="text-sm font-medium text-gray-500">Time Entries</p>
               <p class="text-2xl font-semibold text-gray-900">
-                {{ currentGraphic.timeEntries?.length || 0 }}
+                {{ currentGraphic.timeEntries.length || 0 }}
               </p>
             </div>
           </div>
@@ -138,7 +138,7 @@
             <div class="ml-4">
               <p class="text-sm font-medium text-gray-500">Total Assignments</p>
               <p class="text-2xl font-semibold text-gray-900">
-                {{ currentGraphic.timeEntryMembers?.length || 0 }}
+                {{ currentGraphic.timeEntryMembers.length || 0 }}
               </p>
             </div>
           </div>
@@ -174,7 +174,10 @@
                               member of getTimeEntryMembers(entry.id, currentGraphic);
                               track member.id
                             ) {
-                              <app-tag [text]="member.userName || member.userId" variant="primary">
+                              <app-tag
+                                [text]="member.userName || member.memberId"
+                                variant="primary"
+                              >
                               </app-tag>
                             }
                           </div>
