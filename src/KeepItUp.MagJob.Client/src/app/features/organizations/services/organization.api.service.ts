@@ -1,14 +1,14 @@
-import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { Organization } from "../models/organization.model";
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Organization } from '../models/organization.model';
 import {
   PaginatedResponse,
   PaginationOptions,
   serializePaginationOptions,
-} from "@shared/components/pagination/pagination.component";
-import { Invitation } from "../../invitations/models/invitation";
-import { environment } from "@environments/environment";
-import { HttpClient } from "@angular/common/http";
+} from '@shared/components/pagination/pagination.component';
+import { Invitation } from '../../invitations/models/invitation';
+import { environment } from '@environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 export interface CreateOrganizationPayload {
   name: string;
@@ -18,11 +18,10 @@ export interface CreateOrganizationPayload {
 export interface UpdateOrganizationPayload {
   name?: string;
   description?: string;
-  isActive?: boolean;
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class OrganizationApiService {
   readonly apiUrl = `${environment.apiUrl}/api/identity/Organizations`;
@@ -31,60 +30,45 @@ export class OrganizationApiService {
   /**
    * Updates logo for an organization using FormData
    */
-  updateLogo(
-    organizationId: string,
-    logoFile: File
-  ): Observable<{ logoUrl: string }> {
+  updateLogo(organizationId: string, logoFile: File): Observable<{ logoUrl: string }> {
     const formData = new FormData();
-    formData.append("logoFile", logoFile);
+    formData.append('logoFile', logoFile);
 
-    return this.http.put<{ logoUrl: string }>(
-      `${this.apiUrl}/${organizationId}/Logo`,
-      formData
-    );
+    return this.http.put<{ logoUrl: string }>(`${this.apiUrl}/${organizationId}/Logo`, formData);
   }
 
   /**
    * Updates banner for an organization using FormData
    */
-  updateBanner(
-    organizationId: string,
-    bannerFile: File
-  ): Observable<{ bannerUrl: string }> {
+  updateBanner(organizationId: string, bannerFile: File): Observable<{ bannerUrl: string }> {
     const formData = new FormData();
-    formData.append("bannerFile", bannerFile);
+    formData.append('bannerFile', bannerFile);
 
     return this.http.put<{ bannerUrl: string }>(
       `${this.apiUrl}/${organizationId}/Banner`,
-      formData
+      formData,
     );
   }
 
   getInvitations(
     organizationId: string,
     query: Record<any, any>,
-    paginationOptions: PaginationOptions<Invitation>
+    paginationOptions: PaginationOptions<Invitation>,
   ): Observable<PaginatedResponse<Invitation>> {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<Invitation>>(
       `${this.apiUrl}/${organizationId}/invitations`,
       {
         params: { ...query, ...options },
-      }
+      },
     );
   }
 
   archiveMember(organizationId: string, memberId: string) {
-    return this.http.put(
-      `${this.apiUrl}/${organizationId}/members/${memberId}/archive`,
-      {}
-    );
+    return this.http.put(`${this.apiUrl}/${organizationId}/members/${memberId}/archive`, {});
   }
 
-  getAll(
-    query: Record<any, any>,
-    paginationOptions: PaginationOptions<Organization>
-  ) {
+  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<Organization>) {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<Organization>>(`${this.apiUrl}`, {
       params: { ...query, ...options },

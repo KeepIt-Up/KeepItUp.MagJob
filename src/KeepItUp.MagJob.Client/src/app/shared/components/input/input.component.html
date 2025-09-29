@@ -1,0 +1,51 @@
+<div [class]="containerClasses">
+  @if (label) {
+    <label [for]="id" class="app-input__label">
+      {{ label }}
+      @if (required) {
+        <span class="app-input__required">*</span>
+      }
+    </label>
+  }
+
+  <div class="app-input__wrapper">
+    @if (iconLeft) {
+      <span class="app-input__icon app-input__icon--left">
+        <ng-icon [name]="iconLeft" />
+      </span>
+    }
+
+    <input
+      [type]="type"
+      [id]="id"
+      [name]="name"
+      [placeholder]="placeholder"
+      [required]="required"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [class]="inputClasses"
+      [(ngModel)]="value"
+      (input)="onInputChange($event)"
+      (blur)="onInputBlur($event)"
+      (focus)="onInputFocus($event)"
+    />
+
+    @if (iconRight) {
+      <span class="app-input__icon app-input__icon--right">
+        <ng-icon [name]="iconRight" />
+      </span>
+    }
+  </div>
+
+  @if (helperText && !hasError) {
+    <div class="app-input__helper-text">
+      {{ helperText }}
+    </div>
+  }
+
+  @if (errorText && hasError) {
+    <div class="app-input__error-text">
+      {{ errorText }}
+    </div>
+  }
+</div>

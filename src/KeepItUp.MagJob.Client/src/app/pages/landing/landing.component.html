@@ -1,0 +1,136 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <!-- Navigation -->
+  <app-navbar></app-navbar>
+
+  <!-- Hero Section -->
+  <section class="py-16 md:py-24 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+            Manage Your Jobs with <span class="text-primary">MagJob</span>
+          </h1>
+          <p class="text-xl text-gray-600 dark:text-gray-300">
+            Streamline your organization's workflow, manage members, and handle job assignments all
+            in one place.
+          </p>
+          <div class="flex flex-col items-center sm:flex-row gap-4">
+            <app-button
+              variant="primary"
+              size="lg"
+              (clicked)="authService.initLoginFlow()"
+              iconRight="heroArrowRight"
+            >
+              Sign In
+            </app-button>
+            <app-button variant="outline" size="lg" (clicked)="authService.initRegistrationFlow()">
+              Register
+            </app-button>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <img
+            src="assets/images/landing-illustration.png"
+            alt="MagJob Platform Illustration"
+            class="w-full h-auto"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 px-4 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Powerful Features for Your Organization
+        </h2>
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Everything you need to manage your organization efficiently
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="p-6 bg-gray-50 dark:bg-gray-700 rounded-xl">
+          <div
+            class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+          >
+            <ng-icon name="heroUserGroup" class="h-6 w-6 text-primary"></ng-icon>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Member Management
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Easily add, remove, and manage members within your organization with role-based
+            permissions.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="p-6 bg-gray-50 dark:bg-gray-700 rounded-xl">
+          <div
+            class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+          >
+            <ng-icon name="heroClipboardDocument" class="h-6 w-6 text-primary"></ng-icon>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Task Assignment</h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Create, assign, and track tasks to ensure your team stays productive and organized.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="p-6 bg-gray-50 dark:bg-gray-700 rounded-xl">
+          <div
+            class="w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mb-4"
+          >
+            <ng-icon name="heroChartBar" class="h-6 w-6 text-primary"></ng-icon>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Analytics & Reporting
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Get insights into your organization's performance with detailed analytics and reports.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto bg-primary/10 dark:bg-primary/20 rounded-2xl p-8 md:p-12">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          Ready to streamline your organization?
+        </h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+          Join thousands of organizations already using MagJob to manage their teams effectively.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <app-button
+            variant="primary"
+            size="lg"
+            (clicked)="authService.initLoginFlow()"
+            iconRight="heroArrowRight"
+          >
+            Sign In
+          </app-button>
+          <app-button
+            variant="outline"
+            size="lg"
+            (clicked)="authService.initRegistrationFlow()"
+            iconLeft="heroUserPlus"
+          >
+            Register now
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>

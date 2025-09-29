@@ -1,7 +1,7 @@
-@if (userContextService.user$ | async; as user) {
+@if (userContextService.$userContext(); as user) {
   @if (user) {
     <app-sidebar
-      [title]="user.firstName + ' ' + user.lastName"
+      [title]="user.data?.firstName + ' ' + user.data?.lastName"
       titlePath=""
       [sections]="[mainSection, settingsSection]"
       [footerItems]="footerItems"

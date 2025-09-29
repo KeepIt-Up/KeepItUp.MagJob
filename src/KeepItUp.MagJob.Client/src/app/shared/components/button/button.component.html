@@ -1,0 +1,19 @@
+<button
+  [type]="type"
+  [disabled]="disabled"
+  [class]="buttonClasses"
+  [attr.aria-label]="ariaLabel"
+  (click)="onClick($event)"
+>
+  @if (iconLeft) {
+    <span class="app-button__icon app-button__icon--left">
+      <ng-icon [name]="iconLeft" />
+    </span>
+  }
+  <ng-content></ng-content>
+  @if (iconRight) {
+    <span class="app-button__icon app-button__icon--right">
+      <ng-icon [name]="iconRight" />
+    </span>
+  }
+</button>

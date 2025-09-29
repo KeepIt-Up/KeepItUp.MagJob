@@ -1,0 +1,86 @@
+<app-modal [isOpen]="isOpen" [title]="title" (onCloseClick)="onClose()">
+  <div class="p-4 md:p-5">
+    <!-- Error Message -->
+    <div
+      *ngIf="errorMessage"
+      class="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+    >
+      {{ errorMessage }}
+    </div>
+
+    <!-- Upload Area -->
+    <div class="mb-4 flex items-center justify-center">
+      <label
+        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 overflow-hidden transition-colors duration-200"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        [class.border-primary-500]="isDragging"
+      >
+        @if (!selectedFile) {
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg
+              class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span class="font-semibold">Click to upload</span> or drag and drop
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              PNG, JPG or GIF (MAX. {{ maxFileSize / (1024 * 1024) }}MB)
+            </p>
+          </div>
+        } @else {
+          <div class="relative w-full h-full">
+            <div class="absolute top-2 right-2 z-10">
+              <button
+                type="button"
+                class="p-1 rounded-full bg-gray-800 bg-opacity-50 text-white hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                (click)="onRemoveFile(); $event.preventDefault()"
+                aria-label="Remove image"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="w-full h-full flex items-center justify-center">
+              <img [src]="previewUrl" class="w-full h-full object-contain" [alt]="title" />
+            </div>
+          </div>
+        }
+        <input type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+      </label>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-3 mt-6">
+      <app-button type="button" variant="outline" (clicked)="onClose()"> Cancel </app-button>
+      <app-button type="button" variant="primary" [disabled]="!selectedFile" (clicked)="onUpload()">
+        Upload
+      </app-button>
+    </div>
+  </div>
+</app-modal>
