@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetMemberById;
 
 /// <summary>
-/// Handler dla zapytania GetMemberByIdQuery.
+/// Handler for the GetMemberByIdQuery.
 /// </summary>
 public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Result<MemberDto>>
 {
@@ -13,9 +13,9 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
     private readonly ILogger<GetMemberByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetMemberByIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetMemberByIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetMemberByIdQueryHandler(
         IOrganizationRepository repository,
@@ -26,16 +26,15 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetMemberByIdQuery.
+    /// Handles the GetMemberByIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetMemberByIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Członek organizacji.</returns>
+    /// <param name="request">GetMemberByIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Member of the organization.</returns>
     public async Task<Result<MemberDto>> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
             if (organization == null)
@@ -52,17 +51,13 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
             //     return Result<MemberDto>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Znajdź członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
             if (member == null)
             {
                 return Result<MemberDto>.NotFound($"Nie znaleziono członka o ID użytkownika {request.MemberUserId} w organizacji.");
             }
 
-            // Pobierz role przypisane do członka
-            var roleIds = member.RoleIds;
-            var roles = organization.Roles
-                .Where(r => roleIds.Contains(r.Id))
+            var roles = member.Roles
                 .Select(r => new RoleDto
                 {
                     Id = r.Id,
@@ -73,7 +68,6 @@ public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, Res
                 })
                 .ToList();
 
-            // Utwórz DTO członka
             var memberDto = new MemberDto
             {
                 Id = member.Id,

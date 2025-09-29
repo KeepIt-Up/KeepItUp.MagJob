@@ -1,47 +1,47 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Stałe dla uprawnień organizacji używane w konfiguracji endpointów.
+/// Constants for organization permissions used in endpoint configuration.
 /// </summary>
 public static class OrganizationPermissions
 {
     /// <summary>
-    /// Uprawnienie do aktualizacji organizacji.
+    /// Permission to update the organization.
     /// </summary>
     public const string UpdateOrganization = "organization.manage";
 
     /// <summary>
-    /// Uprawnienie do przeglądania organizacji.
+    /// Permission to view the organization.
     /// </summary>
     public const string ViewOrganization = "organization.view";
 
     /// <summary>
-    /// Uprawnienie do zarządzania członkami organizacji.
+    /// Permission to manage the members of the organization.
     /// </summary>
     public const string ManageMembers = "members.manage";
 
     /// <summary>
-    /// Uprawnienie do przeglądania członków organizacji.
+    /// Permission to view the members of the organization.
     /// </summary>
     public const string ViewMembers = "members.view";
 
     /// <summary>
-    /// Uprawnienie do zarządzania rolami w organizacji.
+    /// Permission to manage the roles of the organization.
     /// </summary>
     public const string ManageRoles = "roles.manage";
 
     /// <summary>
-    /// Uprawnienie do przeglądania ról w organizacji.
+    /// Permission to view the roles of the organization.
     /// </summary>
     public const string ViewRoles = "roles.view";
 
     /// <summary>
-    /// Uprawnienie do zarządzania zaproszeniami do organizacji.
+    /// Permission to manage the invitations to the organization.
     /// </summary>
     public const string ManageInvitations = "invitations.manage";
 
     /// <summary>
-    /// Uprawnienie do przeglądania zaproszeń do organizacji.
+    /// Permission to view the invitations to the organization.
     /// </summary>
     public const string ViewInvitations = "invitations.view";
 }

@@ -2,7 +2,7 @@
 
 public static class DataSchemaConstants
 {
-    // Długości pól
+    // Field lengths
     public const int DEFAULT_NAME_LENGTH = 100;
     public const int DEFAULT_DESCRIPTION_LENGTH = 500;
     public const int DEFAULT_EMAIL_LENGTH = 255;
@@ -13,10 +13,10 @@ public static class DataSchemaConstants
     public const int DEFAULT_ADDRESS_LENGTH = 255;
     public const int DEFAULT_PROFILE_IMAGE_LENGTH = 255;
 
-    // Nazwy schematów
+    // Schema names
     public const string IDENTITY_SCHEMA = "identity";
 
-    // Nazwy tabel
+    // Table names
     public const string USERS_TABLE = "Users";
     public const string ORGANIZATIONS_TABLE = "Organizations";
     public const string MEMBERS_TABLE = "Members";
@@ -25,5 +25,4 @@ public static class DataSchemaConstants
     public const string INVITATIONS_TABLE = "Invitations";
     public const string MEMBER_ROLES_TABLE = "MemberRoles";
     public const string ROLE_PERMISSIONS_TABLE = "RolePermissions";
-    public const string CONTRIBUTOR_TABLE = "Contributors";
 }

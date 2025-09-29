@@ -1,3 +1,4 @@
+using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -5,57 +6,110 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationBanner;
 
 /// <summary>
-/// Handler dla komendy UpdateOrganizationBannerCommand.
+/// Handler for the UpdateOrganizationBannerCommand.
 /// </summary>
-public class UpdateOrganizationBannerCommandHandler : IRequestHandler<UpdateOrganizationBannerCommand, Result>
+public class UpdateOrganizationBannerCommandHandler : IRequestHandler<UpdateOrganizationBannerCommand, Result<string>>
 {
-    private readonly IOrganizationRepository _repository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly IFileValidationService _fileValidationService;
     private readonly ILogger<UpdateOrganizationBannerCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationBannerCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationBannerCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="fileStorageService">File storage service.</param>
+    /// <param name="fileValidationService">File validation service.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationBannerCommandHandler(
-        IOrganizationRepository repository,
+        IOrganizationRepository organizationRepository,
+        IFileStorageService fileStorageService,
+        IFileValidationService fileValidationService,
         ILogger<UpdateOrganizationBannerCommandHandler> logger)
     {
-        _repository = repository;
+        _organizationRepository = organizationRepository;
+        _fileStorageService = fileStorageService;
+        _fileValidationService = fileValidationService;
         _logger = logger;
     }
 
     /// <summary>
-    /// Obsługuje komendę UpdateOrganizationBannerCommand.
+    /// Handles the UpdateOrganizationBannerCommand.
     /// </summary>
-    /// <param name="request">Komenda UpdateOrganizationBannerCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
-    public async Task<Result> Handle(UpdateOrganizationBannerCommand request, CancellationToken cancellationToken)
+    /// <param name="request">UpdateOrganizationBannerCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result with the banner URL.</returns>
+    public async Task<Result<string>> Handle(UpdateOrganizationBannerCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
-            var organization = await _repository.GetByIdAsync(request.OrganizationId, cancellationToken);
+            // Validate file
+            _fileValidationService.ValidateImageFile(request.BannerFile, "banner");
+
+            // Get organization and validate permissions
+            var organization = await _organizationRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
+
             if (organization == null)
             {
-                return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
+                return Result<string>.NotFound($"Organization with ID {request.OrganizationId} not found.");
             }
 
-            // Aktualizuj banner organizacji
-            organization.UpdateBanner(request.BannerUrl);
+            if (!organization.IsActive)
+            {
+                return Result<string>.Error("Cannot update banner for inactive organization.");
+            }
 
-            // Zapisz zmiany w repozytorium
-            await _repository.UpdateAsync(organization, cancellationToken);
+            // Check if user has permission to update organization banner
+            var hasMembership = await _organizationRepository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
+            if (!hasMembership)
+            {
+                return Result<string>.Forbidden("User does not have permission to update this organization.");
+            }
 
-            _logger.LogInformation("Zaktualizowano banner organizacji o ID {OrganizationId}", organization.Id);
+            var oldBannerUrl = organization.BannerUrl;
 
-            return Result.Success();
+            // Upload new banner
+            string bannerUrl;
+            using (var stream = request.BannerFile.OpenReadStream())
+            {
+                bannerUrl = await _fileStorageService.UploadFileAsync(
+                    stream,
+                    request.BannerFile.FileName,
+                    request.BannerFile.ContentType,
+                    "banners");
+            }
+
+            // Update organization in database
+            organization.UpdateBanner(bannerUrl);
+            await _organizationRepository.UpdateAsync(organization, cancellationToken);
+
+            // Delete old banner if exists and different
+            if (!string.IsNullOrEmpty(oldBannerUrl) && oldBannerUrl != bannerUrl)
+            {
+                try
+                {
+                    await _fileStorageService.DeleteFileAsync(oldBannerUrl);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to delete old banner file {OldBannerUrl}", oldBannerUrl);
+                    // Don't fail the operation if we can't delete the old file
+                }
+            }
+
+            _logger.LogInformation("Successfully updated banner for organization {OrganizationId}", request.OrganizationId);
+            return Result.Success(bannerUrl);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Validation error updating banner for organization {OrganizationId}", request.OrganizationId);
+            return Result<string>.Error(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas aktualizacji bannera organizacji");
-            return Result.Error("Wystąpił błąd podczas aktualizacji bannera organizacji: " + ex.Message);
+            _logger.LogError(ex, "Error updating banner for organization {OrganizationId}", request.OrganizationId);
+            return Result<string>.Error("Failed to update organization banner: " + ex.Message);
         }
     }
 }

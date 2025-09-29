@@ -4,7 +4,6 @@ import { RouterOutlet } from '@angular/router';
 import { UserSidebarComponent } from '../../features/users/components/user-sidebar/user-sidebar.component';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { UserContextService } from '@users/services/user-context.service';
-import { AsyncPipe } from '@angular/common';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
 
 @Component({
@@ -14,21 +13,20 @@ import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.
     RouterOutlet,
     UserSidebarComponent,
     SpinnerComponent,
-    AsyncPipe,
     ErrorAlertComponent,
   ],
   templateUrl: './user.component.html',
 })
 export class UserComponent {
   private userContextService = inject(UserContextService);
-  userContext$ = this.userContextService.userContext$;
+  $userContext = this.userContextService.$userContext;
   sidebarExpanded = false;
 
   sidebarExpandedChange(expanded: boolean) {
     this.sidebarExpanded = expanded;
   }
 
-  getError(error: string) {
+  getError(error: string | undefined) {
     return new Error(error);
   }
 }

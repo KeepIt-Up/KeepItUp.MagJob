@@ -3,35 +3,35 @@ using KeepItUp.MagJob.Identity.UseCases.Users.Queries;
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Klasa rozszerzeń dla typu UserDto.
+/// Extension methods for the UserDto type.
 /// </summary>
 public static class UserDtoExtensions
 {
     /// <summary>
-    /// Pobiera URL zdjęcia profilowego użytkownika.
+    /// Gets the URL of the user's profile picture.
     /// </summary>
-    /// <param name="userDto">Obiekt DTO użytkownika.</param>
-    /// <returns>URL zdjęcia profilowego lub null, jeśli nie istnieje.</returns>
+    /// <param name="userDto">User DTO object.</param>
+    /// <returns>URL of the user's profile picture or null if it does not exist.</returns>
     public static string? ProfileImageUrl(this UserDto userDto)
     {
         return userDto.Profile?.ProfileImageUrl;
     }
 
     /// <summary>
-    /// Pobiera numer telefonu użytkownika.
+    /// Gets the user's phone number.
     /// </summary>
-    /// <param name="userDto">Obiekt DTO użytkownika.</param>
-    /// <returns>Numer telefonu lub null, jeśli nie istnieje.</returns>
+    /// <param name="userDto">User DTO object.</param>
+    /// <returns>User's phone number or null if it does not exist.</returns>
     public static string? PhoneNumber(this UserDto userDto)
     {
         return userDto.Profile?.PhoneNumber;
     }
 
     /// <summary>
-    /// Pobiera adres użytkownika.
+    /// Gets the user's address.
     /// </summary>
-    /// <param name="userDto">Obiekt DTO użytkownika.</param>
-    /// <returns>Adres użytkownika lub null, jeśli nie istnieje.</returns>
+    /// <param name="userDto">User DTO object.</param>
+    /// <returns>User's address or null if it does not exist.</returns>
     public static string? Address(this UserDto userDto)
     {
         return userDto.Profile?.Address;

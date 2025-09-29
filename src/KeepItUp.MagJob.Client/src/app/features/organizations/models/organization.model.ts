@@ -1,5 +1,4 @@
 import { Invitation } from '../../invitations/models/invitation';
-import { Member } from '../../members/models/member';
 
 export interface Organization {
   id: string;
@@ -16,5 +15,4 @@ export interface Organization {
   userRoles?: string[];
   isActive: boolean;
   invitations: Invitation[];
-  members: Member[];
 }

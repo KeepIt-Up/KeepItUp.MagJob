@@ -5,32 +5,25 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do pobierania członków organizacji.
+/// Endpoint to get the members of an organization.
 /// </summary>
 /// <remarks>
-/// Pobiera wszystkich członków organizacji o podanym identyfikatorze.
+/// Gets all members of an organization with the given identifier.
 /// </remarks>
 public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetOrganizationMembersRequest, PaginationResult<MemberDto>>
+    : BaseEndpoint<GetOrganizationMembersRequest, PaginationResult<MemberDto>>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Get(GetOrganizationMembersRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("GetOrganizationMembers")
-            .Produces<PaginationResult<MemberDto>>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Pobiera członków organizacji";
-            s.Description = "Pobiera wszystkich członków organizacji o podanym identyfikatorze";
+            s.Summary = "Gets the members of an organization";
+            s.Description = "Gets all members of an organization with the given identifier";
             s.ExampleRequest = new GetOrganizationMembersRequest
             {
                 OrganizationId = Guid.NewGuid(),
@@ -40,12 +33,12 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/organizations/{organizationId}/members.
+    /// Handles the GET /api/organizations/{organizationId}/members request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą członków organizacji z paginacją.</returns>
-    public override async Task HandleAsync(GetOrganizationMembersRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the list of members of the organization with pagination.</returns>
+    protected override async Task<PaginationResult<MemberDto>> HandleEndpointAsync(GetOrganizationMembersRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -56,26 +49,6 @@ public class GetOrganizationMembers(IMediator mediator, ICurrentUserAccessor cur
             PaginationParameters = req.PaginationParameters
         };
 
-        var result = await mediator.Send(query, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        await SendOkAsync(result.Value, ct);
+        return await mediator.Send(query, ct);
     }
 }

@@ -1,45 +1,40 @@
-using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
+﻿using KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 using KeepItUp.MagJob.Identity.Web.Services;
 
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do tworzenia organizacji.
+/// Endpoint to create an organization.
 /// </summary>
 /// <remarks>
-/// Tworzy nową organizację z podanymi danymi.
+/// Creates a new organization with the given data.
 /// </remarks>
 public class CreateOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<CreateOrganizationRequest, CreateOrganizationResponse>
+    : BaseEndpoint<CreateOrganizationRequest, Guid>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Post(CreateOrganizationRequest.Route);
-        Description(b => b
-            .WithName("CreateOrganization")
-            .Produces<CreateOrganizationResponse>(201)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Tworzy nową organizację";
-            s.Description = "Tworzy nową organizację z podanymi danymi";
+            s.Summary = "Creates a new organization";
+            s.Description = "Creates a new organization with the given data";
             s.ExampleRequest = new CreateOrganizationRequest { Name = "Nazwa organizacji", Description = "Opis organizacji" };
             s.ResponseExamples[201] = new CreateOrganizationResponse { Id = Guid.NewGuid(), Name = "Nazwa organizacji", Description = "Opis organizacji", OwnerId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie POST /api/organizations.
+    /// Handles the POST /api/organizations request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi utworzonej organizacji.</returns>
-    public override async Task HandleAsync(CreateOrganizationRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the data of the created organization.</returns>
+    protected override async Task<Guid> HandleEndpointAsync(CreateOrganizationRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -50,33 +45,6 @@ public class CreateOrganization(IMediator mediator, ICurrentUserAccessor current
             OwnerId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        // Zakładamy, że result.Value to Guid (identyfikator utworzonej organizacji)
-        var organizationId = result.Value;
-
-        Response = new CreateOrganizationResponse
-        {
-            Id = organizationId,
-            Name = req.Name,
-            Description = req.Description,
-            OwnerId = userId
-        };
+        return await mediator.Send(command, ct);
     }
 }

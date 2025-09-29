@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.state-loading,
+.state-error,
+.state-empty,
+.state-content {
+  height: 100%;
+  width: 100%;
+}
+
+.state-empty {
+  min-height: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

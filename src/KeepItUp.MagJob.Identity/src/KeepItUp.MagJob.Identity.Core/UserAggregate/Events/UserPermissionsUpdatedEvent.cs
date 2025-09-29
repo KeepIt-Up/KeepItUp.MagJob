@@ -2,31 +2,31 @@
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 /// <summary>
-/// Zdarzenie emitowane, gdy uprawnienia użytkownika zostają zaktualizowane.
+/// Event informing about the update of the permissions of a user.
 /// </summary>
 public class UserPermissionsUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator zewnętrzny użytkownika.
+    /// User ID in the external system (Keycloak).
     /// </summary>
     public Guid ExternalId { get; }
 
     /// <summary>
-    /// Adres e-mail użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UserPermissionsUpdatedEvent"/>.
+    /// Creates a new event informing about the update of the permissions of a user.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="externalId">Identyfikator zewnętrzny użytkownika.</param>
-    /// <param name="email">Adres e-mail użytkownika.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="externalId">User ID in the external system (Keycloak).</param>
+    /// <param name="email">User email address.</param>
     public UserPermissionsUpdatedEvent(Guid userId, Guid externalId, string email)
     {
         UserId = userId;

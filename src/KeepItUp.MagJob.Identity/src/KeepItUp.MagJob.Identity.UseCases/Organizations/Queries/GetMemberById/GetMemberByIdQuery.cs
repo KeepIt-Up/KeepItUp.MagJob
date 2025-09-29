@@ -3,22 +3,22 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetMemberById;
 
 /// <summary>
-/// Zapytanie o członka organizacji na podstawie jego identyfikatora.
+/// Query to get a member of an organization by their identifier.
 /// </summary>
 public record GetMemberByIdQuery : IRequest<Result<MemberDto>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika członka, którego chcemy pobrać.
+    /// User identifier of the member we want to get.
     /// </summary>
     public Guid MemberUserId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid RequestingUserId { get; init; }
 }

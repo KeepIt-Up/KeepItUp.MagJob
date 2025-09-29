@@ -3,7 +3,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Permissions;
 
 /// <summary>
-/// Żądanie dla endpointu GetPermissions.
+/// Request for the GetPermissionsEndpoint.
 /// </summary>
 public class GetPermissionsRequest : PaginationRequest<PermissionDto>
 {

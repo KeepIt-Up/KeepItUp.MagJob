@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 
 /// <summary>
-/// Handler dla komendy CreateOrganizationCommand.
+/// Handler for the CreateOrganizationCommand.
 /// </summary>
 public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizationCommand, Result<Guid>>
 {
@@ -16,10 +16,10 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
     private readonly ILogger<CreateOrganizationCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateOrganizationCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="CreateOrganizationCommandHandler"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public CreateOrganizationCommandHandler(
         IOrganizationRepository organizationRepository,
@@ -32,42 +32,37 @@ public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizati
     }
 
     /// <summary>
-    /// Obsługuje komendę CreateOrganizationCommand.
+    /// Handles the CreateOrganizationCommand.
     /// </summary>
-    /// <param name="request">Komenda CreateOrganizationCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator utworzonej organizacji.</returns>
+    /// <param name="request">CreateOrganizationCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Identifier of the created organization.</returns>
     public async Task<Result<Guid>> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź, czy użytkownik istnieje
             var user = await _userRepository.GetByExternalIdAsync(request.OwnerId, cancellationToken);
             if (user == null)
             {
                 return Result<Guid>.NotFound($"Nie znaleziono użytkownika o ID {request.OwnerId}.");
             }
 
-            // Sprawdź, czy nazwa organizacji jest unikalna
             var existingOrganization = await _organizationRepository.GetByNameAsync(request.Name, cancellationToken);
             if (existingOrganization != null)
             {
                 return Result<Guid>.Error($"Organizacja o nazwie '{request.Name}' już istnieje.");
             }
 
-            // Utwórz nową organizację
             var organization = Organization.Create(
                 request.Name,
-                user.Id, // użyj ID użytkownika zamiast ExternalId
+                user.Id,
                 request.Description,
                 logoUrl: null,
                 bannerUrl: null);
 
-            // Inicjalizacja całej organizacji w jednym kroku przed zapisem
             organization.InitializeRoles();
             organization.InitializeOwner();
 
-            // Zapis organizacji jednorazowo z wszystkimi zainicjowanymi danymi
             await _organizationRepository.AddAsync(organization, cancellationToken);
 
             _logger.LogInformation("Utworzono nową organizację {OrganizationId} dla użytkownika {UserId}",

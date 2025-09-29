@@ -5,10 +5,13 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
 public class MemberConfiguration : BaseEntityConfiguration<Member>
 {
+    protected override string GetTableName() => DataSchemaConstants.MEMBERS_TABLE;
+
     public override void Configure(EntityTypeBuilder<Member> builder)
     {
         base.Configure(builder);
 
+        #region Properties
         builder.Property(m => m.UserId)
             .IsRequired();
 
@@ -17,21 +20,10 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
 
         builder.Property(m => m.JoinedAt)
             .IsRequired();
+        #endregion
 
-        // Konfiguracja kolekcji RoleIds
-        builder.Property<List<Guid>>("_roleIds")
-            .HasColumnName("RoleIds")
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(id => Guid.Parse(id))
-                    .ToList(),
-                new ValueComparer<List<Guid>>(
-                    (c1, c2) => c1!.SequenceEqual(c2!),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
-
-        // Relacja wiele-do-wielu z Role
+        #region Relationships
+        // Many-to-many relationship with Role
         builder.HasMany(m => m.Roles)
             .WithMany(r => r.Members)
             .UsingEntity<Dictionary<string, object>>(
@@ -47,16 +39,16 @@ public class MemberConfiguration : BaseEntityConfiguration<Member>
                     j.HasIndex("MemberId");
                     j.HasIndex("RoleId");
                 });
+        #endregion
 
-        // Indeksy
+        #region Indexes
         builder.HasIndex(m => new { m.UserId, m.OrganizationId }).IsUnique();
 
-        // Indeks dla szybkiego wyszukiwania po UserId
+        // Index for quick search by UserId
         builder.HasIndex(m => m.UserId);
 
-        // Indeks dla szybkiego wyszukiwania po OrganizationId
+        // Index for quick search by OrganizationId
         builder.HasIndex(m => m.OrganizationId);
+        #endregion
     }
-
-    protected override string GetTableName() => DataSchemaConstants.MEMBERS_TABLE;
 }

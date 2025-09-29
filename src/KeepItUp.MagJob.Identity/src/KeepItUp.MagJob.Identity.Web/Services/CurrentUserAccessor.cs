@@ -3,35 +3,35 @@ using System.Security.Claims;
 namespace KeepItUp.MagJob.Identity.Web.Services;
 
 /// <summary>
-/// Dostarcza dostęp do informacji o bieżącym użytkowniku.
+/// Provides access to information about the current user.
 /// </summary>
 public interface ICurrentUserAccessor
 {
     /// <summary>
-    /// Pobiera identyfikator bieżącego użytkownika.
+    /// Gets the identifier of the current user.
     /// </summary>
-    /// <returns>Identyfikator użytkownika lub null, jeśli użytkownik nie jest zalogowany.</returns>
+    /// <returns>User identifier or null if the user is not logged in.</returns>
     Guid? GetCurrentUserId();
 
     /// <summary>
-    /// Pobiera identyfikator bieżącego użytkownika lub zgłasza wyjątek, jeśli użytkownik nie jest zalogowany.
+    /// Gets the identifier of the current user or throws an exception if the user is not logged in.
     /// </summary>
-    /// <returns>Identyfikator użytkownika.</returns>
-    /// <exception cref="UnauthorizedAccessException">Zgłaszany, gdy użytkownik nie jest zalogowany.</exception>
+    /// <returns>User identifier.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the user is not logged in.</exception>
     Guid GetRequiredCurrentUserId();
 }
 
 /// <summary>
-/// Implementacja dostępu do informacji o bieżącym użytkowniku.
+/// Implementation of access to information about the current user.
 /// </summary>
 public class CurrentUserAccessor : ICurrentUserAccessor
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CurrentUserAccessor"/>.
+    /// Initializes a new instance of the <see cref="CurrentUserAccessor"/> class.
     /// </summary>
-    /// <param name="httpContextAccessor">Dostęp do kontekstu HTTP.</param>
+    /// <param name="httpContextAccessor">Access to the HTTP context.</param>
     public CurrentUserAccessor(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;

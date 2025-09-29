@@ -193,48 +193,7 @@
               </form>
             }
             @case ('assignments') {
-              <!-- Current assigned members -->
-              <div class="p-2">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Current Members
-                  </h3>
-                  <!-- Search members -->
-                  <app-button
-                    [size]="'sm'"
-                    (clicked)="showMemberSearchModal = true"
-                    [iconLeft]="'heroPlus'"
-                  >
-                    <span class="hidden sm:inline">Add Members</span>
-                  </app-button>
-                </div>
-                <div class="space-y-2">
-                  @for (member of role.members; track member.id) {
-                    <div
-                      class="flex items-center justify-between p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700"
-                    >
-                      <div class="flex items-center overflow-hidden">
-                        <div class="ml-2 overflow-hidden">
-                          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {{ member.firstName }} {{ member.lastName }}
-                          </p>
-                        </div>
-                      </div>
-                      <app-button [size]="'sm'" color="danger" (clicked)="toggleMemberRole(member)">
-                        Remove
-                      </app-button>
-                    </div>
-                  }
-
-                  @if (role.members.length === 0) {
-                    <div
-                      class="p-3 text-sm text-gray-600 dark:text-gray-400 text-center bg-gray-50 dark:bg-gray-800 rounded-lg"
-                    >
-                      No members assigned to this role
-                    </div>
-                  }
-                </div>
-              </div>
+              <!-- TODO: Add assignments tab -->
             }
             @default {}
           }
@@ -243,16 +202,3 @@
     }
   </div>
 </div>
-
-@if (selectedRole$(); as role) {
-  <app-member-search-modal
-    [isOpen]="showMemberSearchModal"
-    [filteredMembers]="memberSearchState$().data ?? []"
-    [selectedMembers]="role.members"
-    (closeModal)="showMemberSearchModal = false"
-    (searchMembers)="searchMembers($event)"
-    (memberToggled)="toggleMemberRole($event)"
-    (loadMore)="loadMoreMembers()"
-  >
-  </app-member-search-modal>
-}

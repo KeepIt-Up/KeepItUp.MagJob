@@ -6,43 +6,36 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do pobierania ról organizacji.
+/// Endpoint to get the roles of an organization.
 /// </summary>
 /// <remarks>
-/// Pobiera wszystkie role przypisane do organizacji o podanym identyfikatorze.
+/// Gets all roles assigned to an organization with the given identifier.
 /// </remarks>
 public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetOrganizationRolesRequest, PaginationResult<RoleDto>>
+    : BaseEndpoint<GetOrganizationRolesRequest, PaginationResult<RoleDto>>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Get(GetOrganizationRolesRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("GetOrganizationRoles")
-            .Produces<GetOrganizationRolesResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Pobiera role organizacji";
-            s.Description = "Pobiera wszystkie role przypisane do organizacji o podanym identyfikatorze";
+            s.Summary = "Gets the roles of an organization";
+            s.Description = "Gets all roles assigned to an organization with the given identifier";
             s.ExampleRequest = new GetOrganizationRolesRequest { OrganizationId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/organizations/{organizationId}/roles.
+    /// Handles the GET /api/organizations/{organizationId}/roles request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą ról organizacji.</returns>
-    public override async Task HandleAsync(GetOrganizationRolesRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the list of roles of the organization.</returns>
+    protected override async Task<PaginationResult<RoleDto>> HandleEndpointAsync(GetOrganizationRolesRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -52,28 +45,6 @@ public class GetOrganizationRoles(IMediator mediator, ICurrentUserAccessor curre
             UserId = userId
         };
 
-        var result = await mediator.Send(query, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        Response = result.Value;
-
-        await SendOkAsync(Response, ct);
+        return await mediator.Send(query, ct);
     }
 }

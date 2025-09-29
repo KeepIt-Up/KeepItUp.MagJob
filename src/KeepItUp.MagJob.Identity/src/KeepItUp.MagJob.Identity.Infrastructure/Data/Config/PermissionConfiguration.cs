@@ -17,7 +17,6 @@ public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
         builder.Property(p => p.Description)
             .HasMaxLength(DataSchemaConstants.DEFAULT_DESCRIPTION_LENGTH);
 
-        // Dodanie standardowych uprawnień
         var standardPermissions = Permission.StandardPermissions.GetAll();
         builder.HasData(standardPermissions);
     }

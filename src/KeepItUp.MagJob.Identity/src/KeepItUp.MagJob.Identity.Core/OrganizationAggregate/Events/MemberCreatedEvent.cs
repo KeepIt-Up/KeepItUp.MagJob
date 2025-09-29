@@ -1,37 +1,37 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o utworzeniu nowego członka organizacji.
+/// Domain event informing about the creation of a new member of an organization.
 /// </summary>
 public class MemberCreatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator członka.
+    /// Member ID.
     /// </summary>
     public Guid MemberId { get; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator początkowej roli.
+    /// Initial role ID.
     /// </summary>
     public Guid RoleId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o utworzeniu członka organizacji.
+    /// Creates a new MemberCreatedEvent.
     /// </summary>
-    /// <param name="memberId">Identyfikator członka.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator początkowej roli.</param>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Initial role ID.</param>
     public MemberCreatedEvent(Guid memberId, Guid organizationId, Guid userId, Guid roleId)
     {
         MemberId = memberId;

@@ -4,15 +4,15 @@ using KeepItUp.MagJob.Identity.Core.Keycloak;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Klient do zarządzania rolami w Keycloak.
+/// Client for managing roles in Keycloak.
 /// </summary>
 public class KeycloakRoleClient : BaseKeycloakClient
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakRoleClient"/>.
+    /// Initializes a new instance of the <see cref="KeycloakRoleClient"/> class.
     /// </summary>
-    /// <param name="httpClient">Klient HTTP.</param>
-    /// <param name="options">Opcje konfiguracji Keycloak.</param>
+    /// <param name="httpClient">HTTP client.</param>
+    /// <param name="options">Keycloak configuration options.</param>
     /// <param name="logger">Logger.</param>
     public KeycloakRoleClient(
         HttpClient httpClient,
@@ -23,10 +23,10 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera wszystkie dostępne role z Keycloak.
+    /// Gets all available roles from Keycloak.
     /// </summary>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista dostępnych ról.</returns>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of available roles.</returns>
     public async Task<List<KeycloakRole>> GetRolesAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -49,11 +49,11 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera role użytkownika z Keycloak.
+    /// Gets the user's roles from Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista ról użytkownika.</returns>
+    /// <param name="userId">User ID in Keycloak.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of user roles.</returns>
     public async Task<List<string>> GetUserRolesAsync(string userId, CancellationToken cancellationToken = default)
     {
         try
@@ -76,11 +76,11 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Tworzy nową rolę w Keycloak.
+    /// Creates a new role in Keycloak.
     /// </summary>
-    /// <param name="role">Dane roli do utworzenia.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator utworzonej roli lub null w przypadku błędu.</returns>
+    /// <param name="role">Role data to create.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>ID of the created role or null in case of an error.</returns>
     public async Task<string?> CreateRoleAsync(KeycloakRole role, CancellationToken cancellationToken = default)
     {
         try
@@ -97,7 +97,7 @@ public class KeycloakRoleClient : BaseKeycloakClient
                 return null;
             }
 
-            // Pobierz identyfikator utworzonej roli
+            // Get the ID of the created role
             var createdRole = await GetRoleByNameAsync(role.Name, cancellationToken);
             return createdRole?.Id;
         }
@@ -109,11 +109,11 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Pobiera rolę po nazwie.
+    /// Gets a role by name.
     /// </summary>
-    /// <param name="roleName">Nazwa roli.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Dane roli lub null, jeśli rola nie istnieje.</returns>
+    /// <param name="roleName">Role name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Role data or null if the role does not exist.</returns>
     public async Task<KeycloakRole?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken = default)
     {
         try
@@ -134,12 +134,12 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Aktualizuje rolę w Keycloak.
+    /// Updates a role in Keycloak.
     /// </summary>
-    /// <param name="roleName">Nazwa roli.</param>
-    /// <param name="role">Zaktualizowane dane roli.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="roleName">Role name.</param>
+    /// <param name="role">Updated role data.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> UpdateRoleAsync(string roleName, KeycloakRole role, CancellationToken cancellationToken = default)
     {
         try
@@ -166,11 +166,11 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Usuwa rolę z Keycloak.
+    /// Deletes a role from Keycloak.
     /// </summary>
-    /// <param name="roleName">Nazwa roli.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="roleName">Role name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> DeleteRoleAsync(string roleName, CancellationToken cancellationToken = default)
     {
         try
@@ -197,12 +197,12 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Przypisuje rolę do użytkownika w Keycloak.
+    /// Assigns a role to a user in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="roleName">Nazwa roli.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User ID in Keycloak.</param>
+    /// <param name="roleName">Role name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> AssignRoleToUserAsync(string userId, string roleName, CancellationToken cancellationToken = default)
     {
         try
@@ -240,12 +240,12 @@ public class KeycloakRoleClient : BaseKeycloakClient
     }
 
     /// <summary>
-    /// Usuwa rolę użytkownika w Keycloak.
+    /// Removes a role from a user in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika w Keycloak.</param>
-    /// <param name="roleName">Nazwa roli.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User ID in Keycloak.</param>
+    /// <param name="roleName">Role name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the operation was successful; otherwise false.</returns>
     public async Task<bool> RemoveRoleFromUserAsync(string userId, string roleName, CancellationToken cancellationToken = default)
     {
         try

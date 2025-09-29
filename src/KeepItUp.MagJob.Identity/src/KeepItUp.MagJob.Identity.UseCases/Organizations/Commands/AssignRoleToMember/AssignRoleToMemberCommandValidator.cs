@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToMember;
 
 /// <summary>
-/// Walidator dla komendy AssignRoleToMemberCommand.
+/// Validator for the AssignRoleToMemberCommand.
 /// </summary>
 public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleToMemberCommand>
 {
@@ -13,10 +13,10 @@ public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleTo
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="AssignRoleToMemberCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="AssignRoleToMemberCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public AssignRoleToMemberCommandValidator(IOrganizationRepository organizationRepository, IUserRepository userRepository)
     {
         _organizationRepository = organizationRepository ?? throw new ArgumentNullException(nameof(organizationRepository));
@@ -42,7 +42,6 @@ public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleTo
             .NotEmpty().WithMessage("Identyfikator użytkownika wykonującego operację jest wymagany.")
             .MustAsync(UserExists).WithMessage("Użytkownik wykonujący operację nie istnieje.");
 
-        // Sprawdzenie, czy użytkownik, któremu ma być przypisana rola, jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -53,7 +52,6 @@ public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleTo
             })
             .WithMessage("Użytkownik, któremu ma zostać przypisana rola, nie jest członkiem tej organizacji.");
 
-        // Sprawdzenie, czy użytkownik wykonujący operację jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -66,11 +64,11 @@ public class AssignRoleToMemberCommandValidator : AbstractValidator<AssignRoleTo
     }
 
     /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);

@@ -1,24 +1,25 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 
 /// <summary>
-/// Komenda do aktualizacji logo organizacji.
+/// Command to update the logo of an organization.
 /// </summary>
-public record UpdateOrganizationLogoCommand : IRequest<Result>
+public record UpdateOrganizationLogoCommand : IRequest<Result<string>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// URL do logo organizacji.
+    /// Organization logo file.
     /// </summary>
-    public string LogoUrl { get; init; } = string.Empty;
+    public IFormFile LogoFile { get; init; } = null!;
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

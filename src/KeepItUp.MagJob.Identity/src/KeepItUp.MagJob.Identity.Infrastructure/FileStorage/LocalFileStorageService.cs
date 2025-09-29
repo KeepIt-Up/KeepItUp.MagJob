@@ -4,7 +4,7 @@ using KeepItUp.MagJob.Identity.Core.Interfaces;
 namespace KeepItUp.MagJob.Identity.Infrastructure.FileStorage;
 
 /// <summary>
-/// Implementacja serwisu przechowywania plików lokalnie
+/// Implementation of the local file storage service
 /// </summary>
 public class LocalFileStorageService : IFileStorageService
 {
@@ -13,9 +13,9 @@ public class LocalFileStorageService : IFileStorageService
     private readonly ILogger<LocalFileStorageService> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="LocalFileStorageService"/>.
+    /// Initializes a new instance of the <see cref="LocalFileStorageService"/> class.
     /// </summary>
-    /// <param name="configuration">Konfiguracja aplikacji</param>
+    /// <param name="configuration">Configuration</param>
     /// <param name="logger">Logger</param>
     public LocalFileStorageService(IConfiguration configuration, ILogger<LocalFileStorageService> logger)
     {

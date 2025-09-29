@@ -6,28 +6,24 @@ using Microsoft.AspNetCore.Authorization;
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Endpoint do pobierania organizacji użytkownika.
+/// Endpoint to get the organizations of a user.
 /// </summary>
 /// <remarks>
-/// Pobiera wszystkie organizacje, do których należy użytkownik o podanym identyfikatorze.
+/// Gets all organizations the user belongs to.
 /// </remarks>
-[Authorize]
-public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<GetUserOrganizationsRequest, PaginationResult<OrganizationDto>>
+public class GetUserOrganizations(IMediator mediator)
+    : BaseEndpoint<GetUserOrganizationsRequest, PaginationResult<OrganizationDto>>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Get(GetUserOrganizationsRequest.Route);
-        Description(b => b
-            .WithName("GetUserOrganizations")
-            .Produces<PaginationResult<OrganizationDto>>(200));
         Summary(s =>
         {
-            s.Summary = "Pobiera organizacje użytkownika";
-            s.Description = "Pobiera wszystkie organizacje, do których należy użytkownik o podanym identyfikatorze";
+            s.Summary = "Gets the organizations of a user";
+            s.Description = "Gets all organizations the user belongs to";
             s.ExampleRequest = new GetUserOrganizationsRequest
             {
                 Id = Guid.NewGuid(),
@@ -37,41 +33,19 @@ public class GetUserOrganizations(IMediator mediator, ICurrentUserAccessor curre
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/users/{id}/organizations.
+    /// Handles the GET /api/users/{id}/organizations request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z listą organizacji użytkownika.</returns>
-    public override async Task HandleAsync(GetUserOrganizationsRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the list of organizations the user belongs to.</returns>
+    protected override async Task<PaginationResult<OrganizationDto>> HandleEndpointAsync(GetUserOrganizationsRequest req, CancellationToken ct)
     {
-        var userId = currentUserAccessor.GetCurrentUserId();
-
-        if (userId == null)
-        {
-            await SendUnauthorizedAsync(ct);
-            return;
-        }
-
         var query = new GetUserOrganizationsQuery
         {
             UserId = req.Id,
             PaginationParameters = req.PaginationParameters
         };
 
-        var result = await mediator.Send(query, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        await SendOkAsync(result.Value, ct);
+        return await mediator.Send(query, ct);
     }
 }

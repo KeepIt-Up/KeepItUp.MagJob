@@ -14,10 +14,18 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="AutoFixture" />
+    <PackageReference Include="Bogus" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.Infrastructure\KeepItUp.MagJob.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\KeepItUp.MagJob.Identity.Web\KeepItUp.MagJob.Identity.Web.csproj" />
     <ProjectReference Include="..\KeepItUp.MagJob.Identity.UnitTests\KeepItUp.MagJob.Identity.UnitTests.csproj" />
   </ItemGroup>
 

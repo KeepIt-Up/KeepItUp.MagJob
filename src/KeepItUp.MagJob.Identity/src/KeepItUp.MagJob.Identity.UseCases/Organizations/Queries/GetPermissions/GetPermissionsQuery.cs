@@ -1,33 +1,33 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
 
 /// <summary>
-/// DTO dla uprawnienia.
+/// DTO for a permission.
 /// </summary>
 public class PermissionDto
 {
     /// <summary>
-    /// Nazwa uprawnienia.
+    /// Permission name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis uprawnienia.
+    /// Permission description.
     /// </summary>
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// Kategoria uprawnienia.
+    /// Permission category.
     /// </summary>
     public string Category { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// Zapytanie o wszystkie dostępne uprawnienia w systemie.
+/// Query to get all available permissions in the system.
 /// </summary>
 public class GetPermissionsQuery : PaginationQuery<PermissionDto>
 {
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

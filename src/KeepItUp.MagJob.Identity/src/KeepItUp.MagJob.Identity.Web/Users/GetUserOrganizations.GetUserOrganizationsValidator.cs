@@ -1,19 +1,18 @@
 ﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Walidator dla żądania GetUserOrganizationsRequest.
+/// Validator for the GetUserOrganizationsRequest.
 /// </summary>
 /// <remarks>
-/// Implementuje podstawową walidację techniczną danych wejściowych w warstwie Web.
+/// Implements basic technical validation of input data in the Web layer.
 /// </remarks>
 public class GetUserOrganizationsValidator : Validator<GetUserOrganizationsRequest>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserOrganizationsValidator"/>.
+    /// Initializes a new instance of the <see cref="GetUserOrganizationsValidator"/> class.
     /// </summary>
     public GetUserOrganizationsValidator()
     {
-        // Walidacja identyfikatora użytkownika
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
             .Must(id => id != Guid.Empty).WithMessage("Identyfikator użytkownika nie może być pusty (Guid.Empty).");

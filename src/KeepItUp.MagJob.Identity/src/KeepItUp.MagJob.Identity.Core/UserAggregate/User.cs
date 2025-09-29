@@ -4,85 +4,85 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate;
 
 /// <summary>
-/// Reprezentuje użytkownika w systemie.
+/// Represents a user in the system.
 /// </summary>
 public class User : BaseEntity, IAggregateRoot
 {
     /// <summary>
-    /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
+    /// User ID in the external system (Keycloak).
     /// </summary>
     public Guid ExternalId { get; private set; }
 
     /// <summary>
-    /// Adres e-mail użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Profil użytkownika.
+    /// User profile.
     /// </summary>
     public UserProfile? Profile { get; private set; }
 
     /// <summary>
-    /// Czy użytkownik jest aktywny.
+    /// Whether the user is active.
     /// </summary>
     public bool IsActive { get; private set; } = true;
 
     /// <summary>
-    /// Nazwa użytkownika.
+    /// User username.
     /// </summary>
     public string Username { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Lista uprawnień użytkownika.
+    /// List of user permissions.
     /// </summary>
     private readonly List<string> _permissions = new();
 
     /// <summary>
-    /// Lista organizacji, do których należy użytkownik.
+    /// List of organizations, to which the user belongs.
     /// </summary>
     private readonly List<Member> _memberships = new();
 
     /// <summary>
-    /// Lista uprawnień użytkownika (tylko do odczytu).
+    /// List of user permissions (read-only).
     /// </summary>
     public IReadOnlyCollection<string> Permissions => _permissions.AsReadOnly();
 
     /// <summary>
-    /// Lista organizacji, do których należy użytkownik (tylko do odczytu).
+    /// List of organizations, to which the user belongs (read-only).
     /// </summary>
     public IReadOnlyCollection<Member> Memberships => _memberships.AsReadOnly();
 
     /// <summary>
-    /// Data ostatniego logowania użytkownika.
+    /// User last login date.
     /// </summary>
     public DateTime LastLoginDate { get; private set; } = DateTime.MinValue;
 
     /// <summary>
-    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// Private constructor for EF Core and factory creation.
     /// </summary>
     private User() { }
 
     /// <summary>
-    /// Tworzy nowego użytkownika.
+    /// Creates a new user.
     /// </summary>
-    /// <param name="firstName">Imię</param>
-    /// <param name="lastName">Nazwisko</param>
-    /// <param name="email">Adres e-mail</param>
-    /// <param name="username">Nazwa użytkownika</param>
-    /// <param name="externalId">Identyfikator zewnętrzny</param>
-    /// <param name="isActive">Czy użytkownik jest aktywny</param>
-    /// <returns>Nowy użytkownik</returns>
+    /// <param name="firstName">First name</param>
+    /// <param name="lastName">Last name</param>
+    /// <param name="email">Email address</param>
+    /// <param name="username">Username</param>
+    /// <param name="externalId">External ID</param>
+    /// <param name="isActive">Whether the user is active</param>
+    /// <returns>New user</returns>
     public static User Create(string firstName, string lastName, string email, string username, Guid externalId, bool isActive = true)
     {
         Guard.Against.NullOrEmpty(firstName, nameof(firstName));
@@ -107,19 +107,19 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje dane użytkownika.
+    /// Updates the user's data.
     /// </summary>
-    /// <param name="firstName">Imię użytkownika.</param>
-    /// <param name="lastName">Nazwisko użytkownika.</param>
+    /// <param name="firstName">First name</param>
+    /// <param name="lastName">Last name</param>
     public void Update(string firstName, string lastName)
     {
         Guard.Against.NullOrEmpty(firstName, nameof(firstName));
         Guard.Against.NullOrEmpty(lastName, nameof(lastName));
 
-        // Sprawdź, czy wartości faktycznie się zmieniły
+        // Check if the values actually changed
         if (firstName == FirstName && lastName == LastName)
         {
-            return; // Brak zmian, nie aktualizuj i nie emituj zdarzeń
+            return; // No changes, do not update and do not emit events
         }
 
         FirstName = firstName;
@@ -129,20 +129,20 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje profil użytkownika.
+    /// Updates the user's profile.
     /// </summary>
-    /// <param name="phoneNumber">Numer telefonu.</param>
-    /// <param name="address">Adres.</param>
-    /// <param name="profileImage">URL do zdjęcia profilowego.</param>
+    /// <param name="phoneNumber">Phone number</param>
+    /// <param name="address">Address</param>
+    /// <param name="profileImage">Profile picture URL</param>
     public void UpdateProfile(string? phoneNumber, string? address, string? profileImage)
     {
-        // Sprawdź, czy wartości faktycznie się zmieniły
+        // Check if the values actually changed
         if (Profile is not null &&
             string.Equals(phoneNumber, Profile.PhoneNumber) &&
             string.Equals(address, Profile.Address) &&
             string.Equals(profileImage, Profile.ProfileImage))
         {
-            return; // Brak zmian, nie aktualizuj i nie emituj zdarzeń
+            return; // No changes, do not update and do not emit events
         }
 
         Profile = new UserProfile(phoneNumber, address, profileImage);
@@ -151,22 +151,22 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje wybrane właściwości profilu użytkownika.
+    /// Updates the user's profile properties.
     /// </summary>
-    /// <param name="phoneNumber">Nowy numer telefonu lub null, aby zachować obecny.</param>
-    /// <param name="address">Nowy adres lub null, aby zachować obecny.</param>
-    /// <param name="profileImage">Nowy URL do zdjęcia profilowego lub null, aby zachować obecny.</param>
+    /// <param name="phoneNumber">New phone number or null to keep the current one.</param>
+    /// <param name="address">New address or null to keep the current one.</param>
+    /// <param name="profileImage">New profile picture URL or null to keep the current one.</param>
     public void UpdateProfileProperties(string? phoneNumber = null, string? address = null, string? profileImage = null)
     {
-        // Jeśli profil nie istnieje, tworzymy nowy tylko jeśli podano jakieś wartości
+        // If the profile does not exist, create a new one only if some values are provided
         if (Profile is null)
         {
-            // Nie twórz profilu, jeśli wszystkie wartości są puste
+            // Do not create a profile if all values are empty
             if (string.IsNullOrEmpty(phoneNumber) &&
                 string.IsNullOrEmpty(address) &&
                 string.IsNullOrEmpty(profileImage))
             {
-                return; // Brak profilu i brak danych do ustawienia, więc nie ma zmian
+                return; // No profile and no data to set, so there are no changes
             }
 
             Profile = new UserProfile(phoneNumber, address, profileImage);
@@ -174,10 +174,10 @@ public class User : BaseEntity, IAggregateRoot
             return;
         }
 
-        // Aktualizuj profil i sprawdź, czy faktycznie wystąpiły zmiany
+        // Update the profile and check if there are any changes
         var updatedProfile = Profile.WithUpdates(phoneNumber, address, profileImage);
 
-        // Jeśli profile się zmienił (na podstawie wartości)
+        // If the profile has changed (based on values)
         if (!updatedProfile.Equals(Profile))
         {
             Profile = updatedProfile;
@@ -186,9 +186,30 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje uprawnienia użytkownika.
+    /// Updates the user's profile with full replacement (null values clear the fields).
     /// </summary>
-    /// <param name="permissions">Lista uprawnień.</param>
+    /// <param name="phoneNumber">New phone number or null to clear.</param>
+    /// <param name="address">New address or null to clear.</param>
+    /// <param name="profileImage">New profile picture URL or null to clear.</param>
+    public void UpdateProfileFull(string? phoneNumber, string? address, string? profileImage)
+    {
+        // Create new profile with the provided values (null values are allowed)
+        var newProfile = new UserProfile(phoneNumber, address, profileImage);
+
+        // Check if the profile actually changed
+        if (Profile != null && newProfile.Equals(Profile))
+        {
+            return; // No changes
+        }
+
+        Profile = newProfile;
+        RegisterDomainEventAndUpdate(new UserUpdatedEvent(Id, ExternalId, Email));
+    }
+
+    /// <summary>
+    /// Updates the user's permissions.
+    /// </summary>
+    /// <param name="permissions">List of permissions</param>
     public void UpdatePermissions(List<string> permissions)
     {
         _permissions.Clear();
@@ -201,10 +222,10 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Dodaje uprawnienie użytkownikowi.
+    /// Adds a permission to the user.
     /// </summary>
-    /// <param name="permission">Uprawnienie do dodania.</param>
-    /// <returns>True, jeśli uprawnienie zostało dodane; false, jeśli już istnieje.</returns>
+    /// <param name="permission">Permission to add</param>
+    /// <returns>True, if the permission was added; false, if it already exists</returns>
     public bool AddPermission(string permission)
     {
         Guard.Against.NullOrEmpty(permission, nameof(permission));
@@ -221,10 +242,10 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Usuwa uprawnienie użytkownikowi.
+    /// Removes a permission from the user.
     /// </summary>
-    /// <param name="permission">Uprawnienie do usunięcia.</param>
-    /// <returns>True, jeśli uprawnienie zostało usunięte; false, jeśli nie istnieje.</returns>
+    /// <param name="permission">Permission to remove</param>
+    /// <returns>True, if the permission was removed; false, if it did not exist</returns>
     public bool RemovePermission(string permission)
     {
         Guard.Against.NullOrEmpty(permission, nameof(permission));
@@ -241,10 +262,10 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik posiada określone uprawnienie.
+    /// Checks if the user has a specific permission.
     /// </summary>
-    /// <param name="permission">Uprawnienie do sprawdzenia.</param>
-    /// <returns>True, jeśli użytkownik posiada uprawnienie; w przeciwnym razie false.</returns>
+    /// <param name="permission">Permission to check</param>
+    /// <returns>True, if the user has the permission; otherwise false</returns>
     public bool HasPermission(string permission)
     {
         Guard.Against.NullOrEmpty(permission, nameof(permission));
@@ -252,9 +273,9 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje datę ostatniego logowania
+    /// Updates the user's last login date.
     /// </summary>
-    /// <param name="lastLoginDate">Data ostatniego logowania</param>
+    /// <param name="lastLoginDate">Last login date</param>
     public void UpdateLastLoginDate(DateTime lastLoginDate)
     {
         LastLoginDate = lastLoginDate;
@@ -262,7 +283,7 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Dezaktywuje użytkownika
+    /// Decciivatss  he user.
     /// </summary>
     public void Deactivate()
     {
@@ -276,7 +297,7 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktywuje użytkownika.
+    /// Activates the user.
     /// </summary>
     public void Activate()
     {
@@ -290,17 +311,17 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje adres email i status aktywności użytkownika.
+    /// Updates the user's email and status.
     /// </summary>
-    /// <param name="email">Nowy adres email użytkownika.</param>
-    /// <param name="isActive">Nowy status aktywności użytkownika.</param>
+    /// <param name="email">New email address</param>
+    /// <param name="isActive">New status</param>
     public void UpdateEmailAndStatus(string email, bool isActive)
     {
         Guard.Against.NullOrEmpty(email, nameof(email));
 
         Email = email;
 
-        // Aktualizacja statusu aktywności
+        // Update the status
         if (IsActive != isActive)
         {
             IsActive = isActive;
@@ -321,13 +342,13 @@ public class User : BaseEntity, IAggregateRoot
     }
 
     /// <summary>
-    /// Aktualizuje wszystkie dane użytkownika
+    /// Updates all user data.
     /// </summary>
-    /// <param name="firstName">Imię</param>
-    /// <param name="lastName">Nazwisko</param>
-    /// <param name="email">Adres e-mail</param>
-    /// <param name="username">Nazwa użytkownika</param>
-    /// <param name="isActive">Czy użytkownik jest aktywny</param>
+    /// <param name="firstName">First name</param>
+    /// <param name="lastName">Last name</param>
+    /// <param name="email">Email address</param>
+    /// <param name="username">Username</param>
+    /// <param name="isActive">Whether the user is active</param>
     public void UpdateAllDetails(string firstName, string lastName, string email, string username, bool isActive)
     {
         Guard.Against.NullOrEmpty(firstName, nameof(firstName));
@@ -340,7 +361,7 @@ public class User : BaseEntity, IAggregateRoot
         Email = email;
         Username = username;
 
-        // Aktualizacja statusu aktywności
+        // Update the status
         if (IsActive != isActive)
         {
             IsActive = isActive;

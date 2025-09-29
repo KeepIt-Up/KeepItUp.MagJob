@@ -1,12 +1,16 @@
-using KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
+using KeepItUp.MagJob.Identity.Core.InvitationAggregate;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
 public class InvitationConfiguration : BaseEntityConfiguration<Invitation>
 {
+    protected override string GetTableName() => DataSchemaConstants.INVITATIONS_TABLE;
+
     public override void Configure(EntityTypeBuilder<Invitation> builder)
     {
         base.Configure(builder);
+
+        #region Properties
 
         builder.Property(i => i.OrganizationId)
             .IsRequired();
@@ -29,10 +33,14 @@ public class InvitationConfiguration : BaseEntityConfiguration<Invitation>
         builder.Property(i => i.ExpiresAt)
             .IsRequired();
 
-        // Indeksy
-        builder.HasIndex(i => i.Token).IsUnique();
-        builder.HasIndex(i => new { i.Email, i.OrganizationId, i.Status });
-    }
+        #endregion
 
-    protected override string GetTableName() => DataSchemaConstants.INVITATIONS_TABLE;
+        #region Indexes
+
+        builder.HasIndex(i => i.Token).IsUnique();
+
+        builder.HasIndex(i => new { i.Email, i.OrganizationId, i.Status });
+
+        #endregion
+    }
 }

@@ -3,151 +3,130 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate;
 
 /// <summary>
-/// Reprezentuje członka organizacji.
+/// Represents a member of an organization.
 /// </summary>
 public class Member : BaseEntity
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; private set; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; private set; }
 
     /// <summary>
-    /// Lista identyfikatorów ról przypisanych do członka.
+    /// List of roles assigned to the member (navigation property for EF Core).
     /// </summary>
-    private readonly List<Guid> _roleIds = new();
+    public virtual ICollection<Role> Roles { get; private set; }
 
     /// <summary>
-    /// Lista identyfikatorów ról przypisanych do członka (tylko do odczytu).
-    /// </summary>
-    public IReadOnlyCollection<Guid> RoleIds => _roleIds.AsReadOnly();
-
-    /// <summary>
-    /// Lista ról przypisanych do członka (właściwość nawigacyjna dla EF Core).
-    /// </summary>
-    public virtual ICollection<Role> Roles { get; private set; } = new List<Role>();
-
-    /// <summary>
-    /// Data dołączenia do organizacji.
+    /// Date of joining the organization.
     /// </summary>
     public DateTime JoinedAt { get; private set; } = DateTime.UtcNow;
 
     /// <summary>
-    /// Prywatny konstruktor dla EF Core oraz tworzenia przez fabrykę.
+    /// Private constructor for EF Core and factory creation.
     /// </summary>
-    private Member() { }
+    private Member()
+    {
+        Roles = new HashSet<Role>();
+    }
 
     /// <summary>
-    /// Tworzy nowego członka organizacji.
+    /// Creates a new member of an organization.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="roleId">Identyfikator początkowej roli.</param>
-    /// <returns>Nowy członek organizacji.</returns>
-    public static Member Create(Guid userId, Guid organizationId, Guid roleId)
+    /// <param name="userId">User ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="initialRole">Initial role for the member.</param>
+    /// <returns>New member of an organization.</returns>
+    public static Member Create(Guid userId, Guid organizationId, Role initialRole)
     {
         Guard.Against.Default(userId, nameof(userId));
         Guard.Against.Default(organizationId, nameof(organizationId));
-        Guard.Against.Default(roleId, nameof(roleId));
+        Guard.Against.Null(initialRole, nameof(initialRole));
 
         var member = new Member
         {
             UserId = userId,
-            OrganizationId = organizationId
+            OrganizationId = organizationId,
+            Roles = new HashSet<Role>()
         };
 
-        member._roleIds.Add(roleId);
-        member.RegisterDomainEventAndUpdate(new MemberCreatedEvent(member.Id, organizationId, userId, roleId));
+        member.Roles.Add(initialRole);
+        member.RegisterDomainEventAndUpdate(new MemberCreatedEvent(member.Id, organizationId, userId, initialRole.Id));
 
         return member;
     }
 
     /// <summary>
-    /// Metoda pomocnicza do synchronizacji ról z innymi członkami organizacji.
-    /// Powinna być wywoływana przez Organization po załadowaniu wszystkich ról.
+    /// Assigns a new role to a member of an organization.
     /// </summary>
-    /// <param name="organizationRoles">Wszystkie role dostępne w organizacji</param>
-    public void SyncRoles(IEnumerable<Role> organizationRoles)
+    /// <param name="role">Role to assign.</param>
+    public void AssignRole(Role role)
     {
-        Roles.Clear();
+        Guard.Against.Null(role, nameof(role));
 
-        foreach (var roleId in _roleIds)
+        if (!Roles.Any(r => r.Id == role.Id))
         {
-            var role = organizationRoles.FirstOrDefault(r => r.Id == roleId);
-            if (role != null)
-            {
-                Roles.Add(role);
-            }
+            Roles.Add(role);
+            RegisterDomainEventAndUpdate(new RoleAssignedToMemberEvent(Id, OrganizationId, UserId, role.Id));
         }
     }
 
     /// <summary>
-    /// Przypisuje nową rolę członkowi organizacji.
+    /// Removes a role assigned to a member of an organization.
     /// </summary>
-    /// <param name="roleId">Identyfikator roli do przypisania.</param>
-    /// <param name="role">Opcjonalna instancja roli, jeśli jest dostępna (dla efektywności)</param>
-    public void AssignRole(Guid roleId, Role? role = null)
+    /// <param name="role">Role to remove.</param>
+    /// <returns>True, if the role was removed; otherwise false.</returns>
+    public bool RemoveRole(Role role)
     {
-        Guard.Against.Default(roleId, nameof(roleId));
+        Guard.Against.Null(role, nameof(role));
 
-        if (!_roleIds.Contains(roleId))
-        {
-            _roleIds.Add(roleId);
-
-            // Dodaj także do nawigacji Roles, jeśli została dostarczona instancja
-            if (role != null && !Roles.Any(r => r.Id == roleId))
-            {
-                Roles.Add(role);
-            }
-
-            RegisterDomainEventAndUpdate(new RoleAssignedToMemberEvent(Id, OrganizationId, UserId, roleId));
-        }
-    }
-
-    /// <summary>
-    /// Usuwa rolę przypisaną do członka organizacji.
-    /// </summary>
-    /// <param name="roleId">Identyfikator roli do usunięcia.</param>
-    /// <returns>True, jeśli rola została usunięta; w przeciwnym razie false.</returns>
-    public bool RemoveRole(Guid roleId)
-    {
-        Guard.Against.Default(roleId, nameof(roleId));
-
-        // Nie pozwól na usunięcie ostatniej roli
-        if (_roleIds.Count <= 1)
+        // Don't allow removing the last role
+        if (Roles.Count <= 1)
         {
             return false;
         }
 
-        bool removed = _roleIds.Remove(roleId);
+        bool removed = Roles.Remove(role);
 
         if (removed)
         {
-            // Usuń również z nawigacji Roles
-            var roleToRemove = Roles.FirstOrDefault(r => r.Id == roleId);
-            if (roleToRemove != null)
-            {
-                Roles.Remove(roleToRemove);
-            }
-
-            RegisterDomainEventAndUpdate(new RoleRevokedFromMemberEvent(Id, OrganizationId, UserId, roleId));
+            RegisterDomainEventAndUpdate(new RoleRevokedFromMemberEvent(Id, OrganizationId, UserId, role.Id));
         }
 
         return removed;
     }
 
     /// <summary>
-    /// Sprawdza, czy członek posiada określoną rolę.
+    /// Checks if a member has a specific role.
     /// </summary>
-    /// <param name="roleId">Identyfikator roli.</param>
-    /// <returns>True, jeśli członek posiada rolę; w przeciwnym razie false.</returns>
+    /// <param name="roleId">ID of the role.</param>
+    /// <returns>True, if the member has the role; otherwise false.</returns>
     public bool HasRole(Guid roleId)
     {
-        return _roleIds.Contains(roleId);
+        return Roles.Any(r => r.Id == roleId);
+    }
+
+    /// <summary>
+    /// Checks if a member has a specific role.
+    /// </summary>
+    /// <param name="role">Role to check.</param>
+    /// <returns>True, if the member has the role; otherwise false.</returns>
+    public bool HasRole(Role role)
+    {
+        Guard.Against.Null(role, nameof(role));
+        return Roles.Contains(role);
+    }
+
+    /// <summary>
+    /// Gets all role IDs for this member.
+    /// </summary>
+    public IEnumerable<Guid> GetRoleIds()
+    {
+        return Roles.Select(r => r.Id);
     }
 }

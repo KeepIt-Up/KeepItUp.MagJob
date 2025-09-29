@@ -2,7 +2,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie pobrania ról organizacji.
+/// Request to get the roles of an organization.
 /// </summary>
 public class GetOrganizationRolesRequest
 {
@@ -10,7 +10,7 @@ public class GetOrganizationRolesRequest
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 }

@@ -4,44 +4,36 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do usunięcia roli z organizacji.
+/// Endpoint to delete a role from an organization.
 /// </summary>
 /// <remarks>
-/// Usuwa rolę z organizacji o podanym identyfikatorze.
+/// Deletes a role from an organization with the given identifier.
 /// </remarks>
 public class DeleteRole(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<DeleteRoleRequest>
+    : BaseEndpoint<DeleteRoleRequest, EmptyResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Delete(DeleteRoleRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("DeleteRole")
-            .Produces(204)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Usuwa rolę z organizacji";
-            s.Description = "Usuwa rolę z organizacji o podanym identyfikatorze";
+            s.Summary = "Deletes a role from an organization";
+            s.Description = "Deletes a role from an organization with the given identifier";
             s.ExampleRequest = new DeleteRoleRequest { OrganizationId = Guid.NewGuid(), RoleId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{organizationId}/roles/{roleId}.
+    /// Handles the DELETE /api/organizations/{organizationId}/roles/{roleId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
-    public override async Task HandleAsync(DeleteRoleRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
+    protected override async Task<EmptyResponse> HandleEndpointAsync(DeleteRoleRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -52,36 +44,6 @@ public class DeleteRole(IMediator mediator, ICurrentUserAccessor currentUserAcce
             UserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        await SendNoContentAsync(ct);
+        return await mediator.Send(command, ct);
     }
 }

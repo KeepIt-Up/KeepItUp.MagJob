@@ -11,7 +11,7 @@
     <div class="flex flex-col items-center mb-6">
       <div class="relative group">
         <img
-          [src]="user?.profileImageUrl || 'assets/images/default-avatar.png'"
+          [src]="$user().data?.profileImageUrl || 'assets/images/default-avatar.png'"
           alt="Profile picture"
           class="w-32 h-32 rounded-full object-cover border-2 border-primary-500"
         />

@@ -7,93 +7,93 @@ using Microsoft.Extensions.Options;
 namespace KeepItUp.MagJob.Identity.Web.Services;
 
 /// <summary>
-/// Reprezentuje użytkownika w systemie Keycloak.
+/// Represents a user in the Keycloak system.
 /// </summary>
 public class KeycloakUser
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public string? Id { get; set; }
 
     /// <summary>
-    /// Nazwa użytkownika.
+    /// User name.
     /// </summary>
     public string? Username { get; set; }
 
     /// <summary>
-    /// Adres email użytkownika.
+    /// User email address.
     /// </summary>
     public string? Email { get; set; }
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string? FirstName { get; set; }
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string? LastName { get; set; }
 
     /// <summary>
-    /// Określa, czy konto użytkownika jest aktywne.
+    /// Determines if the user account is active.
     /// </summary>
     public bool Enabled { get; set; }
 
     /// <summary>
-    /// Określa, czy adres email użytkownika został zweryfikowany.
+    /// Determines if the user email address has been verified.
     /// </summary>
     public bool EmailVerified { get; set; }
 }
 
 /// <summary>
-/// Reprezentuje rolę w systemie Keycloak.
+/// Represents a role in the Keycloak system.
 /// </summary>
 public class KeycloakRole
 {
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public string? Id { get; set; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string? Name { get; set; }
 }
 
 /// <summary>
-/// Reprezentuje odpowiedź z tokenem od serwera Keycloak.
+/// Represents a response from the Keycloak server with a token.
 /// </summary>
 public class KeycloakTokenResponse
 {
     /// <summary>
-    /// Token dostępu.
+    /// Access token.
     /// </summary>
     [JsonPropertyName("access_token")]
     public string? AccessToken { get; set; }
 
     /// <summary>
-    /// Czas wygaśnięcia tokenu w sekundach.
+    /// Token expiration time in seconds.
     /// </summary>
     [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
 
     /// <summary>
-    /// Token odświeżania.
+    /// Refresh token.
     /// </summary>
     [JsonPropertyName("refresh_token")]
     public string? RefreshToken { get; set; }
 
     /// <summary>
-    /// Czas wygaśnięcia tokenu odświeżania w sekundach.
+    /// Refresh token expiration time in seconds.
     /// </summary>
     [JsonPropertyName("refresh_expires_in")]
     public int RefreshExpiresIn { get; set; }
 
     /// <summary>
-    /// Typ tokenu.
+    /// Token type.
     /// </summary>
     [JsonPropertyName("token_type")]
     public string? TokenType { get; set; }
@@ -115,89 +115,89 @@ public class KeycloakTokenResponse
 }
 
 /// <summary>
-/// Interfejs serwisu administracyjnego Keycloak.
+/// Interface for the Keycloak admin service.
 /// </summary>
 public interface IKeycloakAdminService
 {
     /// <summary>
-    /// Pobiera listę wszystkich użytkowników z Keycloak.
+    /// Gets a list of all users from Keycloak.
     /// </summary>
-    /// <returns>Lista użytkowników Keycloak.</returns>
+    /// <returns>List of Keycloak users.</returns>
     Task<IEnumerable<KeycloakUser>> GetUsersAsync();
 
     /// <summary>
-    /// Tworzy nowego użytkownika w Keycloak.
+    /// Creates a new user in Keycloak.
     /// </summary>
-    /// <param name="username">Nazwa użytkownika.</param>
-    /// <param name="email">Adres email użytkownika.</param>
-    /// <param name="firstName">Imię użytkownika.</param>
-    /// <param name="lastName">Nazwisko użytkownika.</param>
-    /// <param name="password">Hasło użytkownika.</param>
-    /// <param name="isEnabled">Określa, czy konto użytkownika ma być aktywne.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="username">User name.</param>
+    /// <param name="email">User email address.</param>
+    /// <param name="firstName">User first name.</param>
+    /// <param name="lastName">User last name.</param>
+    /// <param name="password">User password.</param>
+    /// <param name="isEnabled">Determines if the user account should be active.</param>
+    /// <returns>True, if the operation was successful; otherwise false.</returns>
     Task<bool> CreateUserAsync(string username, string email, string firstName, string lastName, string password, bool isEnabled = true);
 
     /// <summary>
-    /// Aktualizuje dane użytkownika w Keycloak.
+    /// Updates the user data in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="email">Nowy adres email użytkownika.</param>
-    /// <param name="firstName">Nowe imię użytkownika.</param>
-    /// <param name="lastName">Nowe nazwisko użytkownika.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="email">New user email address.</param>
+    /// <param name="firstName">New user first name.</param>
+    /// <param name="lastName">New user last name.</param>
+    /// <returns>True, if the operation was successful; otherwise false.</returns>
     Task<bool> UpdateUserAsync(string userId, string email, string firstName, string lastName);
 
     /// <summary>
-    /// Usuwa użytkownika z Keycloak.
+    /// Deletes a user from Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika do usunięcia.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier to delete.</param>
+    /// <returns>True, if the operation was successful; otherwise false.</returns>
     Task<bool> DeleteUserAsync(string userId);
 
     /// <summary>
-    /// Przypisuje role do użytkownika w Keycloak.
+    /// Assigns roles to a user in Keycloak.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleNames">Lista nazw ról do przypisania.</param>
-    /// <returns>True, jeśli operacja zakończyła się sukcesem; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="roleNames">List of role names to assign.</param>
+    /// <returns>True, if the operation was successful; otherwise false.</returns>
     Task<bool> AssignRolesToUserAsync(string userId, IEnumerable<string> roleNames);
 }
 
 /// <summary>
-/// Implementacja serwisu administracyjnego Keycloak.
+/// Implementation of the Keycloak admin service.
 /// </summary>
 public class KeycloakAdminService : IKeycloakAdminService
 {
     /// <summary>
-    /// Ustawienia administratora Keycloak.
+    /// Keycloak admin settings.
     /// </summary>
     private readonly KeycloakAdminOptions _settings;
 
     /// <summary>
-    /// Klient HTTP do komunikacji z API Keycloak.
+    /// HTTP client for communication with the Keycloak API.
     /// </summary>
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Logger dla klasy KeycloakAdminService.
+    /// Logger for the KeycloakAdminService class.
     /// </summary>
     private readonly ILogger<KeycloakAdminService> _logger;
 
     /// <summary>
-    /// Bieżący token dostępu do API Keycloak.
+    /// Current access token to the Keycloak API.
     /// </summary>
     private string? _accessToken;
 
     /// <summary>
-    /// Data i czas wygaśnięcia tokenu dostępu.
+    /// Access token expiration date and time.
     /// </summary>
     private DateTime _tokenExpiration = DateTime.MinValue;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakAdminService"/>.
+    /// Initializes a new instance of the <see cref="KeycloakAdminService"/> class.
     /// </summary>
-    /// <param name="settings">Opcje konfiguracyjne Keycloak.</param>
-    /// <param name="httpClient">Klient HTTP do komunikacji z API Keycloak.</param>
+    /// <param name="settings">Keycloak admin settings.</param>
+    /// <param name="httpClient">HTTP client for communication with the Keycloak API.</param>
     /// <param name="logger">Logger.</param>
     public KeycloakAdminService(IOptions<KeycloakAdminOptions> settings, HttpClient httpClient, ILogger<KeycloakAdminService> logger)
     {
@@ -219,13 +219,13 @@ public class KeycloakAdminService : IKeycloakAdminService
         {
             _logger.LogInformation("Attempting to obtain access token from Keycloak at {ServerUrl}", _settings.ServerUrl);
 
-            // Używamy tokenu dla realm master, który jest używany do administracji
+            // We use the token for the master realm, which is used for administration
             var tokenEndpoint = $"/realms/master/protocol/openid-connect/token";
 
             _logger.LogDebug("Token endpoint: {TokenEndpoint}", tokenEndpoint);
             _logger.LogDebug("Admin username: {AdminUsername}, ClientId: {AdminClientId}", _settings.AdminUsername, _settings.AdminClientId);
 
-            // Używamy FormUrlEncodedContent, który jest wymagany przez Keycloak
+            // We use FormUrlEncodedContent, which is required by Keycloak
             var formData = new Dictionary<string, string>
             {
                 { "grant_type", "password" },
@@ -236,7 +236,7 @@ public class KeycloakAdminService : IKeycloakAdminService
 
             var content = new FormUrlEncodedContent(formData);
 
-            // Dodajemy odpowiedni Content-Type header
+            // Add the appropriate Content-Type header
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
             _logger.LogDebug("Sending token request with data: {FormData}", JsonSerializer.Serialize(formData));
@@ -256,7 +256,7 @@ public class KeycloakAdminService : IKeycloakAdminService
 
             var options = new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = false // Wyłączamy case insensitive, ponieważ używamy JsonPropertyName
+                PropertyNameCaseInsensitive = false // We disable case insensitive, because we use JsonPropertyName
             };
 
             var tokenResponse = JsonSerializer.Deserialize<KeycloakTokenResponse>(responseContent, options);
@@ -264,7 +264,7 @@ public class KeycloakAdminService : IKeycloakAdminService
             if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
                 _accessToken = tokenResponse.AccessToken;
-                _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30); // 30 seconds buffer
+                _tokenExpiration = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn - 30);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
                 _logger.LogInformation("Successfully obtained access token from Keycloak. Token expires at {ExpirationTime}", _tokenExpiration);
             }

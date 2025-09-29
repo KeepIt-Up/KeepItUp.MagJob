@@ -1,39 +1,39 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Żądanie dla endpointu UpdateUserEndpoint.
+/// Request for the UpdateUserEndpoint.
 /// </summary>
 public class UpdateUserRequest
 {
     /// <summary>
-    /// Szablon ścieżki URL dla endpointu aktualizacji użytkownika.
+    /// URL template for the UpdateUserEndpoint.
     /// </summary>
     public const string Route = "/Users/{Id:guid}";
 
     /// <summary>
-    /// Buduje ścieżkę URL dla określonego identyfikatora użytkownika.
+    /// Builds the URL for the specified user identifier.
     /// </summary>
-    /// <param name="id">Identyfikator użytkownika.</param>
-    /// <returns>Ścieżka URL z uwzględnionym identyfikatorem.</returns>
+    /// <param name="id">User identifier.</param>
+    /// <returns>URL with the specified identifier.</returns>
     public static string BuildRoute(Guid id) => Route.Replace("{Id:guid}", id.ToString());
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Imię użytkownika.
+    /// User first name.
     /// </summary>
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nazwisko użytkownika.
+    /// User last name.
     /// </summary>
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Numer telefonu użytkownika.
+    /// User phone number.
     /// </summary>
     public string? PhoneNumber { get; set; }
 

@@ -3,24 +3,24 @@ using System.Text.Json.Serialization;
 namespace KeepItUp.MagJob.Identity.Core.Keycloak;
 
 /// <summary>
-/// Reprezentuje organizację w kontekście Keycloak
+/// Represents an organization in the context of Keycloak
 /// </summary>
 public class KeycloakOrganization
 {
     /// <summary>
-    /// Identyfikator organizacji
+    /// Organization ID
     /// </summary>
     [JsonPropertyName("id")]
     public required string Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji
+    /// Organization name
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
     /// <summary>
-    /// Lista ról użytkownika w organizacji
+    /// List of user roles in the organization
     /// </summary>
     [JsonPropertyName("roles")]
     public required List<string> Roles { get; set; }

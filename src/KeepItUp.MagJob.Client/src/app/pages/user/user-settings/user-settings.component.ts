@@ -7,8 +7,6 @@ import { UserContextService } from '@users/services/user-context.service';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { UserService } from '@users/services/user.service';
-import { AlertComponent } from '@shared/components/alert/alert.component';
-import { AlertService } from '@shared/services/alert.service';
 
 interface UserForm {
   email: FormControl<string | null>;
@@ -34,7 +32,6 @@ interface UserFormValues {
 })
 export class UserSettingsComponent implements OnInit, OnDestroy {
   userForm!: FormGroup;
-  user: CurrentUser | null = null;
   loading = false;
   successMessage = '';
   errorMessage = '';
@@ -42,11 +39,11 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   private userContextService = inject(UserContextService);
   private userService = inject(UserService);
-  private alertService = inject(AlertService);
+
+  $user = this.userContextService.$userContext;
 
   ngOnInit(): void {
     this.initForm();
-    this.loadUserData();
   }
 
   ngOnDestroy(): void {
@@ -74,43 +71,8 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private loadUserData(): void {
-    this.loading = true;
-
-    const userSubscription = this.userContextService.user$.subscribe({
-      next: user => {
-        if (user) {
-          this.user = user;
-          this.userForm.patchValue({
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phoneNumber: user.phoneNumber ?? '',
-            address: user.address ?? '',
-          });
-        }
-        this.loading = false;
-      },
-      error: (err: unknown) => {
-        this.errorMessage = 'Failed to load user data';
-        this.alertService.error('Error', 'Failed to load user data', {
-          showActionButtons: true,
-        });
-        this.loading = false;
-        console.error('Error loading user data:', err);
-      },
-    });
-
-    this.subscriptions.add(userSubscription);
-
-    // Reload user data if not already loaded
-    if (!this.userContextService.getCurrentUser()) {
-      this.userContextService.loadCurrentUser().subscribe();
-    }
-  }
-
   onSubmit(): void {
-    if (this.userForm.valid && this.user) {
+    if (this.userForm.valid && this.$user().data) {
       this.loading = true;
       this.successMessage = '';
       this.errorMessage = '';
@@ -118,7 +80,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
       const formValues: UserFormValues = this.userForm.value;
 
       const updateRequest = {
-        id: this.user.id,
+        id: this.$user().data!.id,
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         phoneNumber: formValues.phoneNumber,
@@ -129,29 +91,21 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
         next: (updatedUser: CurrentUser) => {
           this.loading = false;
           this.successMessage = 'Profile updated successfully';
-          this.alertService.success('Success', 'Profile updated successfully', {
-            autoHideTimeout: 5000,
-            showActionButtons: true,
-          });
 
           // If API didn't return profileImageUrl (or it's null/undefined),
           // use the existing profile image URL
-          if (!updatedUser.profileImageUrl && this.user) {
+          if (!updatedUser.profileImageUrl && this.$user().data) {
             updatedUser = {
               ...updatedUser,
-              profileImageUrl: this.user.profileImageUrl,
+              profileImageUrl: this.$user().data!.profileImageUrl,
             };
           }
 
           this.userContextService.updateUserContext(updatedUser);
-          this.user = updatedUser;
         },
         error: (err: Error) => {
           this.loading = false;
           this.errorMessage = err.message ?? 'Failed to update profile';
-          this.alertService.error('Error', err.message ?? 'Failed to update profile', {
-            showActionButtons: true,
-          });
           console.error('Error updating profile:', err);
         },
       });
@@ -162,16 +116,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (!input.files?.length || !this.user) {
+    if (!input.files?.length || !this.$user().data) {
       return;
     }
 
     const file = input.files[0];
     if (!file.type.includes('image/')) {
       this.errorMessage = 'Please select an image file';
-      this.alertService.warning('Invalid File', 'Please select an image file', {
-        showActionButtons: true,
-      });
       return;
     }
 
@@ -183,36 +134,28 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
     formData.append('profilePictureFile', file);
 
     // Store current user ID to ensure it's available
-    const userId = this.user.id;
+    const userId = this.$user().data!.id;
 
     const uploadSubscription = this.userService.updateProfilePicture(userId, formData).subscribe({
       next: (response: { profileImageUrl?: string }) => {
         this.loading = false;
         this.successMessage = 'Profile picture updated successfully';
-        this.alertService.success('Success', 'Profile picture updated successfully', {
-          autoHideTimeout: 5000,
-          showActionButtons: true,
-        });
 
         // Since the API only returns profileImageUrl, we need to preserve the rest of the user data
-        if (this.user) {
+        if (this.$user().data) {
           // Create updated user object by merging current user data with new profile image URL
           const updatedUser: CurrentUser = {
-            ...this.user,
-            profileImageUrl: response.profileImageUrl ?? this.user.profileImageUrl,
+            ...this.$user().data!,
+            profileImageUrl: response.profileImageUrl ?? this.$user().data!.profileImageUrl,
           };
 
           // Update user context with merged data
           this.userContextService.updateUserContext(updatedUser);
-          this.user = updatedUser;
         }
       },
       error: (err: Error) => {
         this.loading = false;
         this.errorMessage = err.message ?? 'Failed to update profile picture';
-        this.alertService.error('Error', err.message ?? 'Failed to update profile picture', {
-          showActionButtons: true,
-        });
         console.error('Error updating profile picture:', err);
       },
     });
@@ -221,13 +164,13 @@ export class UserSettingsComponent implements OnInit, OnDestroy {
   }
 
   resetForm(): void {
-    if (this.user) {
+    if (this.$user().data) {
       this.userForm.patchValue({
-        email: this.user.email,
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
-        phoneNumber: this.user.phoneNumber ?? '',
-        address: this.user.address ?? '',
+        email: this.$user().data!.email,
+        firstName: this.$user().data!.firstName,
+        lastName: this.$user().data!.lastName,
+        phoneNumber: this.$user().data!.phoneNumber ?? '',
+        address: this.$user().data!.address ?? '',
       });
       this.userForm.markAsPristine();
     }

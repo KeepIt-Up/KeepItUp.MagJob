@@ -1,27 +1,27 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// DTO dla roli w organizacji.
+/// DTO for a role in an organization.
 /// </summary>
 public class OrganizationRoleRecord
 {
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Role description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Kolor roli.
+    /// Role color.
     /// </summary>
     public string? Color { get; set; }
 }

@@ -1,24 +1,24 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Żądanie dla endpointu GetUserEndpoint.
+/// Request for the GetUserEndpoint.
 /// </summary>
 public class GetUserByIdRequest
 {
     /// <summary>
-    /// Szablon ścieżki URL dla endpointu pobierania użytkownika.
+    /// URL template for the GetUserEndpoint.
     /// </summary>
     public const string Route = "/Users/{Id:guid}";
 
     /// <summary>
-    /// Buduje ścieżkę URL dla określonego identyfikatora użytkownika.
+    /// Builds the URL for the specified user identifier.
     /// </summary>
-    /// <param name="id">Identyfikator użytkownika.</param>
-    /// <returns>Ścieżka URL z uwzględnionym identyfikatorem.</returns>
+    /// <param name="id">User identifier.</param>
+    /// <returns>URL with the specified identifier.</returns>
     public static string BuildRoute(Guid id) => Route.Replace("{Id:guid}", id.ToString());
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User identifier.
     /// </summary>
     public Guid Id { get; set; }
 }

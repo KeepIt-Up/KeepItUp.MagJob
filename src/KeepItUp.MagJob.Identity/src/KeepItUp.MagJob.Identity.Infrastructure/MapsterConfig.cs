@@ -3,15 +3,15 @@ using Mapster;
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 
 /// <summary>
-/// Konfiguracja Mapster dla mapowania obiektów.
+/// Mapster configuration for mapping objects.
 /// </summary>
 public static class MapsterConfig
 {
     /// <summary>
-    /// Rejestruje konfigurację Mapster w kontenerze DI.
+    /// Registers the Mapster configuration in the DI container.
     /// </summary>
-    /// <param name="services">Kolekcja usług.</param>
-    /// <returns>Kolekcja usług z zarejestrowanym Mapster.</returns>
+    /// <param name="services">Collection of services.</param>
+    /// <returns>Collection of services with Mapster registered.</returns>
     public static IServiceCollection AddMapsterConfiguration(this IServiceCollection services)
     {
         // Konfiguracja globalnych ustawień Mapster

@@ -1,61 +1,61 @@
 namespace KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 
 /// <summary>
-/// Reprezentuje stronicowany wynik zapytania.
+/// Represents a paginated result of a query.
 /// </summary>
-/// <typeparam name="T">Typ elementów kolekcji</typeparam>
+/// <typeparam name="T">Type of the collection items</typeparam>
 public class PaginationResult<T>
 {
     /// <summary>
-    /// Lista elementów na aktualnej stronie.
+    /// List of items on the current page.
     /// </summary>
     public List<T> Items { get; private set; }
 
     /// <summary>
-    /// Całkowita liczba elementów spełniających kryteria.
+    /// Total number of items satisfying the criteria.
     /// </summary>
     public int TotalCount { get; private set; }
 
     /// <summary>
-    /// Liczba stron.
+    /// Number of pages.
     /// </summary>
     public int TotalPages { get; private set; }
 
     /// <summary>
-    /// Aktualny numer strony.
+    /// Current page number.
     /// </summary>
-    public int PageNumber { get; private set; }
+    public int CurrentPage { get; private set; }
 
     /// <summary>
-    /// Rozmiar strony.
+    /// Page size.
     /// </summary>
     public int PageSize { get; private set; }
 
     /// <summary>
-    /// Czy istnieje poprzednia strona.
+    /// Whether there is a previous page.
     /// </summary>
-    public bool HasPrevious => PageNumber > 1;
+    public bool HasPrevious => CurrentPage > PaginationParameters<T>.DefaultPageNumber;
 
     /// <summary>
-    /// Czy istnieje następna strona.
+    /// Whether there is a next page.
     /// </summary>
-    public bool HasNext => PageNumber < TotalPages;
+    public bool HasNext => CurrentPage < TotalPages;
 
     /// <summary>
-    /// Pole, po którym posortowano wyniki.
+    /// Field by which the results are sorted.
     /// </summary>
     public string SortField { get; private set; }
 
     /// <summary>
-    /// Czy sortowanie jest rosnące.
+    /// Whether the sorting is ascending.
     /// </summary>
     public bool Ascending { get; private set; }
 
-    private PaginationResult(List<T> items, int totalCount, int pageNumber, int pageSize, string sortField, bool ascending)
+    private PaginationResult(List<T> items, int totalCount, int currentPage, int pageSize, string sortField, bool ascending)
     {
         Items = items;
         TotalCount = totalCount;
-        PageNumber = pageNumber;
+        CurrentPage = currentPage;
         PageSize = pageSize;
         SortField = sortField;
         Ascending = ascending;
@@ -63,27 +63,27 @@ public class PaginationResult<T>
     }
 
     /// <summary>
-    /// Tworzy nowy stronicowany wynik.
+    /// Creates a new paginated result.
     /// </summary>
-    /// <param name="items">Elementy na aktualnej stronie</param>
-    /// <param name="totalCount">Całkowita liczba elementów</param>
-    /// <param name="pageNumber">Numer strony</param>
-    /// <param name="pageSize">Rozmiar strony</param>
-    /// <param name="sortField">Pole sortowania</param>
-    /// <param name="ascending">Kierunek sortowania</param>
-    /// <returns>Nowy obiekt PagedResult</returns>
-    public static PaginationResult<T> Create(List<T> items, int totalCount, int pageNumber, int pageSize, string sortField, bool ascending)
+    /// <param name="items">Items on the current page</param>
+    /// <param name="totalCount">Total number of items</param>
+    /// <param name="currentPage">Page number</param>
+    /// <param name="pageSize">Page size</param>
+    /// <param name="sortField">Sort field</param>
+    /// <param name="ascending">Sorting direction</param>
+    /// <returns>New PagedResult object</returns>
+    public static PaginationResult<T> Create(List<T> items, int totalCount, int currentPage, int pageSize, string sortField, bool ascending)
     {
-        return new PaginationResult<T>(items, totalCount, pageNumber, pageSize, sortField, ascending);
+        return new PaginationResult<T>(items, totalCount, currentPage, pageSize, sortField, ascending);
     }
 
     /// <summary>
-    /// Tworzy nowy stronicowany wynik na podstawie parametrów paginacji.
+    /// Creates a new paginated result based on pagination parameters.
     /// </summary>
-    /// <param name="items">Elementy na aktualnej stronie</param>
-    /// <param name="totalCount">Całkowita liczba elementów</param>
-    /// <param name="parameters">Parametry paginacji</param>
-    /// <returns>Nowy obiekt PagedResult</returns>
+    /// <param name="items">Items on the current page</param>
+    /// <param name="totalCount">Total number of items</param>
+    /// <param name="parameters">Pagination parameters</param>
+    /// <returns>New PagedResult object</returns>
     public static PaginationResult<T> Create(List<T> items, int totalCount, PaginationParameters<T> parameters)
     {
         return new PaginationResult<T>(
@@ -96,17 +96,17 @@ public class PaginationResult<T>
     }
 
     /// <summary>
-    /// Tworzy pusty stronicowany wynik.
+    /// Creates an empty paginated result.
     /// </summary>
-    /// <returns>Pusty obiekt PagedResult</returns>
+    /// <returns>Empty PagedResult object</returns>
     public static PaginationResult<T> Empty()
     {
         return new PaginationResult<T>(
             new List<T>(),
             0,
-            1,
-            10,
-            "Id",
-            true);
+            PaginationParameters<T>.DefaultPageNumber,
+            PaginationParameters<T>.DefaultPageSize,
+            PaginationParameters<T>.DefaultSortField,
+            PaginationParameters<T>.DefaultAscending);
     }
 }

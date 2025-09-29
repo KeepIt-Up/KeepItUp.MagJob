@@ -2,7 +2,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie aktualizacji roli w organizacji.
+/// Request for the UpdateRoleEndpoint.
 /// </summary>
 public class UpdateRoleRequest
 {
@@ -10,27 +10,27 @@ public class UpdateRoleRequest
     public static string BuildRoute(Guid organizationId, Guid roleId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString()).Replace("{RoleId:guid}", roleId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid RoleId { get; set; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Role description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Kolor roli (w formacie HEX).
+    /// Role color (in HEX format).
     /// </summary>
     public string? Color { get; set; }
 }

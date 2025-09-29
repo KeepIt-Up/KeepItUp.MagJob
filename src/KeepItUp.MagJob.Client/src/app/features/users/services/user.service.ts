@@ -35,13 +35,7 @@ export class UserService {
   private api = inject(UserApiService);
   private http = inject(HttpClient);
 
-  constructor() {
-    this.userContextService.userContext$.subscribe(userContext => {
-      if (userContext.data) {
-        this.userContext = userContext.data;
-      }
-    });
-  }
+  $userContext = this.userContextService.$userContext;
 
   private readonly apiUrl = `${environment.apiUrl}/api/identity/users`;
 
@@ -64,7 +58,7 @@ export class UserService {
 
   getUserOrganizations(): Observable<PaginatedResponse<Organization>> {
     return this.api
-      .getUserOrganizations(this.userContext!.id, this.organizationsPaginationOptions$())
+      .getUserOrganizations(this.$userContext().data!.id, this.organizationsPaginationOptions$())
       .pipe(
         tap((response: PaginatedResponse<Organization>) => {
           if (response.items.length > 0) {
@@ -83,7 +77,7 @@ export class UserService {
 
   getUserInvitations(): Observable<PaginatedResponse<Invitation>> {
     const query = {
-      id: this.userContext?.id,
+      id: this.$userContext().data?.id,
     };
     return this.api.getUserInvitations(query, this.invitationsPaginationOptions$()).pipe(
       tap((response: PaginatedResponse<Invitation>) => {

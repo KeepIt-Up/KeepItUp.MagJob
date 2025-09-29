@@ -4,16 +4,16 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.CreateOrganization;
 
 /// <summary>
-/// Walidator dla komendy CreateOrganizationCommand.
+/// Validator for the CreateOrganizationCommand.
 /// </summary>
 public class CreateOrganizationCommandValidator : AbstractValidator<CreateOrganizationCommand>
 {
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateOrganizationCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="CreateOrganizationCommandValidator"/> class.
     /// </summary>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="userRepository">User repository.</param>
     public CreateOrganizationCommandValidator(IUserRepository userRepository)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -32,11 +32,11 @@ public class CreateOrganizationCommandValidator : AbstractValidator<CreateOrgani
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

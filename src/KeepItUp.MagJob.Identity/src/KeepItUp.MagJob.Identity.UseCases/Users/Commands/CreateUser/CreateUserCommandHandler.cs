@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 
 /// <summary>
-/// Handler dla komendy CreateUserCommand.
+/// Handler for the CreateUserCommand.
 /// </summary>
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<Guid>>
 {
@@ -14,9 +14,9 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     private readonly ILogger<CreateUserCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="CreateUserCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="CreateUserCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium użytkowników.</param>
+    /// <param name="repository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public CreateUserCommandHandler(
         IUserRepository repository,
@@ -27,16 +27,15 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     }
 
     /// <summary>
-    /// Obsługuje komendę CreateUserCommand.
+    /// Handles the CreateUserCommand.
     /// </summary>
-    /// <param name="request">Komenda CreateUserCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Identyfikator utworzonego użytkownika.</returns>
+    /// <param name="request">CreateUserCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Identifier of the created user.</returns>
     public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź, czy użytkownik o podanym adresie e-mail już istnieje
             var existingUserByEmail = await _repository.GetByEmailAsync(request.Email, cancellationToken);
 
             if (existingUserByEmail != null)
@@ -44,7 +43,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 return Result<Guid>.Error("Użytkownik o podanym adresie e-mail już istnieje.");
             }
 
-            // Sprawdź, czy użytkownik o podanym identyfikatorze zewnętrznym już istnieje
             var existingUserByExternalId = await _repository.GetByExternalIdAsync(request.ExternalId, cancellationToken);
 
             if (existingUserByExternalId != null)
@@ -52,16 +50,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 return Result<Guid>.Error("Użytkownik o podanym identyfikatorze zewnętrznym już istnieje.");
             }
 
-            // Utwórz nowego użytkownika
             var user = User.Create(
                 request.FirstName,
                 request.LastName,
                 request.Email,
                 string.IsNullOrEmpty(request.Username) ? request.Email : request.Username,
                 request.ExternalId,
-                true); // Domyślnie użytkownik jest aktywny
+                true);
 
-            // Aktualizuj profil użytkownika (jeśli podano dane profilu)
             if (!string.IsNullOrEmpty(request.PhoneNumber) ||
                 !string.IsNullOrEmpty(request.Address) ||
                 !string.IsNullOrEmpty(request.ProfileImageUrl))
@@ -72,7 +68,6 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                     request.ProfileImageUrl);
             }
 
-            // Zapisz użytkownika w repozytorium
             await _repository.AddAsync(user, cancellationToken);
 
             _logger.LogInformation("Utworzono nowego użytkownika o ID {UserId}", user.Id);

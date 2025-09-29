@@ -4,19 +4,19 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserById;
 
 /// <summary>
-/// Walidator dla zapytania GetUserByIdQuery.
+/// Validator for the GetUserByIdQuery.
 /// </summary>
 /// <remarks>
-/// Implementuje walidację biznesową, sprawdzając istnienie użytkownika w bazie danych.
+/// Implements business validation, checking if the user exists in the database.
 /// </remarks>
 public class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>
 {
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserByIdQueryValidator"/>.
+    /// Initializes a new instance of the <see cref="GetUserByIdQueryValidator"/> class.
     /// </summary>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="userRepository">User repository.</param>
     public GetUserByIdQueryValidator(IUserRepository userRepository)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -27,11 +27,11 @@ public class GetUserByIdQueryValidator : AbstractValidator<GetUserByIdQuery>
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if the user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True, if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

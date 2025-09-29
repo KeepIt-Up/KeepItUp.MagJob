@@ -8,6 +8,7 @@ public class OrganizationConfiguration : BaseEntityConfiguration<Organization>
     {
         base.Configure(builder);
 
+        #region Properties
         builder.Property(o => o.Name)
             .IsRequired()
             .HasMaxLength(DataSchemaConstants.DEFAULT_NAME_LENGTH);
@@ -20,8 +21,9 @@ public class OrganizationConfiguration : BaseEntityConfiguration<Organization>
 
         builder.Property(o => o.IsActive)
             .IsRequired();
+        #endregion
 
-        // Relacje
+        #region Relationships
         builder.HasMany(o => o.Members)
             .WithOne()
             .HasForeignKey(m => m.OrganizationId)
@@ -32,22 +34,20 @@ public class OrganizationConfiguration : BaseEntityConfiguration<Organization>
             .HasForeignKey(r => r.OrganizationId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(o => o.Invitations)
-            .WithOne()
-            .HasForeignKey(i => i.OrganizationId)
-            .OnDelete(DeleteBehavior.Cascade);
+        #endregion
 
-        // Indeksy
+        #region Indexes
         builder.HasIndex(o => o.Name);
 
-        // Indeks dla szybkiego wyszukiwania po OwnerId
+        // Index for quick search by OwnerId
         builder.HasIndex(o => o.OwnerId);
 
-        // Indeks dla filtrowania po IsActive
+        // Index for filtering by IsActive
         builder.HasIndex(o => o.IsActive);
 
-        // Indeks wspierający sortowanie po Id DESC, które jest często używane w paginacji
+        // Index supporting sorting by Id DESC, which is often used in pagination
         builder.HasIndex(o => o.Id).IsDescending();
+        #endregion
     }
 
     protected override string GetTableName() => DataSchemaConstants.ORGANIZATIONS_TABLE;

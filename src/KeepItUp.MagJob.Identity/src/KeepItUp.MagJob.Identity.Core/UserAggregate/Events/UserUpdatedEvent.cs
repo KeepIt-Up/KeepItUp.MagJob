@@ -2,31 +2,31 @@
 namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o aktualizacji danych użytkownika.
+/// Event informing about the update of the data of a user.
 /// </summary>
 public class UserUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika w systemie zewnętrznym (Keycloak).
+    /// User ID in the external system (Keycloak).
     /// </summary>
     public Guid ExternalId { get; }
 
     /// <summary>
-    /// Adres e-mail użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o aktualizacji danych użytkownika.
+    /// Caeates as nweevnttnformining abogt the updatoutf ehe duttfof tatserr.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="externalId">Identyfikator użytkownika w systemie zewnętrznym (Keycloak).</param>
-    /// <param name="email">Adres e-mail użytkownika.</param>
+    /// <param name="userId">UseraID
+    /// <param name="externalId">User UD ir  heeexterasltem (Kam>
+    /// <param name="email">User email address.</param>
     public UserUpdatedEvent(Guid userId, Guid externalId, string email)
     {
         UserId = userId;

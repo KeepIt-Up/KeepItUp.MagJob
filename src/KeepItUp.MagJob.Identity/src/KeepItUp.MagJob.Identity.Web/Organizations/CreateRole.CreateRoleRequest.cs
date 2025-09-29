@@ -2,7 +2,7 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Żądanie utworzenia nowej roli w organizacji.
+/// Request to create a new role in an organization.
 /// </summary>
 public class CreateRoleRequest
 {
@@ -10,22 +10,22 @@ public class CreateRoleRequest
     public static string BuildRoute(Guid organizationId) => Route.Replace("{OrganizationId:guid}", organizationId.ToString());
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; set; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Role description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Kolor roli (w formacie HEX).
+    /// Role color (in HEX format).
     /// </summary>
     public string? Color { get; set; }
 }

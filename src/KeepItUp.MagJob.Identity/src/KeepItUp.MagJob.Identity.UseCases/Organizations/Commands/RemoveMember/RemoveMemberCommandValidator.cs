@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 
 /// <summary>
-/// Walidator dla komendy RemoveMemberCommand.
+/// Validator for the RemoveMemberCommand.
 /// </summary>
 public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberCommand>
 {
@@ -13,10 +13,10 @@ public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberComman
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="RemoveMemberCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="RemoveMemberCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public RemoveMemberCommandValidator(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository)
@@ -36,7 +36,6 @@ public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberComman
             .NotEmpty().WithMessage("Identyfikator użytkownika wykonującego operację jest wymagany.")
             .MustAsync(UserExists).WithMessage("Użytkownik wykonujący operację nie istnieje.");
 
-        // Sprawdzenie, czy użytkownik, który ma zostać usunięty, jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -47,7 +46,6 @@ public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberComman
             })
             .WithMessage("Użytkownik, który ma zostać usunięty, nie jest członkiem tej organizacji.");
 
-        // Sprawdzenie, czy użytkownik wykonujący operację jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -58,29 +56,28 @@ public class RemoveMemberCommandValidator : AbstractValidator<RemoveMemberComman
             })
             .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
 
-        // Sprawdzenie, czy użytkownik do usunięcia nie jest tym samym użytkownikiem, który wykonuje operację
         RuleFor(x => x)
             .Must(command => command.MemberUserId != command.RequestingUserId)
             .WithMessage("Nie można usunąć samego siebie z organizacji.");
     }
 
     /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

@@ -4,7 +4,7 @@ using KeepItUp.MagJob.Identity.Core.Keycloak;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Implementacja klienta do komunikacji z API Keycloak
+/// Implementation of the client for communication with the Keycloak API
 /// </summary>
 public class KeycloakClient : IKeycloakClient
 {
@@ -13,10 +13,10 @@ public class KeycloakClient : IKeycloakClient
     private readonly ILogger<KeycloakClient> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakClient"/>
+    /// Initializes a new instance of the <see cref="KeycloakClient"/> class.
     /// </summary>
-    /// <param name="httpClient">Klient HTTP</param>
-    /// <param name="options">Opcje konfiguracji Keycloak</param>
+    /// <param name="httpClient">HTTP client</param>
+    /// <param name="options">Keycloak configuration options</param>
     /// <param name="logger">Logger</param>
     public KeycloakClient(
         HttpClient httpClient,
@@ -25,7 +25,7 @@ public class KeycloakClient : IKeycloakClient
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        // Inicjalizacja klientów
+        // Initialize clients
         _userClient = new KeycloakUserClient(
             httpClient ?? throw new ArgumentNullException(nameof(httpClient)),
             options ?? throw new ArgumentNullException(nameof(options)),
@@ -119,7 +119,7 @@ public class KeycloakClient : IKeycloakClient
     /// <inheritdoc />
     public async Task<string> GetAdminAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        // Wykorzystujemy token z klienta użytkownika, ale moglibyśmy też użyć klienta ról
+        // We use the user client token, but we could also use the role client
         return await _userClient.GetAdminAccessTokenAsync(cancellationToken);
     }
 

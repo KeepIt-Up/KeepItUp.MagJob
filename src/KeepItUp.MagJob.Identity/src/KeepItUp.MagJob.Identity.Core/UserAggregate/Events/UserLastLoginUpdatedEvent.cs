@@ -1,37 +1,37 @@
 ﻿namespace KeepItUp.MagJob.Identity.Core.UserAggregate.Events;
 
 /// <summary>
-/// Zdarzenie domenowe informujące o aktualizacji daty ostatniego logowania użytkownika.
+/// Event informing about the update of the last login date of a user.
 /// </summary>
 public class UserLastLoginUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator zewnętrzny użytkownika.
+    /// User ID in the external system (Keycloak).
     /// </summary>
     public Guid ExternalId { get; }
 
     /// <summary>
-    /// Adres e-mail użytkownika.
+    /// User email address.
     /// </summary>
     public string Email { get; }
 
     /// <summary>
-    /// Data ostatniego logowania użytkownika.
+    /// Last login date of the user.
     /// </summary>
     public DateTime LastLoginDate { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie UserLastLoginUpdatedEvent.
+    /// Creates a new event informing about the update of the last login date of a user.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="externalId">Identyfikator zewnętrzny użytkownika.</param>
-    /// <param name="email">Adres e-mail użytkownika.</param>
-    /// <param name="lastLoginDate">Data ostatniego logowania użytkownika.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="externalId">User ID in the external system (Keycloak).</param>
+    /// <param name="email">User email address.</param>
+    /// <param name="lastLoginDate">Last login date of the user.</param>
     public UserLastLoginUpdatedEvent(Guid userId, Guid externalId, string email, DateTime lastLoginDate)
     {
         UserId = userId;

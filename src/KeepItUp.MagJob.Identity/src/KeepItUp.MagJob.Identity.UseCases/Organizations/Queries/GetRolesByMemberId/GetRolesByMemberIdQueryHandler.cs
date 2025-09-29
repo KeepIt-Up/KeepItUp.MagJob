@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByMemberId;
 
 /// <summary>
-/// Handler dla zapytania GetRolesByMemberIdQuery.
+/// Handler for the GetRolesByMemberIdQuery.
 /// </summary>
 public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberIdQuery, Result<PaginationResult<RoleDto>>>
 {
@@ -15,9 +15,9 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
     private readonly ILogger<GetRolesByMemberIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetRolesByMemberIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetRolesByMemberIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetRolesByMemberIdQueryHandler(
         IOrganizationRepository repository,
@@ -28,22 +28,20 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetRolesByMemberIdQuery.
+    /// Handles the GetRolesByMemberIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetRolesByMemberIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista ról przypisanych do członka organizacji z paginacją.</returns>
+    /// <param name="request">GetRolesByMemberIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of roles assigned to a member of an organization with pagination.</returns>
     public async Task<Result<PaginationResult<RoleDto>>> Handle(GetRolesByMemberIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź czy organizacja istnieje
             if (!await _repository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
                 return Result<PaginationResult<RoleDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // // Sprawdź, czy użytkownik wykonujący zapytanie ma dostęp do organizacji
             // bool hasAccess = await _repository.HasMemberAsync(request.OrganizationId, request.RequestingUserId, cancellationToken);
 
             // if (!hasAccess)
@@ -51,7 +49,6 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
             //     return Result<PaginationResult<RoleDto>>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Definiujemy selektor do mapowania Role na RoleDto
             Expression<Func<Role, RoleDto>> selector = role => new RoleDto
             {
                 Id = role.Id,
@@ -61,7 +58,6 @@ public class GetRolesByMemberIdQueryHandler : IRequestHandler<GetRolesByMemberId
                 Permissions = role.Permissions.Select(p => p.Name).ToList()
             };
 
-            // Pobieramy role członka z paginacją używając repozytorium
             var paginationResult = await _repository.GetRolesByMemberIdWithPaginationAsync(
                 request.OrganizationId,
                 request.MemberUserId,

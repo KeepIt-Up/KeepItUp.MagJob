@@ -5,17 +5,17 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RemoveMember;
 
 /// <summary>
-/// Handler dla komendy RemoveMemberCommand.
+/// Handler for the RemoveMemberCommand.
 /// </summary>
-public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, Result>
+public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<RemoveMemberCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="RemoveMemberCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="RemoveMemberCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public RemoveMemberCommandHandler(
         IOrganizationRepository repository,
@@ -26,25 +26,22 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
     }
 
     /// <summary>
-    /// Obsługuje komendę RemoveMemberCommand.
+    /// Handles the RemoveMemberCommand.
     /// </summary>
-    /// <param name="request">Komenda RemoveMemberCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
-    public async Task<Result> Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
+    /// <param name="request">RemoveMemberCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
+    public async Task<Result<EmptyResponse>> Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do usuwania członków
             if (organization.OwnerId != request.RequestingUserId)
             {
                 var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.RequestingUserId);
@@ -54,25 +51,19 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, R
                 }
             }
 
-            // Pobranie członka do usunięcia
             var memberToRemove = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
-
-            // Walidator powinien zapewnić, że członek istnieje
             if (memberToRemove == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
-            // Sprawdź, czy użytkownik do usunięcia nie jest właścicielem organizacji
             if (organization.OwnerId == request.MemberUserId)
             {
                 return Result.Error("Nie można usunąć właściciela organizacji.");
             }
 
-            // Usuń członka z organizacji
             organization.RemoveMember(request.MemberUserId);
 
-            // Zapisz zmiany w repozytorium
             await _repository.UpdateAsync(organization, cancellationToken);
 
             _logger.LogInformation("Użytkownik o ID {MemberUserId} został usunięty z organizacji o ID {OrganizationId}",

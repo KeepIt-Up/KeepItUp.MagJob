@@ -5,7 +5,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationBanner;
 
 /// <summary>
-/// Walidator dla komendy UpdateOrganizationBannerCommand.
+/// Validator for the UpdateOrganizationBannerCommand.
 /// </summary>
 public class UpdateOrganizationBannerCommandValidator : AbstractValidator<UpdateOrganizationBannerCommand>
 {
@@ -13,10 +13,10 @@ public class UpdateOrganizationBannerCommandValidator : AbstractValidator<Update
     private readonly IUserRepository _userRepository;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationBannerCommandValidator"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationBannerCommandValidator"/> class.
     /// </summary>
-    /// <param name="organizationRepository">Repozytorium organizacji.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="userRepository">User repository.</param>
     public UpdateOrganizationBannerCommandValidator(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository)
@@ -25,23 +25,16 @@ public class UpdateOrganizationBannerCommandValidator : AbstractValidator<Update
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
         RuleFor(x => x.OrganizationId)
-            .NotEmpty().WithMessage("Identyfikator organizacji jest wymagany.")
-            .MustAsync(OrganizationExists).WithMessage("Organizacja o podanym identyfikatorze nie istnieje.")
-            .MustAsync(async (id, cancellationToken) =>
-            {
-                var organization = await _organizationRepository.GetByIdAsync(id, cancellationToken);
-                return organization != null && organization.IsActive;
-            }).WithMessage("Organizacja jest nieaktywna.");
+            .NotEmpty().WithMessage("Organization identifier is required.")
+            .MustAsync(OrganizationExists).WithMessage("Organization with the given identifier does not exist.");
 
-        RuleFor(x => x.BannerUrl)
-            .NotEmpty().WithMessage("URL bannera jest wymagany.")
-            .Must(BeValidUrl).WithMessage("Podany URL bannera jest nieprawidłowy.");
+        RuleFor(x => x.BannerFile)
+            .NotNull().WithMessage("Banner file is required.");
 
         RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("Identyfikator użytkownika jest wymagany.")
-            .MustAsync(UserExists).WithMessage("Użytkownik o podanym identyfikatorze nie istnieje.");
+            .NotEmpty().WithMessage("User identifier is required.")
+            .MustAsync(UserExists).WithMessage("User with the given identifier does not exist.");
 
-        // Sprawdzenie, czy użytkownik wykonujący operację jest członkiem organizacji
         RuleFor(x => x)
             .MustAsync(async (command, cancellationToken) =>
             {
@@ -50,43 +43,26 @@ public class UpdateOrganizationBannerCommandValidator : AbstractValidator<Update
                     command.UserId,
                     cancellationToken);
             })
-            .WithMessage("Użytkownik wykonujący operację nie jest członkiem tej organizacji.");
+            .WithMessage("User performing the operation is not a member of this organization.");
     }
 
     /// <summary>
-    /// Sprawdza, czy podany URL jest prawidłowy.
+    /// Checks if an organization with the given identifier exists.
     /// </summary>
-    /// <param name="url">URL do sprawdzenia.</param>
-    /// <returns>True, jeśli URL jest prawidłowy; w przeciwnym razie false.</returns>
-    private bool BeValidUrl(string url)
-    {
-        if (string.IsNullOrEmpty(url))
-        {
-            return false;
-        }
-
-        // Sprawdzenie, czy URL jest prawidłowy
-        return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
-               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-    }
-
-    /// <summary>
-    /// Sprawdza, czy organizacja o podanym identyfikatorze istnieje.
-    /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false.</returns>
+    /// <param name="organizationId">Organization identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the organization exists; otherwise false.</returns>
     private async Task<bool> OrganizationExists(Guid organizationId, CancellationToken cancellationToken)
     {
         return await _organizationRepository.ExistsAsync(organizationId, cancellationToken);
     }
 
     /// <summary>
-    /// Sprawdza, czy użytkownik o podanym identyfikatorze istnieje.
+    /// Checks if a user with the given identifier exists.
     /// </summary>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>True, jeśli użytkownik istnieje; w przeciwnym razie false.</returns>
+    /// <param name="userId">User identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if the user exists; otherwise false.</returns>
     private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
     {
         return await _userRepository.ExistsAsync(userId, cancellationToken);

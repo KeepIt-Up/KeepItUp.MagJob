@@ -4,7 +4,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.Infrastructure;
 
 /// <summary>
-/// Serwis do zarządzania zdjęciami profilowymi użytkowników
+/// Service for managing user profile pictures
 /// </summary>
 public class UserProfilePictureService : IUserProfilePictureService
 {
@@ -13,10 +13,10 @@ public class UserProfilePictureService : IUserProfilePictureService
     private readonly ILogger<UserProfilePictureService> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UserProfilePictureService"/>.
+    /// Initializes a new instance of the <see cref="UserProfilePictureService"/> class.
     /// </summary>
-    /// <param name="keycloakClient">Klient Keycloak.</param>
-    /// <param name="userRepository">Repozytorium użytkowników.</param>
+    /// <param name="keycloakClient">Keycloak client.</param>
+    /// <param name="userRepository">User repository.</param>
     /// <param name="logger">Logger.</param>
     public UserProfilePictureService(
         IKeycloakClient keycloakClient,
@@ -31,20 +31,20 @@ public class UserProfilePictureService : IUserProfilePictureService
     /// <inheritdoc />
     public async Task<string?> GetProfilePictureUrlAsync(Guid userId, Guid externalId, bool forceRefresh = false, CancellationToken cancellationToken = default)
     {
-        // Pobierz użytkownika z repozytorium
+        // Get the user from the repository
         var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
         if (user == null)
         {
             return null;
         }
 
-        // Jeśli użytkownik ma już zdjęcie profilowe i nie wymuszono odświeżenia, zwróć je
+        // If the user has a profile picture and forceRefresh is not set, return it
         if (user.Profile?.ProfileImage != null && !forceRefresh)
         {
             return user.Profile.ProfileImage;
         }
 
-        // W przeciwnym razie pobierz zdjęcie z IDP
+        // Otherwise, get the profile picture from the IDP
         return await SyncProfilePictureFromIdpAsync(userId, externalId, cancellationToken);
     }
 
@@ -53,7 +53,7 @@ public class UserProfilePictureService : IUserProfilePictureService
     {
         try
         {
-            // Pobierz URL zdjęcia profilowego z Keycloak/IDP
+            // Get the profile picture URL from Keycloak/IDP
             var profilePictureUrl = await _keycloakClient.GetUserProfilePictureUrlAsync(externalId.ToString(), cancellationToken);
 
             if (string.IsNullOrEmpty(profilePictureUrl))
@@ -62,7 +62,7 @@ public class UserProfilePictureService : IUserProfilePictureService
                 return null;
             }
 
-            // Pobierz użytkownika z repozytorium
+            // Get the user from the repository
             var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
             if (user == null)
             {
@@ -70,10 +70,10 @@ public class UserProfilePictureService : IUserProfilePictureService
                 return null;
             }
 
-            // Zaktualizuj profil użytkownika
+            // Update the user's profile properties
             user.UpdateProfileProperties(profileImage: profilePictureUrl);
 
-            // Zapisz zmiany w repozytorium
+            // Save the changes to the repository
             await _userRepository.UpdateAsync(user, cancellationToken);
 
             _logger.LogInformation("Zaktualizowano zdjęcie profilowe użytkownika {UserId} z IDP", userId);

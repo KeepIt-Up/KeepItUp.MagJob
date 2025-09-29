@@ -4,33 +4,25 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji uprawnień roli w organizacji.
+/// Endpoint to update the permissions of a role in an organization.
 /// </summary>
 /// <remarks>
-/// Aktualizuje uprawnienia roli w organizacji o podanym identyfikatorze.
+/// Updates the permissions of a role in an organization with the given identifier.
 /// </remarks>
 public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<UpdateRolePermissionsRequest>
+    : BaseEndpoint<UpdateRolePermissionsRequest, EmptyResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Put(UpdateRolePermissionsRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("UpdateRolePermissions")
-            .Produces(204)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Aktualizuje uprawnienia roli w organizacji";
-            s.Description = "Aktualizuje uprawnienia roli w organizacji o podanym identyfikatorze";
+            s.Summary = "Updates the permissions of a role in an organization";
+            s.Description = "Updates the permissions of a role in an organization with the given identifier";
             s.ExampleRequest = new UpdateRolePermissionsRequest
             {
                 OrganizationId = Guid.NewGuid(),
@@ -41,12 +33,12 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{organizationId}/roles/{roleId}/permissions.
+    /// Handles the PUT /api/organizations/{organizationId}/roles/{roleId}/permissions request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
-    public override async Task HandleAsync(UpdateRolePermissionsRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
+    protected override async Task<EmptyResponse> HandleEndpointAsync(UpdateRolePermissionsRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -58,36 +50,6 @@ public class UpdateRolePermissions(IMediator mediator, ICurrentUserAccessor curr
             UserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        await SendNoContentAsync(ct);
+        return await mediator.Send(command, ct);
     }
 }

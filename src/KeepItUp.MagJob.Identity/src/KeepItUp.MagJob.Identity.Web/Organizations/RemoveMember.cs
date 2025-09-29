@@ -4,44 +4,36 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Endpoint do usunięcia członka z organizacji.
+/// Endpoint to remove a member from an organization.
 /// </summary>
 /// <remarks>
-/// Usuwa członka z organizacji o podanym identyfikatorze.
+/// Removes a member from an organization with the given identifier.
 /// </remarks>
 public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<RemoveMemberRequest>
+    : BaseEndpoint<RemoveMemberRequest, EmptyResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Delete(RemoveMemberRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("RemoveMember")
-            .Produces(204)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Usuwa członka z organizacji";
-            s.Description = "Usuwa członka z organizacji o podanym identyfikatorze";
+            s.Summary = "Removes a member from an organization";
+            s.Description = "Removes a member from an organization with the given identifier";
             s.ExampleRequest = new RemoveMemberRequest { OrganizationId = Guid.NewGuid(), MemberUserId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie DELETE /api/organizations/{organizationId}/members/{memberUserId}.
+    /// Handles the DELETE /api/organizations/{organizationId}/members/{memberUserId} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Pusta odpowiedź w przypadku powodzenia.</returns>
-    public override async Task HandleAsync(RemoveMemberRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Empty response in case of success.</returns>
+    protected override async Task<EmptyResponse> HandleEndpointAsync(RemoveMemberRequest req, CancellationToken ct)
     {
         var userId = currentUserAccessor.GetRequiredCurrentUserId();
 
@@ -52,36 +44,6 @@ public class RemoveMember(IMediator mediator, ICurrentUserAccessor currentUserAc
             RequestingUserId = userId
         };
 
-        var result = await mediator.Send(command, ct);
-
-        if (result.Status == ResultStatus.NotFound)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Forbidden)
-        {
-            await SendForbiddenAsync(ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Error)
-        {
-            await SendErrorsAsync(500, ct);
-            return;
-        }
-
-        if (result.Status == ResultStatus.Invalid)
-        {
-            foreach (var error in result.ValidationErrors)
-            {
-                AddError(error.ErrorMessage);
-            }
-            await SendErrorsAsync(400, ct);
-            return;
-        }
-
-        await SendNoContentAsync(ct);
+        return await mediator.Send(command, ct);
     }
 }

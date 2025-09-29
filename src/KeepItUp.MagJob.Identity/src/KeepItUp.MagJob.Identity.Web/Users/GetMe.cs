@@ -4,10 +4,10 @@ using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Endpoint do pobierania danych zalogowanego użytkownika.
+/// Endpoint to get the data of the logged in user.
 /// </summary>
 /// <remarks>
-/// Pobiera dane użytkownika na podstawie tokenu JWT.
+/// Gets the user data based on the JWT token.
 /// </remarks>
 public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
 {
@@ -16,10 +16,10 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
     private readonly ILogger<GetMe> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetMe"/>.
+    /// Initializes a new instance of the <see cref="GetMe"/> class.
     /// </summary>
     /// <param name="mediator">Mediator.</param>
-    /// <param name="profilePictureService">Serwis zdjęć profilowych.</param>
+    /// <param name="profilePictureService">Profile picture service.</param>
     /// <param name="logger">Logger.</param>
     public GetMe(
         IMediator mediator,
@@ -32,17 +32,11 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
     }
 
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
     public override void Configure()
     {
         Get("/users/me");
-        Description(b => b
-            .WithName("GetMe")
-            .Produces<GetUserByIdResponse>(200)
-            .ProducesProblem(401)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
         Summary(s =>
         {
             s.Summary = "Pobiera dane zalogowanego użytkownika";
@@ -51,13 +45,13 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
     }
 
     /// <summary>
-    /// Obsługuje żądanie GET /api/identity/users/me.
+    /// Handles the GET /api/identity/users/me request.
     /// </summary>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi użytkownika.</returns>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response containing the user data.</returns>
     public override async Task HandleAsync(CancellationToken ct)
     {
-        // Pobierz sub (identyfikator użytkownika) z tokenu
+        // Get sub (user identifier) from the token
         var subClaim = User.FindFirst("sub")?.Value;
 
         if (string.IsNullOrEmpty(subClaim) || !Guid.TryParse(subClaim, out var externalId))
@@ -88,7 +82,7 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
 
         string? profileImageUrl = result.Value.ProfileImageUrl();
 
-        // Jeśli użytkownik nie ma zdjęcia profilowego, spróbuj je pobrać z IDP
+        // If the user does not have a profile picture, try to get it from the IDP
         if (string.IsNullOrEmpty(profileImageUrl))
         {
             try
@@ -102,7 +96,7 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Nie udało się pobrać zdjęcia profilowego użytkownika {ExternalId} z IDP", externalId);
-                // Kontynuuj, nawet jeśli nie udało się pobrać zdjęcia
+                // Continue even if the profile picture could not be retrieved
             }
         }
 

@@ -2,27 +2,27 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Odpowiedź dla endpointu CreateOrganizationEndpoint.
+/// Response for the CreateOrganizationEndpoint.
 /// </summary>
 public class CreateOrganizationResponse
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa organizacji.
+    /// Organization name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis organizacji.
+    /// Organization description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Identyfikator właściciela organizacji.
+    /// Owner identifier.
     /// </summary>
     public Guid OwnerId { get; set; }
 }

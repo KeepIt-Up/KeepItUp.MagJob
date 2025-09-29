@@ -1,22 +1,22 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByMemberId;
 
 /// <summary>
-/// Zapytanie o role przypisane do członka organizacji.
+/// Query to get roles assigned to a member of an organization.
 /// </summary>
 public class GetRolesByMemberIdQuery : PaginationQuery<RoleDto>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika członka, którego role chcemy pobrać.
+    /// User identifier of the member whose roles we want to get.
     /// </summary>
     public Guid MemberUserId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid RequestingUserId { get; init; }
 }

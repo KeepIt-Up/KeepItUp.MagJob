@@ -1,12 +1,12 @@
 namespace KeepItUp.MagJob.Identity.Web.Organizations;
 
 /// <summary>
-/// Odpowiedź dla endpointu UpdateOrganizationBannerEndpoint.
+/// Response for the UpdateOrganizationBannerEndpoint.
 /// </summary>
 public class UpdateOrganizationBannerResponse
 {
     /// <summary>
-    /// URL do bannera organizacji.
+    /// Organization banner URL.
     /// </summary>
     public string BannerUrl { get; set; } = string.Empty;
 }

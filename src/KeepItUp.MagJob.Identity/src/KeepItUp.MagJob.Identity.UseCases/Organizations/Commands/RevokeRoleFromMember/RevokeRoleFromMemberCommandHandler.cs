@@ -5,17 +5,17 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFromMember;
 
 /// <summary>
-/// Handler dla komendy RevokeRoleFromMemberCommand.
+/// Handler for the RevokeRoleFromMemberCommand.
 /// </summary>
-public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFromMemberCommand, Result>
+public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFromMemberCommand, Result<EmptyResponse>>
 {
     private readonly IOrganizationRepository _repository;
     private readonly ILogger<RevokeRoleFromMemberCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="RevokeRoleFromMemberCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="RevokeRoleFromMemberCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public RevokeRoleFromMemberCommandHandler(
         IOrganizationRepository repository,
@@ -26,25 +26,22 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
     }
 
     /// <summary>
-    /// Obsługuje komendę RevokeRoleFromMemberCommand.
+    /// Handles the RevokeRoleFromMemberCommand.
     /// </summary>
-    /// <param name="request">Komenda RevokeRoleFromMemberCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
-    public async Task<Result> Handle(RevokeRoleFromMemberCommand request, CancellationToken cancellationToken)
+    /// <param name="request">RevokeRoleFromMemberCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result of the operation.</returns>
+    public async Task<Result<EmptyResponse>> Handle(RevokeRoleFromMemberCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
             var organization = await _repository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
 
-            // Walidator powinien zapewnić, że organizacja istnieje
             if (organization == null)
             {
                 return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // Sprawdź, czy użytkownik ma uprawnienia do odbierania ról
             if (organization.OwnerId != request.RequestingUserId)
             {
                 var requestingMember = organization.Members.FirstOrDefault(m => m.UserId == request.RequestingUserId);
@@ -54,46 +51,44 @@ public class RevokeRoleFromMemberCommandHandler : IRequestHandler<RevokeRoleFrom
                 }
             }
 
-            // Pobierz rolę z organizacji
-            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
-
-            // Walidator powinien zapewnić, że rola istnieje
-            if (role == null)
-            {
-                return Result.NotFound($"Nie znaleziono roli o ID {request.RoleId} w organizacji.");
-            }
-
-            // Pobierz członka organizacji
             var member = organization.Members.FirstOrDefault(m => m.UserId == request.MemberUserId);
 
-            // Walidator powinien zapewnić, że członek istnieje
             if (member == null)
             {
                 return Result.NotFound($"Użytkownik o ID {request.MemberUserId} nie jest członkiem organizacji.");
             }
 
-            // Walidator powinien zapewnić, że użytkownik ma przypisaną tę rolę
             if (!member.HasRole(request.RoleId))
             {
                 return Result.Error($"Użytkownik o ID {request.MemberUserId} nie ma przypisanej roli o ID {request.RoleId}.");
             }
 
-            // Sprawdź, czy to nie jest ostatnia rola użytkownika
-            if (member.Roles.Count == 1)
+            var role = organization.Roles.FirstOrDefault(r => r.Id == request.RoleId);
+            if (role == null)
             {
-                return Result.Error("Nie można odebrać ostatniej roli użytkownikowi. Użytkownik musi mieć przypisaną co najmniej jedną rolę.");
+                return Result.NotFound("Nie znaleziono roli.");
             }
 
-            // Odbierz rolę członkowi organizacji
-            member.RemoveRole(request.RoleId);
+            // Check if this is the last role for the member
+            if (member.Roles.Count == 1 && member.HasRole(request.RoleId))
+            {
+                return Result.Error("Nie można usunąć ostatniej roli przypisanej do członka organizacji.");
+            }
 
-            // Zapisz zmiany w repozytorium
-            await _repository.UpdateAsync(organization, cancellationToken);
+            // Check if this is an attempt to revoke owner role (but only after checking if it's the last role)
+            if (role.Name.Equals("Admin", StringComparison.OrdinalIgnoreCase) &&
+                organization.OwnerId == request.MemberUserId &&
+                member.Roles.Count > 1)
+            {
+                return Result.Error("Nie można odebrać roli właściciela.");
+            }
+
+            await _repository.RemoveRoleFromMemberAsync(member.Id, request.RoleId, cancellationToken);
 
             _logger.LogInformation("Odebrano rolę o ID {RoleId} użytkownikowi o ID {UserId} w organizacji o ID {OrganizationId}",
                 request.RoleId, request.MemberUserId, organization.Id);
 
-            return Result.Success();
+            return Result.Success(new EmptyResponse());
         }
         catch (Exception ex)
         {

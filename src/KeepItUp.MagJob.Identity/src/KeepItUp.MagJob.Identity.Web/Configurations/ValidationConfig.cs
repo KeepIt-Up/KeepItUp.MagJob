@@ -3,22 +3,18 @@
 namespace KeepItUp.MagJob.Identity.Web.Configurations;
 
 /// <summary>
-/// Konfiguracja walidacji dla aplikacji
+/// Validation configuration for the application
 /// </summary>
 public static class ValidationConfig
 {
     /// <summary>
-    /// Dodaje konfigurację walidacji do kolekcji usług
+    /// Adds validation configuration to the service collection
     /// </summary>
-    /// <param name="services">Kolekcja usług</param>
+    /// <param name="services">Service collection</param>
     /// <param name="logger">Logger</param>
-    /// <returns>Kolekcja usług</returns>
+    /// <returns>Service collection</returns>
     public static IServiceCollection AddValidationConfig(this IServiceCollection services, Microsoft.Extensions.Logging.ILogger logger)
     {
-        // Rejestracja walidatorów FastEndpoints (warstwa Web)
-        // Działa automatycznie - FastEndpoints odkrywa walidatory zgodnie z konwencją nazewnictwa
-
-        // Rejestracja walidatorów FluentValidation (warstwa UseCases)
         services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
 
         logger.LogInformation("{Project} validation registered", "Web and UseCases validators");

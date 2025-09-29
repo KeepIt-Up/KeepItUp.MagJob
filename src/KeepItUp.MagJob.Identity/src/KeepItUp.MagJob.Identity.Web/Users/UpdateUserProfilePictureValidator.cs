@@ -1,12 +1,12 @@
 ﻿namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Walidator dla żądania aktualizacji zdjęcia profilowego użytkownika.
+/// Validator for the UpdateUserProfilePictureRequest.
 /// </summary>
 public class UpdateUserProfilePictureValidator : Validator<UpdateUserProfilePictureRequest>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateUserProfilePictureValidator"/>.
+    /// Initializes a new instance of the <see cref="UpdateUserProfilePictureValidator"/> class.
     /// </summary>
     public UpdateUserProfilePictureValidator()
     {

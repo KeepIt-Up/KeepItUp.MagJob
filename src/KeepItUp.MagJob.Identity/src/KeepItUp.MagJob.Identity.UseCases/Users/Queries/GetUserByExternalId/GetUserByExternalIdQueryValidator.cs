@@ -3,12 +3,12 @@ using FluentValidation;
 namespace KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
 
 /// <summary>
-/// Walidator dla zapytania GetUserByExternalIdQuery.
+/// Validator for the GetUserByExternalIdQuery.
 /// </summary>
 public class GetUserByExternalIdQueryValidator : AbstractValidator<GetUserByExternalIdQuery>
 {
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetUserByExternalIdQueryValidator"/>.
+    /// Initializes a new instance of the <see cref="GetUserByExternalIdQueryValidator"/> class.
     /// </summary>
     public GetUserByExternalIdQueryValidator()
     {

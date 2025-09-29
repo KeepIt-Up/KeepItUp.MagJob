@@ -7,9 +7,13 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Config;
 
 public class UserConfiguration : BaseEntityConfiguration<User>
 {
+    protected override string GetTableName() => DataSchemaConstants.USERS_TABLE;
+
     public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
+
+        #region Properties
 
         builder.Property(u => u.ExternalId)
             .IsRequired()
@@ -30,7 +34,11 @@ public class UserConfiguration : BaseEntityConfiguration<User>
         builder.Property(u => u.IsActive)
             .IsRequired();
 
-        // Konfiguracja Value Object UserProfile
+        #endregion
+
+        #region Relationships
+
+        // Configure the Value Object UserProfile
         builder.OwnsOne(u => u.Profile, profile =>
         {
             profile.Property(p => p.PhoneNumber)
@@ -42,12 +50,12 @@ public class UserConfiguration : BaseEntityConfiguration<User>
             profile.Property(p => p.ProfileImage)
                 .HasMaxLength(DataSchemaConstants.DEFAULT_PROFILE_IMAGE_LENGTH);
 
-            // Dodanie właściwości dyskryminatora, aby EF Core mógł określić, czy encja istnieje
+            // Add the discriminator property to determine if the entity exists
             profile.Property<bool>("IsProfileCreated")
                 .HasDefaultValue(true);
         });
 
-        // Konfiguracja kolekcji Permissions (jako lista stringów)
+        // Configure the collection of Permissions (as a list of strings)
         builder.Property<List<string>>("_permissions")
             .HasColumnName("Permissions")
             .HasConversion(
@@ -58,16 +66,20 @@ public class UserConfiguration : BaseEntityConfiguration<User>
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
 
-        // Konfiguracja relacji z Member
+        // Configure the relationship with Member
         builder.HasMany(u => u.Memberships)
             .WithOne()
             .HasForeignKey(m => m.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Indeksy
-        builder.HasIndex(u => u.ExternalId).IsUnique();
-        builder.HasIndex(u => u.Email).IsUnique();
-    }
+        #endregion
 
-    protected override string GetTableName() => DataSchemaConstants.USERS_TABLE;
+        #region Indexes
+
+        builder.HasIndex(u => u.ExternalId).IsUnique();
+
+        builder.HasIndex(u => u.Email).IsUnique();
+
+        #endregion
+    }
 }

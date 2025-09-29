@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { NotificationService } from '@shared/services/notification.service';
 import { StateService } from '@shared/services/state.service';
 import {
   PaginatedResponse,
@@ -22,7 +21,6 @@ export class OrganizationService {
   private invitationStateService = new StateService<PaginatedResponse<Invitation>>();
 
   private apiService = inject(OrganizationApiService);
-  private notificationService = inject(NotificationService);
 
   state$ = this.stateService.state$;
   $organization = computed(() => this.stateService.state$().data);
@@ -52,11 +50,9 @@ export class OrganizationService {
     return this.apiService.update(organizationId, payload).pipe(
       tap(organization => {
         this.stateService.setData(organization);
-        this.notificationService.show('Organization updated successfully', 'success');
       }),
       catchError(error => {
         this.stateService.setError(error);
-        this.notificationService.show('Failed to update organization', 'error');
         return throwError(() => error);
       }),
     );
@@ -75,11 +71,9 @@ export class OrganizationService {
           const updatedOrg = { ...currentOrg, logoUrl: response.logoUrl };
           this.stateService.setData(updatedOrg);
         }
-        this.notificationService.show('Organization logo updated successfully', 'success');
       }),
       catchError(error => {
         this.stateService.setError(error);
-        this.notificationService.show('Failed to update organization logo', 'error');
         return throwError(() => error);
       }),
     );
@@ -98,25 +92,21 @@ export class OrganizationService {
           const updatedOrg = { ...currentOrg, bannerUrl: response.bannerUrl };
           this.stateService.setData(updatedOrg);
         }
-        this.notificationService.show('Organization banner updated successfully', 'success');
       }),
       catchError(error => {
         this.stateService.setError(error);
-        this.notificationService.show('Failed to update organization banner', 'error');
         return throwError(() => error);
       }),
     );
   }
 
-  createOrganization(payload: CreateOrganizationPayload): Observable<any> {
+  createOrganization(payload: CreateOrganizationPayload): Observable<Organization> {
     return this.apiService.create(payload).pipe(
       tap(organization => {
         this.stateService.setData(organization);
-        this.notificationService.show('Organization created successfully', 'success');
       }),
       catchError(error => {
         this.stateService.setError(error);
-        this.notificationService.show('Failed to create organization', 'error');
         return throwError(() => error);
       }),
     );

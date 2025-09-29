@@ -1,18 +1,19 @@
 ﻿using KeepItUp.MagJob.Identity.Core.Exceptions;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Implementacja repozytorium użytkownika
+/// Implementation of the user repository
 /// </summary>
 public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _dbContext;
 
     /// <summary>
-    /// Inicjalizuje instancję repozytorium
+    /// Initializes the repository instance
     /// </summary>
     public UserRepository(AppDbContext dbContext)
     {
@@ -75,36 +76,26 @@ public class UserRepository : IUserRepository
     {
         try
         {
-            // Pobierz aktualną wersję użytkownika z bazy danych
-            var existingUser = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken);
+            // Check if there's already a tracked entity with the same key
+            var existingTrackedEntity = _dbContext.ChangeTracker.Entries<User>()
+                .FirstOrDefault(e => e.Entity.Id == user.Id);
 
-            if (existingUser == null)
+            if (existingTrackedEntity != null)
             {
-                throw new EntityNotFoundException($"User with ID {user.Id} not found.");
+                // Detach the existing entity
+                existingTrackedEntity.State = EntityState.Detached;
             }
 
-            // Aktualizacja daty logowania
-            if (user.LastLoginDate != existingUser.LastLoginDate)
-            {
-                existingUser.UpdateLastLoginDate(user.LastLoginDate);
-            }
+            // Now attach and update the new entity
+            _dbContext.Users.Attach(user);
+            var entry = _dbContext.Entry(user);
+            entry.State = EntityState.Modified;
 
-            // Aktualizacja statusu aktywności
-            if (user.IsActive != existingUser.IsActive)
+            // Mark owned types as modified to ensure they are updated
+            if (user.Profile != null)
             {
-                if (user.IsActive)
-                {
-                    existingUser.Activate();
-                }
-                else
-                {
-                    existingUser.Deactivate();
-                }
+                entry.Reference(u => u.Profile).TargetEntry!.State = EntityState.Modified;
             }
-
-            // Pozostałe aktualizacje mogą być dodane tutaj w zależności od potrzeb
-            // np. UpdateProfile, UpdatePermissions, itp.
 
             await _dbContext.SaveChangesAsync(cancellationToken);
         }

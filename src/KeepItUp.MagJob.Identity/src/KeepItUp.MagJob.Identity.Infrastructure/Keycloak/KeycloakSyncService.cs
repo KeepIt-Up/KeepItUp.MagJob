@@ -1,5 +1,4 @@
-﻿using Ardalis.Specification;
-using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using KeepItUp.MagJob.Identity.Core.UserAggregate;
 using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
@@ -7,7 +6,7 @@ using KeepItUp.MagJob.Identity.Core.UserAggregate.Repositories;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Implementacja serwisu do synchronizacji danych między modułem Identity a Keycloak
+/// Implementation of the service for synchronizing data between the Identity module and Keycloak
 /// </summary>
 public class KeycloakSyncService : IKeycloakSyncService
 {
@@ -17,12 +16,12 @@ public class KeycloakSyncService : IKeycloakSyncService
     private readonly ILogger<KeycloakSyncService> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakSyncService"/>
+    /// Initializes a new instance of the <see cref="KeycloakSyncService"/> class.
     /// </summary>
-    /// <param name="keycloakClient">Klient Keycloak</param>
-    /// <param name="userRepository">Repozytorium użytkowników</param>
-    /// <param name="organizationRepository">Repozytorium organizacji</param>
-    /// <param name="logger">Logger</param>
+    /// <param name="keycloakClient">Keycloak client.</param>
+    /// <param name="userRepository">User repository.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="logger">Logger.</param>
     public KeycloakSyncService(
         IKeycloakClient keycloakClient,
         IUserRepository userRepository,
@@ -42,7 +41,7 @@ public class KeycloakSyncService : IKeycloakSyncService
         {
             _logger.LogInformation("Rozpoczęto synchronizację ról użytkownika {UserId} z Keycloak", userId);
 
-            // Pobierz użytkownika z naszej bazy danych
+            // Get the user from our database
             var user = await _userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
             if (user == null)
             {
@@ -50,21 +49,21 @@ public class KeycloakSyncService : IKeycloakSyncService
                 return;
             }
 
-            // Pobierz role użytkownika z Keycloak
+            // Get the user's roles from Keycloak
             var keycloakRoles = await _keycloakClient.GetUserRolesAsync(userId, cancellationToken);
 
-            // Mapuj role Keycloak na uprawnienia w naszej aplikacji
+            // Map the Keycloak roles to permissions in our application
             var permissions = MapRolesToPermissions(keycloakRoles);
 
-            // Aktualizuj uprawnienia użytkownika
+            // Update the user's permissions
             user.UpdatePermissions(permissions);
             await _userRepository.UpdateAsync(user, cancellationToken);
 
-            // Aktualizuj atrybuty użytkownika w Keycloak
+            // Update the user's attributes in Keycloak
             var keycloakUser = await _keycloakClient.GetUserByIdAsync(userId, cancellationToken);
             if (keycloakUser != null)
             {
-                // Dodaj informacje o organizacjach użytkownika jako atrybuty
+                // Add the user's organizations as attributes
                 var organizations = await _organizationRepository.GetByUserIdAsync(user.Id, cancellationToken);
                 var organizationIds = organizations.Select(o => o.Id.ToString()).ToList();
 
@@ -95,7 +94,7 @@ public class KeycloakSyncService : IKeycloakSyncService
         {
             _logger.LogInformation("Rozpoczęto synchronizację danych użytkownika {UserId} z Keycloak", userId);
 
-            // Pobierz dane użytkownika z Keycloak
+            // Get the user's data from Keycloak
             var keycloakUser = await _keycloakClient.GetUserByIdAsync(userId, cancellationToken);
             if (keycloakUser == null)
             {
@@ -103,12 +102,12 @@ public class KeycloakSyncService : IKeycloakSyncService
                 return;
             }
 
-            // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
+            // Check if the user already exists in our database
             var existingUser = await _userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
 
             if (existingUser == null)
             {
-                // Utwórz nowego użytkownika
+                // Create a new user
                 var newUser = User.Create(
                     keycloakUser.FirstName ?? string.Empty,
                     keycloakUser.LastName ?? string.Empty,
@@ -123,7 +122,7 @@ public class KeycloakSyncService : IKeycloakSyncService
             }
             else
             {
-                // Aktualizuj istniejącego użytkownika
+                // Update the existing user
                 existingUser.UpdateAllDetails(
                     keycloakUser.FirstName ?? string.Empty,
                     keycloakUser.LastName ?? string.Empty,
@@ -152,7 +151,7 @@ public class KeycloakSyncService : IKeycloakSyncService
         {
             _logger.LogInformation("Rozpoczęto synchronizację wszystkich użytkowników z Keycloak");
 
-            // Pobierz wszystkich użytkowników z Keycloak
+            // Get all users from Keycloak
             var keycloakUsers = await _keycloakClient.GetAllUsersAsync(cancellationToken);
 
             foreach (var keycloakUser in keycloakUsers)
@@ -165,7 +164,7 @@ public class KeycloakSyncService : IKeycloakSyncService
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Wystąpił błąd podczas synchronizacji użytkownika {UserId} z Keycloak", keycloakUser.Id);
-                    // Kontynuuj synchronizację pozostałych użytkowników
+                    // Continue with the synchronization of the remaining users
                 }
             }
 
@@ -183,14 +182,14 @@ public class KeycloakSyncService : IKeycloakSyncService
     {
         try
         {
-            // Pobierz dane użytkownika z Keycloak
+            // Get the user's data from Keycloak
             var keycloakUser = await _keycloakClient.GetUserByIdAsync(keycloakUserId, cancellationToken);
             if (keycloakUser == null)
             {
                 throw new InvalidOperationException($"Nie znaleziono użytkownika o identyfikatorze {keycloakUserId} w Keycloak");
             }
 
-            // Sprawdź, czy użytkownik już istnieje w module Identity
+            // Check if the user already exists in our database
             var existingUser = await _userRepository.GetByExternalIdAsync(Guid.Parse(keycloakUserId), cancellationToken);
 
             if (existingUser != null)
@@ -199,7 +198,7 @@ public class KeycloakSyncService : IKeycloakSyncService
                 return existingUser.Id;
             }
 
-            // Utwórz nowego użytkownika w module Identity
+            // Create a new user in our database
             var newUser = User.Create(
                 keycloakUser.FirstName ?? string.Empty,
                 keycloakUser.LastName ?? string.Empty,
@@ -223,16 +222,15 @@ public class KeycloakSyncService : IKeycloakSyncService
     }
 
     /// <summary>
-    /// Mapuje role Keycloak na uprawnienia w naszej aplikacji
+    /// Maps Keycloak roles to permissions in our application
     /// </summary>
-    /// <param name="roles">Role z Keycloak</param>
-    /// <returns>Lista uprawnień</returns>
+    /// <param name="roles">Roles from Keycloak.</param>
+    /// <returns>List of permissions.</returns>
     private List<string> MapRolesToPermissions(List<string> roles)
     {
         var permissions = new List<string>();
 
-        // Mapowanie ról na uprawnienia
-        // To jest przykładowa implementacja, którą należy dostosować do rzeczywistych potrzeb
+        // This is a sample implementation, which should be adapted to the actual needs
         foreach (var role in roles)
         {
             switch (role)
@@ -262,7 +260,7 @@ public class KeycloakSyncService : IKeycloakSyncService
             }
         }
 
-        // Usuń duplikaty
+        // Remove duplicates
         return permissions.Distinct().ToList();
     }
 }

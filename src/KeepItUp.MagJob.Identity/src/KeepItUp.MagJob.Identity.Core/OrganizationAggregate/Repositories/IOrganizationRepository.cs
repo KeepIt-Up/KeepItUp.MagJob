@@ -4,188 +4,144 @@ using KeepItUp.MagJob.Identity.SharedKernel.Pagination;
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 
 /// <summary>
-/// Repozytorium dla encji Organization
+/// Repository for the Organization entity.
 /// </summary>
 public interface IOrganizationRepository
 {
     /// <summary>
-    /// Pobiera organizację po ID
+    /// Gets an organization by its ID.
     /// </summary>
     Task<Organization?> GetByIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera organizację po ID wraz z rolami
+    /// Gets an organization by its ID with roles.
     /// </summary>
     Task<Organization?> GetByIdWithRolesAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera organizację po ID wraz z członkami
+    /// Gets an organization by its ID with members.
     /// </summary>
     Task<Organization?> GetByIdWithMembersAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera organizację po ID wraz z członkami i rolami
+    /// Gets an organization by its ID with members and roles.
     /// </summary>
     Task<Organization?> GetByIdWithMembersAndRolesAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Pobiera organizację po ID wraz z zaproszeniami
-    /// </summary>
-    Task<Organization?> GetByIdWithInvitationsAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera organizację po nazwie
+    /// Gets an organization by its name.
     /// </summary>
     Task<Organization?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera organizacje dla danego użytkownika
+    /// Gets organizations for a given user.
     /// </summary>
     Task<List<Organization>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Sprawdza czy użytkownik jest członkiem organizacji
+    /// Checks if a user is a member of an organization.
     /// </summary>
     Task<bool> HasMemberAsync(Guid organizationId, Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Sprawdza czy organizacja o podanym identyfikatorze istnieje
+    /// Checks if an organization with the given ID exists.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false</returns>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True, if the organization exists; otherwise false.</returns>
     Task<bool> ExistsAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Sprawdza czy organizacja o podanej nazwie istnieje
+    /// Checks if an organization with the given name exists.
     /// </summary>
-    /// <param name="name">Nazwa organizacji</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>True, jeśli organizacja istnieje; w przeciwnym razie false</returns>
+    /// <param name="name">Organization name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True, if the organization exists; otherwise false.</returns>
     Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Dodaje organizację
+    /// Adds an organization.
     /// </summary>
     Task<Organization> AddAsync(Organization organization, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Aktualizuje organizację
+    /// Updates an organization.
     /// </summary>
     Task UpdateAsync(Organization organization, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Usuwa organizację
+    /// Deletes an organization.
     /// </summary>
     Task DeleteAsync(Organization organization, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera członków organizacji po ID organizacji.
+    /// Gets members of an organization by its ID.
     /// </summary>
     Task<List<Member>> GetMembersByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Pobiera zaproszenia do organizacji po ID organizacji.
-    /// </summary>
-    Task<List<Invitation>> GetInvitationsByOrganizationIdAsync(Guid organizationId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera zaproszenie po ID.
+    /// Updates a role's permissions.
     /// </summary>
-    Task<Invitation?> GetInvitationByIdAsync(Guid id, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Dodaje nowe zaproszenie.
-    /// </summary>
-    Task<Invitation> AddInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Aktualizuje zaproszenie.
-    /// </summary>
-    Task UpdateInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Usuwa zaproszenie.
-    /// </summary>
-    Task DeleteInvitationAsync(Invitation invitation, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Aktualizuje uprawnienia roli.
-    /// </summary>
-    /// <param name="roleId">Identyfikator roli</param>
-    /// <param name="permissionNames">Lista nazw uprawnień do przypisania</param>
-    /// <param name="cancellationToken">Token anulowania</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="permissionNames">List of permission names to assign.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Task</returns>
     Task UpdateRolePermissionsAsync(Guid roleId, IEnumerable<string> permissionNames, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Usuwa rolę z organizacji.
+    /// Deletes a role from an organization.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="roleId">Identyfikator roli</param>
-    /// <param name="cancellationToken">Token anulowania</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Task</returns>
     Task DeleteRoleAsync(Guid organizationId, Guid roleId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera stronicowaną listę organizacji dla danego użytkownika.
+    /// Gets a paginated list of organizations for a given user.
     /// </summary>
     Task<PaginationResult<TDestination>> GetOrganizationsByUserIdAsync<TDestination>(Guid userId, Expression<Func<Organization, TDestination>> selector, PaginationParameters<TDestination> parameters, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera stronicowaną listę członków organizacji.
+    /// Gets a paginated list of members of an organization.
     /// </summary>
-    /// <typeparam name="TDestination">Typ docelowy</typeparam>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="selector">Selektor mapujący z Member na TDestination</param>
-    /// <param name="parameters">Parametry paginacji</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Wynik paginacji</returns>
+    /// <typeparam name="TDestination">Destination type.</typeparam>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="selector">Selector mapping from Member to TDestination.</param>
+    /// <param name="parameters">Pagination parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Pagination result.</returns>
     Task<PaginationResult<TDestination>> GetMembersByOrganizationIdWithPaginationAsync<TDestination>(
         Guid organizationId,
         Expression<Func<Member, TDestination>> selector,
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Pobiera stronicowaną listę zaproszeń do organizacji.
-    /// </summary>
-    /// <typeparam name="TDestination">Typ docelowy</typeparam>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="selector">Selektor mapujący z Invitation na TDestination</param>
-    /// <param name="parameters">Parametry paginacji</param>
-    /// <param name="filter">Opcjonalny filtr dla zaproszeń (np. tylko oczekujące)</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Wynik paginacji</returns>
-    Task<PaginationResult<TDestination>> GetInvitationsByOrganizationIdWithPaginationAsync<TDestination>(
-        Guid organizationId,
-        Expression<Func<Invitation, TDestination>> selector,
-        PaginationParameters<TDestination> parameters,
-        Expression<Func<Invitation, bool>>? filter = null,
-        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera listę uprawnień z paginacją.
+    /// Gets a paginated list of permissions.
     /// </summary>
-    /// <typeparam name="TDestination">Typ docelowy, na który mapowane są uprawnienia.</typeparam>
-    /// <param name="selector">Selektor określający mapowanie z Permission na typ docelowy.</param>
-    /// <param name="parameters">Parametry paginacji.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Spaginowany wynik uprawnień.</returns>
+    /// <typeparam name="TDestination">Destination type.</typeparam>
+    /// <param name="selector">Selector mapping from Permission to TDestination.</param>
+    /// <param name="parameters">Pagination parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Paginated result of permissions.</returns>
     Task<PaginationResult<TDestination>> GetPermissionsWithPaginationAsync<TDestination>(
         Expression<Func<Permission, TDestination>> selector,
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera stronicowaną listę ról dla organizacji.
+    /// Gets a paginated list of roles for an organization.
     /// </summary>
-    /// <typeparam name="TDestination">Typ docelowy</typeparam>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="selector">Selektor mapujący z Role na TDestination</param>
-    /// <param name="parameters">Parametry paginacji</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Wynik paginacji</returns>
+    /// <typeparam name="TDestination">Destination type.</typeparam>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="selector">Selector mapping from Role to TDestination.</param>
+    /// <param name="parameters">Pagination parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Pagination result.</returns>
     Task<PaginationResult<TDestination>> GetRolesByOrganizationIdWithPaginationAsync<TDestination>(
         Guid organizationId,
         Expression<Func<Role, TDestination>> selector,
@@ -193,19 +149,35 @@ public interface IOrganizationRepository
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Pobiera stronicowaną listę ról dla członka organizacji.
+    /// Gets a paginated list of roles for a member of an organization.
     /// </summary>
-    /// <typeparam name="TDestination">Typ docelowy</typeparam>
-    /// <param name="organizationId">Identyfikator organizacji</param>
-    /// <param name="memberUserId">Identyfikator użytkownika członka</param>
-    /// <param name="selector">Selektor mapujący z Role na TDestination</param>
-    /// <param name="parameters">Parametry paginacji</param>
-    /// <param name="cancellationToken">Token anulowania</param>
-    /// <returns>Wynik paginacji</returns>
+    /// <typeparam name="TDestination">Destination type.</typeparam>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="memberUserId">User ID of the member.</param>
+    /// <param name="selector">Selector mapping from Role to TDestination.</param>
+    /// <param name="parameters">Pagination parameters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Pagination result.</returns>
     Task<PaginationResult<TDestination>> GetRolesByMemberIdWithPaginationAsync<TDestination>(
         Guid organizationId,
         Guid memberUserId,
         Expression<Func<Role, TDestination>> selector,
         PaginationParameters<TDestination> parameters,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Adds a role to a member using direct SQL as a workaround for EF Core many-to-many issues.
+    /// </summary>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task AddRoleToMemberAsync(Guid memberId, Guid roleId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a role from a member using direct SQL as a workaround for EF Core many-to-many issues.
+    /// </summary>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="roleId">Role ID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task RemoveRoleFromMemberAsync(Guid memberId, Guid roleId, CancellationToken cancellationToken = default);
 }

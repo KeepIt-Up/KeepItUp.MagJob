@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Serwis nasłuchujący zdarzeń z Keycloak
+/// Service listening for events from Keycloak
 /// </summary>
 public class KeycloakEventListener : BackgroundService
 {
@@ -21,13 +21,13 @@ public class KeycloakEventListener : BackgroundService
     private DateTime _lastEventTime = DateTime.UtcNow.AddMinutes(-5); // Start by fetching events from 5 minutes ago
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="KeycloakEventListener"/>
+    /// Initializes a new instance of the <see cref="KeycloakEventListener"/> class.
     /// </summary>
-    /// <param name="keycloakClient">Klient Keycloak</param>
+    /// <param name="keycloakClient">Keycloak client</param>
     /// <param name="logger">Logger</param>
-    /// <param name="keycloakOptions">Opcje Keycloak</param>
-    /// <param name="httpClientFactory">Fabryka klientów HTTP</param>
-    /// <param name="serviceScopeFactory">Fabryka zakresów usług</param>
+    /// <param name="keycloakOptions">Keycloak options</param>
+    /// <param name="httpClientFactory">HTTP client factory</param>
+    /// <param name="serviceScopeFactory">Service scope factory</param>
     public KeycloakEventListener(
         IKeycloakClient keycloakClient,
         ILogger<KeycloakEventListener> logger,
@@ -62,19 +62,19 @@ public class KeycloakEventListener : BackgroundService
                     _semaphore.Release();
                 }
 
-                // Poczekaj przed kolejnym sprawdzeniem zdarzeń
+                // Wait before checking for events again
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
-                // Normalne zakończenie
+                // Normal termination
                 break;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Błąd podczas przetwarzania zdarzeń Keycloak");
 
-                // Poczekaj przed ponowną próbą
+                // Wait before trying again
                 try
                 {
                     await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
@@ -93,7 +93,6 @@ public class KeycloakEventListener : BackgroundService
     {
         try
         {
-            // Pobierz token klienta usługi
             _logger.LogDebug("Pobieranie tokenu klienta usługi Keycloak");
             var token = await _keycloakClient.GetAdminAccessTokenAsync(cancellationToken);
 
@@ -106,11 +105,11 @@ public class KeycloakEventListener : BackgroundService
             _logger.LogDebug("Token klienta usługi Keycloak pobrany pomyślnie");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            // Pobierz zdarzenia od ostatniego sprawdzenia
-            // Konwertuj datę na format yyyy-MM-dd wymagany przez Keycloak
+            // Get events from the last check
+            // Convert the date to the yyyy-MM-dd format required by Keycloak
             var fromDate = _lastEventTime.ToString("yyyy-MM-dd");
 
-            // Endpoint do pobierania zdarzeń użytkowników
+            // Endpoint for getting user events
             var eventsUrl = $"/admin/realms/{_keycloakOptions.Realm}/events?first=0&max=100&dateFrom={fromDate}";
             _logger.LogDebug("Pobieranie zdarzeń Keycloak z URL: {Url}", eventsUrl);
 
@@ -129,7 +128,7 @@ public class KeycloakEventListener : BackgroundService
                     _logger.LogWarning("Konto usługi nie ma wystarczających uprawnień do pobierania zdarzeń. " +
                                       "Upewnij się, że konto usługi ma przypisaną rolę 'view-events' w Keycloak.");
 
-                    // Spróbuj pobrać informacje o koncie usługi, aby zweryfikować, jakie role są przypisane
+                    // Try to get information about the service account to verify which roles are assigned
                     try
                     {
                         var serviceAccountUrl = $"/admin/realms/{_keycloakOptions.Realm}/users?username=service-account-{_keycloakOptions.ClientId}";
@@ -166,14 +165,14 @@ public class KeycloakEventListener : BackgroundService
 
             _logger.LogInformation("Pobrano {Count} zdarzeń z Keycloak", events.Count);
 
-            // Aktualizuj czas ostatniego zdarzenia
+            // Update the time of the last event
             var latestEventTime = events.Max(e => e.Time);
             if (latestEventTime > 0)
             {
                 _lastEventTime = DateTimeOffset.FromUnixTimeMilliseconds(latestEventTime).UtcDateTime;
             }
 
-            // Przetwórz zdarzenia
+            // Process events
             foreach (var keycloakEvent in events.OrderBy(e => e.Time))
             {
                 try
@@ -206,7 +205,7 @@ public class KeycloakEventListener : BackgroundService
                 break;
 
             case "LOGIN":
-                // Możemy zaktualizować ostatnie logowanie użytkownika
+                // We can update the last login of the user
                 await HandleUserLoginEventAsync(keycloakEvent.UserId, cancellationToken);
                 break;
 
@@ -215,7 +214,7 @@ public class KeycloakEventListener : BackgroundService
                 break;
 
             case "UPDATE_PASSWORD":
-                // Możemy zareagować na zmianę hasła
+                // We can react to the password change
                 _logger.LogInformation("Użytkownik {UserId} zmienił hasło", keycloakEvent.UserId);
                 break;
 
@@ -255,9 +254,9 @@ public class KeycloakEventListener : BackgroundService
                 }
                 catch (KeepItUp.MagJob.Identity.Core.Exceptions.ConcurrencyException)
                 {
-                    // W przypadku konfliktu współbieżności możemy spróbować ponownie
+                    // In case of a concurrency conflict, we can try again
                     _logger.LogWarning("Wystąpił konflikt współbieżności podczas aktualizacji daty logowania dla użytkownika {UserId}, ignorowanie", userId);
-                    // Ignorujemy błąd współbieżności - data logowania nie jest krytyczną informacją
+                    // Ignore the concurrency error - the login date is not a critical information
                 }
             }
             else
@@ -287,7 +286,7 @@ public class KeycloakEventListener : BackgroundService
             var user = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
             if (user != null)
             {
-                // Możemy oznaczyć użytkownika jako nieaktywnego zamiast go usuwać
+                // We can mark the user as inactive instead of deleting them
                 user.Deactivate();
 
                 try
@@ -297,10 +296,10 @@ public class KeycloakEventListener : BackgroundService
                 }
                 catch (KeepItUp.MagJob.Identity.Core.Exceptions.ConcurrencyException ex)
                 {
-                    // W przypadku konfliktu współbieżności, odczytaj ponownie użytkownika i spróbuj jeszcze raz
+                    // In case of a concurrency conflict, read the user again and try again
                     _logger.LogWarning(ex, "Wystąpił konflikt współbieżności podczas dezaktywacji użytkownika {UserId}, próba ponowna", userId);
 
-                    // Pobierz użytkownika ponownie i spróbuj zaktualizować
+                    // Read the user again and try to update
                     var refreshedUser = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
                     if (refreshedUser != null && refreshedUser.IsActive)
                     {
@@ -350,23 +349,23 @@ public class KeycloakEventListener : BackgroundService
             var keycloakSyncService = scope.ServiceProvider.GetRequiredService<IKeycloakSyncService>();
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-            // Sprawdź, czy użytkownik już istnieje w naszej bazie danych
+            // Check if the user already exists in our database
             var existingUser = await userRepository.GetByExternalIdAsync(Guid.Parse(userId), cancellationToken);
 
             if (existingUser != null)
             {
-                // Aktualizuj istniejącego użytkownika
+                // Update the existing user
                 await keycloakSyncService.SyncUserDataAsync(userId, cancellationToken);
                 _logger.LogInformation("Zaktualizowano dane użytkownika {UserId} z Keycloak", userId);
             }
             else
             {
-                // Importuj nowego użytkownika
+                // Import the new user
                 await keycloakSyncService.SyncUserDataAsync(userId, cancellationToken);
                 _logger.LogInformation("Zaimportowano nowego użytkownika {UserId} z Keycloak", userId);
             }
 
-            // Synchronizuj role użytkownika
+            // Synchronize the user's roles
             await keycloakSyncService.SyncUserRolesAsync(userId, cancellationToken);
         }
         catch (Exception ex)

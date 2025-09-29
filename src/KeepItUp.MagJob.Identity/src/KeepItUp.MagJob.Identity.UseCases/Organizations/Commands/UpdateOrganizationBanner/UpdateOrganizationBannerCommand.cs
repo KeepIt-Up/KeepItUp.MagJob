@@ -1,24 +1,25 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationBanner;
 
 /// <summary>
-/// Komenda do aktualizacji bannera organizacji.
+/// Command to update the banner of an organization.
 /// </summary>
-public record UpdateOrganizationBannerCommand : IRequest<Result>
+public record UpdateOrganizationBannerCommand : IRequest<Result<string>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// URL do bannera organizacji.
+    /// Organization banner file.
     /// </summary>
-    public string BannerUrl { get; init; } = string.Empty;
+    public IFormFile BannerFile { get; init; } = null!;
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid UserId { get; init; }
 }

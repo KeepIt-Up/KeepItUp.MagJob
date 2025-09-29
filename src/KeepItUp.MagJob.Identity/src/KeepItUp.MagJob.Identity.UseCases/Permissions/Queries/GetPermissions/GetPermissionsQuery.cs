@@ -1,12 +1,12 @@
 ﻿namespace KeepItUp.MagJob.Identity.UseCases.Permissions.Queries.GetPermissions;
 
 /// <summary>
-/// Zapytanie o wszystkie dostępne uprawnienia w systemie.
+/// Query to get all available permissions in the system.
 /// </summary>
 public class GetPermissionsQuery : PaginationQuery<PermissionDto>
 {
     /// <summary>
-    /// Identyfikator użytkownika wykonującego zapytanie.
+    /// User identifier performing the query.
     /// </summary>
     public Guid UserId { get; init; }
 }

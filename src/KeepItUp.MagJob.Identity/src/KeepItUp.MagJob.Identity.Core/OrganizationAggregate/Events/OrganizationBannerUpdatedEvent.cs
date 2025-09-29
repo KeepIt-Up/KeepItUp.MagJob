@@ -1,25 +1,25 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie aktualizacji bannera organizacji.
+/// Domain event informing about the update of an organization's banner.
 /// </summary>
 public class OrganizationBannerUpdatedEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// URL do bannera organizacji.
+    /// URL of the organization's banner.
     /// </summary>
     public string? BannerUrl { get; }
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="OrganizationBannerUpdatedEvent"/>.
+    /// Creates a new OrganizationBannerUpdatedEvent.
     /// </summary>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="bannerUrl">URL do bannera organizacji.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="bannerUrl">URL of the organization's banner.</param>
     public OrganizationBannerUpdatedEvent(Guid organizationId, string? bannerUrl)
     {
         OrganizationId = organizationId;

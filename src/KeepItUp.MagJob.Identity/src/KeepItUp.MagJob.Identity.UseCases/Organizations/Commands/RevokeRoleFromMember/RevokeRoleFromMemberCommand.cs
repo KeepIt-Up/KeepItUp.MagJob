@@ -3,27 +3,27 @@ using MediatR;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.RevokeRoleFromMember;
 
 /// <summary>
-/// Komenda do odebrania roli członkowi organizacji.
+/// Command to revoke a role from a member of an organization.
 /// </summary>
-public record RevokeRoleFromMemberCommand : IRequest<Result>
+public record RevokeRoleFromMemberCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika, któremu ma zostać odebrana rola.
+    /// User identifier to revoke the role from.
     /// </summary>
     public Guid MemberUserId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli do odebrania.
+    /// Role identifier to revoke.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid RequestingUserId { get; init; }
 }

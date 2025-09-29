@@ -24,7 +24,7 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Invitation", b =>
+            modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.InvitationAggregate.Invitation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,17 +41,14 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -66,8 +63,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrganizationId");
 
                     b.HasIndex("Token")
                         .IsUnique();
@@ -86,28 +81,20 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("_roleIds")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("RoleIds");
 
                     b.HasKey("Id");
 
@@ -140,6 +127,9 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LogoUrl")
                         .HasColumnType("text");
 
@@ -150,12 +140,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -248,6 +232,9 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -255,12 +242,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -303,6 +284,9 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("LastLoginDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -310,12 +294,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -372,15 +350,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions", "identity");
-                });
-
-            modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Invitation", b =>
-                {
-                    b.HasOne("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Organization", null)
-                        .WithMany("Invitations")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Member", b =>
@@ -474,8 +443,6 @@ namespace KeepItUp.MagJob.Identity.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Organization", b =>
                 {
-                    b.Navigation("Invitations");
-
                     b.Navigation("Members");
 
                     b.Navigation("Roles");

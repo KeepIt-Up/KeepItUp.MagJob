@@ -1,29 +1,30 @@
+using FastEndpoints;
 using MediatR;
 
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.AssignRoleToMember;
 
 /// <summary>
-/// Komenda do przypisania roli członkowi organizacji.
+/// Command to assign a role to a member of an organization.
 /// </summary>
-public record AssignRoleToMemberCommand : IRequest<Result>
+public record AssignRoleToMemberCommand : IRequest<Result<EmptyResponse>>
 {
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization identifier.
     /// </summary>
     public Guid OrganizationId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika, któremu ma zostać przypisana rola.
+    /// User identifier to assign the role to.
     /// </summary>
     public Guid MemberUserId { get; init; }
 
     /// <summary>
-    /// Identyfikator roli do przypisania.
+    /// Role identifier to assign.
     /// </summary>
     public Guid RoleId { get; init; }
 
     /// <summary>
-    /// Identyfikator użytkownika wykonującego operację.
+    /// User identifier performing the operation.
     /// </summary>
     public Guid RequestingUserId { get; init; }
 }

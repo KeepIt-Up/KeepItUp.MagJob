@@ -15,32 +15,23 @@ builder.AddLoggerConfigs();
 var appLogger = new SerilogLoggerFactory(logger)
     .CreateLogger<Program>();
 
-// Dodaj konfigurację opcji
 builder.Services.AddOptionConfigs(builder.Configuration, appLogger, builder);
 
-// Dodaj konfigurację usług
 builder.Services.AddServiceConfigs(appLogger, builder);
 
-// Dodaj konfigurację Swagger
 builder.Services.AddSwaggerConfig(appLogger);
 
-// Dodaj uwierzytelnianie Keycloak
 builder.Services.AddKeycloakAuthentication();
 
 var app = builder.Build();
 
-// Skonfiguruj middleware
 await app.UseAppMiddlewareAndSeedDatabase();
 
-// Użyj konfiguracji Swagger
 app.UseSwaggerConfig(appLogger);
 
-// Dodaj obsługę plików statycznych
 app.UseStaticFiles();
 
-// Dodaj dodatkową konfigurację dla katalogu uploads
 var uploadPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "uploads");
-// Ensure directory exists
 if (!Directory.Exists(uploadPath))
 {
     Directory.CreateDirectory(uploadPath);

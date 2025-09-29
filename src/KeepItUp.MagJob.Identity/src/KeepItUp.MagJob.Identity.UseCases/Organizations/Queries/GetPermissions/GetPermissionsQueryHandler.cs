@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetPermissions;
 
 /// <summary>
-/// Handler dla zapytania GetPermissionsQuery.
+/// Handler for the GetPermissionsQuery.
 /// </summary>
 public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, Result<PaginationResult<PermissionDto>>>
 {
@@ -15,9 +15,9 @@ public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, R
     private readonly ILogger<GetPermissionsQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetPermissionsQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetPermissionsQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetPermissionsQueryHandler(
         IOrganizationRepository repository,
@@ -28,16 +28,15 @@ public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, R
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetPermissionsQuery.
+    /// Handles the GetPermissionsQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetPermissionsQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista wszystkich dostępnych uprawnień w systemie z paginacją.</returns>
+    /// <param name="request">GetPermissionsQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of all available permissions in the system with pagination.</returns>
     public async Task<Result<PaginationResult<PermissionDto>>> Handle(GetPermissionsQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Definiujemy selektor do mapowania Permission na PermissionDto
             Expression<Func<Permission, PermissionDto>> selector = p => new PermissionDto
             {
                 Name = p.Name,
@@ -45,7 +44,6 @@ public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, R
                 Category = DetermineCategory(p.Name)
             };
 
-            // Pobieramy uprawnienia z paginacją używając repozytorium
             var paginationResult = await _repository.GetPermissionsWithPaginationAsync(
                 selector,
                 request.PaginationParameters,
@@ -61,10 +59,10 @@ public class GetPermissionsQueryHandler : IRequestHandler<GetPermissionsQuery, R
     }
 
     /// <summary>
-    /// Określa kategorię uprawnienia na podstawie jego nazwy.
+    /// Determines the category of a permission based on its name.
     /// </summary>
-    /// <param name="permissionName">Nazwa uprawnienia.</param>
-    /// <returns>Kategoria uprawnienia.</returns>
+    /// <param name="permissionName">Permission name.</param>
+    /// <returns>Permission category.</returns>
     private static string DetermineCategory(string permissionName)
     {
         if (permissionName.StartsWith("organization"))

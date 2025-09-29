@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Organization } from '../models/organization.model';
 import {
@@ -7,9 +7,8 @@ import {
   serializePaginationOptions,
 } from '@shared/components/pagination/pagination.component';
 import { Invitation } from '../../invitations/models/invitation';
-import { BaseApiService } from '@shared/services/base-api.service';
 import { environment } from '@environments/environment';
-import { Member } from '@members/models/member';
+import { HttpClient } from '@angular/common/http';
 
 export interface CreateOrganizationPayload {
   name: string;
@@ -24,8 +23,9 @@ export interface UpdateOrganizationPayload {
 @Injectable({
   providedIn: 'root',
 })
-export class OrganizationApiService extends BaseApiService<Organization> {
-  override readonly apiUrl = `${environment.apiUrl}/api/identity/Organizations`;
+export class OrganizationApiService {
+  readonly apiUrl = `${environment.apiUrl}/api/identity/Organizations`;
+  private readonly http = inject(HttpClient);
 
   /**
    * Updates logo for an organization using FormData
@@ -68,24 +68,26 @@ export class OrganizationApiService extends BaseApiService<Organization> {
     return this.http.put(`${this.apiUrl}/${organizationId}/members/${memberId}/archive`, {});
   }
 
-  getMembers(
-    organizationId: string,
-    query: Record<any, any>,
-    paginationOptions: PaginationOptions<Member>,
-  ): Observable<PaginatedResponse<Member>> {
+  getAll(query: Record<any, any>, paginationOptions: PaginationOptions<Organization>) {
     const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/${organizationId}/members`, {
+    return this.http.get<PaginatedResponse<Organization>>(`${this.apiUrl}`, {
       params: { ...query, ...options },
     });
   }
 
-  searchMembers(
-    query: Record<any, any>,
-    paginationOptions: PaginationOptions<Member>,
-  ): Observable<PaginatedResponse<Member>> {
-    const options = serializePaginationOptions(paginationOptions);
-    return this.http.get<PaginatedResponse<Member>>(`${this.apiUrl}/members/search`, {
-      params: { ...query, ...options },
-    });
+  get(id: string) {
+    return this.http.get<Organization>(`${this.apiUrl}/${id}`);
+  }
+
+  create(payload: CreateOrganizationPayload) {
+    return this.http.post<Organization>(this.apiUrl, payload);
+  }
+
+  update(id: string, payload: Partial<Organization>) {
+    return this.http.put<Organization>(`${this.apiUrl}/${id}`, payload);
+  }
+
+  delete(id: string) {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

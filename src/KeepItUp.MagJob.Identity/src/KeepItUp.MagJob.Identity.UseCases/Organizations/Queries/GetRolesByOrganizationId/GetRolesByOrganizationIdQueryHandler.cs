@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries.GetRolesByOrganizationId;
 
 /// <summary>
-/// Handler dla zapytania GetRolesByOrganizationIdQuery.
+/// Handler for the GetRolesByOrganizationIdQuery.
 /// </summary>
 public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOrganizationIdQuery, Result<PaginationResult<RoleDto>>>
 {
@@ -15,9 +15,9 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
     private readonly ILogger<GetRolesByOrganizationIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="GetRolesByOrganizationIdQueryHandler"/>.
+    /// Initializes a new instance of the <see cref="GetRolesByOrganizationIdQueryHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="repository">Organization repository.</param>
     /// <param name="logger">Logger.</param>
     public GetRolesByOrganizationIdQueryHandler(
         IOrganizationRepository repository,
@@ -28,22 +28,20 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
     }
 
     /// <summary>
-    /// Obsługuje zapytanie GetRolesByOrganizationIdQuery.
+    /// Handles the GetRolesByOrganizationIdQuery.
     /// </summary>
-    /// <param name="request">Zapytanie GetRolesByOrganizationIdQuery.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Lista ról w organizacji z paginacją.</returns>
+    /// <param name="request">GetRolesByOrganizationIdQuery.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>List of roles in the organization with pagination.</returns>
     public async Task<Result<PaginationResult<RoleDto>>> Handle(GetRolesByOrganizationIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
-            // Sprawdź czy organizacja istnieje
             if (!await _repository.ExistsAsync(request.OrganizationId, cancellationToken))
             {
                 return Result<PaginationResult<RoleDto>>.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
             }
 
-            // // Sprawdź, czy użytkownik ma dostęp do organizacji
             // bool hasAccess = await _repository.HasMemberAsync(request.OrganizationId, request.UserId, cancellationToken);
 
             // if (!hasAccess)
@@ -51,7 +49,6 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
             //     return Result<PaginationResult<RoleDto>>.Forbidden("Brak dostępu do organizacji.");
             // }
 
-            // Definiujemy selektor do mapowania Role na RoleDto
             Expression<Func<Role, RoleDto>> selector = role => new RoleDto
             {
                 Id = role.Id,
@@ -61,7 +58,6 @@ public class GetRolesByOrganizationIdQueryHandler : IRequestHandler<GetRolesByOr
                 Permissions = role.Permissions.Select(p => p.Name).ToList()
             };
 
-            // Pobieramy role z paginacją używając repozytorium
             var paginationResult = await _repository.GetRolesByOrganizationIdWithPaginationAsync(
                 request.OrganizationId,
                 selector,

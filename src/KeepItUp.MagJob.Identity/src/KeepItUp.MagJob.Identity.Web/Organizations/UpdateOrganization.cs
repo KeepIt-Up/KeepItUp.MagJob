@@ -4,103 +4,49 @@ using KeepItUp.MagJob.Identity.Web.Services;
 namespace KeepItUp.MagJob.Identity.Web.Endpoints.Organizations;
 
 /// <summary>
-/// Endpoint do aktualizacji organizacji.
+/// Endpoint to update an organization.
 /// </summary>
 /// <remarks>
-/// Aktualizuje istniejącą organizację o podanym identyfikatorze.
+/// Updates an existing organization with the given identifier.
 /// </remarks>
 public class UpdateOrganization(IMediator mediator, ICurrentUserAccessor currentUserAccessor)
-    : Endpoint<UpdateOrganizationRequest, UpdateOrganizationResponse>
+    : BaseEndpoint<UpdateOrganizationRequest, EmptyResponse>
 {
     /// <summary>
-    /// Konfiguruje endpoint.
+    /// Configures the endpoint.
     /// </summary>
-    public override void Configure()
+    protected override void ConfigureEndpoint()
     {
         Put(UpdateOrganizationRequest.Route);
-        AllowAnonymous(); // Tymczasowo, do czasu naprawienia autoryzacji
-        Description(b => b
-            .WithName("UpdateOrganization")
-            .Produces<UpdateOrganizationResponse>(200)
-            .ProducesProblem(400)
-            .ProducesProblem(401)
-            .ProducesProblem(403)
-            .ProducesProblem(404)
-            .ProducesProblem(500));
+        AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Aktualizuje istniejącą organizację";
-            s.Description = "Aktualizuje istniejącą organizację o podanym identyfikatorze";
-            s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji" };
+            s.Summary = "Updates an existing organization";
+            s.Description = "Updates an existing organization with the given identifier";
+            s.ExampleRequest = new UpdateOrganizationRequest { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji", IsActive = true };
             s.ResponseExamples[200] = new UpdateOrganizationResponse { Id = Guid.NewGuid(), Name = "Nowa nazwa organizacji", Description = "Nowy opis organizacji", OwnerId = Guid.NewGuid() };
         });
     }
 
     /// <summary>
-    /// Obsługuje żądanie PUT /api/organizations/{id}.
+    /// Handles the PUT /api/organizations/{id} request.
     /// </summary>
-    /// <param name="req">Żądanie.</param>
-    /// <param name="ct">Token anulowania.</param>
-    /// <returns>Odpowiedź z danymi zaktualizowanej organizacji.</returns>
-    public override async Task HandleAsync(UpdateOrganizationRequest req, CancellationToken ct)
+    /// <param name="req">Request.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>Response with the updated organization data.</returns>
+    protected override async Task<EmptyResponse> HandleEndpointAsync(UpdateOrganizationRequest req, CancellationToken ct)
     {
-        try
+        var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
+
+        var command = new UpdateOrganizationCommand
         {
-            // Pobierz ID użytkownika z CurrentUserAccessor
-            var userGuid = currentUserAccessor.GetRequiredCurrentUserId();
+            Id = req.Id,
+            Name = req.Name,
+            Description = req.Description,
+            IsActive = req.IsActive,
+            UserId = userGuid
+        };
 
-            var command = new UpdateOrganizationCommand
-            {
-                Id = req.Id,
-                Name = req.Name,
-                Description = req.Description,
-                UserId = userGuid
-            };
-
-            var result = await mediator.Send(command, ct);
-
-            if (result.Status == ResultStatus.NotFound)
-            {
-                await SendNotFoundAsync(ct);
-                return;
-            }
-
-            if (result.Status == ResultStatus.Forbidden)
-            {
-                await SendForbiddenAsync(ct);
-                return;
-            }
-
-            if (result.Status == ResultStatus.Error)
-            {
-                await SendErrorsAsync(500, ct);
-                return;
-            }
-
-            if (result.Status == ResultStatus.Invalid)
-            {
-                foreach (var error in result.ValidationErrors)
-                {
-                    AddError(error.ErrorMessage);
-                }
-                await SendErrorsAsync(400, ct);
-                return;
-            }
-
-            Response = new UpdateOrganizationResponse
-            {
-                Id = req.Id,
-                Name = req.Name,
-                Description = req.Description,
-                OwnerId = userGuid // Zakładamy, że użytkownik aktualizujący jest właścicielem
-            };
-
-            await SendOkAsync(Response, ct);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            AddError("Nie można zidentyfikować użytkownika");
-            await SendErrorsAsync(401, ct);
-        }
+        return await mediator.Send(command, ct);
     }
 }

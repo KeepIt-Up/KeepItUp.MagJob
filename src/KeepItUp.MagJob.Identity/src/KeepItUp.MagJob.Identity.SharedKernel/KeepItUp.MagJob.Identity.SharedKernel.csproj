@@ -2,10 +2,11 @@
   <Sdk Name="Microsoft.Build.CentralPackageVersions" Version="2.1.3" />
 
     <ItemGroup>
+        <PackageReference Include="FastEndpoints" />
         <PackageReference Include="Ardalis.GuardClauses" />
         <PackageReference Include="Ardalis.Result" />
-        <PackageReference Include="Ardalis.SharedKernel" />
         <PackageReference Include="Ardalis.SmartEnum" />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
   </ItemGroup>

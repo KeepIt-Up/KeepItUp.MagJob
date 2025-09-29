@@ -1,12 +1,12 @@
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
 /// <summary>
-/// Odpowiedź endpointu aktualizacji zdjęcia profilowego użytkownika.
+/// Response for the UpdateUserProfilePictureEndpoint.
 /// </summary>
 public class UpdateUserProfilePictureResponse
 {
     /// <summary>
-    /// URL do zaktualizowanego zdjęcia profilowego.
+    /// URL of the updated profile picture.
     /// </summary>
     public string? ProfileImageUrl { get; set; }
 }

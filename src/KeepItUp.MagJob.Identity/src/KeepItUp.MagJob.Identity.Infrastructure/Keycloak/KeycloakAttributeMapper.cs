@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Authentication;
 namespace KeepItUp.MagJob.Identity.Infrastructure.Keycloak;
 
 /// <summary>
-/// Klasa mapująca atrybuty użytkownika z Keycloak do tokenów JWT
+/// Class mapping user attributes from Keycloak to JWT tokens
 /// </summary>
 public class KeycloakAttributeMapper
 {
     /// <summary>
-    /// Mapuje atrybuty użytkownika z Keycloak do claimów
+    /// Maps user attributes from Keycloak to claims
     /// </summary>
-    /// <param name="user">Użytkownik z Keycloak</param>
-    /// <returns>Lista claimów</returns>
+    /// <param name="user">User from Keycloak</param>
+    /// <returns>List of claims</returns>
     public static List<Claim> MapUserAttributesToClaims(KeycloakUser user)
     {
         var claims = new List<Claim>
@@ -36,13 +36,13 @@ public class KeycloakAttributeMapper
 
         if (user.Attributes != null)
         {
-            // Dodaj organizacje jako claim
+            // Add organizations as a claim
             if (user.Attributes.TryGetValue("organizations", out var organizationsValue) && organizationsValue.Count > 0)
             {
                 claims.Add(new Claim("organizations", organizationsValue[0]));
             }
 
-            // Dodaj uprawnienia jako claim
+            // Add permissions as a claim
             if (user.Attributes.TryGetValue("permissions", out var permissionsValue) && permissionsValue.Count > 0)
             {
                 foreach (var permission in permissionsValue)
@@ -56,7 +56,7 @@ public class KeycloakAttributeMapper
     }
 
     /// <summary>
-    /// Rozszerza token JWT o dodatkowe informacje z Keycloak
+    /// Extends the JWT token with additional information from Keycloak
     /// </summary>
     public class KeycloakClaimsTransformation : IClaimsTransformation
     {
@@ -70,7 +70,7 @@ public class KeycloakAttributeMapper
                 return Task.FromResult(principal);
             }
 
-            // Pobierz organizacje z tokenu
+            // Get organizations from the token
             var organizationsClaim = claimsIdentity.FindFirst("organizations")?.Value;
             if (!string.IsNullOrEmpty(organizationsClaim))
             {
@@ -79,18 +79,18 @@ public class KeycloakAttributeMapper
                     var organizations = JsonSerializer.Deserialize<List<KeycloakOrganization>>(organizationsClaim);
                     if (organizations != null)
                     {
-                        // Dodaj claim dla każdej organizacji
+                        // Add claim for each organization
                         foreach (var org in organizations)
                         {
                             claimsIdentity.AddClaim(new Claim("organization", org.Id));
 
-                            // Dodaj claim dla każdej roli w organizacji
+                            // Add claim for each role in the organization
                             foreach (var role in org.Roles)
                             {
                                 claimsIdentity.AddClaim(new Claim($"role_{org.Id}", role));
                             }
 
-                            // Dodaj claim dla uprawnień w kontekście organizacji
+                            // Add claim for permissions in the organization context
                             var permissionsClaim = claimsIdentity.FindFirst("permissions")?.Value;
                             if (!string.IsNullOrEmpty(permissionsClaim))
                             {
@@ -107,7 +107,7 @@ public class KeycloakAttributeMapper
                                 }
                                 catch (JsonException ex)
                                 {
-                                    // Logowanie błędu deserializacji
+                                    // Logging the deserialization error
                                     Console.WriteLine($"Błąd deserializacji uprawnień: {ex.Message}");
                                 }
                             }
@@ -116,7 +116,7 @@ public class KeycloakAttributeMapper
                 }
                 catch (JsonException ex)
                 {
-                    // Logowanie błędu deserializacji
+                    // Logging the deserialization error
                     Console.WriteLine($"Błąd deserializacji organizacji: {ex.Message}");
                 }
             }

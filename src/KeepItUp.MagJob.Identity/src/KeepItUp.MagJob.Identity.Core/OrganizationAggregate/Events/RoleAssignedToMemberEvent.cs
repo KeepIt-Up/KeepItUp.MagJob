@@ -1,37 +1,37 @@
 namespace KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Events;
 
 /// <summary>
-/// Zdarzenie informujące o przypisaniu roli do członka organizacji.
+/// Domain event informing about the assignment of a role to a member of an organization.
 /// </summary>
 public class RoleAssignedToMemberEvent : DomainEventBase
 {
     /// <summary>
-    /// Identyfikator członka.
+    /// Member ID.
     /// </summary>
     public Guid MemberId { get; }
 
     /// <summary>
-    /// Identyfikator organizacji.
+    /// Organization ID.
     /// </summary>
     public Guid OrganizationId { get; }
 
     /// <summary>
-    /// Identyfikator użytkownika.
+    /// User ID.
     /// </summary>
     public Guid UserId { get; }
 
     /// <summary>
-    /// Identyfikator przypisanej roli.
+    /// Role ID.
     /// </summary>
     public Guid RoleId { get; }
 
     /// <summary>
-    /// Tworzy nowe zdarzenie informujące o przypisaniu roli do członka organizacji.
+    /// Creates a new RoleAssignedToMemberEvent.
     /// </summary>
-    /// <param name="memberId">Identyfikator członka.</param>
-    /// <param name="organizationId">Identyfikator organizacji.</param>
-    /// <param name="userId">Identyfikator użytkownika.</param>
-    /// <param name="roleId">Identyfikator przypisanej roli.</param>
+    /// <param name="memberId">Member ID.</param>
+    /// <param name="organizationId">Organization ID.</param>
+    /// <param name="userId">User ID.</param>
+    /// <param name="roleId">Role ID.</param>
     public RoleAssignedToMemberEvent(Guid memberId, Guid organizationId, Guid userId, Guid roleId)
     {
         MemberId = memberId;

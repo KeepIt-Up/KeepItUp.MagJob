@@ -1,3 +1,4 @@
+using KeepItUp.MagJob.Identity.Core.Interfaces;
 using KeepItUp.MagJob.Identity.Core.OrganizationAggregate.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -5,57 +6,121 @@ using Microsoft.Extensions.Logging;
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Commands.UpdateOrganizationLogo;
 
 /// <summary>
-/// Handler dla komendy UpdateOrganizationLogoCommand.
+/// Handler for the UpdateOrganizationLogoCommand.
 /// </summary>
-public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrganizationLogoCommand, Result>
+public class UpdateOrganizationLogoCommandHandler : IRequestHandler<UpdateOrganizationLogoCommand, Result<string>>
 {
-    private readonly IOrganizationRepository _repository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly IFileValidationService _fileValidationService;
     private readonly ILogger<UpdateOrganizationLogoCommandHandler> _logger;
 
     /// <summary>
-    /// Inicjalizuje nową instancję klasy <see cref="UpdateOrganizationLogoCommandHandler"/>.
+    /// Initializes a new instance of the <see cref="UpdateOrganizationLogoCommandHandler"/> class.
     /// </summary>
-    /// <param name="repository">Repozytorium organizacji.</param>
+    /// <param name="organizationRepository">Organization repository.</param>
+    /// <param name="fileStorageService">File storage service.</param>
+    /// <param name="fileValidationService">File validation service.</param>
     /// <param name="logger">Logger.</param>
     public UpdateOrganizationLogoCommandHandler(
-        IOrganizationRepository repository,
+        IOrganizationRepository organizationRepository,
+        IFileStorageService fileStorageService,
+        IFileValidationService fileValidationService,
         ILogger<UpdateOrganizationLogoCommandHandler> logger)
     {
-        _repository = repository;
+        _organizationRepository = organizationRepository;
+        _fileStorageService = fileStorageService;
+        _fileValidationService = fileValidationService;
         _logger = logger;
     }
 
     /// <summary>
-    /// Obsługuje komendę UpdateOrganizationLogoCommand.
+    /// Handles the UpdateOrganizationLogoCommand.
     /// </summary>
-    /// <param name="request">Komenda UpdateOrganizationLogoCommand.</param>
-    /// <param name="cancellationToken">Token anulowania.</param>
-    /// <returns>Wynik operacji.</returns>
-    public async Task<Result> Handle(UpdateOrganizationLogoCommand request, CancellationToken cancellationToken)
+    /// <param name="request">UpdateOrganizationLogoCommand.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Result with the logo URL.</returns>
+    public async Task<Result<string>> Handle(UpdateOrganizationLogoCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            // Pobierz organizację z repozytorium
-            var organization = await _repository.GetByIdAsync(request.OrganizationId, cancellationToken);
+            // Validate file
+            _fileValidationService.ValidateImageFile(request.LogoFile, "logo");
+
+            // Get organization and validate permissions
+            var organization = await _organizationRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
+
             if (organization == null)
             {
-                return Result.NotFound($"Nie znaleziono organizacji o ID {request.OrganizationId}.");
+                return Result<string>.NotFound($"Organization with ID {request.OrganizationId} not found.");
             }
 
-            // Aktualizuj logo organizacji
-            organization.UpdateLogo(request.LogoUrl);
+            if (!organization.IsActive)
+            {
+                return Result<string>.Error("Cannot update logo for inactive organization.");
+            }
 
-            // Zapisz zmiany w repozytorium
-            await _repository.UpdateAsync(organization, cancellationToken);
+            bool isOwner = organization.OwnerId == request.UserId;
+            bool isAdmin = false;
 
-            _logger.LogInformation("Zaktualizowano logo organizacji o ID {OrganizationId}", organization.Id);
+            var organizationWithMembers = await _organizationRepository.GetByIdWithMembersAndRolesAsync(request.OrganizationId, cancellationToken);
+            if (organizationWithMembers != null)
+            {
+                var member = organizationWithMembers.Members.FirstOrDefault(m => m.UserId == request.UserId);
+                if (member != null)
+                {
+                    isAdmin = member.Roles.Any(r => r.Name == "Admin");
+                }
+            }
 
-            return Result.Success();
+            if (!isOwner && !isAdmin)
+            {
+                return Result<string>.Forbidden("User does not have permission to update organization logo.");
+            }
+
+            var oldLogoUrl = organization.LogoUrl;
+
+            // Upload new logo
+            string logoUrl;
+            using (var stream = request.LogoFile.OpenReadStream())
+            {
+                logoUrl = await _fileStorageService.UploadFileAsync(
+                    stream,
+                    request.LogoFile.FileName,
+                    request.LogoFile.ContentType,
+                    "logos");
+            }
+
+            // Update organization in database
+            organization.UpdateLogo(logoUrl);
+            await _organizationRepository.UpdateAsync(organization, cancellationToken);
+
+            // Delete old logo if exists and different
+            if (!string.IsNullOrEmpty(oldLogoUrl) && oldLogoUrl != logoUrl)
+            {
+                try
+                {
+                    await _fileStorageService.DeleteFileAsync(oldLogoUrl);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to delete old logo file {OldLogoUrl}", oldLogoUrl);
+                    // Don't fail the operation if we can't delete the old file
+                }
+            }
+
+            _logger.LogInformation("Successfully updated logo for organization {OrganizationId}", request.OrganizationId);
+            return Result.Success(logoUrl);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Validation error updating logo for organization {OrganizationId}", request.OrganizationId);
+            return Result<string>.Error(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Błąd podczas aktualizacji logo organizacji");
-            return Result.Error("Wystąpił błąd podczas aktualizacji logo organizacji: " + ex.Message);
+            _logger.LogError(ex, "Error updating logo for organization {OrganizationId}", request.OrganizationId);
+            return Result<string>.Error("Failed to update organization logo: " + ex.Message);
         }
     }
 }

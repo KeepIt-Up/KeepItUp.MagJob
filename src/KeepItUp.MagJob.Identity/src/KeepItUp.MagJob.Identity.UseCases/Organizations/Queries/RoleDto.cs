@@ -1,32 +1,32 @@
 namespace KeepItUp.MagJob.Identity.UseCases.Organizations.Queries;
 
 /// <summary>
-/// Data Transfer Object dla roli w organizacji.
+/// Data Transfer Object for a role in an organization.
 /// </summary>
 public class RoleDto
 {
     /// <summary>
-    /// Identyfikator roli.
+    /// Role identifier.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Nazwa roli.
+    /// Role name.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Opis roli.
+    /// Role description.
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Kolor roli (w formacie HEX).
+    /// Role color (in HEX format).
     /// </summary>
     public string? Color { get; set; }
 
     /// <summary>
-    /// Lista uprawnień przypisanych do roli.
+    /// List of permissions assigned to the role.
     /// </summary>
     public List<string> Permissions { get; set; } = new List<string>();
 }
