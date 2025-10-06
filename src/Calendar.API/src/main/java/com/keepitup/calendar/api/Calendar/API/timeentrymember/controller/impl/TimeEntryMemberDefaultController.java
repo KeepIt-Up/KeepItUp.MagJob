@@ -6,6 +6,7 @@ import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMe
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMembersResponse;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PatchTimeEntryMemberRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMemberRequest;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMembersBulkRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.function.RequestToTimeEntryMemberFunction;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.function.TimeEntryMemberToResponseFunction;
@@ -15,6 +16,7 @@ import com.keepitup.calendar.api.Calendar.API.timeentrymember.service.api.TimeEn
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -118,5 +121,11 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
 
         service.update(updateTimeEntryWithRequest.apply(timeEntry.get(), patchTimeEntryMemberRequest));
         return getTimeEntryMember(id);
+    }
+
+    @Override
+    public GetTimeEntryMembersResponse createTimeEntryMembersBulk(PostTimeEntryMembersBulkRequest postTimeEntryMembersBulkRequest) {
+        List<TimeEntryMember> createdMembers = service.createBulk(postTimeEntryMembersBulkRequest);
+        return timeEntrysToResponse.apply(new PageImpl<>(createdMembers), createdMembers.size());
     }
 }

@@ -1,5 +1,6 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrymember.service.api;
 
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMembersBulkRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,4 +24,6 @@ public interface TimeEntryMemberService {
     void delete(UUID id);
 
     void update(TimeEntryMember timeEntryTemplate);
+
+    List<TimeEntryMember> createBulk(PostTimeEntryMembersBulkRequest request);
 }

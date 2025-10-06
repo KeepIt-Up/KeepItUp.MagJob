@@ -12,7 +12,7 @@ public class RequestToTimeEntryMemberFunction implements Function<PostTimeEntryM
     public TimeEntryMember apply(PostTimeEntryMemberRequest request) {
         return TimeEntryMember.builder()
                 .timeEntry(request.getTimeEntry())
-                .member(request.getMember())
+                .memberId(request.getMemberId())
                 .status(request.getStatus())
                 .build();
     }

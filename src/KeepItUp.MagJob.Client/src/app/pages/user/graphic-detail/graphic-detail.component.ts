@@ -80,7 +80,7 @@ export class GraphicDetailComponent implements OnInit {
   }
 
   getUniqueMembersCount(graphic: GraphicResponse): number {
-    const uniqueUserIds = new Set(graphic.timeEntryMembers?.map(member => member.userId) || []);
+    const uniqueUserIds = new Set(graphic.timeEntryMembers?.map(member => member.memberId) || []);
     return uniqueUserIds.size;
   }
 

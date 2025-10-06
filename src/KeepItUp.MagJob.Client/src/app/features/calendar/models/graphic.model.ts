@@ -15,9 +15,8 @@ export interface TimeEntryResponse {
 
 export interface TimeEntryMemberResponse {
   id: string;
-  userId: string;
-  userName?: string;
-  userEmail?: string;
+  memberId: string;
+  status: string;
   timeEntryId: string;
 }
 
@@ -25,4 +24,14 @@ export interface GetGraphicsResponse {
   graphicsResponse: GraphicResponse[]; // Changed from graphicResponseList to graphicsResponse
   count: number;
   graphicResponseList?: GraphicResponse[];
+}
+
+export interface TimeEntryMemberAssignment {
+  memberId: string;
+  status: string;
+}
+
+export interface CreateTimeEntryMembersBulkRequest {
+  timeEntryId: string;
+  memberAssignments: TimeEntryMemberAssignment[];
 }

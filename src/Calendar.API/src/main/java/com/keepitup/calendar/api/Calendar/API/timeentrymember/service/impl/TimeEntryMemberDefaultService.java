@@ -1,5 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrymember.service.impl;
 
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMembersBulkRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.service.api.TimeEntryMemberService;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.entity.TimeEntryMember;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.repository.api.TimeEntryMemberRepository;
@@ -55,5 +57,18 @@ public class TimeEntryMemberDefaultService implements TimeEntryMemberService {
     @Override
     public void update(TimeEntryMember timeEntryMember) {
         timeEntryMemberRepository.save(timeEntryMember);
+    }
+
+    @Override
+    public List<TimeEntryMember> createBulk(PostTimeEntryMembersBulkRequest request) {
+        List<TimeEntryMember> timeEntryMembers = request.getMemberAssignments().stream()
+                .map(assignment -> TimeEntryMember.builder()
+                        .memberId(assignment.getMemberId())
+                        .status(assignment.getStatus())
+                        .timeEntry(TimeEntry.builder().id(request.getTimeEntryId()).build())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
+        
+        return timeEntryMemberRepository.saveAll(timeEntryMembers);
     }
 }

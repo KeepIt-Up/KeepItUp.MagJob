@@ -24,8 +24,8 @@ public class GetTimeEntryMemberResponse {
     @Schema(description = "PostTimeEntryMemberRequest status value")
     private String status;
 
-    @Schema(description = "PostTimeEntryMemberRequest member value")
-    private Member member;
+    @Schema(description = "PostTimeEntryMemberRequest memberId value")
+    private UUID memberId;
 
     @Schema(description = "PostTimeEntryMemberRequest timeEntry value")
     private TimeEntry timeEntry;

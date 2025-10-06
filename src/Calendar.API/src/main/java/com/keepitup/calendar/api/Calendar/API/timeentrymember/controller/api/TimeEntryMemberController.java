@@ -5,6 +5,7 @@ import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMe
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMembersResponse;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PatchTimeEntryMemberRequest;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMemberRequest;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMembersBulkRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -111,6 +112,21 @@ public interface TimeEntryMemberController {
             )
             @PathVariable("id")
             UUID id
+    );
+
+    @Operation(summary = "Create TimeEntryMembers in bulk")
+    @PostMapping("api/timeentrymembers/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    GetTimeEntryMembersResponse createTimeEntryMembersBulk(
+            @Parameter(
+                    name = "PostTimeEntryMembersBulkRequest",
+                    description = "Bulk TimeEntryMembers creation DTO",
+                    schema = @Schema(implementation = PostTimeEntryMembersBulkRequest.class),
+                    required = true
+            )
+            @RequestBody
+            PostTimeEntryMembersBulkRequest postTimeEntryMembersBulkRequest
     );
 
     @Operation(summary = "Get TimeEntryMembers by User")
