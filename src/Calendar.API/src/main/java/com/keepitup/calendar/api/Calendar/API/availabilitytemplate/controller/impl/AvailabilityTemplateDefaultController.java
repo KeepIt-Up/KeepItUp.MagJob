@@ -92,7 +92,7 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
         return availabilityTemplateToResponse.apply(availabilityTemplateCreated);
     }
 
-    private void sendEmailNotification(TimeEntryTemplate timeEntryTemplate, AvailabilityTemplate availabilityTemplate, ) {
+    private void sendEmailNotification(TimeEntryTemplate timeEntryTemplate, AvailabilityTemplate availabilityTemplate) {
         try {
             // Convert LocalTime to LocalDateTime by combining with current date
             LocalDateTime startTime = timeEntryTemplate.getStartTime().atDate(LocalDateTime.now().toLocalDate());

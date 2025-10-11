@@ -129,6 +129,31 @@ public interface TimeEntryMemberController {
             PostTimeEntryMembersBulkRequest postTimeEntryMembersBulkRequest
     );
 
+    @Operation(summary = "Get upcoming confirmed TimeEntryMembers")
+    @GetMapping("api/timeentrymembers/upcoming")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetTimeEntryMembersResponse getUpcomingConfirmedTimeEntryMembers(
+            @Parameter(
+                    name = "minutesBefore",
+                    description = "Number of minutes before start time to include"
+            )
+            @RequestParam(defaultValue = "5")
+            int minutesBefore,
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size
+    );
+
     @Operation(summary = "Get TimeEntryMembers by User")
     @PostMapping("api/timeentrymembers/{userId}")
     @ResponseStatus(HttpStatus.OK)

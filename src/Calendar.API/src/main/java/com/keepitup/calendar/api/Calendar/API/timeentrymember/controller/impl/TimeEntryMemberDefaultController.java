@@ -89,6 +89,13 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
     }
 
     @Override
+    public GetTimeEntryMembersResponse getUpcomingConfirmedTimeEntryMembers(int minutesBefore, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<TimeEntryMember> members = service.findUpcomingConfirmedMembers(minutesBefore, pageRequest);
+        return timeEntrysToResponse.apply(members, (int) members.getTotalElements());
+    }
+
+    @Override
     public GetTimeEntryMembersResponse getTimeEntryMembersByUser(int page, int size, UUID userId) {
         var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
         UUID loggedInUserId = UUID.fromString(jwt.getExternalId());

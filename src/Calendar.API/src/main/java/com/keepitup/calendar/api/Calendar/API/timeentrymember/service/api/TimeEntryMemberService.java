@@ -26,4 +26,6 @@ public interface TimeEntryMemberService {
     void update(TimeEntryMember timeEntryTemplate);
 
     List<TimeEntryMember> createBulk(PostTimeEntryMembersBulkRequest request);
+
+    Page<TimeEntryMember> findUpcomingConfirmedMembers(int minutesBefore, Pageable pageable);
 }
