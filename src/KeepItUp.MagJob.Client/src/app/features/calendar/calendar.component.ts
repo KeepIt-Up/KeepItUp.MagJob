@@ -302,13 +302,13 @@ export class CalendarComponent implements OnInit {
   // Add new methods for availability template functionality
   openAvailabilityTemplateDialog(): void {
     console.log('Calendar events before opening dialog:', this.events);
-    
+
     // If events are empty, this might be why
     if (!this.events || this.events.length === 0) {
       console.warn('No events available to create a template from!');
       // Maybe show a message to the user?
     }
-    
+
     this.showAvailabilityTemplateDialog = true;
   }
   onSaveAvailabilityTemplate(template: AvailabilityTemplate): void {

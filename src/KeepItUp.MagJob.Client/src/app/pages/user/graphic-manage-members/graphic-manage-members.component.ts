@@ -15,11 +15,20 @@ import { Organization } from '../../../features/organizations/models/organizatio
 import { Member } from '../../../features/members/models/member';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { TagComponent } from '../../../shared/components/tag/tag.component';
+import { AlertService } from '../../../shared/services/alert.service';
+import { AlertContainerComponent } from '../../../shared/components/alert-container/alert-container.component';
 
 @Component({
   selector: 'app-graphic-manage-members',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, TagComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ButtonComponent,
+    TagComponent,
+    AlertContainerComponent,
+  ],
   templateUrl: './graphic-manage-members.component.html',
   styleUrls: ['./graphic-manage-members.component.scss'],
 })
@@ -28,6 +37,7 @@ export class GraphicManageMembersComponent implements OnInit {
   private readonly graphicsService = inject(GraphicsService);
   private readonly userService = inject(UserService);
   private readonly organizationApiService = inject(OrganizationApiService);
+  private readonly alertService = inject(AlertService);
 
   graphic: GraphicResponse | null = null;
   isLoading = true;
@@ -182,10 +192,15 @@ export class GraphicManageMembersComponent implements OnInit {
     this.graphicsService.createTimeEntryMembersBulk(request).subscribe({
       next: () => {
         this.isAddingMember = false;
+        this.alertService.success(
+          'Members Saved',
+          `Successfully assigned ${this.selectedMembers[timeEntryId].length} member(s) to this time entry.`,
+        );
         this.refreshGraphic();
       },
       error: (error: unknown) => {
         this.isAddingMember = false;
+        this.alertService.error('Save Failed', 'Failed to save members. Please try again.');
         console.error('Failed to save members:', error);
         console.error('Request that failed:', request);
       },
@@ -200,10 +215,15 @@ export class GraphicManageMembersComponent implements OnInit {
     this.graphicsService.removeMemberFromTimeEntry(member.timeEntryId, member.id).subscribe({
       next: () => {
         this.isRemovingMember = false;
+        this.alertService.success(
+          'Member Removed',
+          'Successfully removed member from this time entry.',
+        );
         this.refreshGraphic();
       },
       error: (error: unknown) => {
         this.isRemovingMember = false;
+        this.alertService.error('Remove Failed', 'Failed to remove member. Please try again.');
         console.error('Failed to remove member:', error);
       },
     });

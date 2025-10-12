@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -36,6 +37,10 @@ public class Member {
     @NotNull
     @Column(name = "is_still_member", nullable = false)
     Boolean isStillMember;
+
+    @NotNull
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
 //    @ManyToOne
 //    @JoinColumn(name = "organization_id")

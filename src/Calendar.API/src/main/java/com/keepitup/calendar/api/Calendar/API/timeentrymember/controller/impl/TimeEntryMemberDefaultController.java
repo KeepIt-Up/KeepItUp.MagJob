@@ -1,6 +1,7 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrymember.controller.impl;
 
 import com.keepitup.calendar.api.Calendar.API.jwt.CustomJwt;
+import com.keepitup.calendar.api.Calendar.API.services.google.GoogleCalendarInviteService;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.controller.api.TimeEntryMemberController;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMemberResponse;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMembersResponse;
@@ -13,6 +14,9 @@ import com.keepitup.calendar.api.Calendar.API.timeentrymember.function.TimeEntry
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.function.TimeEntryMembersToResponseFunction;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.function.UpdateTimeEntryMemberWithRequestFunction;
 import com.keepitup.calendar.api.Calendar.API.timeentrymember.service.api.TimeEntryMemberService;
+import com.keepitup.calendar.api.Calendar.API.user.service.MemberServiceClient;
+import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
+import com.keepitup.calendar.api.Calendar.API.timeentry.service.api.TimeEntryService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.Console;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +41,9 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
     private final TimeEntryMemberToResponseFunction timeEntryToResponse;
     private final RequestToTimeEntryMemberFunction requestToTimeEntry;
     private final UpdateTimeEntryMemberWithRequestFunction updateTimeEntryWithRequest;
+    private final GoogleCalendarInviteService googleCalendarInviteService;
+    private final MemberServiceClient memberServiceClient;
+    private final TimeEntryService timeEntryService;
 
     @Autowired
     public TimeEntryMemberDefaultController(
@@ -43,13 +51,19 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
             TimeEntryMembersToResponseFunction timeEntrysToResponse,
             TimeEntryMemberToResponseFunction timeEntryToResponse,
             RequestToTimeEntryMemberFunction requestToTimeEntry,
-            UpdateTimeEntryMemberWithRequestFunction updateTimeEntryWithRequest
+            UpdateTimeEntryMemberWithRequestFunction updateTimeEntryWithRequest,
+            GoogleCalendarInviteService googleCalendarInviteService,
+            MemberServiceClient memberServiceClient,
+            TimeEntryService timeEntryService
     ) {
         this.service = service;
         this.timeEntrysToResponse = timeEntrysToResponse;
         this.timeEntryToResponse = timeEntryToResponse;
         this.requestToTimeEntry = requestToTimeEntry;
         this.updateTimeEntryWithRequest = updateTimeEntryWithRequest;
+        this.googleCalendarInviteService = googleCalendarInviteService;
+        this.memberServiceClient = memberServiceClient;
+        this.timeEntryService = timeEntryService;
     }
 
     @Override
@@ -66,9 +80,26 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
         UUID id = UUID.randomUUID();
         postTimeEntryMemberRequest.setId(id);
         service.create(requestToTimeEntry.apply(postTimeEntryMemberRequest));
-        return service.find(id)
-                .map(timeEntryToResponse)
+        
+        // Fetch the created member
+        TimeEntryMember createdMember = service.find(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
+        
+        // Send email notification after creation
+        if (createdMember.getTimeEntry() != null && createdMember.getId() != null) {
+            try {
+                UUID timeEntryId = createdMember.getTimeEntry().getId();
+                TimeEntry timeEntry = timeEntryService.find(timeEntryId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                
+                String userEmail = getUserEmailFromMember(createdMember.getId());
+                sendEmailNotification(createdMember, timeEntry, userEmail);
+            } catch (Exception e) {
+                log.warning("Failed to send notification for member: " + createdMember.getMemberId() + ", error: " + e.getMessage());
+            }
+        }
+        
+        return timeEntryToResponse.apply(createdMember);
     }
 
     @Override
@@ -127,12 +158,87 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
         }
 
         service.update(updateTimeEntryWithRequest.apply(timeEntry.get(), patchTimeEntryMemberRequest));
-        return getTimeEntryMember(id);
+        
+        // Fetch the updated member
+        TimeEntryMember updatedMember = service.find(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        
+        // Send email notification after update
+        if (updatedMember.getTimeEntry() != null && updatedMember.getId() != null) {
+            try {
+                UUID timeEntryId = updatedMember.getTimeEntry().getId();
+                TimeEntry fullTimeEntry = timeEntryService.find(timeEntryId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                
+                String userEmail = getUserEmailFromMember(updatedMember.getId());
+                sendEmailNotification(updatedMember, fullTimeEntry, userEmail);
+            } catch (Exception e) {
+                log.warning("Failed to send notification for member: " + updatedMember.getMemberId() + ", error: " + e.getMessage());
+            }
+        }
+        
+        return timeEntryToResponse.apply(updatedMember);
     }
 
     @Override
     public GetTimeEntryMembersResponse createTimeEntryMembersBulk(PostTimeEntryMembersBulkRequest postTimeEntryMembersBulkRequest) {
         List<TimeEntryMember> createdMembers = service.createBulk(postTimeEntryMembersBulkRequest);
+        
+        // Send email notifications for bulk creation
+        createdMembers.forEach(member -> {
+            if (member.getTimeEntry() != null && member.getMemberId() != null) {
+                try {
+                    UUID timeEntryId = member.getTimeEntry().getId();
+                    TimeEntry timeEntry = timeEntryService.find(timeEntryId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                    
+                    String userEmail = getUserEmailFromMember(member.getMemberId());
+                    sendEmailNotification(member, timeEntry, userEmail);
+                } catch (Exception e) {
+                    log.warning("Failed to send notification for member: " + member.getMemberId() + ", error: " + e.getMessage());
+                }
+            }
+        });
+        
         return timeEntrysToResponse.apply(new PageImpl<>(createdMembers), createdMembers.size());
+    }
+
+    /**
+     * Fetches user email from Identity service based on Member
+     */
+    private String getUserEmailFromMember(UUID id) {
+        return memberServiceClient.getMemberEmail(id);
+    }
+
+    private void sendEmailNotification(TimeEntryMember timeEntryMember, TimeEntry timeEntry, String memberEmail) {
+        try {
+            String eventTitle = "Work";
+            String description = String.format(
+                "You have been added to a time entry.\n\n" +
+                "Event: %s\n" +
+                "Start Time: %s\n" +
+                "End Time: %s\n" +
+                "Status: %s",
+                eventTitle,
+                timeEntry.getStartDateTime() != null ? timeEntry.getStartDateTime() : "N/A",
+                timeEntry.getEndDateTime() != null ? timeEntry.getEndDateTime() : "N/A",
+                timeEntryMember.getStatus() != null ? timeEntryMember.getStatus() : "N/A"
+            );
+
+            // Send calendar invite
+            googleCalendarInviteService.sendCalendarInvite(
+                memberEmail,
+                eventTitle,
+                description,
+                timeEntry.getStartDateTime(),
+                timeEntry.getEndDateTime()
+            );
+
+            log.info("Calendar invite sent successfully to: " + memberEmail + " for time entry: " + timeEntry.getId());
+
+        } catch (Exception e) {
+            log.severe("Failed to send calendar invite: " + e.getMessage());
+            // Don't throw exception to avoid disrupting the main flow
+        }
     }
 }

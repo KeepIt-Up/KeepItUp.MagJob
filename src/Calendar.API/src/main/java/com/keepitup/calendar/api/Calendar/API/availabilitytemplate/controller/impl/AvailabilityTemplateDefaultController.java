@@ -86,46 +86,13 @@ public class AvailabilityTemplateDefaultController implements AvailabilityTempla
               timeEntryTemplateService.update(timeEntryTemplate);
               
               // Send email notification for each time entry
-              sendEmailNotification(timeEntryTemplate, availabilityTemplateCreated);
+            //   sendEmailNotification(timeEntryTemplate, availabilityTemplateCreated);
         }
 
         return availabilityTemplateToResponse.apply(availabilityTemplateCreated);
     }
 
-    private void sendEmailNotification(TimeEntryTemplate timeEntryTemplate, AvailabilityTemplate availabilityTemplate) {
-        try {
-            // Convert LocalTime to LocalDateTime by combining with current date
-            LocalDateTime startTime = timeEntryTemplate.getStartTime().atDate(LocalDateTime.now().toLocalDate());
-            LocalDateTime endTime = timeEntryTemplate.getEndTime().atDate(LocalDateTime.now().toLocalDate());
-            
-            String eventTitle = "New Availability Template Created - " + availabilityTemplate.getName();
-            String description = String.format(
-                "A new availability template has been created.\n\n" +
-                "Template Name: %s\n" +
-                "Time Entry: %s - %s\n" +
-                "Created by User ID: %s",
-                availabilityTemplate.getName() != null ? availabilityTemplate.getName() : "N/A",
-                timeEntryTemplate.getStartTime() != null ? timeEntryTemplate.getStartTime() : "N/A",
-                timeEntryTemplate.getEndTime() != null ? timeEntryTemplate.getEndTime() : "N/A",
-                availabilityTemplate.getUserId() != null ? availabilityTemplate.getUserId() : "N/A"
-            );
-
-            // Send calendar invite
-            googleCalendarInviteService.sendCalendarInvite(
-                "filips750@gmail.com",
-                eventTitle, 
-                description,
-                startTime,
-                endTime
-            );
-
-            log.info("Test email notification sent successfully for availability template: " + availabilityTemplate.getName());
-
-        } catch (Exception e) {
-            log.severe("Failed to send test email notification: " + e.getMessage());
-            // Don't throw exception to avoid disrupting the main flow
-        }
-    }
+    
 
     @Override
     public GetAvailabilityTemplateResponse getAvailabilityTemplate(UUID id) {
