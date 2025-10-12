@@ -79,12 +79,4 @@ export class GraphicDetailComponent implements OnInit {
     }, 0);
   }
 
-  getUniqueMembersCount(graphic: GraphicResponse): number {
-    const uniqueUserIds = new Set(graphic.timeEntryMembers?.map(member => member.memberId) || []);
-    return uniqueUserIds.size;
-  }
-
-  getTimeEntryMembers(timeEntryId: string, graphic: GraphicResponse): any[] {
-    return graphic.timeEntryMembers?.filter(member => member.timeEntryId === timeEntryId) || [];
-  }
 }
