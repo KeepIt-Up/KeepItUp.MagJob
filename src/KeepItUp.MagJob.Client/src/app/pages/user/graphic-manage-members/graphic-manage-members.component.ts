@@ -140,7 +140,7 @@ export class GraphicManageMembersComponent implements OnInit {
   }
 
   getTimeEntryMembers(timeEntryId: string, graphic: GraphicResponse): TimeEntryMemberResponse[] {
-    return graphic.timeEntryMembers?.filter(member => member.timeEntryId === timeEntryId) || [];
+    return graphic.timeEntryMembers?.filter(member => member.timeEntry.id === timeEntryId) || [];
   }
 
   addMemberToTimeEntry(timeEntryId: string, memberId: string, status: string): void {
@@ -212,7 +212,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
     this.isRemovingMember = true;
 
-    this.graphicsService.removeMemberFromTimeEntry(member.timeEntryId, member.id).subscribe({
+    this.graphicsService.removeMemberFromTimeEntry(member.timeEntry.id, member.id).subscribe({
       next: () => {
         this.isRemovingMember = false;
         this.alertService.success(

@@ -17,7 +17,11 @@ export interface TimeEntryMemberResponse {
   id: string;
   memberId: string;
   status: string;
-  timeEntryId: string;
+  timeEntry: {
+    id: string;
+    startDateTime: string;
+    endDateTime: string;
+  };
 }
 
 export interface GetGraphicsResponse {

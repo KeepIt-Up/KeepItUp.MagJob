@@ -1,12 +1,9 @@
 package com.keepitup.calendar.api.Calendar.API.timeentrymember.dto;
 
-import com.keepitup.calendar.api.Calendar.API.member.entity.Member;
-import com.keepitup.calendar.api.Calendar.API.timeentry.entity.TimeEntry;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.math.BigInteger;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -16,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
-@Schema(description = "GetTimeEntryResponse DTO")
+@Schema(description = "GetTimeEntryMemberResponse DTO")
 public class GetTimeEntryMemberResponse {
     @Schema(description = "id")
     private UUID id;
@@ -29,4 +26,22 @@ public class GetTimeEntryMemberResponse {
 
     @Schema(description = "PostTimeEntryMemberRequest timeEntry value")
     private TimeEntry timeEntry;
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @ToString
+    @EqualsAndHashCode
+    public static class TimeEntry {
+        @Schema(description = "TimeEntry id value")
+        private UUID id;
+
+        @Schema(description = "TimeEntry startDateTime value")
+        private LocalDateTime startDateTime;
+
+        @Schema(description = "TimeEntry endDateTime value")
+        private LocalDateTime endDateTime;
+    }
 }
