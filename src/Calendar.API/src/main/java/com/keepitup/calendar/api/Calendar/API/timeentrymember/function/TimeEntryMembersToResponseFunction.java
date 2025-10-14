@@ -14,7 +14,16 @@ public class TimeEntryMembersToResponseFunction implements BiFunction<Page<TimeE
     public GetTimeEntryMembersResponse apply(Page<TimeEntryMember> entities, Integer count) {
         return GetTimeEntryMembersResponse.builder()
                 .timeEntryMemberList(entities.stream()
-                        .map(organization -> GetTimeEntryMembersResponse.TimeEntryMember.builder()
+                        .map(timeEntryMember -> GetTimeEntryMembersResponse.TimeEntryMember.builder()
+                                .id(timeEntryMember.getId())
+                                .status(timeEntryMember.getStatus())
+                                .memberId(timeEntryMember.getMemberId())
+                                .timeEntry(timeEntryMember.getTimeEntry() != null ? 
+                                    GetTimeEntryMembersResponse.TimeEntryMember.TimeEntry.builder()
+                                        .id(timeEntryMember.getTimeEntry().getId())
+                                        .startDateTime(timeEntryMember.getTimeEntry().getStartDateTime())
+                                        .endDateTime(timeEntryMember.getTimeEntry().getEndDateTime())
+                                        .build() : null)
                                 .build())
                         .toList())
                 .count(count)
