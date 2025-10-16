@@ -14,8 +14,12 @@ public class TimeEntryMemberToResponseFunction implements Function<TimeEntryMemb
         return GetTimeEntryMemberResponse.builder()
                 .id(timeEntryMember.getId())
                 .status(timeEntryMember.getStatus())
-                .timeEntry(timeEntryMember.getTimeEntry())
                 .memberId(timeEntryMember.getMemberId())
+                .timeEntry(GetTimeEntryMemberResponse.TimeEntry.builder()
+                        .id(timeEntryMember.getTimeEntry().getId())
+                        .startDateTime(timeEntryMember.getTimeEntry().getStartDateTime())
+                        .endDateTime(timeEntryMember.getTimeEntry().getEndDateTime())
+                        .build())
                 .build();
     }
 }
