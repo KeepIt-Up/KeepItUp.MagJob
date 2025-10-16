@@ -168,20 +168,20 @@
 
                     @if (availableMembers && availableMembers.length > 0) {
                       <div class="space-y-2 max-h-60 overflow-y-auto">
-                        @for (member of availableMembers; track member.id) {
+                        @for (member of availableMembers; track member.userId) {
                           <div
                             class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
                           >
                             <div class="flex items-center space-x-3">
                               <input
                                 type="checkbox"
-                                [checked]="isMemberSelected(selectedTimeEntry.id, member.id)"
+                                [checked]="isMemberSelected(selectedTimeEntry.id, member.userId)"
                                 (change)="
-                                  isMemberSelected(selectedTimeEntry.id, member.id)
-                                    ? removeMemberFromTimeEntry(selectedTimeEntry.id, member.id)
+                                  isMemberSelected(selectedTimeEntry.id, member.userId)
+                                    ? removeMemberFromTimeEntry(selectedTimeEntry.id, member.userId)
                                     : addMemberToTimeEntry(
                                         selectedTimeEntry.id,
-                                        member.id,
+                                        member.userId,
                                         'Not confirmed'
                                       )
                                 "
@@ -194,13 +194,13 @@
                                 <div class="text-xs text-gray-500">{{ member.displayName }}</div>
                               </div>
                             </div>
-                            @if (isMemberSelected(selectedTimeEntry.id, member.id)) {
+                            @if (isMemberSelected(selectedTimeEntry.id, member.userId)) {
                               <select
-                                [value]="getMemberStatus(selectedTimeEntry.id, member.id)"
+                                [value]="getMemberStatus(selectedTimeEntry.id, member.userId)"
                                 (change)="
                                   addMemberToTimeEntry(
                                     selectedTimeEntry.id,
-                                    member.id,
+                                    member.userId,
                                     $any($event.target).value
                                   )
                                 "

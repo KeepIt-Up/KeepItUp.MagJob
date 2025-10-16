@@ -230,7 +230,7 @@ export class GraphicManageMembersComponent implements OnInit {
   }
 
   getMemberName(memberId: string): string {
-    const member = this.availableMembers.find(m => m.id === memberId);
+    const member = this.availableMembers.find(m => m.userId === memberId);
     return member ? `${member.firstName} ${member.lastName}` : 'Unknown Member';
   }
 
