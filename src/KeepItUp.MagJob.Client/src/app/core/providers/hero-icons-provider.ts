@@ -33,6 +33,7 @@ import {
   heroUserPlus,
   heroArrowLeft,
   heroPlus,
+  heroChartBarSquare
 } from '@ng-icons/heroicons/outline';
 
 export const heroIconsProvider = provideIcons({
@@ -69,4 +70,5 @@ export const heroIconsProvider = provideIcons({
   heroShieldCheck,
   heroCalendar,
   heroUserPlus,
+  heroChartBarSquare,
 });
