@@ -33,6 +33,7 @@ export class ShiftComponent implements OnInit, OnDestroy {
   private shiftApiService = inject(ShiftApiService);
   private shiftEditRequestService = inject(ShiftEditRequestService);
   private userService = inject(UserService);
+  private userContextService = inject(UserContextService);
   private subscription = new Subscription();
   
   currentShift: Shift | null = null;
@@ -106,8 +107,8 @@ export class ShiftComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const memberId = this.userService.userContext!.id;
-
+    const memberId = this.userContextService.getCurrentUser()!.id;
+    
     this.isLoading = true;
     this.error = null;
 
