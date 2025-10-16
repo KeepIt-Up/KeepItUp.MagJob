@@ -31,8 +31,14 @@ public class ShiftDefaultService implements ShiftService {
     @Transactional
     public Optional<Shift> startShift(Shift shift) {
         shift.setStatus(true); // Assuming 'true' means the shift is active
-        shift.setStartTime(LocalDateTime.now());
-        shift.setEndTime(LocalDateTime.now().plusHours(8));
+        if(shift.getEndTime() != null && shift.getStartTime() != null){
+            shift.setStartTime(shift.getStartTime());
+            shift.setEndTime(shift.getEndTime());
+        }
+        else{
+            shift.setStartTime(LocalDateTime.now());
+            shift.setEndTime(LocalDateTime.now().plusHours(8));
+        }
         shift.setMemberId(shift.getMemberId());
 
         return Optional.of(shiftRepository.save(shift));
