@@ -47,7 +47,8 @@ public class SecurityConfig {
     private String jwtIssuerUri;
 
     private static final AntPathRequestMatcher[] permitAllList = {
-
+        new AntPathRequestMatcher("/api/timeentrymembers/upcoming*"),
+        new AntPathRequestMatcher("/api/timeentrymembers/upcoming/**")
     };
 
     private static final AntPathRequestMatcher[] authenticatedList = {
