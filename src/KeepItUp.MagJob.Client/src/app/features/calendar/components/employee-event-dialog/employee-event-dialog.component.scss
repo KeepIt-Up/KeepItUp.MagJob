@@ -1,0 +1,27 @@
+.btn-nav {
+  @apply px-4 py-2 rounded-md transition-colors duration-200;
+}
+
+.btn-save {
+  background-color: #10b981 !important; /* green-500 */
+  color: white !important;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #059669 !important; /* green-600 */
+}
+
+.btn-save-disabled {
+  background-color: #9ca3af !important; /* gray-400 */
+  color: #6b7280 !important; /* gray-500 */
+  cursor: not-allowed !important;
+}
+
+:host {
+  display: block;
+}

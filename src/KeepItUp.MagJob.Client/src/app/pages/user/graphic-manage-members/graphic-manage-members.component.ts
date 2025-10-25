@@ -170,7 +170,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
   getMemberStatus(timeEntryId: string, memberId: string): string {
     const member = this.selectedMembers[timeEntryId]?.find(m => m.memberId === memberId);
-    return member?.status ?? 'Not confirmed';
+    return member?.status ?? 'Pending';
   }
 
   saveTimeEntryMembers(timeEntryId: string): void {

@@ -43,7 +43,8 @@
         "POST",
         "PUT",
         "GET",
-        "DELETE"
+        "DELETE",
+        "PATCH"
       ],
       "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",

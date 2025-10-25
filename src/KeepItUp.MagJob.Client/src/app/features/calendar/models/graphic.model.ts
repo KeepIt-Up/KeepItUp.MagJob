@@ -39,3 +39,7 @@ export interface CreateTimeEntryMembersBulkRequest {
   timeEntryId: string;
   memberAssignments: TimeEntryMemberAssignment[];
 }
+
+export interface PatchTimeEntryMemberRequest {
+  status: string;
+}

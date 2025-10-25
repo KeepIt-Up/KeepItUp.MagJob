@@ -27,4 +27,12 @@ public interface TimeEntryMemberRepository extends JpaRepository<TimeEntryMember
         @Param("endTime") LocalDateTime endTime,
         Pageable pageable
     );
+    
+    @Query("SELECT tem FROM TimeEntryMember tem " +
+           "WHERE tem.memberId = :userId " +
+           "AND tem.status IN ('Pending', 'Confirmed')")
+    Page<TimeEntryMember> findByUserId(
+        @Param("userId") UUID userId,
+        Pageable pageable
+    );
 }

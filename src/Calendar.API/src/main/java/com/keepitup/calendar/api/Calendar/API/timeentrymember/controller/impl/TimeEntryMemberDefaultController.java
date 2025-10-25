@@ -128,12 +128,12 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
 
     @Override
     public GetTimeEntryMembersResponse getTimeEntryMembersByUser(int page, int size, UUID userId) {
-        var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
-        UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
+        // var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        // UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
 
-        if (!loggedInUserId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        // if (!loggedInUserId.equals(userId)) {
+        //     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        // }
 
         PageRequest pageRequest = PageRequest.of(page, size);
 

@@ -4,8 +4,9 @@ import {
   OnInit,
   CUSTOM_ELEMENTS_SCHEMA,
   inject,
+  Input,
 } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+
 import {
   CalendarEvent,
   CalendarView,
@@ -24,10 +25,19 @@ import { CalendarEventExtended } from './models/calendar-event.model';
 import { AddEventDialogComponent } from './components/add-event-dialog/add-event-dialog.component';
 import { EditEventDialogComponent } from './components/edit-event-dialog/edit-event-dialog.component';
 import { DeleteConfirmationDialogComponent } from './components/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { EmployeeEventDialogComponent } from './components/employee-event-dialog/employee-event-dialog.component';
 import { AvailabilityTemplateService } from './services/availability-template.service';
 import { AvailabilityTemplate } from './models/availability-template.model';
 import { AvailabilityTemplateDialogComponent } from './components/availability-template-dialog/availability-template-dialog.component';
 import { CalendarToTemplateFunction } from './function/calendar-to-template-function';
+import { CalendarViewMode } from './models/calendar-view-mode.model';
+import {
+  TimeEntryMemberResponse,
+  GetTimeEntryMembersResponse,
+} from './models/time-entry-member.model';
+import { GraphicApiService } from './services/graphic.api.service';
+import { UserContextService } from '../../features/users/services/user-context.service';
+import { PatchTimeEntryMemberRequest } from './models/graphic.model';
 
 @Component({
   selector: 'app-calendar',
@@ -40,6 +50,7 @@ import { CalendarToTemplateFunction } from './function/calendar-to-template-func
     AddEventDialogComponent,
     EditEventDialogComponent,
     DeleteConfirmationDialogComponent,
+    EmployeeEventDialogComponent,
     AvailabilityTemplateDialogComponent,
   ],
   providers: [
@@ -54,6 +65,7 @@ import { CalendarToTemplateFunction } from './function/calendar-to-template-func
   styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit {
+  @Input() viewMode: CalendarViewMode = 'manager';
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
@@ -61,8 +73,10 @@ export class CalendarComponent implements OnInit {
   showDeleteConfirm = false;
   showEditDialog = false;
   showAddDialog = false;
+  showEmployeeEventDialog = false;
   eventToDelete: CalendarEventExtended | null = null;
   eventToEdit: CalendarEventExtended | null = null;
+  eventForEmployee: CalendarEventExtended | null = null;
   editedEvent: CalendarEventExtended = {
     title: '',
     start: new Date(),
@@ -80,7 +94,6 @@ export class CalendarComponent implements OnInit {
       label: '<i class="bi bi-pencil-fill"></i>',
       onClick: ({
         event,
-        sourceEvent,
       }: {
         event: CalendarEvent;
         sourceEvent: MouseEvent | KeyboardEvent;
@@ -94,7 +107,6 @@ export class CalendarComponent implements OnInit {
       label: '<i class="bi bi-trash-fill"></i>',
       onClick: ({
         event,
-        sourceEvent,
       }: {
         event: CalendarEvent;
         sourceEvent: MouseEvent | KeyboardEvent;
@@ -174,12 +186,13 @@ export class CalendarComponent implements OnInit {
     },
   ];
 
-  // Add new properties for availability template functionality
   showAvailabilityTemplateDialog = false;
   showSuccessAlert = false;
   successMessage = '';
   private AvailabilityTemplateService = inject(AvailabilityTemplateService);
   private calendarToTemplateFunction = inject(CalendarToTemplateFunction);
+  private graphicApiService = inject(GraphicApiService);
+  private userContextService = inject(UserContextService);
 
   ngOnInit(): void {
     this.viewDate = new Date();
@@ -188,12 +201,23 @@ export class CalendarComponent implements OnInit {
         dow: 1,
       },
     });
+
+    if (this.viewMode === 'employee') {
+      this.loadEmployeeTimeEntries();
+    }
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
     if (event.end) {
       const extendedEvent = event as CalendarEventExtended;
       console.log('Event action:', action, 'Event:', extendedEvent);
+
+      if (this.viewMode === 'employee') {
+        this.eventForEmployee = extendedEvent;
+        this.showEmployeeEventDialog = true;
+        return;
+      }
+
       this.refresh.next();
     }
   }
@@ -340,5 +364,90 @@ export class CalendarComponent implements OnInit {
 
   onCancelAvailabilityTemplate(): void {
     this.showAvailabilityTemplateDialog = false;
+  }
+
+  loadEmployeeTimeEntries(): void {
+    const currentUser = this.userContextService.getCurrentUser();
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    this.graphicApiService.getTimeEntriesByUser(currentUser.id).subscribe({
+      next: (response: GetTimeEntryMembersResponse) => {
+        console.log(response);
+        this.events = this.convertTimeEntryMembersToCalendarEvents(response.timeEntryMemberList);
+        this.refresh.next();
+      },
+      error: error => {
+        console.error('Error loading employee time entries:', error);
+      },
+    });
+  }
+
+  convertTimeEntryMembersToCalendarEvents(
+    timeEntryMembers: TimeEntryMemberResponse[],
+  ): CalendarEventExtended[] {
+    return timeEntryMembers.map(member => ({
+      id: member.id,
+      title: 'Work Assignment',
+      start: new Date(member.timeEntry.startDateTime),
+      end: new Date(member.timeEntry.endDateTime),
+      description: `Status: ${member.status}`,
+      draggable: false,
+      resizable: {
+        beforeStart: false,
+        afterEnd: false,
+      },
+      meta: {
+        status: member.status,
+        memberId: member.memberId,
+        timeEntryId: member.timeEntry.id,
+      },
+    }));
+  }
+
+  onEmployeeStatusChange(data: { event: CalendarEventExtended; status: string }): void {
+    this.updateTimeEntryStatus(data.event, data.status);
+    this.showEmployeeEventDialog = false;
+    this.eventForEmployee = null;
+  }
+
+  onCancelEmployeeDialog(): void {
+    this.showEmployeeEventDialog = false;
+    this.eventForEmployee = null;
+  }
+
+  private updateTimeEntryStatus(event: CalendarEventExtended, newStatus: string): void {
+    if (!event.id) return;
+
+    const request: PatchTimeEntryMemberRequest = {
+      status: newStatus,
+    };
+
+    this.graphicApiService.updateTimeEntryMemberStatus(String(event.id), request).subscribe({
+      next: () => {
+        this.loadEmployeeTimeEntries();
+      },
+      error: error => {
+        console.error('Error updating time entry status:', error);
+      },
+    });
+  }
+
+  getEventStatusClass(event: CalendarEventExtended): string {
+    if (this.viewMode === 'employee' && event.meta?.status) {
+      switch (event.meta.status) {
+        case 'Pending':
+          return 'status-pending';
+        case 'Confirmed':
+          return 'status-confirmed';
+        case 'Rejected':
+          return 'status-rejected';
+        default:
+          return '';
+      }
+    }
+    return '';
   }
 }
