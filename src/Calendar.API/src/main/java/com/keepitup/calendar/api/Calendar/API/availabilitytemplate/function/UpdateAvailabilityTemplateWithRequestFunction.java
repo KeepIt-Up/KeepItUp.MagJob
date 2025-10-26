@@ -14,7 +14,6 @@ public class UpdateAvailabilityTemplateWithRequestFunction implements BiFunction
                 .id(request.getId())
                 .name(request.getName())
                 .startDayOfWeek(request.getStartDayOfWeek())
-                .organizationId(request.getOrganizationId())
                 .numberOfDays(request.getNumberOfDays())
                 .timeEntryTemplates(request.getTimeEntryTemplates())
                 .build();

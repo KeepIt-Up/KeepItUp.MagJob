@@ -2,15 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AvailabilityTemplate } from '../../models/availability-template.model';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputComponent } from '../../../../shared/components/input/input.component';
 import { CalendarEventExtended } from '../../models/calendar-event.model';
 import { CalendarToTemplateFunction } from '../../function/calendar-to-template-function';
 
 @Component({
   selector: 'app-availability-template-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, InputComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './availability-template-dialog.component.html',
   styleUrls: ['./availability-template-dialog.component.scss'],
 })
@@ -28,7 +26,6 @@ export class AvailabilityTemplateDialogComponent implements OnInit {
   ) {
     this.templateForm = this.fb.group({
       name: ['Weekly Availability', Validators.required],
-      organizationId: ['12345', Validators.required],
       startDayOfWeek: ['MONDAY', Validators.required],
       numberOfDays: [7, [Validators.required, Validators.min(1), Validators.max(14)]],
       timeEntryTemplates: this.fb.array([]),
@@ -118,8 +115,15 @@ export class AvailabilityTemplateDialogComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('Form submitted, valid:', this.templateForm.valid);
+    console.log('Form value:', this.templateForm.value);
+    
     if (this.templateForm.valid) {
+      console.log('Emitting save event');
       this.save.emit(this.templateForm.value as AvailabilityTemplate);
+    } else {
+      console.log('Form is invalid, marking all as touched');
+      this.templateForm.markAllAsTouched();
     }
   }
 

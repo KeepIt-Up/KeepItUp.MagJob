@@ -10,20 +10,16 @@ export class CalendarToTemplateFunction {
   convertEventsToTemplate(
     events: CalendarEventExtended[],
     templateName: string,
-    organizationId: string,
     startDayOfWeek = 'MONDAY',
     numberOfDays = 7,
-    userId: string,
   ): AvailabilityTemplate {
     const timeEntryTemplates = events.map(event => this.eventToTimeEntry(event, startDayOfWeek));
 
     return {
       name: templateName,
-      organizationId,
       startDayOfWeek,
       numberOfDays,
       timeEntryTemplates,
-      userId,
     };
   }
 

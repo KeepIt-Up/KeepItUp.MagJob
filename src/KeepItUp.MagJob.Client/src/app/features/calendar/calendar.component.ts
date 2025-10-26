@@ -29,7 +29,6 @@ import { EmployeeEventDialogComponent } from './components/employee-event-dialog
 import { AvailabilityTemplateService } from './services/availability-template.service';
 import { AvailabilityTemplate } from './models/availability-template.model';
 import { AvailabilityTemplateDialogComponent } from './components/availability-template-dialog/availability-template-dialog.component';
-import { CalendarToTemplateFunction } from './function/calendar-to-template-function';
 import { CalendarViewMode } from './models/calendar-view-mode.model';
 import {
   TimeEntryMemberResponse,
@@ -193,7 +192,6 @@ export class CalendarComponent implements OnInit {
   showSuccessAlert = false;
   successMessage = '';
   private AvailabilityTemplateService = inject(AvailabilityTemplateService);
-  private calendarToTemplateFunction = inject(CalendarToTemplateFunction);
   private graphicApiService = inject(GraphicApiService);
   private userContextService = inject(UserContextService);
   private userApiService = inject(UserApiService);
@@ -347,28 +345,26 @@ export class CalendarComponent implements OnInit {
     this.showAvailabilityTemplateDialog = true;
   }
   onSaveAvailabilityTemplate(template: AvailabilityTemplate): void {
-    const events = this.events;
+    // Data from form already includes name, startDayOfWeek, numberOfDays, and timeEntryTemplates
+    // organizationId and userId will be added by backend from user context
+    console.log('Saving template:', template);
 
-    // Assuming template.name and template.organizationId exist
-    const templateWithEvents = this.calendarToTemplateFunction.convertEventsToTemplate(
-      events,
-      template.name,
-      template.organizationId,
-      template.startDayOfWeek || 'MONDAY',
-      template.numberOfDays || 7,
-      template.userId,
-    );
+    // Close modal immediately to give user feedback
+    this.showAvailabilityTemplateDialog = false;
 
-    this.AvailabilityTemplateService.createAvailabilityTemplate(templateWithEvents).subscribe({
+    this.AvailabilityTemplateService.createAvailabilityTemplate(template).subscribe({
       next: response => {
         console.log('Template created:', response);
-        this.showAvailabilityTemplateDialog = false;
         this.successMessage = `Availability template "${response.name}" was successfully saved!`;
         this.showSuccessAlert = true;
         setTimeout(() => (this.showSuccessAlert = false), 5000); // Hide alert after 5 seconds
       },
       error: error => {
         console.error('Error creating availability template:', error);
+        // Show error message
+        this.successMessage = 'Failed to create availability template';
+        this.showSuccessAlert = true;
+        setTimeout(() => (this.showSuccessAlert = false), 5000);
       },
     });
   }
