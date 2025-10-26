@@ -26,6 +26,9 @@ public class PostGraphicRequest {
     @Schema(description = "GetGraphicRequest managerId value")
     private UUID managerId;
 
+    @Schema(description = "GetGraphicRequest organizationId value")
+    private UUID organizationId;
+
     @Schema(description = "GetGraphicRequest TimeEntryMembers value")
     private List<TimeEntryMember> timeEntryMembers;
 

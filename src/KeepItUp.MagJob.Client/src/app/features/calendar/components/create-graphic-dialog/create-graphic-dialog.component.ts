@@ -6,6 +6,8 @@ import { AvailabilityTemplateResponse } from '../../models/availability-template
 import { GraphicApiService } from '../../services/graphic.api.service';
 import { PostCreateAndPopulateGraphic } from '../../models/post-create-and-populate-graphic.model';
 import { UserContextService } from '../../../../features/users/services/user-context.service';
+import { UserService } from '../../../../features/users/services/user.service';
+import { Organization } from '../../../../features/organizations/models/organization.model';
 
 @Component({
   selector: 'app-create-graphic-dialog',
@@ -22,15 +24,20 @@ export class CreateGraphicDialogComponent implements OnInit {
 
   private readonly graphicApiService = inject(GraphicApiService);
   private readonly userContextService = inject(UserContextService);
+  private readonly userService = inject(UserService);
 
   isCreating = false;
   graphicName = '';
   startDate = '';
+  organizations: Organization[] = [];
+  selectedOrganizationId: string | null = null;
+  isLoadingOrganizations = false;
 
   ngOnInit() {
     // Set default values when dialog opens
     this.graphicName = `${this.template?.name || 'New'} Graphic`;
     this.startDate = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+    this.loadUserOrganizations();
   }
 
   onClose() {
@@ -39,7 +46,12 @@ export class CreateGraphicDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.graphicName.trim() || !this.startDate || this.isCreating) {
+    if (
+      !this.graphicName.trim() ||
+      !this.startDate ||
+      !this.selectedOrganizationId ||
+      this.isCreating
+    ) {
       return;
     }
 
@@ -54,6 +66,7 @@ export class CreateGraphicDialogComponent implements OnInit {
     const request: PostCreateAndPopulateGraphic = {
       name: this.graphicName.trim(),
       managerId: currentUser.id,
+      organizationId: this.selectedOrganizationId,
       availabilityTemplateId: this.template.id,
       startDate: this.startDate,
     };
@@ -76,7 +89,22 @@ export class CreateGraphicDialogComponent implements OnInit {
   private resetForm() {
     this.graphicName = '';
     this.startDate = '';
+    this.selectedOrganizationId = null;
     this.isCreating = false;
+  }
+
+  private loadUserOrganizations(): void {
+    this.isLoadingOrganizations = true;
+    this.userService.getUserOrganizations().subscribe({
+      next: (response: { items: Organization[] }) => {
+        this.organizations = response.items || [];
+        this.isLoadingOrganizations = false;
+      },
+      error: (error: unknown) => {
+        console.error('Error loading organizations:', error);
+        this.isLoadingOrganizations = false;
+      },
+    });
   }
 
   getTodayDate(): string {

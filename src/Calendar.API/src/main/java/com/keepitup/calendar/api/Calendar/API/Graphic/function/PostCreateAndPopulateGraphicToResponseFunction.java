@@ -14,6 +14,7 @@ public class PostCreateAndPopulateGraphicToResponseFunction implements Function<
         return Graphic.builder()
             .name(request.getName())
             .managerId(request.getManagerId())
+            .organizationId(request.getOrganizationId())
             .timeEntryMembers(request.getTimeEntryMembers())
             .build();
     }

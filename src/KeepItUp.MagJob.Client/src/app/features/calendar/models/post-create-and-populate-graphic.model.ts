@@ -4,6 +4,7 @@ export interface PostCreateAndPopulateGraphic {
   name: string;
   description?: string;
   managerId: string;
+  organizationId: string;
 }
 
 export interface CreateGraphicResponse {

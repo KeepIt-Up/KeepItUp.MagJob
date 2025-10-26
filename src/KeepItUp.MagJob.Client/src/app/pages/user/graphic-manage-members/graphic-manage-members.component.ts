@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GraphicsService } from '../../../features/calendar/services/graphics.service';
-import { UserService } from '../../../features/users/services/user.service';
 import { OrganizationApiService } from '../../../features/organizations/services/organization.api.service';
 import {
   GraphicResponse,
@@ -11,7 +10,6 @@ import {
   TimeEntryMemberResponse,
   CreateTimeEntryMembersBulkRequest,
 } from '../../../features/calendar/models/graphic.model';
-import { Organization } from '../../../features/organizations/models/organization.model';
 import { Member } from '../../../features/members/models/member';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { TagComponent } from '../../../shared/components/tag/tag.component';
@@ -35,7 +33,6 @@ import { AlertContainerComponent } from '../../../shared/components/alert-contai
 export class GraphicManageMembersComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly graphicsService = inject(GraphicsService);
-  private readonly userService = inject(UserService);
   private readonly organizationApiService = inject(OrganizationApiService);
   private readonly alertService = inject(AlertService);
 
@@ -46,47 +43,10 @@ export class GraphicManageMembersComponent implements OnInit {
   isAddingMember = false;
   isRemovingMember = false;
 
-  showOrganizationModal = true;
-  organizations: Organization[] = [];
-  selectedOrganization: Organization | null = null;
-  isLoadingOrganizations = false;
-
   selectedMembers: Record<string, { memberId: string; status: string }[]> = {};
   availableMembers: Member[] = [];
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loadUserOrganizations();
-    }, 100);
-  }
-
-  private loadUserOrganizations(): void {
-    this.isLoadingOrganizations = true;
-    console.log('Loading user organizations...');
-    this.userService.getUserOrganizations().subscribe({
-      next: response => {
-        console.log('Organizations response:', response);
-        this.organizations = response.items || [];
-        this.isLoadingOrganizations = false;
-        if (this.organizations.length === 0) {
-          this.error = 'No organizations found';
-        }
-      },
-      error: (error: unknown) => {
-        console.error('Error loading organizations:', error);
-        this.error = (error as Error)?.message || 'Failed to load organizations';
-        this.isLoadingOrganizations = false;
-      },
-    });
-  }
-
-  selectOrganization(organization: Organization): void {
-    console.log('Selected organization:', organization);
-    this.selectedOrganization = organization;
-    this.showOrganizationModal = false;
-
-    this.loadOrganizationMembers(organization.id);
-
     const graphicId = this.route.snapshot.params['id'] as string;
     if (graphicId) {
       this.loadGraphic(graphicId);
@@ -126,6 +86,11 @@ export class GraphicManageMembersComponent implements OnInit {
               this.selectedMembers[entry.id] = [];
             }
           });
+        }
+
+        // Load members for the organization
+        if (graphic.organizationId) {
+          this.loadOrganizationMembers(graphic.organizationId);
         }
       },
       error: (error: unknown) => {

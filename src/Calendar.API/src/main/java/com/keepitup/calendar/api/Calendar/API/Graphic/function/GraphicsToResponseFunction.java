@@ -20,6 +20,7 @@ public class GraphicsToResponseFunction implements BiFunction<Page<Graphic>, Int
                                         .id(graphic.getId())
                                         .name(graphic.getName())
                                         .managerId(graphic.getManagerId())
+                                        .organizationId(graphic.getOrganizationId())
                                         .timeEntryMembers(graphic.getTimeEntryMembers())
                                         .timeEntries(graphic.getTimeEntries())
                                         .build())

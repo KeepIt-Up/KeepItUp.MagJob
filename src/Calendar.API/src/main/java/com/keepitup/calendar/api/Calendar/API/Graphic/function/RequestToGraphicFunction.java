@@ -15,6 +15,7 @@ public class RequestToGraphicFunction implements Function<PostGraphicRequest, Gr
         return Graphic.builder()
                 .name(request.getName())
                 .managerId(request.getManagerId())
+                .organizationId(request.getOrganizationId())
                 .timeEntryMembers(request.getTimeEntryMembers())
                 .timeEntries(request.getTimeEntries())
                 .build();

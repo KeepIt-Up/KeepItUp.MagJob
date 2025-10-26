@@ -2,6 +2,7 @@ export interface GraphicResponse {
   id: string;
   name: string;
   managerId: string;
+  organizationId: string;
   timeEntryMembers: TimeEntryMemberResponse[];
   timeEntries: TimeEntryResponse[];
 }
