@@ -178,4 +178,29 @@ public interface TimeEntryMemberController {
             @PathVariable("userId")
             UUID userId
     );
+    
+    @Operation(summary = "Get TimeEntryMembers by Graphic")
+    @PostMapping("api/timeentrymembers/graphic/{graphicId}")
+    @ResponseStatus(HttpStatus.OK)
+    GetTimeEntryMembersResponse getTimeEntryMembersByGraphic(
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size,
+            @Parameter(
+                    name = "graphicId",
+                    description = "Graphic id value",
+                    required = true
+            )
+            @PathVariable("graphicId")
+            UUID graphicId
+    );
 }

@@ -35,4 +35,12 @@ public interface TimeEntryMemberRepository extends JpaRepository<TimeEntryMember
         @Param("userId") UUID userId,
         Pageable pageable
     );
+    
+    @Query("SELECT tem FROM TimeEntryMember tem " +
+           "JOIN tem.timeEntry te " +
+           "WHERE te.graphic.id = :graphicId")
+    Page<TimeEntryMember> findByGraphicId(
+        @Param("graphicId") UUID graphicId,
+        Pageable pageable
+    );
 }

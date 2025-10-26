@@ -86,4 +86,9 @@ public class TimeEntryMemberDefaultService implements TimeEntryMemberService {
         
         return result;
     }
+    
+    @Override
+    public Page<TimeEntryMember> findByGraphicId(UUID graphicId, Pageable pageable) {
+        return timeEntryMemberRepository.findByGraphicId(graphicId, pageable);
+    }
 }

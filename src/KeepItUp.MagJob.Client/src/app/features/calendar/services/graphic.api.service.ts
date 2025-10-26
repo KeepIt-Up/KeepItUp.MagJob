@@ -104,4 +104,20 @@ export class GraphicApiService {
       headers,
     });
   }
+
+  getTimeEntriesByGraphic(
+    graphicId: string,
+    page = 0,
+    size = 10,
+  ): Observable<GetTimeEntryMembersResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.httpClient.post<GetTimeEntryMembersResponse>(
+      `${this.apiUrl}/timeentrymembers/graphic/${graphicId}?page=${page}&size=${size}`,
+      {},
+      { headers },
+    );
+  }
 }

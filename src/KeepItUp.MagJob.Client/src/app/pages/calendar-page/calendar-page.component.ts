@@ -19,11 +19,20 @@ import { CalendarViewMode } from '../../features/calendar/models/calendar-view-m
   styleUrls: ['./calendar-page.component.scss'],
 })
 export class CalendarPageComponent implements OnInit {
-  viewMode: CalendarViewMode = 'manager';
+  viewMode: CalendarViewMode = 'managerCreate';
+  graphicId: string | null = null;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.viewMode = this.route.snapshot.data['viewMode'] || 'manager';
+    const routeViewMode = this.route.snapshot.data['viewMode'] as CalendarViewMode | undefined;
+    const routeGraphicId = this.route.snapshot.params['id'] as string | undefined;
+
+    if (routeGraphicId) {
+      this.viewMode = 'managerView';
+      this.graphicId = routeGraphicId;
+    } else {
+      this.viewMode = routeViewMode ?? 'employee';
+    }
   }
 }

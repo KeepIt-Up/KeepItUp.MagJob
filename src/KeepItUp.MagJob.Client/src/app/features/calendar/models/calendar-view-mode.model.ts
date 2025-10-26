@@ -1,1 +1,1 @@
-export type CalendarViewMode = 'manager' | 'employee';
+export type CalendarViewMode = 'managerCreate' | 'managerView' | 'employee';

@@ -210,6 +210,17 @@ public class TimeEntryMemberDefaultController implements TimeEntryMemberControll
         return memberServiceClient.getMemberEmail(id);
     }
 
+    @Override
+    public GetTimeEntryMembersResponse getTimeEntryMembersByGraphic(int page, int size, UUID graphicId) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        
+        Page<TimeEntryMember> timeEntryMembers = service.findByGraphicId(graphicId, pageRequest);
+        
+        Integer count = (int) timeEntryMembers.getTotalElements();
+        
+        return timeEntrysToResponse.apply(timeEntryMembers, count);
+    }
+
     private void sendEmailNotification(TimeEntryMember timeEntryMember, TimeEntry timeEntry, String memberEmail) {
         try {
             String eventTitle = "Work";

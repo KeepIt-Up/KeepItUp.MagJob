@@ -65,7 +65,8 @@ import { PatchTimeEntryMemberRequest } from './models/graphic.model';
   styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit {
-  @Input() viewMode: CalendarViewMode = 'manager';
+  @Input() viewMode: CalendarViewMode = 'managerCreate';
+  @Input() graphicId: string | null = null;
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
@@ -202,7 +203,9 @@ export class CalendarComponent implements OnInit {
       },
     });
 
-    if (this.viewMode === 'employee') {
+    if (this.viewMode === 'managerView') {
+      this.loadGraphicTimeEntries();
+    } else if (this.viewMode === 'employee') {
       this.loadEmployeeTimeEntries();
     }
   }
@@ -211,6 +214,11 @@ export class CalendarComponent implements OnInit {
     if (event.end) {
       const extendedEvent = event as CalendarEventExtended;
       console.log('Event action:', action, 'Event:', extendedEvent);
+
+      // Dla widoku grafiku (managerView) nie obsługuj kliknięć
+      if (this.viewMode === 'managerView') {
+        return;
+      }
 
       if (this.viewMode === 'employee') {
         this.eventForEmployee = extendedEvent;
@@ -385,15 +393,36 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  loadGraphicTimeEntries(): void {
+    if (!this.graphicId) {
+      console.error('Graphic ID not provided');
+      return;
+    }
+
+    this.graphicApiService.getTimeEntriesByGraphic(this.graphicId).subscribe({
+      next: (response: GetTimeEntryMembersResponse) => {
+        console.log('Graphic time entries:', response);
+        this.events = this.convertTimeEntryMembersToCalendarEvents(response.timeEntryMemberList);
+        this.refresh.next();
+      },
+      error: error => {
+        console.error('Error loading graphic time entries:', error);
+      },
+    });
+  }
+
   convertTimeEntryMembersToCalendarEvents(
     timeEntryMembers: TimeEntryMemberResponse[],
   ): CalendarEventExtended[] {
     return timeEntryMembers.map(member => ({
       id: member.id,
-      title: 'Work Assignment',
+      title:
+        this.viewMode === 'managerView'
+          ? `Member: ${member.memberId.substring(0, 8)}...`
+          : 'Work Assignment',
       start: new Date(member.timeEntry.startDateTime),
       end: new Date(member.timeEntry.endDateTime),
-      description: `Status: ${member.status}`,
+      description: `${member.status}`,
       draggable: false,
       resizable: {
         beforeStart: false,
@@ -404,6 +433,8 @@ export class CalendarComponent implements OnInit {
         memberId: member.memberId,
         timeEntryId: member.timeEntry.id,
       },
+      // Nie pokazuj akcji dla widoku grafiku (managerView)
+      actions: this.viewMode === 'managerView' ? undefined : this.actions,
     }));
   }
 
@@ -436,7 +467,8 @@ export class CalendarComponent implements OnInit {
   }
 
   getEventStatusClass(event: CalendarEventExtended): string {
-    if (this.viewMode === 'employee' && event.meta?.status) {
+    // Pokazuj status dla employee lub dla managera w widoku managerView
+    if (event.meta?.status && (this.viewMode === 'employee' || this.viewMode === 'managerView')) {
       switch (event.meta.status) {
         case 'Pending':
           return 'status-pending';

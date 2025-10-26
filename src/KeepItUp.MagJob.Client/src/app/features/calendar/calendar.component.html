@@ -39,7 +39,7 @@
         </span>
       </button>
       <button
-        *ngIf="viewMode === 'manager'"
+        *ngIf="viewMode === 'managerCreate'"
         class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
         (click)="addEvent()"
       >
@@ -50,7 +50,7 @@
       </button>
 
       <button
-        *ngIf="viewMode === 'manager'"
+        *ngIf="viewMode === 'managerCreate'"
         class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
         (click)="openAvailabilityTemplateDialog()"
       >

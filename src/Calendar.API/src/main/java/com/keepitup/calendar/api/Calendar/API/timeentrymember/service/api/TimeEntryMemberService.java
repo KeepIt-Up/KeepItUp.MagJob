@@ -28,4 +28,6 @@ public interface TimeEntryMemberService {
     List<TimeEntryMember> createBulk(PostTimeEntryMembersBulkRequest request);
 
     Page<TimeEntryMember> findUpcomingConfirmedMembers(int minutesBefore, Pageable pageable);
+    
+    Page<TimeEntryMember> findByGraphicId(UUID graphicId, Pageable pageable);
 }
