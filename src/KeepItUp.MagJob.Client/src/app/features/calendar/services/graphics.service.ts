@@ -22,7 +22,7 @@ export class GraphicsService {
       throw new Error('User not authenticated');
     }
 
-    const userId = currentUser.externalId;
+    const userId = currentUser.id;
     // Now pass the userId to the API service
     return this.graphicApiService.getGraphicsByManager(userId, page, size);
   }

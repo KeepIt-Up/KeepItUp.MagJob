@@ -53,7 +53,7 @@ export class CreateGraphicDialogComponent implements OnInit {
 
     const request: PostCreateAndPopulateGraphic = {
       name: this.graphicName.trim(),
-      managerId: currentUser.externalId, // Using the current user as manager
+      managerId: currentUser.id,
       availabilityTemplateId: this.template.id,
       startDate: this.startDate,
     };
