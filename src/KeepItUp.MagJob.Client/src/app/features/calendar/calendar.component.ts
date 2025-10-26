@@ -37,6 +37,8 @@ import {
 } from './models/time-entry-member.model';
 import { GraphicApiService } from './services/graphic.api.service';
 import { UserContextService } from '../../features/users/services/user-context.service';
+import { UserApiService } from '../../features/users/services/user.api';
+import type { UserBatchResponse } from '../../features/users/models/user-batch.model';
 import { PatchTimeEntryMemberRequest } from './models/graphic.model';
 
 @Component({
@@ -194,6 +196,7 @@ export class CalendarComponent implements OnInit {
   private calendarToTemplateFunction = inject(CalendarToTemplateFunction);
   private graphicApiService = inject(GraphicApiService);
   private userContextService = inject(UserContextService);
+  private userApiService = inject(UserApiService);
 
   ngOnInit(): void {
     this.viewDate = new Date();
@@ -401,11 +404,35 @@ export class CalendarComponent implements OnInit {
 
     this.graphicApiService.getTimeEntriesByGraphic(this.graphicId).subscribe({
       next: (response: GetTimeEntryMembersResponse) => {
-        console.log('Graphic time entries:', response);
-        this.events = this.convertTimeEntryMembersToCalendarEvents(response.timeEntryMemberList);
-        this.refresh.next();
+        // Pobierz unikalne memberIds
+        const memberIds = [...new Set(response.timeEntryMemberList.map(m => m.memberId))];
+
+        // Pobierz dane użytkowników
+        this.userApiService.getUsersByIds(memberIds).subscribe({
+          next: (usersResponse: UserBatchResponse) => {
+            // Utwórz mapę userId -> user data
+            const userMap = new Map(usersResponse.users.map(u => [u.id, u]));
+
+            // Mapuj TimeEntryMember z danymi użytkowników
+            const enrichedMembers = response.timeEntryMemberList.map(member => ({
+              ...member,
+              firstName: userMap.get(member.memberId)?.firstName,
+              lastName: userMap.get(member.memberId)?.lastName,
+            }));
+
+            this.events = this.convertTimeEntryMembersToCalendarEvents(enrichedMembers);
+            this.refresh.next();
+          },
+          error: (error: unknown) => {
+            console.error('Error loading user data:', error);
+            this.events = this.convertTimeEntryMembersToCalendarEvents(
+              response.timeEntryMemberList,
+            );
+            this.refresh.next();
+          },
+        });
       },
-      error: error => {
+      error: (error: unknown) => {
         console.error('Error loading graphic time entries:', error);
       },
     });
@@ -414,28 +441,37 @@ export class CalendarComponent implements OnInit {
   convertTimeEntryMembersToCalendarEvents(
     timeEntryMembers: TimeEntryMemberResponse[],
   ): CalendarEventExtended[] {
-    return timeEntryMembers.map(member => ({
-      id: member.id,
-      title:
-        this.viewMode === 'managerView'
-          ? `Member: ${member.memberId.substring(0, 8)}...`
-          : 'Work Assignment',
-      start: new Date(member.timeEntry.startDateTime),
-      end: new Date(member.timeEntry.endDateTime),
-      description: `${member.status}`,
-      draggable: false,
-      resizable: {
-        beforeStart: false,
-        afterEnd: false,
-      },
-      meta: {
-        status: member.status,
-        memberId: member.memberId,
-        timeEntryId: member.timeEntry.id,
-      },
-      // Nie pokazuj akcji dla widoku grafiku (managerView)
-      actions: this.viewMode === 'managerView' ? undefined : this.actions,
-    }));
+    return timeEntryMembers.map(member => {
+      // Utwórz tytuł na podstawie dostępnych danych
+      let title = 'Work Assignment';
+      if (this.viewMode === 'managerView') {
+        if (member.firstName && member.lastName) {
+          title = `${member.firstName} ${member.lastName}`;
+        } else {
+          title = `Member: ${member.memberId.substring(0, 8)}...`;
+        }
+      }
+
+      return {
+        id: member.id,
+        title,
+        start: new Date(member.timeEntry.startDateTime),
+        end: new Date(member.timeEntry.endDateTime),
+        description: `${member.status}`,
+        draggable: false,
+        resizable: {
+          beforeStart: false,
+          afterEnd: false,
+        },
+        meta: {
+          status: member.status,
+          memberId: member.memberId,
+          timeEntryId: member.timeEntry.id,
+        },
+        // Nie pokazuj akcji dla widoku grafiku (managerView)
+        actions: this.viewMode === 'managerView' ? undefined : this.actions,
+      };
+    });
   }
 
   onEmployeeStatusChange(data: { event: CalendarEventExtended; status: string }): void {
