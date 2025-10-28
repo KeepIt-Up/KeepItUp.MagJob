@@ -64,21 +64,6 @@ public interface TimeEntryMemberController {
             UUID id
     );
 
-    @Operation(summary = "Create TimeEntrys")
-    @PostMapping("api/timeentrymembers")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    GetTimeEntryMemberResponse createTimeEntryMembers(
-            @Parameter(
-                    name = "PostTimeEntryMembersRequest",
-                    description = "PostTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PostTimeEntryMemberRequest.class),
-                    required = true
-            )
-            @RequestBody
-            PostTimeEntryMemberRequest postTimeEntryMemberRequest
-    );
-
     @Operation(summary = "Update TimeEntrys")
     @PatchMapping("api/timeentrymembers/{id}")
     @ResponseStatus(HttpStatus.OK)

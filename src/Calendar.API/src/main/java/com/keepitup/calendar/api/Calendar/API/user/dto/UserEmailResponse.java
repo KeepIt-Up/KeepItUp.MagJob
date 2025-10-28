@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberEmailResponse {
+public class UserEmailResponse {
     @JsonProperty("email")
     private String email;
 }

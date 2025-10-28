@@ -37,17 +37,16 @@ public class GoogleCalendarInviteService {
                 .setSummary(eventTitle)
                 .setDescription(description);
 
-        String timeZone = ZoneId.systemDefault().getId();
         EventDateTime start = new EventDateTime()
                 .setDateTime(new com.google.api.client.util.DateTime(
-                    Date.from(startTime.atZone(ZoneId.of(timeZone)).toInstant())))
-                .setTimeZone(timeZone);
+                    Date.from(startTime.atZone(ZoneId.of("Europe/Warsaw")).toInstant())));
+        start.setTimeZone("Europe/Warsaw");
         event.setStart(start);
 
         EventDateTime end = new EventDateTime()
                 .setDateTime(new com.google.api.client.util.DateTime(
-                    Date.from(endTime.atZone(ZoneId.of(timeZone)).toInstant())))
-                .setTimeZone(timeZone);
+                    Date.from(endTime.atZone(ZoneId.of("Europe/Warsaw")).toInstant())));
+        end.setTimeZone("Europe/Warsaw");
         event.setEnd(end);
 
         EventAttendee attendee = new EventAttendee()
