@@ -32,12 +32,6 @@
               <h1 class="text-3xl font-bold text-gray-900">Manage Members</h1>
               <p class="mt-2 text-gray-600">{{ graphic.name }}</p>
             </div>
-            <div class="text-right">
-              <div class="text-sm text-gray-500">Total Assignments</div>
-              <div class="text-2xl font-bold text-gray-900">
-                {{ getTotalMembersCount(graphic) }}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -106,13 +100,15 @@
                   <!-- Member Selection -->
                   <div class="mb-6 p-4 bg-gray-50 rounded-lg">
                     <h3 class="text-sm font-medium text-gray-900 mb-3">Select Members</h3>
-                    <p class="text-xs text-gray-500 mb-4">
+                    <p class="text-xs text-gray-500 mb-2">
                       Choose members from the organization to assign to this time entry.
                     </p>
-
                     @if (availableMembers && availableMembers.length > 0) {
                       <div class="space-y-2 max-h-60 overflow-y-auto">
-                        @for (member of availableMembers; track member.userId) {
+                        @for (
+                          member of getFilteredAvailableMembers(selectedTimeEntry.id);
+                          track member.userId
+                        ) {
                           <div
                             class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
                           >
@@ -199,7 +195,6 @@
                                 {{ getMemberName(member.memberId) }}
                               </div>
                               <div class="text-xs text-gray-500">Status: {{ member.status }}</div>
-                              <div class="text-xs text-gray-400">ID: {{ member.memberId }}</div>
                             </div>
                             <app-button
                               size="sm"

@@ -59,10 +59,8 @@ export class GraphicApiService {
     );
   }
 
-  removeMemberFromTimeEntry(timeEntryId: string, memberId: string): Observable<void> {
-    return this.httpClient.delete<void>(
-      `${this.apiUrl}/timeentries/${timeEntryId}/members/${memberId}`,
-    );
+  deleteTimeEntryMember(memberId: string): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiUrl}/timeentrymembers/${memberId}`);
   }
 
   createTimeEntryMembersBulk(

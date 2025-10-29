@@ -8,14 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TimeEntryMemberRepository extends JpaRepository<TimeEntryMember, BigInteger> {
-    Optional<TimeEntryMember> findById(UUID uuid);
+public interface TimeEntryMemberRepository extends JpaRepository<TimeEntryMember, UUID> {
     
     @Query("SELECT tem FROM TimeEntryMember tem " +
            "JOIN tem.timeEntry te " +

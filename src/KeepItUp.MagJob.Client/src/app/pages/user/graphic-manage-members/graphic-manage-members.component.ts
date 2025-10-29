@@ -45,6 +45,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
   selectedMembers: Record<string, { memberId: string; status: string }[]> = {};
   availableMembers: Member[] = [];
+  timeEntryMembersByGraphic: TimeEntryMemberResponse[] = [];
 
   ngOnInit(): void {
     const graphicId = this.route.snapshot.params['id'] as string;
@@ -77,6 +78,21 @@ export class GraphicManageMembersComponent implements OnInit {
 
     this.graphicsService.getGraphic(id).subscribe({
       next: graphic => {
+        console.log('[GraphicManageMembers] Loaded graphic', {
+          id: graphic.id,
+          name: graphic.name,
+          timeEntries: graphic.timeEntries?.length,
+          timeEntryMembers: graphic.timeEntryMembers?.length,
+        });
+        if (graphic.timeEntryMembers) {
+          console.table(
+            graphic.timeEntryMembers.map(m => ({
+              memberId: m.memberId,
+              timeEntryId: m.timeEntry?.id,
+              status: m.status,
+            })),
+          );
+        }
         this.graphic = graphic;
         this.isLoading = false;
 
@@ -88,14 +104,27 @@ export class GraphicManageMembersComponent implements OnInit {
           });
         }
 
-        // Load members for the organization
         if (graphic.organizationId) {
           this.loadOrganizationMembers(graphic.organizationId);
         }
+
+        this.loadTimeEntryMembersByGraphic(graphic.id);
       },
       error: (error: unknown) => {
         this.error = (error as Error)?.message || 'Failed to load graphic details';
         this.isLoading = false;
+      },
+    });
+  }
+
+  private loadTimeEntryMembersByGraphic(graphicId: string): void {
+    this.graphicsService.getTimeEntryMembersByGraphic(graphicId, 0, 1000).subscribe({
+      next: response => {
+        this.timeEntryMembersByGraphic = response.timeEntryMemberList ?? [];
+      },
+      error: (error: unknown) => {
+        console.error('Error loading time entry members by graphic:', error);
+        this.timeEntryMembersByGraphic = [];
       },
     });
   }
@@ -105,7 +134,31 @@ export class GraphicManageMembersComponent implements OnInit {
   }
 
   getTimeEntryMembers(timeEntryId: string, graphic: GraphicResponse): TimeEntryMemberResponse[] {
-    return graphic.timeEntryMembers?.filter(member => member.timeEntry.id === timeEntryId) || [];
+    const source = this.timeEntryMembersByGraphic?.length
+      ? this.timeEntryMembersByGraphic
+      : (graphic.timeEntryMembers ?? []);
+    return source.filter(member => member.timeEntry.id === timeEntryId);
+  }
+
+  getAssignedUserIds(timeEntryId: string): Set<string> {
+    const source = this.timeEntryMembersByGraphic?.length
+      ? this.timeEntryMembersByGraphic
+      : (this.graphic?.timeEntryMembers ?? []);
+    const ids = source.filter(m => m.timeEntry.id === timeEntryId).map(m => m.memberId);
+    const result = new Set<string>(ids);
+
+    return result;
+  }
+
+  getFilteredAvailableMembers(timeEntryId: string): Member[] {
+    const assignedUserIds = this.getAssignedUserIds(timeEntryId);
+
+    return this.availableMembers.filter(m => !assignedUserIds.has(m.userId));
+  }
+
+  getHiddenMembersCount(timeEntryId: string): number {
+    const assignedUserIds = this.getAssignedUserIds(timeEntryId);
+    return this.availableMembers.filter(m => assignedUserIds.has(m.userId)).length;
   }
 
   addMemberToTimeEntry(timeEntryId: string, memberId: string, status: string): void {
@@ -161,6 +214,9 @@ export class GraphicManageMembersComponent implements OnInit {
           'Members Saved',
           `Successfully assigned ${this.selectedMembers[timeEntryId].length} member(s) to this time entry.`,
         );
+
+        this.selectedMembers[timeEntryId] = [];
+        console.log('[GraphicManageMembers] Save success, refreshing graphic');
         this.refreshGraphic();
       },
       error: (error: unknown) => {
@@ -177,7 +233,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
     this.isRemovingMember = true;
 
-    this.graphicsService.removeMemberFromTimeEntry(member.timeEntry.id, member.id).subscribe({
+    this.graphicsService.removeTimeEntryMember(member.id).subscribe({
       next: () => {
         this.isRemovingMember = false;
         this.alertService.success(
@@ -206,6 +262,7 @@ export class GraphicManageMembersComponent implements OnInit {
   private refreshGraphic(): void {
     if (this.graphic) {
       this.loadGraphic(this.graphic.id);
+      this.loadTimeEntryMembersByGraphic(this.graphic.id);
     }
   }
 
