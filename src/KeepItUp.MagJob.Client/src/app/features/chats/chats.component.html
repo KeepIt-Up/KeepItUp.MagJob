@@ -1,7 +1,5 @@
 <div class="flex bg-gray-50 chats-container">
-  <!-- Chat List Sidebar -->
   <div class="w-80 bg-white border-r border-gray-200 flex flex-col">
-    <!-- Header with Create Chat Button -->
     <div class="p-4 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold text-gray-900">Chats</h2>
@@ -22,7 +20,6 @@
       </div>
     </div>
 
-    <!-- Chat List -->
     <div class="flex-1 overflow-y-auto chat-list-container">
       <app-chat-list
         [chats]="chats"
@@ -33,7 +30,6 @@
     </div>
   </div>
 
-  <!-- Chat Messages Area -->
   <div class="flex-1 flex flex-col">
     <app-chat-messages
       *ngIf="selectedChat"
@@ -43,7 +39,6 @@
       (chatLeft)="onChatLeft($event)"
     ></app-chat-messages>
 
-    <!-- Empty State -->
     <div *ngIf="!selectedChat" class="flex-1 flex items-center justify-center">
       <div class="text-center">
         <svg
@@ -65,7 +60,6 @@
     </div>
   </div>
 
-  <!-- Create Chat Modal -->
   <app-chat-create-modal
     *ngIf="showCreateModal"
     [isOpen]="showCreateModal"

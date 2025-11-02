@@ -288,7 +288,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
         },
         error: error => {
           console.error('Error leaving chat:', error);
-          alert('Wystąpił błąd podczas opuszczania czatu');
+          alert('An error occurred while leaving the chat');
         },
       });
     }

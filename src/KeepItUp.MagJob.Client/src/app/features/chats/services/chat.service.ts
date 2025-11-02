@@ -157,7 +157,7 @@ export class ChatService {
                 id: rawMessage.chatMember.id,
                 nickname: rawMessage.chatMember.nickname,
                 memberId: rawMessage.chatMember.memberId,
-                isAdmin: false, // Default value since it's not in the response
+                isAdmin: false,
                 member: {
                   id: rawMessage.chatMember.memberId,
                   fullName: rawMessage.firstAndLastName,
@@ -238,7 +238,7 @@ export class ChatService {
             id: msg.chatMember?.id || '',
             nickname: msg.chatMember?.nickname,
             memberId: msg.chatMember?.memberId || '',
-            isAdmin: false, // Default value since it's not in the response
+            isAdmin: false,
             member: {
               id: msg.chatMember?.memberId || '',
               fullName: msg.firstAndLastName || '',

@@ -1,5 +1,4 @@
 <div class="chat-container bg-white">
-  <!-- Chat Header -->
   <div
     class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0"
   >
@@ -16,7 +15,6 @@
     </div>
 
     <div class="flex items-center space-x-2">
-      <!-- Dropdown Menu -->
       <div class="relative" #dropdownMenu>
         <button
           (click)="toggleDropdown()"
@@ -32,7 +30,6 @@
           </svg>
         </button>
 
-        <!-- Dropdown Content -->
         <div
           *ngIf="showDropdown"
           class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200"
@@ -72,14 +69,11 @@
     </div>
   </div>
 
-  <!-- Messages Container -->
   <div class="messages-container p-4 space-y-4">
-    <!-- Loading State -->
     <div *ngIf="loading" class="flex justify-center">
       <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
     </div>
 
-    <!-- Empty State -->
     <div
       *ngIf="!loading && messages.length === 0"
       class="flex flex-col items-center justify-center h-32 text-gray-500"
@@ -96,7 +90,6 @@
       <p class="text-xs">Start the conversation!</p>
     </div>
 
-    <!-- Messages -->
     <div
       *ngFor="let message of messages"
       class="flex mb-4"
@@ -107,7 +100,6 @@
         [class.message-own]="isOwnMessage(message)"
         [class.message-other]="!isOwnMessage(message)"
       >
-        <!-- Message Header -->
         <div class="flex items-center justify-between mb-1">
           <span
             class="text-xs font-medium"
@@ -125,10 +117,8 @@
           </span>
         </div>
 
-        <!-- Message Content -->
         <p class="text-sm">{{ message.content }}</p>
 
-        <!-- Message Status -->
         <div *ngIf="isOwnMessage(message)" class="flex justify-end mt-1">
           <span class="text-xs text-blue-100">
             {{ message.viewedBy.length > 0 ? 'Seen' : 'Delivered' }}
@@ -138,7 +128,6 @@
     </div>
   </div>
 
-  <!-- Typing Indicator -->
   <div *ngIf="typingUsers.length > 0" class="typing-indicator px-4 py-2 bg-gray-100 border-t">
     <div class="flex items-center space-x-2 text-sm text-gray-600">
       <div class="flex space-x-1">
@@ -150,13 +139,12 @@
         <span *ngFor="let user of typingUsers; let last = last">
           <strong>{{ user.memberName }}</strong><span *ngIf="!last">, </span>
         </span>
-        <span *ngIf="typingUsers.length === 1"> pisze...</span>
-        <span *ngIf="typingUsers.length > 1"> piszą...</span>
+        <span *ngIf="typingUsers.length === 1"> is typing...</span>
+        <span *ngIf="typingUsers.length > 1"> are typing...</span>
       </span>
     </div>
   </div>
 
-  <!-- Message Input -->
   <div class="message-input-container p-4 bg-gray-50">
     <div class="flex items-end space-x-3">
       <div class="flex-1">
@@ -187,7 +175,6 @@
     </div>
   </div>
 
-  <!-- Add Members Modal -->
   <app-chat-add-members-modal
     [isOpen]="showAddMembersModal"
     [chat]="chat"

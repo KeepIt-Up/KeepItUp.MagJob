@@ -1,10 +1,8 @@
 <div class="h-full">
-  <!-- Loading State -->
   <div *ngIf="loading" class="flex items-center justify-center h-32">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
   </div>
 
-  <!-- Empty State -->
   <div
     *ngIf="!loading && chats.length === 0"
     class="flex flex-col items-center justify-center h-32 text-gray-500"
@@ -21,7 +19,6 @@
     <p class="text-xs">Create your first chat to start messaging</p>
   </div>
 
-  <!-- Chat List -->
   <div *ngIf="!loading && chats.length > 0" class="space-y-1 p-2">
     <div
       *ngFor="let chat of chats"
@@ -31,14 +28,12 @@
       [class.border-l-4]="selectedChat?.id === chat.id"
       [class.border-blue-500]="selectedChat?.id === chat.id"
     >
-      <!-- Chat Avatar -->
       <div
         class="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm"
       >
         {{ chat.title.charAt(0).toUpperCase() }}
       </div>
 
-      <!-- Chat Info -->
       <div class="ml-3 flex-1 min-w-0">
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-900 truncate">

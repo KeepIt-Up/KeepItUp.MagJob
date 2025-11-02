@@ -55,9 +55,7 @@ export class ChatAddMembersModalComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnInit = (): void => {
-    //
-  };
+  ngOnInit = (): void => {};
 
   ngOnChanges = (changes: SimpleChanges): void => {
     if (changes['isOpen']?.currentValue === true) {
@@ -174,8 +172,8 @@ export class ChatAddMembersModalComponent implements OnInit, OnChanges {
     if (!this.addMembersForm) return '';
     const control = this.addMembersForm.get('memberIds');
     if (control?.errors && control.touched) {
-      if (control.errors['required']) return 'Proszę wybrać przynajmniej jednego członka';
-      if (control.errors['minlength']) return 'Proszę wybrać przynajmniej jednego członka';
+      if (control.errors['required']) return 'Please select at least one member';
+      if (control.errors['minlength']) return 'Please select at least one member';
     }
     return '';
   }
