@@ -128,7 +128,7 @@ services:
     image: ${DOCKER_REGISTRY-}workevidence.api
     build:
       context: .
-      dockerfile: src/WorkEvidence/Dockerfile
+      dockerfile: src/KeepItUp.MagJob.WorkEvidence/Dockerfile
     ports:
       - "5010:80"
     environment:
