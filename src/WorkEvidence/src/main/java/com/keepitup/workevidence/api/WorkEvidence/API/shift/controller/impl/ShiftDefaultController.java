@@ -49,12 +49,16 @@ public class ShiftDefaultController implements ShiftController {
     @Override
     public GetShiftResponse startShift(PostStartShiftRequest postShiftRequest) {
         Shift shift = requestToShift.apply(postShiftRequest);
-        service.startShift(shift);
+        Optional<Shift> savedShift = service.startShift(shift);
+
+        Shift s = savedShift.orElseThrow(() -> new RuntimeException("Shift could not be saved"));
         GetShiftResponse response = new GetShiftResponse();
-        response.setId(shift.getId());  // Zwracamy ID zapisanej zmiany
-        response.setStartTime(shift.getStartTime());
-        response.setEndTime(shift.getEndTime());
-        response.setDescription(shift.getDescription());
+        response.setId(s.getId());
+        response.setStartTime(s.getStartTime());
+        response.setEndTime(s.getEndTime());
+        response.setDescription(s.getDescription());
+        response.setMemberId(s.getMemberId());
+        response.setStatus(s.isStatus());
 
         return response;
     }

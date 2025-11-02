@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +48,6 @@ public class Shift {
     private UUID memberId;
 
     @OneToMany(mappedBy = "shift")
-    private List<ShiftEditRequest> shiftEditRequests;
+    private List<ShiftEditRequest> shiftEditRequests = new ArrayList<>();;
 
 }

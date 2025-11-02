@@ -73,9 +73,10 @@ public class ShiftEditRequestDefaultConroller implements ShiftEditRequestControl
     @Override
     public GetShiftEditRequestsResponse getEditRequests(UUID shiftId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Integer count = service.findByShiftId(shiftId, pageRequest).getNumberOfElements();
+        Page<ShiftEditRequest> pageResult = service.findByShiftId(shiftId, pageRequest);
+        Integer count = pageResult.getNumberOfElements();
 
-        return shiftEditRequestsToResponse.apply(service.findByShiftId(shiftId, pageRequest), count);
+        return shiftEditRequestsToResponse.apply(pageResult, count);
     }
 
     @Override
