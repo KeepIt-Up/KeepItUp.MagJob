@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.keepitup.calendar.api</groupId>
-	<artifactId>Calendar.API</artifactId>
+	<artifactId>KeepItUp.MagJob.Calendar</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Calendar.API</name>
+	<name>KeepItUp.MagJob.Calendar</name>
 	<description>Calendar API for MagJob project</description>
 	<url/>
 	<licenses>
