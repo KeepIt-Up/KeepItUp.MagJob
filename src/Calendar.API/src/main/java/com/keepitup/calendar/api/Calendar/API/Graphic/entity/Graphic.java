@@ -28,6 +28,10 @@ public class Graphic {
     @Column(name = "managerId", nullable = false)
     private UUID managerId;
 
+    @NonNull
+    @Column(name = "organizationId", nullable = false)
+    private UUID organizationId;
+
     @OneToMany
     private List<TimeEntryMember> timeEntryMembers;
 

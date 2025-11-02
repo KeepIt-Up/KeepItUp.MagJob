@@ -35,6 +35,9 @@ public class PostCreateAndPopulateGraphic {
     @Schema(description = "PostCreateAndPopulateGraphic managerId value")
     private UUID managerId;
 
+    @Schema(description = "PostCreateAndPopulateGraphic organizationId value")
+    private UUID organizationId;
+
     @Schema(description = "PostCreateAndPopulateGraphic startDate value")
     private LocalDate startDate;
 

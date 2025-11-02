@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GraphicsService } from '../../../features/calendar/services/graphics.service';
-import { UserService } from '../../../features/users/services/user.service';
 import { OrganizationApiService } from '../../../features/organizations/services/organization.api.service';
 import {
   GraphicResponse,
@@ -11,7 +10,6 @@ import {
   TimeEntryMemberResponse,
   CreateTimeEntryMembersBulkRequest,
 } from '../../../features/calendar/models/graphic.model';
-import { Organization } from '../../../features/organizations/models/organization.model';
 import { Member } from '../../../features/members/models/member';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { TagComponent } from '../../../shared/components/tag/tag.component';
@@ -35,7 +33,6 @@ import { AlertContainerComponent } from '../../../shared/components/alert-contai
 export class GraphicManageMembersComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly graphicsService = inject(GraphicsService);
-  private readonly userService = inject(UserService);
   private readonly organizationApiService = inject(OrganizationApiService);
   private readonly alertService = inject(AlertService);
 
@@ -46,47 +43,11 @@ export class GraphicManageMembersComponent implements OnInit {
   isAddingMember = false;
   isRemovingMember = false;
 
-  showOrganizationModal = true;
-  organizations: Organization[] = [];
-  selectedOrganization: Organization | null = null;
-  isLoadingOrganizations = false;
-
   selectedMembers: Record<string, { memberId: string; status: string }[]> = {};
   availableMembers: Member[] = [];
+  timeEntryMembersByGraphic: TimeEntryMemberResponse[] = [];
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.loadUserOrganizations();
-    }, 100);
-  }
-
-  private loadUserOrganizations(): void {
-    this.isLoadingOrganizations = true;
-    console.log('Loading user organizations...');
-    this.userService.getUserOrganizations().subscribe({
-      next: response => {
-        console.log('Organizations response:', response);
-        this.organizations = response.items || [];
-        this.isLoadingOrganizations = false;
-        if (this.organizations.length === 0) {
-          this.error = 'No organizations found';
-        }
-      },
-      error: (error: unknown) => {
-        console.error('Error loading organizations:', error);
-        this.error = (error as Error)?.message || 'Failed to load organizations';
-        this.isLoadingOrganizations = false;
-      },
-    });
-  }
-
-  selectOrganization(organization: Organization): void {
-    console.log('Selected organization:', organization);
-    this.selectedOrganization = organization;
-    this.showOrganizationModal = false;
-
-    this.loadOrganizationMembers(organization.id);
-
     const graphicId = this.route.snapshot.params['id'] as string;
     if (graphicId) {
       this.loadGraphic(graphicId);
@@ -117,6 +78,21 @@ export class GraphicManageMembersComponent implements OnInit {
 
     this.graphicsService.getGraphic(id).subscribe({
       next: graphic => {
+        console.log('[GraphicManageMembers] Loaded graphic', {
+          id: graphic.id,
+          name: graphic.name,
+          timeEntries: graphic.timeEntries?.length,
+          timeEntryMembers: graphic.timeEntryMembers?.length,
+        });
+        if (graphic.timeEntryMembers) {
+          console.table(
+            graphic.timeEntryMembers.map(m => ({
+              memberId: m.memberId,
+              timeEntryId: m.timeEntry?.id,
+              status: m.status,
+            })),
+          );
+        }
         this.graphic = graphic;
         this.isLoading = false;
 
@@ -127,10 +103,28 @@ export class GraphicManageMembersComponent implements OnInit {
             }
           });
         }
+
+        if (graphic.organizationId) {
+          this.loadOrganizationMembers(graphic.organizationId);
+        }
+
+        this.loadTimeEntryMembersByGraphic(graphic.id);
       },
       error: (error: unknown) => {
         this.error = (error as Error)?.message || 'Failed to load graphic details';
         this.isLoading = false;
+      },
+    });
+  }
+
+  private loadTimeEntryMembersByGraphic(graphicId: string): void {
+    this.graphicsService.getTimeEntryMembersByGraphic(graphicId, 0, 1000).subscribe({
+      next: response => {
+        this.timeEntryMembersByGraphic = response.timeEntryMemberList ?? [];
+      },
+      error: (error: unknown) => {
+        console.error('Error loading time entry members by graphic:', error);
+        this.timeEntryMembersByGraphic = [];
       },
     });
   }
@@ -140,7 +134,31 @@ export class GraphicManageMembersComponent implements OnInit {
   }
 
   getTimeEntryMembers(timeEntryId: string, graphic: GraphicResponse): TimeEntryMemberResponse[] {
-    return graphic.timeEntryMembers?.filter(member => member.timeEntry.id === timeEntryId) || [];
+    const source = this.timeEntryMembersByGraphic?.length
+      ? this.timeEntryMembersByGraphic
+      : (graphic.timeEntryMembers ?? []);
+    return source.filter(member => member.timeEntry.id === timeEntryId);
+  }
+
+  getAssignedUserIds(timeEntryId: string): Set<string> {
+    const source = this.timeEntryMembersByGraphic?.length
+      ? this.timeEntryMembersByGraphic
+      : (this.graphic?.timeEntryMembers ?? []);
+    const ids = source.filter(m => m.timeEntry.id === timeEntryId).map(m => m.memberId);
+    const result = new Set<string>(ids);
+
+    return result;
+  }
+
+  getFilteredAvailableMembers(timeEntryId: string): Member[] {
+    const assignedUserIds = this.getAssignedUserIds(timeEntryId);
+
+    return this.availableMembers.filter(m => !assignedUserIds.has(m.userId));
+  }
+
+  getHiddenMembersCount(timeEntryId: string): number {
+    const assignedUserIds = this.getAssignedUserIds(timeEntryId);
+    return this.availableMembers.filter(m => assignedUserIds.has(m.userId)).length;
   }
 
   addMemberToTimeEntry(timeEntryId: string, memberId: string, status: string): void {
@@ -170,7 +188,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
   getMemberStatus(timeEntryId: string, memberId: string): string {
     const member = this.selectedMembers[timeEntryId]?.find(m => m.memberId === memberId);
-    return member?.status ?? 'Not confirmed';
+    return member?.status ?? 'Pending';
   }
 
   saveTimeEntryMembers(timeEntryId: string): void {
@@ -196,6 +214,9 @@ export class GraphicManageMembersComponent implements OnInit {
           'Members Saved',
           `Successfully assigned ${this.selectedMembers[timeEntryId].length} member(s) to this time entry.`,
         );
+
+        this.selectedMembers[timeEntryId] = [];
+        console.log('[GraphicManageMembers] Save success, refreshing graphic');
         this.refreshGraphic();
       },
       error: (error: unknown) => {
@@ -212,7 +233,7 @@ export class GraphicManageMembersComponent implements OnInit {
 
     this.isRemovingMember = true;
 
-    this.graphicsService.removeMemberFromTimeEntry(member.timeEntry.id, member.id).subscribe({
+    this.graphicsService.removeTimeEntryMember(member.id).subscribe({
       next: () => {
         this.isRemovingMember = false;
         this.alertService.success(
@@ -241,6 +262,7 @@ export class GraphicManageMembersComponent implements OnInit {
   private refreshGraphic(): void {
     if (this.graphic) {
       this.loadGraphic(this.graphic.id);
+      this.loadTimeEntryMembersByGraphic(this.graphic.id);
     }
   }
 

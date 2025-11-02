@@ -22,9 +22,9 @@ public class AvailabilityTemplatesToResponseFunction implements BiFunction<Page<
                             .id(availabilityTemplate.getId())
                             .name(availabilityTemplate.getName())
                             .numberOfDays(availabilityTemplate.getNumberOfDays())
-                            .organizationId(availabilityTemplate.getOrganizationId())
                             .startDayOfWeek(availabilityTemplate.getStartDayOfWeek())
                             .timeEntryTemplates(availabilityTemplate.getTimeEntryTemplates())
+                            .userId(availabilityTemplate.getUserId())
                             .build()
             );
         }

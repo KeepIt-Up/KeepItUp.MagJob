@@ -4,7 +4,6 @@ import com.keepitup.calendar.api.Calendar.API.timeentrytemplate.entity.TimeEntry
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,9 +22,6 @@ public class GetAvailabilityTemplateResponse {
 
     @Schema(description = "GetAvailibityTemplateRequest name value")
     private String name;
-
-    @Schema(description = "GetAvailibityTemplateRequest organizationId value")
-    private BigInteger organizationId;
 
     @Schema(description = "GetAvailibityTemplateRequest startDayOfWeek value")
     private String startDayOfWeek;

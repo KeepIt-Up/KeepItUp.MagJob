@@ -13,7 +13,6 @@ public class RequestToAvailabilityTemplateFunction implements Function<PostAvail
         return AvailabilityTemplate.builder()
                 .name(request.getName())
                 .startDayOfWeek(request.getStartDayOfWeek())
-                .organizationId(request.getOrganizationId())
                 .numberOfDays(request.getNumberOfDays())
                 .timeEntryTemplates(request.getTimeEntryTemplates())
                 .build();

@@ -10,8 +10,10 @@ import {
   GraphicResponse,
   GetGraphicsResponse,
   CreateTimeEntryMembersBulkRequest,
+  PatchTimeEntryMemberRequest,
   TimeEntryMemberResponse,
 } from '../models/graphic.model';
+import { GetTimeEntryMembersResponse } from '../models/time-entry-member.model';
 
 @Injectable({
   providedIn: 'root',
@@ -57,10 +59,8 @@ export class GraphicApiService {
     );
   }
 
-  removeMemberFromTimeEntry(timeEntryId: string, memberId: string): Observable<void> {
-    return this.httpClient.delete<void>(
-      `${this.apiUrl}/timeentries/${timeEntryId}/members/${memberId}`,
-    );
+  deleteTimeEntryMember(memberId: string): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiUrl}/timeentrymembers/${memberId}`);
   }
 
   createTimeEntryMembersBulk(
@@ -73,6 +73,48 @@ export class GraphicApiService {
     return this.httpClient.post<TimeEntryMemberResponse[]>(
       `${this.apiUrl}/timeentrymembers/bulk`,
       request,
+      { headers },
+    );
+  }
+
+  getTimeEntriesByUser(
+    userId: string,
+    page = 0,
+    size = 10,
+  ): Observable<GetTimeEntryMembersResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.httpClient.post<GetTimeEntryMembersResponse>(
+      `${this.apiUrl}/timeentrymembers/${userId}?page=${page}&size=${size}`,
+      `"${userId}"`,
+      { headers },
+    );
+  }
+
+  updateTimeEntryMemberStatus(id: string, request: PatchTimeEntryMemberRequest): Observable<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.httpClient.patch<void>(`${this.apiUrl}/timeentrymembers/${id}`, request, {
+      headers,
+    });
+  }
+
+  getTimeEntriesByGraphic(
+    graphicId: string,
+    page = 0,
+    size = 10,
+  ): Observable<GetTimeEntryMembersResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.httpClient.post<GetTimeEntryMembersResponse>(
+      `${this.apiUrl}/timeentrymembers/graphic/${graphicId}?page=${page}&size=${size}`,
+      {},
       { headers },
     );
   }

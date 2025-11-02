@@ -2,6 +2,7 @@ export interface GraphicResponse {
   id: string;
   name: string;
   managerId: string;
+  organizationId: string;
   timeEntryMembers: TimeEntryMemberResponse[];
   timeEntries: TimeEntryResponse[];
 }
@@ -38,4 +39,8 @@ export interface TimeEntryMemberAssignment {
 export interface CreateTimeEntryMembersBulkRequest {
   timeEntryId: string;
   memberAssignments: TimeEntryMemberAssignment[];
+}
+
+export interface PatchTimeEntryMemberRequest {
+  status: string;
 }

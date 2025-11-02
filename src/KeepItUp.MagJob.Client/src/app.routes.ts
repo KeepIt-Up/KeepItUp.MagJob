@@ -47,10 +47,7 @@ export const routes: Routes = [
       },
       {
         path: 'graphics/:id',
-        loadComponent: () =>
-          import('./app/pages/user/graphic-detail/graphic-detail.component').then(
-            m => m.GraphicDetailComponent,
-          ),
+        loadComponent: () => import('./app/pages/calendar-page').then(m => m.CalendarPageComponent),
       },
       {
         path: 'graphics/:id/manage-members',
@@ -59,10 +56,11 @@ export const routes: Routes = [
             m => m.GraphicManageMembersComponent,
           ),
       },
+      { path: 'myCalendar', component: CalendarPageComponent, data: { viewMode: 'employee' } },
       { path: 'organizations', component: UserOrganizationsComponent },
       { path: 'invitations', component: UserInvitationsComponent },
       { path: 'settings', component: UserSettingsComponent },
-      { path: 'calendar', component: CalendarPageComponent },
+      { path: 'calendar', component: CalendarPageComponent, data: { viewMode: 'managerCreate' } },
       { path: 'workevidence', component: WorkEvidenceComponent },
       { path: 'shift', component: ShiftComponent },
       { path: 'availability-templates', component: AvailabilityTemplatesComponent },

@@ -22,7 +22,7 @@ export class GraphicsService {
       throw new Error('User not authenticated');
     }
 
-    const userId = currentUser.externalId;
+    const userId = currentUser.id;
     // Now pass the userId to the API service
     return this.graphicApiService.getGraphicsByManager(userId, page, size);
   }
@@ -35,13 +35,21 @@ export class GraphicsService {
     return this.graphicApiService.addMemberToTimeEntry(timeEntryId, userId);
   }
 
-  removeMemberFromTimeEntry(timeEntryId: string, memberId: string): Observable<void> {
-    return this.graphicApiService.removeMemberFromTimeEntry(timeEntryId, memberId);
+  removeTimeEntryMember(memberId: string): Observable<void> {
+    return this.graphicApiService.deleteTimeEntryMember(memberId);
   }
 
   createTimeEntryMembersBulk(
     request: CreateTimeEntryMembersBulkRequest,
   ): Observable<TimeEntryMemberResponse[]> {
     return this.graphicApiService.createTimeEntryMembersBulk(request);
+  }
+
+  getTimeEntryMembersByGraphic(
+    graphicId: string,
+    page = 0,
+    size = 100,
+  ): Observable<import('../models/time-entry-member.model').GetTimeEntryMembersResponse> {
+    return this.graphicApiService.getTimeEntriesByGraphic(graphicId, page, size);
   }
 }

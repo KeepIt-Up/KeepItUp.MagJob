@@ -64,21 +64,6 @@ public interface TimeEntryMemberController {
             UUID id
     );
 
-    @Operation(summary = "Create TimeEntrys")
-    @PostMapping("api/timeentrymembers")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    GetTimeEntryMemberResponse createTimeEntryMembers(
-            @Parameter(
-                    name = "PostTimeEntryMembersRequest",
-                    description = "PostTimeEntrysRequest DTO",
-                    schema = @Schema(implementation = PostTimeEntryMemberRequest.class),
-                    required = true
-            )
-            @RequestBody
-            PostTimeEntryMemberRequest postTimeEntryMemberRequest
-    );
-
     @Operation(summary = "Update TimeEntrys")
     @PatchMapping("api/timeentrymembers/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -177,5 +162,30 @@ public interface TimeEntryMemberController {
             )
             @PathVariable("userId")
             UUID userId
+    );
+    
+    @Operation(summary = "Get TimeEntryMembers by Graphic")
+    @PostMapping("api/timeentrymembers/graphic/{graphicId}")
+    @ResponseStatus(HttpStatus.OK)
+    GetTimeEntryMembersResponse getTimeEntryMembersByGraphic(
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size,
+            @Parameter(
+                    name = "graphicId",
+                    description = "Graphic id value",
+                    required = true
+            )
+            @PathVariable("graphicId")
+            UUID graphicId
     );
 }

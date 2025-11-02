@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CalendarComponent } from '../../features/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 import {
@@ -7,6 +8,7 @@ import {
   CalendarA11y,
   CalendarEventTitleFormatter,
 } from 'angular-calendar';
+import { CalendarViewMode } from '../../features/calendar/models/calendar-view-mode.model';
 
 @Component({
   selector: 'app-calendar-page',
@@ -16,4 +18,21 @@ import {
   templateUrl: './calendar-page.component.html',
   styleUrls: ['./calendar-page.component.scss'],
 })
-export class CalendarPageComponent {}
+export class CalendarPageComponent implements OnInit {
+  viewMode: CalendarViewMode = 'managerCreate';
+  graphicId: string | null = null;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    const routeViewMode = this.route.snapshot.data['viewMode'] as CalendarViewMode | undefined;
+    const routeGraphicId = this.route.snapshot.params['id'] as string | undefined;
+
+    if (routeGraphicId) {
+      this.viewMode = 'managerView';
+      this.graphicId = routeGraphicId;
+    } else {
+      this.viewMode = routeViewMode ?? 'employee';
+    }
+  }
+}

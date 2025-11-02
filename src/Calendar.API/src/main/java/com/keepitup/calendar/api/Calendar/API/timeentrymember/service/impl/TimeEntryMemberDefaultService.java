@@ -27,7 +27,8 @@ public class TimeEntryMemberDefaultService implements TimeEntryMemberService {
 
     @Override
     public Optional<Page<TimeEntryMember>> findAllTimeEntryMembersByUser(UUID userId, PageRequest pageRequest) {
-        return Optional.empty();
+        Page<TimeEntryMember> timeEntryMembers = timeEntryMemberRepository.findByUserId(userId, pageRequest);
+        return Optional.of(timeEntryMembers);
     }
 
     @Override
@@ -84,5 +85,10 @@ public class TimeEntryMemberDefaultService implements TimeEntryMemberService {
         );
         
         return result;
+    }
+    
+    @Override
+    public Page<TimeEntryMember> findByGraphicId(UUID graphicId, Pageable pageable) {
+        return timeEntryMemberRepository.findByGraphicId(graphicId, pageable);
     }
 }

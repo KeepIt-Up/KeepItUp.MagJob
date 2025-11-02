@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,10 +29,6 @@ public class AvailabilityTemplate {
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
-
-    @NotNull
-    @Column(name = "organizationId", nullable = false)
-    private BigInteger organizationId;
 
     @NotNull
     @Column(name = "startDayOfWeek", nullable = false)

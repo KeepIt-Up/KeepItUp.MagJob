@@ -8,7 +8,6 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,9 +23,6 @@ import java.util.UUID;
 public class PostAvailabilityTemplateRequest {
     @Schema(description = "PostAvailabilityTemplateRequest name value")
     private String name;
-
-    @Schema(description = "PostAvailabilityTemplateRequest organizationId value")
-    private BigInteger organizationId;
 
     @Schema(description = "PostAvailabilityTemplateRequest startDayOfWeek value")
     private String startDayOfWeek;

@@ -98,13 +98,13 @@ public class GraphicDefaultController implements GraphicController {
 
     @Override
     public GetGraphicsResponse getGraphicsByUser(int page, int size, UUID userId) {
-        var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
-        UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
-        System.out.println(loggedInUserId);
-        System.out.println(userId);
-        if (!loggedInUserId.equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
+        // var jwt = (CustomJwt) SecurityContextHolder.getContext().getAuthentication();
+        // UUID loggedInUserId = UUID.fromString(jwt.getExternalId());
+        // System.out.println(loggedInUserId);
+        // System.out.println(userId);
+        // if (!loggedInUserId.equals(userId)) {
+        //     throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        // }
 
         PageRequest pageRequest = PageRequest.of(page, size);
 
