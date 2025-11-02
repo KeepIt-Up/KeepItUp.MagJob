@@ -15,7 +15,7 @@
     <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900">Dodaj członków do czatu</h3>
+        <h3 class="text-lg font-semibold text-gray-900">Add chat members</h3>
         <button (click)="onClose()" class="text-gray-400 hover:text-gray-600 transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -32,7 +32,7 @@
       <form [formGroup]="addMembersForm" (ngSubmit)="onSubmit()" class="p-6">
         <!-- Member Selection -->
         <div class="mb-6">
-          <span class="block text-sm font-medium text-gray-700 mb-2">Wybierz członków</span>
+          <span class="block text-sm font-medium text-gray-700 mb-2">Select members</span>
 
           <!-- Loading State -->
           <div *ngIf="loading" class="flex justify-center py-4">
@@ -49,7 +49,7 @@
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
               ></path>
             </svg>
-            <p class="text-sm">Wszyscy członkowie organizacji są już w tym czacie</p>
+            <p class="text-sm">All organization member are already in this chat</p>
           </div>
 
           <!-- Member List -->
@@ -108,14 +108,6 @@
           </div>
         </div>
 
-        <!-- Selected Members Count -->
-        <div *ngIf="selectedMembers.length > 0" class="mb-6 p-3 bg-blue-50 rounded-lg">
-          <p class="text-sm text-blue-800">
-            <span class="font-medium">{{ selectedMembers.length }}</span> członków
-            {{ selectedMembers.length !== 1 ? 'zostało' : 'został' }} wybranych
-          </p>
-        </div>
-
         <!-- Actions -->
         <div class="flex justify-end space-x-3">
           <button
@@ -123,7 +115,7 @@
             (click)="onClose()"
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            Anuluj
+            Cancel
           </button>
 
           <button
@@ -131,10 +123,10 @@
             [disabled]="!addMembersForm.valid || submitting || members.length === 0"
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span *ngIf="!submitting">Dodaj członków</span>
+            <span *ngIf="!submitting">Add chat members</span>
             <span *ngIf="submitting" class="flex items-center">
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              Dodawanie...
+              Adding chat members...
             </span>
           </button>
         </div>

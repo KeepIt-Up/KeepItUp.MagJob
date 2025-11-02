@@ -36,20 +36,7 @@ services:
       - ConnectionStrings__DefaultConnection=${MAGJOB_DB_CONNECTION}
     depends_on:
       magjob.database:
-        condition: service_healthy
-      
-
-  # chat:
-  #   image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
-  #   build:
-  #     context: .
-  #     dockerfile: src/KeepItUp.MagJob.Chat/Dockerfile
-  #   ports:
-  #     - "5004:80"
-  #   environment:
-  #   depends_on:
-  #     - magjob.database
-  #     - keycloak
+        condition: service_healthy      
 
   # calendar:
   #   image: ${DOCKER_REGISTRY-}keepitup.magjob.calendar
@@ -75,12 +62,12 @@ services:
   #     - magjob.database
   #     - keycloak
 
-  # Chat and Notification API
-  chatandnotification:
-    image: ${DOCKER_REGISTRY-}keepitup.magjob.chatandnotification
+  # Chat API
+  chat:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
     build:
       context: .
-      dockerfile: src/ChatAndNotification.API/Dockerfile
+      dockerfile: src/KeepItUp.MagJob.Chat/Dockerfile
     ports:
       - "5003:80"
     environment:

@@ -32,7 +32,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "chatandnotification",
+          "Host": "chat",
           "Port": 80
         }
       ]
@@ -47,7 +47,7 @@
       "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "chatandnotification",
+          "Host": "chat",
           "Port": 80
         }
       ]

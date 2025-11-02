@@ -44,19 +44,10 @@
           <p class="text-sm font-medium text-gray-900 truncate">
             {{ chat.title }}
           </p>
-          <span class="text-xs text-gray-500">
-            {{ formatDate(chat.dateOfCreation) }}
-          </span>
         </div>
 
-        <div class="flex items-center justify-between mt-1">
-          <p class="text-xs text-gray-500 truncate">
-            <ng-container *ngIf="getLastMessageAuthor(chat) as author">
-              <span class="font-medium text-gray-700">{{ author }}:</span>
-            </ng-container>
-            {{ getLastMessagePreview(chat) }}
-          </p>
-          <span class="text-xs text-gray-400"> {{ getChatMembersCount(chat) }} members </span>
+        <div class="mt-1">
+          <span class="text-xs text-gray-500">{{ getChatMembersCount(chat) }} members</span>
         </div>
       </div>
     </div>
