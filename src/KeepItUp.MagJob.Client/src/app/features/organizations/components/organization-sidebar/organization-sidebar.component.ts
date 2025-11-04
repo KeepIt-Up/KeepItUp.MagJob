@@ -22,6 +22,7 @@ export class OrganizationSidebarComponent {
     items: [
       { path: 'dashboard', icon: 'heroHome', label: 'Home' },
       { path: 'members', icon: 'heroUserGroup', label: 'Members' },
+      { path: 'chats', icon: 'heroChatBubbleLeftRight', label: 'Chats' },
     ],
   };
 

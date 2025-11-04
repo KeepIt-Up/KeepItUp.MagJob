@@ -216,12 +216,12 @@ export class RolesManagementComponent implements OnInit, OnDestroy {
       .updateRolePermissions(this.selectedRole$()!.id, selectedPermissionNames)
       .subscribe({
         next: () => {
-          // Odśwież dane roli po aktualizacji uprawnień
+          // Refresh role data after permission update
           const role = this.selectedRole$();
           if (role) {
-            // Odświeżenie listy ról, aby uzyskać zaktualizowane dane
+            // Refresh the roles list to get updated data
             this.roleService.getRoles(this.organizationId).subscribe(() => {
-              // Ponowne wybranie tej samej roli, aby odświeżyć jej widok
+              // Re-select the same role to refresh its view
               this.selectRole(role);
             });
           }

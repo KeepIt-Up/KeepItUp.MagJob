@@ -1,0 +1,49 @@
+.chats-container {
+  height: calc(100vh - 4.5rem);
+  max-height: calc(100vh - 4.5rem);
+  min-height: 0;
+}
+
+.chat-list-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.chat-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-list-container::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.chat-list-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 3px;
+}
+
+.chat-list-container::-webkit-scrollbar-thumb:hover {
+  background-color: #a0aec0;
+}
+
+.messages-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background-color: #a0aec0;
+}

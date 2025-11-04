@@ -36,20 +36,7 @@ services:
       - ConnectionStrings__DefaultConnection=${MAGJOB_DB_CONNECTION}
     depends_on:
       magjob.database:
-        condition: service_healthy
-      
-
-  # chat:
-  #   image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
-  #   build:
-  #     context: .
-  #     dockerfile: src/KeepItUp.MagJob.Chat/Dockerfile
-  #   ports:
-  #     - "5004:80"
-  #   environment:
-  #   depends_on:
-  #     - magjob.database
-  #     - keycloak
+        condition: service_healthy      
 
   # calendar:
   #   image: ${DOCKER_REGISTRY-}keepitup.magjob.calendar
@@ -74,6 +61,26 @@ services:
   #   depends_on:
   #     - magjob.database
   #     - keycloak
+
+  # Chat API
+  chat:
+    image: ${DOCKER_REGISTRY-}keepitup.magjob.chat
+    build:
+      context: .
+      dockerfile: src/KeepItUp.MagJob.Chat/Dockerfile
+    ports:
+      - "5003:80"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://magjob.database:5432/magjob
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://host.docker.internal:18080/realms/keepitup-magjob
+      - SERVER_URL=http://host.docker.internal:18080
+      - PORT=80
+      - REALM=keepitup-magjob
+    depends_on:
+      - magjob.database
+      - keycloak
 
   # Keycloak (Identity Server)
   keycloak:
