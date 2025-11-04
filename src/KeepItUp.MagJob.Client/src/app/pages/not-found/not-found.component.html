@@ -4,7 +4,7 @@
 
   <!-- Not Found Content -->
   <main
-    class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[80vh]"
+    class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[90vh]"
   >
     <div class="text-center">
       <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-2">404</h1>
@@ -17,14 +17,6 @@
         <app-button variant="primary" size="lg" routerLink="/landing" iconLeft="heroHome">
           Go to Home
         </app-button>
-        <app-button
-          variant="outline"
-          size="lg"
-          routerLink="/help"
-          iconLeft="heroQuestionMarkCircle"
-        >
-          Help Center
-        </app-button>
       </div>
     </div>
 
@@ -33,7 +25,7 @@
       <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
         Popular destinations
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Suggestion 1 -->
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-center mb-4">
@@ -74,35 +66,7 @@
             Go to Profile
           </app-button>
         </div>
-
-        <!-- Suggestion 3 -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div class="flex items-center mb-4">
-            <div
-              class="w-10 h-10 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center mr-4"
-            >
-              <ng-icon name="heroEnvelope" class="h-5 w-5 text-primary"></ng-icon>
-            </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Contact Support</h3>
-          </div>
-          <p class="text-gray-600 dark:text-gray-300 mb-4">
-            Need help? Our support team is available.
-          </p>
-          <app-button variant="link" size="sm" routerLink="/help" iconRight="heroArrowRight">
-            Contact Support
-          </app-button>
-        </div>
       </div>
-    </div>
-
-    <!-- Link Button Demonstration -->
-    <div class="mt-10 text-center">
-      <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
-        Looking for something else? You might want to check our documentation.
-      </p>
-      <app-button variant="link" routerLink="/help" iconRight="heroArrowRight">
-        View documentation
-      </app-button>
     </div>
   </main>
 

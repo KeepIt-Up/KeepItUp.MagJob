@@ -9,7 +9,6 @@ import { AuthService } from '@core/services/auth.service';
   selector: 'app-landing',
   imports: [NavbarComponent, ButtonComponent, NgIcon, FooterComponent],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.scss',
 })
 export class LandingComponent {
   readonly authService = inject(AuthService);
