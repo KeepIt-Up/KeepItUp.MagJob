@@ -1,5 +1,8 @@
-﻿using KeepItUp.MagJob.Identity.Core.Interfaces;
+﻿using System.Security.Claims;
+using KeepItUp.MagJob.Identity.Core.Interfaces;
+using KeepItUp.MagJob.Identity.UseCases.Users.Commands.CreateUser;
 using KeepItUp.MagJob.Identity.UseCases.Users.Queries.GetUserByExternalId;
+using Ardalis.Result;
 
 namespace KeepItUp.MagJob.Identity.Web.Users;
 
@@ -7,7 +10,8 @@ namespace KeepItUp.MagJob.Identity.Web.Users;
 /// Endpoint do pobierania danych zalogowanego użytkownika.
 /// </summary>
 /// <remarks>
-/// Pobiera dane użytkownika na podstawie tokenu JWT.
+/// Pobiera dane użytkownika na podstawie tokenu JWT. Jeśli użytkownik nie istnieje w bazie danych,
+/// automatycznie tworzy go na podstawie danych z tokenu JWT.
 /// </remarks>
 public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
 {
@@ -46,7 +50,7 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
         Summary(s =>
         {
             s.Summary = "Pobiera dane zalogowanego użytkownika";
-            s.Description = "Pobiera dane użytkownika na podstawie tokenu JWT";
+            s.Description = "Pobiera dane użytkownika na podstawie tokenu JWT. Jeśli użytkownik nie istnieje w bazie danych, automatycznie tworzy go na podstawie danych z tokenu JWT.";
         });
     }
 
@@ -74,14 +78,61 @@ public class GetMe : EndpointWithoutRequest<GetUserByIdResponse>
 
         var result = await _mediator.Send(query, ct);
 
+        // Jeśli użytkownik nie istnieje, utwórz go na podstawie danych z tokenu
         if (result.Status == ResultStatus.NotFound)
         {
-            await SendNotFoundAsync(ct);
-            return;
+            _logger.LogInformation("Użytkownik o ExternalId {ExternalId} nie istnieje w bazie danych. Tworzenie nowego użytkownika na podstawie tokenu JWT.", externalId);
+
+            // Pobierz dane użytkownika z tokenu JWT
+            var email = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("email")?.Value;
+            var firstName = User.FindFirst(ClaimTypes.GivenName)?.Value ?? User.FindFirst("given_name")?.Value ?? string.Empty;
+            var lastName = User.FindFirst(ClaimTypes.Surname)?.Value ?? User.FindFirst("family_name")?.Value ?? string.Empty;
+            var username = User.FindFirst(ClaimTypes.Name)?.Value
+                ?? User.FindFirst("preferred_username")?.Value
+                ?? email
+                ?? string.Empty;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                _logger.LogWarning("Brak adresu email w tokenie JWT dla użytkownika {ExternalId}", externalId);
+                await SendUnauthorizedAsync(ct);
+                return;
+            }
+
+            // Utwórz użytkownika
+            var createCommand = new CreateUserCommand
+            {
+                ExternalId = externalId,
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                Username = username
+            };
+
+            var createResult = await _mediator.Send(createCommand, ct);
+
+            if (createResult.Status == ResultStatus.Error)
+            {
+                _logger.LogError("Błąd podczas tworzenia użytkownika {ExternalId}: {Error}", externalId, createResult.Errors);
+                await SendErrorsAsync(500, ct);
+                return;
+            }
+
+            _logger.LogInformation("Utworzono nowego użytkownika {ExternalId} z ID {UserId}", externalId, createResult.Value);
+
+            // Ponownie pobierz użytkownika po utworzeniu
+            result = await _mediator.Send(query, ct);
         }
 
         if (result.Status == ResultStatus.Error)
         {
+            await SendErrorsAsync(500, ct);
+            return;
+        }
+
+        if (result.Status == ResultStatus.NotFound)
+        {
+            _logger.LogError("Nie udało się pobrać użytkownika {ExternalId} po jego utworzeniu", externalId);
             await SendErrorsAsync(500, ct);
             return;
         }
