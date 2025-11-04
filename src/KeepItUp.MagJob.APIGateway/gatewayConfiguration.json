@@ -38,6 +38,21 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/ws/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/ws/{everything}",
+      "DownstreamScheme": "ws",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chat",
+          "Port": 80
+        }
+      ]
+    },
+    {
       "UpstreamPathTemplate": "/api/calendar/{everything}",
       "UpstreamHttpMethod": [
         "POST",

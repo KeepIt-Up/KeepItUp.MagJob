@@ -19,6 +19,7 @@ import { ShiftComponent } from './app/features/shift/shift.component';
 import { CalendarPageComponent } from './app/pages/calendar-page';
 import { AvailabilityTemplatesComponent } from './app/pages/availability-templates/availability-templates.component';
 import { GraphicsComponent } from './app/pages/user/graphics/graphics.component';
+import { ChatsComponent } from './app/features/chats/chats.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -31,6 +32,7 @@ export const routes: Routes = [
       { path: 'members', component: MembersTableComponent },
       { path: 'invitations', component: InvitationTableComponent },
       { path: 'roles', component: RolesManagementComponent },
+      { path: 'chats', component: ChatsComponent },
       { path: 'settings', component: OrganizationProfilComponent },
       { path: '**', redirectTo: 'members' },
     ],

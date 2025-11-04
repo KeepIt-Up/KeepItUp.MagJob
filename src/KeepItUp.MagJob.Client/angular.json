@@ -35,6 +35,11 @@
             "polyfills": [
               "zone.js"
             ],
+            "allowedCommonJsDependencies": [
+              "@stomp/stompjs",
+              "sockjs-client"
+            ],
+            "preserveSymlinks": true,
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
