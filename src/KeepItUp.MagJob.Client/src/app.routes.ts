@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from '@pages/landing/landing.component';
-import { HelpComponent } from '@pages/help/help.component';
 import { UserComponent } from './app/pages/user/user.component';
 import { UserOrganizationsComponent } from './app/pages/user/user-organizations/user-organizations.component';
 import { UserInvitationsComponent } from './app/pages/user/user-invitations/user-invitations.component';
@@ -77,10 +76,6 @@ export const routes: Routes = [
     path: 'create-organization',
     component: CreateOrganizationComponent,
     canActivate: [authGuard],
-  },
-  {
-    path: 'help',
-    component: HelpComponent,
   },
   {
     path: 'unauthorized',
