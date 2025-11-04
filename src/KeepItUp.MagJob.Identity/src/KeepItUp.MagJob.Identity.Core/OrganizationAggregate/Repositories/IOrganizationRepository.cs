@@ -44,6 +44,11 @@ public interface IOrganizationRepository
     Task<List<Organization>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Pobiera organizację zawierającą członka o podanym ID
+    /// </summary>
+    Task<Organization?> GetByMemberIdAsync(Guid memberId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Sprawdza czy użytkownik jest członkiem organizacji
     /// </summary>
     Task<bool> HasMemberAsync(Guid organizationId, Guid userId, CancellationToken cancellationToken = default);

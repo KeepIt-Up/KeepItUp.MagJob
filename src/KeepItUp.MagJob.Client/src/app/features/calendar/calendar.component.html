@@ -1,0 +1,195 @@
+<mwl-demo-utils-calendar-header [(view)]="view" [(viewDate)]="viewDate">
+</mwl-demo-utils-calendar-header>
+<div class="calendar-container">
+  <div class="calendar-header">
+    <div class="flex items-center gap-2">
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-chevron-left"></i>
+          <span>Previous</span>
+        </span>
+      </button>
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-calendar-event"></i>
+          <span>Today</span>
+        </span>
+      </button>
+      <button
+        class="btn-nav bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 text-gray-900 dark:text-white"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="refresh.next()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-chevron-right"></i>
+          <span>Next</span>
+        </span>
+      </button>
+      <button
+        *ngIf="viewMode === 'managerCreate'"
+        class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
+        (click)="addEvent()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-plus-lg"></i>
+          <span>Add Event</span>
+        </span>
+      </button>
+
+      <button
+        *ngIf="viewMode === 'managerCreate'"
+        class="btn-nav bg-blue-500 hover:bg-blue-600 text-white"
+        (click)="openAvailabilityTemplateDialog()"
+      >
+        <span class="flex items-center gap-2">
+          <i class="bi bi-plus-lg"></i>
+          <span>Create Availability Template</span>
+        </span>
+      </button>
+    </div>
+    <div class="flex items-center gap-2">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        {{ viewDate | date }}
+      </h2>
+      <div class="flex gap-2">
+        <button
+          class="btn-view"
+          [class.active]="view === CalendarView.Month"
+          (click)="setView(CalendarView.Month)"
+        >
+          Month
+        </button>
+        <button
+          class="btn-view"
+          [class.active]="view === CalendarView.Week"
+          (click)="setView(CalendarView.Week)"
+        >
+          Week
+        </button>
+        <button
+          class="btn-view"
+          [class.active]="view === CalendarView.Day"
+          (click)="setView(CalendarView.Day)"
+        >
+          Day
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="calendar-content">
+    <mwl-calendar-month-view
+      *ngIf="view === CalendarView.Month"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [activeDayIsOpen]="true"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegments]="4"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+      <ng-template #eventTemplate let-event="event" let-locale="locale">
+        <div class="calendar-event" [ngClass]="getEventStatusClass(event)">
+          <div class="event-title">{{ event.title }}</div>
+          <div class="event-description">{{ event.description }}</div>
+        </div>
+      </ng-template>
+    </mwl-calendar-month-view>
+
+    <mwl-calendar-week-view
+      *ngIf="view === CalendarView.Week"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegmentHeight]="40"
+      [hourSegments]="2"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+      <ng-template #eventTemplate let-event="event" let-locale="locale">
+        <div class="calendar-event" [ngClass]="getEventStatusClass(event)">
+          <div class="event-title">{{ event.title }}</div>
+          <div class="event-description">{{ event.description }}</div>
+        </div>
+      </ng-template>
+    </mwl-calendar-week-view>
+
+    <mwl-calendar-day-view
+      *ngIf="view === CalendarView.Day"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [dayStartHour]="0"
+      [dayEndHour]="24"
+      [hourSegments]="2"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+      <ng-template #eventTemplate let-event="event" let-locale="locale">
+        <div class="calendar-event" [ngClass]="getEventStatusClass(event)">
+          <div class="event-title">{{ event.title }}</div>
+          <div class="event-description">{{ event.description }}</div>
+        </div>
+      </ng-template>
+    </mwl-calendar-day-view>
+  </div>
+
+  <app-add-event-dialog
+    *ngIf="showAddDialog"
+    (add)="onAddEvent($event)"
+    (cancel)="onCancelAdd()"
+  ></app-add-event-dialog>
+
+  <app-edit-event-dialog
+    *ngIf="showEditDialog"
+    [event]="editedEvent"
+    (save)="onSaveEvent($event)"
+    (cancel)="onCancelEdit()"
+  ></app-edit-event-dialog>
+
+  <app-delete-confirmation-dialog
+    *ngIf="showDeleteConfirm"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()"
+  ></app-delete-confirmation-dialog>
+
+  <app-availability-template-dialog
+    *ngIf="showAvailabilityTemplateDialog"
+    [events]="events"
+    (save)="onSaveAvailabilityTemplate($event)"
+    (cancel)="onCancelAvailabilityTemplate()"
+  >
+  </app-availability-template-dialog>
+
+  <app-employee-event-dialog
+    *ngIf="showEmployeeEventDialog && eventForEmployee"
+    [event]="eventForEmployee"
+    (statusChange)="onEmployeeStatusChange($event)"
+    (cancel)="onCancelEmployeeDialog()"
+  ></app-employee-event-dialog>
+
+  <div *ngIf="showSuccessAlert" class="success-alert">
+    <div class="alert-content">
+      <i class="bi bi-check-circle-fill"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button class="close-alert" (click)="showSuccessAlert = false">×</button>
+  </div>
+</div>

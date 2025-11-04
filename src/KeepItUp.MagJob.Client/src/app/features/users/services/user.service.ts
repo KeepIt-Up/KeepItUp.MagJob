@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { UserApiService } from './user.api';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import {
   PaginatedResponse,
   PaginationOptions,
@@ -63,11 +63,23 @@ export class UserService {
   });
 
   getUserOrganizations(): Observable<PaginatedResponse<Organization>> {
+    if (!this.userContext?.id) {
+      console.error('User context not available');
+      throw new Error('User not authenticated');
+    }
+    
+    console.log('Getting organizations for user:', this.userContext.id);
     return this.api
-      .getUserOrganizations(this.userContext!.id, this.organizationsPaginationOptions$())
+      .getUserOrganizations(this.userContext.id, this.organizationsPaginationOptions$())
       .pipe(
         tap((response: PaginatedResponse<Organization>) => {
-          if (response.items.length > 0) {
+          console.log('API response:', response);
+          console.log('Response items:', response.items);
+          if (response.items && response.items.length > 0) {
+            response.items.forEach((org, index) => {
+              console.log(`Organization ${index}:`, org);
+              console.log(`Organization ${index} members:`, org.members);
+            });
             this.organizationStateService.add(response.items);
             this.organizationStateService.setMetadata({ endOfData: !response.hasNextPage });
           } else {
@@ -75,6 +87,7 @@ export class UserService {
           }
         }),
         catchError(error => {
+          console.error('API error:', error);
           this.organizationStateService.setError(error as HttpErrorResponse);
           throw error;
         }),

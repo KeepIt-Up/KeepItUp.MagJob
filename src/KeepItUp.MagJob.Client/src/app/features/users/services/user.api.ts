@@ -11,6 +11,7 @@ import { Organization } from '../../organizations/models/organization.model';
 import { Invitation } from '../../invitations/models/invitation';
 import { environment } from '@environments/environment';
 import { CurrentUser } from '@users/models/current-user.model';
+import { UserBatchResponse } from '@users/models/user-batch.model';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,8 @@ export class UserApiService {
     });
   }
 
+  
+
   getAll(query: Record<any, any>, paginationOptions: PaginationOptions<User>) {
     const options = serializePaginationOptions(paginationOptions);
     return this.http.get<PaginatedResponse<User>>(`${this.apiUrl}`, {
@@ -55,6 +58,12 @@ export class UserApiService {
   getUserById(id: string): Observable<CurrentUser> {
     return this.http
       .get<CurrentUser>(`${this.apiUrl}/${id}`)
+      .pipe(catchError((error: HttpErrorResponse) => throwError(() => new Error(error.message))));
+  }
+
+  getUsersByIds(ids: string[]): Observable<UserBatchResponse> {
+    return this.http
+      .post<UserBatchResponse>(`${this.apiUrl}/batch`, { ids })
       .pipe(catchError((error: HttpErrorResponse) => throwError(() => new Error(error.message))));
   }
 }

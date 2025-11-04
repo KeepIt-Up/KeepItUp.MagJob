@@ -24,6 +24,11 @@ export class UserSidebarComponent {
     items: [
       { path: 'organizations', icon: 'heroBuildingOffice', label: 'Organizations' },
       { path: 'invitations', icon: 'heroEnvelope', label: 'Invitations' },
+      { path: 'calendar', icon: 'heroCalendarDays', label: 'Calendar' },
+      { path: 'availability-templates', icon: 'heroClock', label: 'Availability Templates' },
+      { path: 'graphics', icon: 'heroClipboardDocument', label: 'Graphics' },
+      { path: 'myCalendar', icon: 'heroClipboardDocument', label: 'My Calendar' },
+      { path: 'workevidence', icon: 'heroChartBar', label: 'Work Evidence' },
     ],
   };
 

@@ -88,6 +88,15 @@ public class OrganizationRepository : IOrganizationRepository
     }
 
     /// <inheritdoc />
+    public async Task<Organization?> GetByMemberIdAsync(Guid memberId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .Include(o => o.Members)
+                .ThenInclude(m => m.Roles)
+            .FirstOrDefaultAsync(o => o.Members.Any(m => m.Id == memberId), cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<bool> HasMemberAsync(Guid organizationId, Guid userId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Organizations

@@ -1,0 +1,191 @@
+package com.keepitup.calendar.api.Calendar.API.timeentrymember.controller.api;
+
+import com.keepitup.calendar.api.Calendar.API.configuration.PageConfig;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMemberResponse;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.GetTimeEntryMembersResponse;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PatchTimeEntryMemberRequest;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMemberRequest;
+import com.keepitup.calendar.api.Calendar.API.timeentrymember.dto.PostTimeEntryMembersBulkRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@Tag(name="TimeEntrys Controller")
+public interface TimeEntryMemberController {
+    PageConfig pageConfig = new PageConfig();
+
+    @Operation(summary = "Get all Time Entry")
+    @PostMapping("api/gettimeentrymembers")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetTimeEntryMembersResponse getTimeEntryMembers(
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size,
+            @Parameter(
+                    name = "ascending",
+                    description = "Is ascending"
+            )
+            @RequestParam(defaultValue = "true")
+            boolean ascending,
+            @Parameter(
+                    name = "sortField",
+                    description = "Field to sort by"
+            )
+            @RequestParam(defaultValue = "id")
+            String sortField
+    );
+
+    @Operation(summary = "Get TimeEntrys")
+    @GetMapping("api/timeentrymembers/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetTimeEntryMemberResponse getTimeEntryMember(
+            @Parameter(
+                    name = "id",
+                    description = "TimeEntrys id value",
+                    required = true
+            )
+            @PathVariable("id")
+            UUID id
+    );
+
+    @Operation(summary = "Update TimeEntrys")
+    @PatchMapping("api/timeentrymembers/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetTimeEntryMemberResponse updateTimeEntryMember(
+            @Parameter(
+                    name = "id",
+                    description = "TimeEntrys id value",
+                    required = true
+            )
+            @PathVariable("id")
+            UUID id,
+            @Parameter(
+                    name = "PatchTimeEntrysRequest",
+                    description = "PatchTimeEntrysRequest DTO",
+                    schema = @Schema(implementation = PatchTimeEntryMemberRequest.class),
+                    required = true
+            )
+            @RequestBody
+            PatchTimeEntryMemberRequest patchTimeEntryMemberRequest
+    );
+
+    @Operation(summary = "Delete TimeEntrys")
+    @DeleteMapping("/api/timeentrymembers/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteTimeEntryMember(
+            @Parameter(
+                    name = "id",
+                    description = "TimeEntrys id value",
+                    required = true
+            )
+            @PathVariable("id")
+            UUID id
+    );
+
+    @Operation(summary = "Create TimeEntryMembers in bulk")
+    @PostMapping("api/timeentrymembers/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    GetTimeEntryMembersResponse createTimeEntryMembersBulk(
+            @Parameter(
+                    name = "PostTimeEntryMembersBulkRequest",
+                    description = "Bulk TimeEntryMembers creation DTO",
+                    schema = @Schema(implementation = PostTimeEntryMembersBulkRequest.class),
+                    required = true
+            )
+            @RequestBody
+            PostTimeEntryMembersBulkRequest postTimeEntryMembersBulkRequest
+    );
+
+    @Operation(summary = "Get upcoming confirmed TimeEntryMembers")
+    @GetMapping("api/timeentrymembers/upcoming")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    GetTimeEntryMembersResponse getUpcomingConfirmedTimeEntryMembers(
+            @Parameter(
+                    name = "minutesBefore",
+                    description = "Number of minutes before start time to include"
+            )
+            @RequestParam(defaultValue = "5")
+            int minutesBefore,
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size
+    );
+
+    @Operation(summary = "Get TimeEntryMembers by User")
+    @PostMapping("api/timeentrymembers/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    GetTimeEntryMembersResponse getTimeEntryMembersByUser(
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size,
+            @Parameter(
+                    name = "userId",
+                    description = "TimeEntrys userId value",
+                    required = true
+            )
+            @PathVariable("userId")
+            UUID userId
+    );
+    
+    @Operation(summary = "Get TimeEntryMembers by Graphic")
+    @PostMapping("api/timeentrymembers/graphic/{graphicId}")
+    @ResponseStatus(HttpStatus.OK)
+    GetTimeEntryMembersResponse getTimeEntryMembersByGraphic(
+            @Parameter(
+                    name = "page number",
+                    description = "Page number to retrieve"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.number}")
+            int page,
+            @Parameter(
+                    name = "page size",
+                    description = "Number of records per page"
+            )
+            @RequestParam(defaultValue = "#{pageConfig.size}")
+            int size,
+            @Parameter(
+                    name = "graphicId",
+                    description = "Graphic id value",
+                    required = true
+            )
+            @PathVariable("graphicId")
+            UUID graphicId
+    );
+}

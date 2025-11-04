@@ -1,0 +1,185 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <app-navbar></app-navbar>
+    
+    <section class="py-16 px-4 bg-white dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center">Zarządzanie zmianą</h2>
+            
+            <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mt-6">
+                <!-- Start Shift Section -->
+                <div *ngIf="!currentShift && !isLoading" class="space-y-4">
+                    <!-- Description Input -->
+                    <div class="flex flex-col space-y-2">
+                        <label for="description" class="text-gray-700 dark:text-gray-300">Opis zmiany:</label>
+                        <input 
+                            type="text" 
+                            id="description"
+                            [(ngModel)]="description"
+                            placeholder="Wprowadź opis zmiany..."
+                            class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                    </div>
+
+                    <!-- Start Shift Button -->
+                    <div class="flex justify-center">
+                        <app-button 
+                            variant="primary" 
+                            (click)="startShift()" 
+                            [disabled]="isLoading">
+                            Rozpocznij zmianę
+                        </app-button>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div *ngIf="isLoading" class="flex justify-center items-center p-4">
+                    <p class="text-gray-600 dark:text-gray-400">Ładowanie...</p>
+                </div>
+
+                <!-- Current Shift Status -->
+                <div *ngIf="currentShift" class="space-y-6">
+                    <div class="p-4 bg-green-50 dark:bg-green-900 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Status aktualnej zmiany</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">ID zmiany:</span>
+                                <span class="font-medium">{{ currentShift.id }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">Czas rozpoczęcia:</span>
+                                <span class="font-medium">{{ currentShift.startTime | date:'medium' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">Czas zakończenia:</span>
+                                <span class="font-medium">{{ currentShift.endTime | date:'medium' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">Opis:</span>
+                                <span class="font-medium">{{ currentShift.description || '-' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700 dark:text-gray-300">Status:</span>
+                                <span class="font-medium text-green-600 dark:text-green-400">Aktywna</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <app-button 
+                                variant="primary" 
+                                (click)="endShift()" 
+                                [disabled]="isLoading">
+                                {{ isLoading ? 'Zakończanie zmiany...' : 'Zakończ zmianę' }}
+                            </app-button>
+                        </div>
+                    </div>
+
+                    <!-- Edit Requests Section -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Wnioski o zmianę</h3>
+                            <app-button 
+                                variant="primary" 
+                                (click)="showEditRequestForm = !showEditRequestForm">
+                                {{ showEditRequestForm ? 'Anuluj' : 'Nowy wniosek' }}
+                            </app-button>
+                        </div>
+
+                        <!-- New Edit Request Form -->
+                        <div *ngIf="showEditRequestForm" class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div class="space-y-4">
+                                <div class="flex flex-col space-y-2">
+                                    <label class="text-gray-700 dark:text-gray-300">Nowy czas rozpoczęcia:</label>
+                                    <input 
+                                        type="datetime-local" 
+                                        [(ngModel)]="newStartTime"
+                                        class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                        [min]="currentShift.startTime"
+                                    >
+                                </div>
+                                <div class="flex flex-col space-y-2">
+                                    <label class="text-gray-700 dark:text-gray-300">Nowy czas zakończenia:</label>
+                                    <input 
+                                        type="datetime-local" 
+                                        [(ngModel)]="newEndTime"
+                                        class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                        [min]="newStartTime"
+                                    >
+                                </div>
+                                <div class="flex flex-col space-y-2">
+                                    <label class="text-gray-700 dark:text-gray-300">Opis zmiany:</label>
+                                    <textarea 
+                                        [(ngModel)]="editRequestDescription"
+                                        class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                        rows="3"
+                                        placeholder="Wprowadź opis zmiany..."
+                                    ></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <app-button 
+                                        variant="primary" 
+                                        (click)="createEditRequest()"
+                                        [disabled]="!newStartTime || !newEndTime">
+                                        Utwórz wniosek
+                                    </app-button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Requests List -->
+                        <div class="space-y-4">
+                            <div *ngIf="editRequests.length === 0" class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
+                                <p class="text-gray-600 dark:text-gray-400">Brak wniosków o zmianę</p>
+                            </div>
+                            <div *ngFor="let request of editRequests" class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div class="flex justify-between items-start">
+                                    <div class="space-y-2">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-gray-700 dark:text-gray-300">Status:</span>
+                                            <span [ngClass]="{
+                                                'text-yellow-600': request.status === 'PENDING',
+                                                'text-green-600': request.status === 'APPROVED',
+                                                'text-red-600': request.status === 'REJECTED'
+                                            }">
+                                                {{ request.status === 'PENDING' ? 'Oczekujący' : 
+                                                   request.status === 'APPROVED' ? 'Zaakceptowany' : 
+                                                   request.status === 'REJECTED' ? 'Odrzucony' : request.status }}
+                                            </span>
+                                        </div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                                            <span class="font-medium">Proponowane godziny:</span><br>
+                                            Od: {{ request.startTime | date:'medium' }}<br>
+                                            Do: {{ request.endTime | date:'medium' }}<br>
+                                        </div>
+                                        <div *ngIf="request.description" class="text-sm text-gray-600 dark:text-gray-400">
+                                            <span class="font-medium">Uzasadnienie zmiany:</span><br>
+                                            {{ request.description }}
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button 
+                                            *ngIf="request.status === 'PENDING'"
+                                            (click)="acceptEditRequest(request.id)" 
+                                            class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300">
+                                            Akceptuj
+                                        </button>
+                                        <button 
+                                            *ngIf="request.status === 'PENDING'"
+                                            (click)="deleteEditRequest(request.id)" 
+                                            class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                            Usuń
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="error && error !== 'Nie udało się sprawdzić aktywnej zmiany.'" class="mt-4 p-4 bg-red-50 dark:bg-red-900 rounded-lg">
+                    <p class="text-red-600 dark:text-red-200">{{ error }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <app-footer></app-footer>
+</div>

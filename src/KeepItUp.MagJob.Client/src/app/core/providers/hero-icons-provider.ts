@@ -5,6 +5,8 @@ import {
   heroEnvelope,
   heroUser,
   heroUsers,
+  heroCalendarDays,
+  heroClock,
   heroClipboardDocument,
   heroChartBar,
   heroChatBubbleLeftRight,
@@ -32,6 +34,7 @@ import {
   heroUserPlus,
   heroArrowLeft,
   heroPlus,
+  heroChartBarSquare
 } from '@ng-icons/heroicons/outline';
 
 export const heroIconsProvider = provideIcons({
@@ -41,6 +44,8 @@ export const heroIconsProvider = provideIcons({
   heroEnvelope,
   heroUser,
   heroUsers,
+  heroCalendarDays,
+  heroClock,
   heroClipboardDocument,
   heroChartBar,
   heroChatBubbleLeftRight,
@@ -67,4 +72,5 @@ export const heroIconsProvider = provideIcons({
   heroShieldCheck,
   heroCalendar,
   heroUserPlus,
+  heroChartBarSquare,
 });

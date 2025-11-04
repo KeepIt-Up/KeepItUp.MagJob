@@ -1,0 +1,266 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    @if (isLoading) {
+      <div class="flex justify-center items-center py-12">Loading</div>
+    } @else if (error) {
+      <div class="text-center py-12">
+        <div class="text-red-600 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Error Loading Graphic</h3>
+        <p class="text-gray-600 mb-4">{{ error }}</p>
+        <app-button variant="primary" routerLink="/user/graphics"> Back to Graphics </app-button>
+      </div>
+    } @else {
+      @if (graphic) {
+        <!-- Header -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="flex items-center space-x-3 mb-2">
+                <app-button size="sm" [routerLink]="['/user/graphics', graphic.id]">
+                  ← Back to Details
+                </app-button>
+              </div>
+              <h1 class="text-3xl font-bold text-gray-900">Manage Members</h1>
+              <p class="mt-2 text-gray-600">{{ graphic.name }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Time Entries List -->
+          <div class="lg:col-span-1">
+            <div class="bg-white shadow-sm rounded-lg border border-gray-200">
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Time Entries</h2>
+                <p class="text-sm text-gray-500">Select a time entry to manage members</p>
+              </div>
+              <div class="px-6 py-4">
+                @if (graphic.timeEntries && graphic.timeEntries.length > 0) {
+                  <div class="space-y-2">
+                    @for (entry of graphic.timeEntries; track entry.id) {
+                      <div
+                        class="p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        [class.bg-blue-50]="selectedTimeEntry?.id === entry.id"
+                        [class.border-blue-300]="selectedTimeEntry?.id === entry.id"
+                        (click)="selectTimeEntry(entry)"
+                        (keyup.enter)="selectTimeEntry(entry)"
+                        (keydown.enter)="selectTimeEntry(entry)"
+                        tabindex="0"
+                      >
+                        <div class="flex items-center justify-between">
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">
+                              {{ getTimeEntryDate(entry.startDateTime) }}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              {{ getTimeEntryTime(entry.startDateTime) }} -
+                              {{ getTimeEntryTime(entry.endDateTime) }}
+                            </div>
+                          </div>
+                          <app-tag
+                            [text]="getTimeEntryMembers(entry.id, graphic).length.toString()"
+                            variant="info"
+                          >
+                          </app-tag>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-gray-500 text-center py-4">No time entries found.</p>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Member Management -->
+          <div class="lg:col-span-2">
+            @if (selectedTimeEntry) {
+              <div class="bg-white shadow-sm rounded-lg border border-gray-200">
+                <div class="px-6 py-4 border-b border-gray-200">
+                  <h2 class="text-lg font-medium text-gray-900">
+                    Members for {{ getTimeEntryDate(selectedTimeEntry.startDateTime) }}
+                  </h2>
+                  <p class="text-sm text-gray-500">
+                    {{ getTimeEntryTime(selectedTimeEntry.startDateTime) }} -
+                    {{ getTimeEntryTime(selectedTimeEntry.endDateTime) }}
+                  </p>
+                </div>
+
+                <div class="px-6 py-4">
+                  <!-- Member Selection -->
+                  <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-900 mb-3">Select Members</h3>
+                    <p class="text-xs text-gray-500 mb-2">
+                      Choose members from the organization to assign to this time entry.
+                    </p>
+                    @if (availableMembers && availableMembers.length > 0) {
+                      <div class="space-y-2 max-h-60 overflow-y-auto">
+                        @for (
+                          member of getFilteredAvailableMembers(selectedTimeEntry.id);
+                          track member.userId
+                        ) {
+                          <div
+                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                          >
+                            <div class="flex items-center space-x-3">
+                              <input
+                                type="checkbox"
+                                [checked]="isMemberSelected(selectedTimeEntry.id, member.userId)"
+                                (change)="
+                                  isMemberSelected(selectedTimeEntry.id, member.userId)
+                                    ? removeMemberFromTimeEntry(selectedTimeEntry.id, member.userId)
+                                    : addMemberToTimeEntry(
+                                        selectedTimeEntry.id,
+                                        member.userId,
+                                        'Pending'
+                                      )
+                                "
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                              />
+                              <div>
+                                <div class="text-sm font-medium text-gray-900">
+                                  {{ member.firstName }} {{ member.lastName }}
+                                </div>
+                                <div class="text-xs text-gray-500">{{ member.displayName }}</div>
+                              </div>
+                            </div>
+                            @if (isMemberSelected(selectedTimeEntry.id, member.userId)) {
+                              <select
+                                [value]="getMemberStatus(selectedTimeEntry.id, member.userId)"
+                                (change)="
+                                  addMemberToTimeEntry(
+                                    selectedTimeEntry.id,
+                                    member.userId,
+                                    $any($event.target).value
+                                  )
+                                "
+                                class="text-xs border border-gray-300 rounded px-2 py-1"
+                              >
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                              </select>
+                            }
+                          </div>
+                        }
+                      </div>
+                      <div class="mt-4 flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                          Selected: {{ getSelectedMembersCount(selectedTimeEntry.id) }} members
+                        </div>
+                        <app-button
+                          variant="primary"
+                          [disabled]="
+                            getSelectedMembersCount(selectedTimeEntry.id) === 0 || isAddingMember
+                          "
+                          (click)="saveTimeEntryMembers(selectedTimeEntry.id)"
+                        >
+                          {{ isAddingMember ? 'Saving...' : 'Save Members' }}
+                        </app-button>
+                      </div>
+                    } @else {
+                      <div class="text-center py-4">
+                        <p class="text-gray-500">No members available in this organization</p>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Current Members -->
+                  @if (
+                    graphic &&
+                    graphic.id &&
+                    getTimeEntryMembers(selectedTimeEntry.id, graphic).length > 0
+                  ) {
+                    <div>
+                      <h3 class="text-sm font-medium text-gray-900 mb-3">Current Members</h3>
+                      <div class="space-y-2">
+                        @for (
+                          member of getTimeEntryMembers(selectedTimeEntry.id, graphic);
+                          track member.id
+                        ) {
+                          <div
+                            class="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
+                          >
+                            <div>
+                              <div class="text-sm font-medium text-gray-900">
+                                {{ getMemberName(member.memberId) }}
+                              </div>
+                              <div class="text-xs text-gray-500">Status: {{ member.status }}</div>
+                            </div>
+                            <app-button
+                              size="sm"
+                              [disabled]="isRemovingMember"
+                              (click)="removeMember(member)"
+                            >
+                              {{ isRemovingMember ? 'Removing...' : 'Remove' }}
+                            </app-button>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="text-center py-8">
+                      <div class="text-gray-400 mb-2">
+                        <svg
+                          class="mx-auto h-12 w-12"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                          />
+                        </svg>
+                      </div>
+                      <p class="text-gray-500">No members assigned to this time entry.</p>
+                      <p class="text-sm text-gray-400 mt-1">Use the form above to add members.</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            } @else {
+              <!-- No Time Entry Selected -->
+              <div class="bg-white shadow-sm rounded-lg border border-gray-200">
+                <div class="px-6 py-12 text-center">
+                  <div class="text-gray-400 mb-4">
+                    <svg
+                      class="mx-auto h-12 w-12"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                      />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Time Entry</h3>
+                  <p class="text-gray-600">
+                    Choose a time entry from the left panel to manage its members.
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <app-alert-container></app-alert-container>
+</div>

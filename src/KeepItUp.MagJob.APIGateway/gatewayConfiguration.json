@@ -58,7 +58,8 @@
         "POST",
         "PUT",
         "GET",
-        "DELETE"
+        "DELETE",
+        "PATCH"
       ],
       "DownstreamPathTemplate": "/{everything}",
       "DownstreamScheme": "http",
@@ -82,6 +83,24 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "timeEvidence",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/workevidence/{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "PUT",
+        "GET",
+        "DELETE",
+        "PATCH"
+      ],
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "workevidence",
           "Port": 80
         }
       ]

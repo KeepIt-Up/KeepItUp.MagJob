@@ -64,6 +64,9 @@ The application is built using a microservices architecture with the following c
 
 ![Architecture Diagram](docs/img/architecture-v1.png)
 
+## Architecture
+![Architecture Diagram](docs/img/architecture-v1.png)
+
 ## Development
 
 ### Project Structure
