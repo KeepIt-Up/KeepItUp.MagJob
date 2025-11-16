@@ -16,6 +16,9 @@ import com.keepitup.magjob.chat.chatmessage.function.ChatMessagesToResponseFunct
 import com.keepitup.magjob.chat.chatmessage.function.RequestToChatMessageFunction;
 import com.keepitup.magjob.chat.chatmessage.function.UpdateChatMessageWithRequestFunction;
 import com.keepitup.magjob.chat.chatmessage.service.impl.ChatMessageDefaultService;
+import com.keepitup.magjob.chat.chatmessage.dto.ChatMessageNotificationDto;
+import com.keepitup.magjob.chat.configuration.Constants;
+import com.keepitup.magjob.chat.chatmember.entity.ChatMember;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +28,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -39,6 +44,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
     private final RequestToChatMessageFunction requestToChatMessageFunction;
     private final UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction;
     private final ChatMessagesToResponseFunction chatMessagesToResponseFunction;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public ChatMessageDefaultController(
@@ -47,7 +53,8 @@ public class ChatMessageDefaultController implements ChatMessageController {
             ChatMemberDefaultService chatMemberService,
             RequestToChatMessageFunction requestToChatMessageFunction,
             UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction,
-            ChatMessagesToResponseFunction chatMessagesToResponseFunction
+            ChatMessagesToResponseFunction chatMessagesToResponseFunction,
+            SimpMessagingTemplate messagingTemplate
     ) {
        this.chatMessageService = chatMessageService;
        this.chatService = chatService;
@@ -55,6 +62,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
        this.requestToChatMessageFunction = requestToChatMessageFunction;
        this.updateChatMessageWithRequestFunction = updateChatMessageWithRequestFunction;
        this.chatMessagesToResponseFunction = chatMessagesToResponseFunction;
+       this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -74,11 +82,7 @@ public class ChatMessageDefaultController implements ChatMessageController {
     public GetChatMessageResponse sendMessage(
             @DestinationVariable UUID chatId,
             PostChatMessageRequest postChatMessageRequest
-    ) {
-        log.info("Received WebSocket message for chat: " + chatId);
-        log.info("Message content: " + postChatMessageRequest.getContent());
-        log.info("ChatMember ID: " + postChatMessageRequest.getChatMember());
-        
+    ) { 
         Chat chat = chatService.find(postChatMessageRequest.getChat()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
@@ -88,8 +92,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
         );
 
         ChatMessage createdMessage = chatMessageService.create(requestToChatMessageFunction.apply(postChatMessageRequest));
-        log.info("Created message with ID: " + createdMessage.getId());
-        log.info("Broadcasting to topic: /topic/chat/" + chatId);
         
         GetChatMessageResponse response = GetChatMessageResponse.builder()
                 .id(createdMessage.getId())
@@ -109,6 +111,8 @@ public class ChatMessageDefaultController implements ChatMessageController {
                         .organizationId(chat.getOrganizationId())
                         .build())
                 .build();
+        
+        sendNotificationsToChatMembers(chat, chatMember, createdMessage.getFirstAndLastName());
         
         return response;
     }
@@ -155,16 +159,39 @@ public class ChatMessageDefaultController implements ChatMessageController {
     public TypingEventRequest handleTypingEvent(
             @DestinationVariable UUID chatId,
             TypingEventRequest typingEventRequest
-    ) {
-        log.info("Received typing event for chat: " + chatId);
-        log.info("Typing event type: " + typingEventRequest.getType());
-        log.info("Member: " + typingEventRequest.getMemberName() + " (ID: " + typingEventRequest.getMemberId() + ")");
-        log.info("Timestamp: " + typingEventRequest.getTimestamp());
-        
+    ) {        
         chatService.find(chatId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
         return typingEventRequest;
+    }
+
+    private void sendNotificationsToChatMembers(Chat chat, ChatMember sender, String senderName) {
+        try {
+            List<ChatMember> chatMembers = chatMemberService.findAllByChat(chat, Pageable.unpaged()).getContent();
+            
+            String notificationMessage = String.format(Constants.NOTIFICATION_CHAT_MESSAGE_TEMPLATE, chat.getTitle());
+            
+            for (ChatMember member : chatMembers) {
+                if (member.getId().equals(sender.getId())) {
+                    continue;
+                }
+                
+                ChatMessageNotificationDto notification = ChatMessageNotificationDto.builder()
+                        .chatId(chat.getId())
+                        .chatTitle(chat.getTitle())
+                        .organizationId(chat.getOrganizationId())
+                        .message(notificationMessage)
+                        .senderName(senderName)
+                        .build();
+                
+                String topic = Constants.NOTIFICATION_USER_DEFAULT_WEBSOCKET_ENDPOINT + "/" + member.getMemberId();
+                messagingTemplate.convertAndSend(topic, notification);
+            }
+        } catch (Exception e) {
+            log.severe("Failed to send notifications: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

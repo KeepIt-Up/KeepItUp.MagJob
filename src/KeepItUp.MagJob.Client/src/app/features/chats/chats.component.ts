@@ -59,11 +59,25 @@ export class ChatsComponent implements OnInit, OnDestroy {
         if (userState.data && orgData) {
           this.organizationId = orgData.id;
           this.loadChats();
+
+          this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+            const chatId = params['chatId'] as string | undefined;
+            if (chatId) {
+              this.selectChatById(chatId);
+            }
+          });
         }
       });
 
     this.chatService.chats$.pipe(takeUntil(this.destroy$)).subscribe(chats => {
       this.chats = chats;
+
+      this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+        const chatId = params['chatId'] as string | undefined;
+        if (chatId && this.chats.length > 0) {
+          this.selectChatById(chatId);
+        }
+      });
     });
 
     this.chatService.selectedChat$.pipe(takeUntil(this.destroy$)).subscribe(chat => {
@@ -158,5 +172,14 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   onChatLeft(chatId: string): void {
     console.log('Chat left:', chatId);
+  }
+
+  selectChatById(chatId: string): void {
+    const chat = this.chats.find(c => c.id === chatId);
+    if (chat) {
+      this.onChatSelect(chat);
+    } else {
+      console.log('Chat not found in list, attempting to load:', chatId);
+    }
   }
 }

@@ -6,6 +6,7 @@ import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { UserContextService } from '@users/services/user-context.service';
 import { AsyncPipe } from '@angular/common';
 import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.component';
+import { ChatService } from '../../features/chats/services/chat.service';
 
 @Component({
   selector: 'app-user',
@@ -21,6 +22,7 @@ import { ErrorAlertComponent } from '@shared/components/error-alert/error-alert.
 })
 export class UserComponent {
   private userContextService = inject(UserContextService);
+  private chatService = inject(ChatService);
   userContext$ = this.userContextService.userContext$;
   sidebarExpanded = false;
 
