@@ -27,5 +27,5 @@ public class Constants {
     public static final String NOTIFICATION_ENDPOINT = "/notifications";
 
     // Notification
-    public static final String NOTIFICATION_CHAT_MESSAGE_TEMPLATE = "Nowa wiadomość na czacie \"%s\"";
+    public static final String NOTIFICATION_CHAT_MESSAGE_TEMPLATE = "Nowa wiadomość na czacie %s";
 }
