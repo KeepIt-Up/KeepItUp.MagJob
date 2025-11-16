@@ -13,8 +13,6 @@ public class ChatMessageToResponseFunction implements Function<ChatMessage, GetC
         return GetChatMessageResponse.builder()
                 .id(chatMessage.getId())
                 .content(chatMessage.getContent())
-                .attachment(chatMessage.getAttachment())
-                .viewedBy(chatMessage.getViewedBy())
                 .firstAndLastName(chatMessage.getFirstAndLastName())
                 .dateOfCreation(chatMessage.getDateOfCreation())
                 .chatMember(chatMessage.getChatMember() != null ?

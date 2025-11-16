@@ -48,7 +48,6 @@ public class SecurityConfig {
     new AntPathRequestMatcher("/api/chats/{id}/chat-messages"),
     new AntPathRequestMatcher("/api/messages/{id}"),
     new AntPathRequestMatcher("/api/chat/{chatId}/sendMessage"),
-    new AntPathRequestMatcher("/api/chat/{chatId}/messageViewed"),
     new AntPathRequestMatcher("/chat/**"),
     new AntPathRequestMatcher("/api/members/{memberId}/role-members"),
     new AntPathRequestMatcher("/api/notifications"),

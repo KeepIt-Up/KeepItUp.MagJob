@@ -202,17 +202,8 @@ class ChatDefaultControllerTest {
                 .organizationId(organizationId)
                 .build();
 
-        ChatMember chatMember = ChatMember.builder()
-                .id(UUID.randomUUID())
-                .chat(createdChat)
-                .memberId(memberId)
-                .nickname("Test User")
-                .build();
-
         when(requestToChatFunction.apply(postChatRequest)).thenReturn(createdChat);
         when(chatService.findByTitle("New Chat")).thenReturn(Optional.of(createdChat));
-        when(chatMemberService.findByMemberIdAndChat(memberId, createdChat))
-                .thenReturn(Optional.of(chatMember));
         when(chatToResponseFunction.apply(createdChat)).thenReturn(getChatResponse);
 
         GetChatResponse result = chatController.createChat(postChatRequest);
@@ -220,7 +211,6 @@ class ChatDefaultControllerTest {
         assertNotNull(result);
         verify(chatService).create(createdChat);
         verify(chatMemberService).create(any(ChatMember.class));
-        verify(chatService).addAdmin(createdChat, chatMember);
         verify(chatService, times(2)).findByTitle("New Chat");
     }
 

@@ -73,7 +73,6 @@ class ChatMessageDefaultServiceTest {
                 .chat(chat)
                 .chatMember(chatMember)
                 .dateOfCreation(LocalDateTime.now())
-                .viewedBy(new ArrayList<>())
                 .build();
     }
 
@@ -130,32 +129,7 @@ class ChatMessageDefaultServiceTest {
 
         assertNotNull(result);
         assertNotNull(result.getDateOfCreation());
-        assertNotNull(result.getViewedBy());
         assertEquals("New message", result.getContent());
-        verify(chatMessageRepository).save(newMessage);
-    }
-
-    @Test
-    void testCreate_WithNullViewedBy() {
-        ChatMessage newMessage = ChatMessage.builder()
-                .content("New message")
-                .chat(chat)
-                .chatMember(chatMember)
-                .viewedBy(null)
-                .build();
-
-        when(chatMessageRepository.save(any(ChatMessage.class))).thenAnswer(invocation -> {
-            ChatMessage saved = invocation.getArgument(0);
-            saved.setId(messageId);
-            saved.setDateOfCreation(LocalDateTime.now());
-            saved.setViewedBy(new ArrayList<>());
-            return saved;
-        });
-
-        ChatMessage result = chatMessageService.create(newMessage);
-
-        assertNotNull(result.getViewedBy());
-        assertTrue(result.getViewedBy().isEmpty());
         verify(chatMessageRepository).save(newMessage);
     }
 
@@ -172,7 +146,6 @@ class ChatMessageDefaultServiceTest {
             ChatMessage saved = invocation.getArgument(0);
             saved.setId(messageId);
             saved.setDateOfCreation(LocalDateTime.now());
-            saved.setViewedBy(new ArrayList<>());
             saved.setFirstAndLastName("Test User");
             return saved;
         });
@@ -196,7 +169,6 @@ class ChatMessageDefaultServiceTest {
             ChatMessage saved = invocation.getArgument(0);
             saved.setId(messageId);
             saved.setDateOfCreation(LocalDateTime.now());
-            saved.setViewedBy(new ArrayList<>());
             return saved;
         });
 
@@ -219,7 +191,6 @@ class ChatMessageDefaultServiceTest {
             ChatMessage saved = invocation.getArgument(0);
             saved.setId(messageId);
             saved.setDateOfCreation(LocalDateTime.now());
-            saved.setViewedBy(new ArrayList<>());
             return saved;
         });
 

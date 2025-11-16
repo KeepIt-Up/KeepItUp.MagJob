@@ -172,7 +172,6 @@ export class ChatService {
       content: request.content,
       chat: request.chatId,
       chatMember: request.chatMemberId,
-      attachment: request.attachment,
       firstAndLastName: firstAndLastName,
     };
 
@@ -232,8 +231,6 @@ export class ChatService {
               id: rawMessage.id,
               content: rawMessage.content,
               dateOfCreation: parsedDate,
-              viewedBy: rawMessage.viewedBy || [],
-              attachment: rawMessage.attachment,
               firstAndLastName: rawMessage.firstAndLastName,
               chatMember: {
                 id: rawMessage.chatMember.id,
@@ -313,8 +310,6 @@ export class ChatService {
           id: msg.id,
           content: msg.content,
           dateOfCreation: new Date(msg.dateOfCreation),
-          viewedBy: msg.viewedBy || [],
-          attachment: msg.attachment,
           firstAndLastName: msg.firstAndLastName,
           chatMember: {
             id: msg.chatMember?.id || '',

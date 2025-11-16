@@ -137,48 +137,6 @@ public class ChatMemberDefaultController implements ChatMemberController {
         return chatMemberToResponseFunction.apply(chatMemberAfterUpdate);
     }
 
-
-    @Override
-    public void removeAdminAccess(UUID id) {
-        ChatMember chatMember = chatMemberService.find(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        if (!chatMember.getChat().getChatAdministrators().contains(chatMember)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-//        if (!securityService.isChatAdmin(chatMember.getChat())) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
-        messagingTemplate.convertAndSend(
-                Constants.CHAT_DEFAULT_WEBSOCKET_ENDPOINT + chatMember.getChat().getId(),
-                String.join(Constants.CHAT_DELETE_ADMIN_MESSAGE, chatMember.getNickname())
-        );
-
-        chatService.removeAdmin(chatMember.getChat(), chatMember);
-    }
-
-    @Override
-    public void giveAdminAccess(UUID id) {
-        ChatMember chatMember = chatMemberService.find(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        if (chatMember.getChat().getChatAdministrators().contains(chatMember)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-//        if (!securityService.isChatAdmin(chatMember.getChat())) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-//        }
-
-        messagingTemplate.convertAndSend(
-                Constants.CHAT_DEFAULT_WEBSOCKET_ENDPOINT + chatMember.getChat().getId(),
-                String.join(Constants.CHAT_ADD_ADMIN_MESSAGE, chatMember.getNickname())
-        );
-
-        chatService.addAdmin(chatMember.getChat(), chatMember);
-    }
-
     @Override
     public void deleteChatMember(UUID id) {
         ChatMember chatMember = chatMemberService.find(id)

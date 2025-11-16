@@ -21,10 +21,6 @@ public interface ChatService {
 
     Page<Chat> findAllByOrganizationId(UUID organizationId, Pageable pageable);
 
-    void addAdmin(Chat chat, ChatMember chatMember);
-
-    void removeAdmin(Chat chat, ChatMember chatMember);
-
     void create(Chat chat);
 
     void delete(UUID id);

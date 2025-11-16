@@ -23,7 +23,6 @@ public class RequestToChatMessageFunction implements Function<PostChatMessageReq
 
         return ChatMessage.builder()
                 .content(postChatMessageRequest.getContent())
-                .attachment(postChatMessageRequest.getAttachment())
                 .firstAndLastName(postChatMessageRequest.getFirstAndLastName())
                 .chat(chat)
                 .chatMember(chatMember)

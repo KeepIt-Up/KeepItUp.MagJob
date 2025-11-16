@@ -2,19 +2,15 @@ package com.keepitup.magjob.chat.chatmessage.controller.impl;
 
 import com.keepitup.magjob.chat.chat.entity.Chat;
 import com.keepitup.magjob.chat.chat.service.impl.ChatDefaultService;
-import com.keepitup.magjob.chat.chatmember.entity.ChatMember;
 import com.keepitup.magjob.chat.chatmember.service.impl.ChatMemberDefaultService;
 import com.keepitup.magjob.chat.chatmessage.controller.api.ChatMessageController;
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessageResponse;
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessagesResponse;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageRequest;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageWebSocketRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.PostChatMessageRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.TypingEventRequest;
 import com.keepitup.magjob.chat.chatmessage.entity.ChatMessage;
 import com.keepitup.magjob.chat.chatmessage.function.ChatMessagesToResponseFunction;
 import com.keepitup.magjob.chat.chatmessage.function.RequestToChatMessageFunction;
-import com.keepitup.magjob.chat.chatmessage.function.UpdateChatMessageWithRequestFunction;
 import com.keepitup.magjob.chat.chatmessage.service.impl.ChatMessageDefaultService;
 import com.keepitup.magjob.chat.chatmessage.dto.ChatMessageNotificationDto;
 import com.keepitup.magjob.chat.configuration.Constants;
@@ -42,7 +38,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
     private final ChatDefaultService chatService;
     private final ChatMemberDefaultService chatMemberService;
     private final RequestToChatMessageFunction requestToChatMessageFunction;
-    private final UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction;
     private final ChatMessagesToResponseFunction chatMessagesToResponseFunction;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -52,7 +47,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
             ChatDefaultService chatService,
             ChatMemberDefaultService chatMemberService,
             RequestToChatMessageFunction requestToChatMessageFunction,
-            UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction,
             ChatMessagesToResponseFunction chatMessagesToResponseFunction,
             SimpMessagingTemplate messagingTemplate
     ) {
@@ -60,7 +54,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
        this.chatService = chatService;
        this.chatMemberService = chatMemberService;
        this.requestToChatMessageFunction = requestToChatMessageFunction;
-       this.updateChatMessageWithRequestFunction = updateChatMessageWithRequestFunction;
        this.chatMessagesToResponseFunction = chatMessagesToResponseFunction;
        this.messagingTemplate = messagingTemplate;
     }
@@ -96,8 +89,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
         GetChatMessageResponse response = GetChatMessageResponse.builder()
                 .id(createdMessage.getId())
                 .content(createdMessage.getContent())
-                .attachment(createdMessage.getAttachment())
-                .viewedBy(createdMessage.getViewedBy())
                 .firstAndLastName(createdMessage.getFirstAndLastName())
                 .dateOfCreation(createdMessage.getDateOfCreation())
                 .chatMember(GetChatMessageResponse.ChatMember.builder()
@@ -115,42 +106,6 @@ public class ChatMessageDefaultController implements ChatMessageController {
         sendNotificationsToChatMembers(chat, chatMember, createdMessage.getFirstAndLastName());
         
         return response;
-    }
-
-    @Override
-    public void markMessageAsViewed(
-            UUID id,
-            PatchChatMessageRequest patchChatMessageRequest
-    ) {
-        ChatMessage chatMessage = chatMessageService.find(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-
-        Chat chat = chatService.find(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-
-        chatMessageService.update(updateChatMessageWithRequestFunction.apply(chatMessage, patchChatMessageRequest));
-    }
-
-    @MessageMapping("/chat/{chatId}/messageViewed")
-    @SendTo("/topic/chat/{chatId}/viewed")
-    public void handleViewedMessage(
-            @DestinationVariable UUID chatId,
-            PatchChatMessageWebSocketRequest patchChatMessageWebSocketRequest
-    ) {
-        ChatMessage chatMessage = chatMessageService.find(patchChatMessageWebSocketRequest.getChatMessageId()).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-
-        Chat chat = chatService.find(chatId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-
-        PatchChatMessageRequest patchChatMessageRequest = new PatchChatMessageRequest();
-        patchChatMessageRequest.setViewedBy(patchChatMessageWebSocketRequest.getViewedBy());
-
-        chatMessageService.update(updateChatMessageWithRequestFunction.apply(chatMessage, patchChatMessageRequest));
     }
 
     @Override

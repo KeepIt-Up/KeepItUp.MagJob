@@ -8,8 +8,6 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -36,13 +34,6 @@ public class ChatMessage {
 
     @Column(name = "date_of_creation")
     private LocalDateTime dateOfCreation;
-
-    @ElementCollection
-    private List<String> viewedBy;
-
-    @Lob
-    @Column(name = "attachment")
-    private byte[] attachment;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "chat_id", nullable = true)

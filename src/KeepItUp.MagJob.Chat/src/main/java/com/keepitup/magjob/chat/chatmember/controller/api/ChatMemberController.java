@@ -105,33 +105,6 @@ public interface ChatMemberController {
             PatchChatMemberRequest patchChatMemberRequest
     );
 
-
-    @Operation(summary = "Remove admin access from chat member")
-    @PostMapping("api/chat-members/{id}/admin/remove")
-    @ResponseStatus(HttpStatus.OK)
-    void removeAdminAccess(
-            @Parameter(
-                    name = "id",
-                    description = "Chat Member id value",
-                    required = true
-            )
-            @PathVariable("id")
-            UUID id
-    );
-
-    @Operation(summary = "Give admin access to chat member")
-    @PostMapping("api/chat-members/{id}/admin/add")
-    @ResponseStatus(HttpStatus.OK)
-    void giveAdminAccess(
-            @Parameter(
-                    name = "id",
-                    description = "Chat Member id value",
-                    required = true
-            )
-            @PathVariable("id")
-            UUID id
-    );
-
     @Operation(summary = "Delete chat member (leave chat)")
     @DeleteMapping("api/chat-members/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
