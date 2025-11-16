@@ -6,9 +6,8 @@ import {
   OnInit,
   OnDestroy,
   inject,
-  HostListener,
   ViewChild,
-  ElementRef,
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -41,14 +40,13 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   private chatMemberService = inject(ChatMemberService);
   private destroy$ = new Subject<void>();
 
-  @ViewChild('dropdownMenu') dropdownMenuRef!: ElementRef<HTMLElement>;
   @ViewChild(ChatAddMembersModalComponent) addMembersModal!: ChatAddMembersModalComponent;
 
   messages: ChatMessage[] = [];
   newMessage = '';
   loading = false;
-  showDropdown = false;
   showAddMembersModal = false;
+  showLeaveConfirmModal = false;
   typingUsers: TypingUser[] = [];
   private typingTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -56,6 +54,13 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     this.loadMessages();
     this.subscribeToMessages();
     this.subscribeToTypingEvents();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.showLeaveConfirmModal) {
+      this.cancelLeaveChat();
+    }
   }
 
   ngOnDestroy(): void {
@@ -246,21 +251,11 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
     );
   }
 
-  toggleDropdown(): void {
-    this.showDropdown = !this.showDropdown;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    const target = event.target as HTMLElement;
-    const dropdownElement = this.dropdownMenuRef?.nativeElement;
-
-    if (this.showDropdown && dropdownElement && !dropdownElement.contains(target)) {
-      this.showDropdown = false;
-    }
-  }
-
   leaveChat(): void {
+    this.showLeaveConfirmModal = true;
+  }
+
+  confirmLeaveChat(): void {
     if (!this.currentMemberId) {
       console.error('Cannot leave chat: currentMemberId is null');
       return;
@@ -275,28 +270,29 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (confirm('Czy na pewno chcesz opuścić ten czat?')) {
-      this.chatMemberService.deleteChatMember(currentChatMember.id).subscribe({
-        next: () => {
-          this.showDropdown = false;
+    this.showLeaveConfirmModal = false;
 
-          this.chatService.removeChat(this.chat.id);
+    this.chatMemberService.deleteChatMember(currentChatMember.id).subscribe({
+      next: () => {
+        this.chatService.removeChat(this.chat.id);
 
-          this.chatService.leaveChat(this.chat.id);
+        this.chatService.leaveChat(this.chat.id);
 
-          this.chatLeft.emit(this.chat.id);
-        },
-        error: error => {
-          console.error('Error leaving chat:', error);
-          alert('An error occurred while leaving the chat');
-        },
-      });
-    }
+        this.chatLeft.emit(this.chat.id);
+      },
+      error: error => {
+        console.error('Error leaving chat:', error);
+        alert('An error occurred while leaving the chat');
+      },
+    });
+  }
+
+  cancelLeaveChat(): void {
+    this.showLeaveConfirmModal = false;
   }
 
   openAddMembersModal(): void {
     this.showAddMembersModal = true;
-    this.showDropdown = false;
 
     setTimeout(() => {
       if (this.addMembersModal) {
