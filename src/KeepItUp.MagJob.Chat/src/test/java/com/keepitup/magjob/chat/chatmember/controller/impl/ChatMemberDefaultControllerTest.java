@@ -85,7 +85,6 @@ class ChatMemberDefaultControllerTest {
                 .organizationId(organizationId)
                 .dateOfCreation(LocalDate.now())
                 .chatMembers(new ArrayList<>())
-                .chatAdministrators(new ArrayList<>())
                 .build();
 
         chatMember = ChatMember.builder()
@@ -261,90 +260,6 @@ class ChatMemberDefaultControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         verify(chatMemberService).find(chatMemberId);
         verify(chatMemberService, never()).update(any());
-    }
-
-    @Test
-    void testRemoveAdminAccess() {
-        chat.getChatAdministrators().add(chatMember);
-
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.of(chatMember));
-
-        chatMemberController.removeAdminAccess(chatMemberId);
-
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService).removeAdmin(chat, chatMember);
-        verify(messagingTemplate).convertAndSend(
-                eq(Constants.CHAT_DEFAULT_WEBSOCKET_ENDPOINT + chatId),
-                anyString()
-        );
-    }
-
-    @Test
-    void testRemoveAdminAccess_NotFound() {
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMemberController.removeAdminAccess(chatMemberId);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService, never()).removeAdmin(any(), any());
-    }
-
-    @Test
-    void testRemoveAdminAccess_NotAdmin() {
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.of(chatMember));
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMemberController.removeAdminAccess(chatMemberId);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService, never()).removeAdmin(any(), any());
-    }
-
-    @Test
-    void testGiveAdminAccess() {
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.of(chatMember));
-
-        chatMemberController.giveAdminAccess(chatMemberId);
-
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService).addAdmin(chat, chatMember);
-        verify(messagingTemplate).convertAndSend(
-                eq(Constants.CHAT_DEFAULT_WEBSOCKET_ENDPOINT + chatId),
-                anyString()
-        );
-    }
-
-    @Test
-    void testGiveAdminAccess_NotFound() {
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMemberController.giveAdminAccess(chatMemberId);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService, never()).addAdmin(any(), any());
-    }
-
-    @Test
-    void testGiveAdminAccess_Conflict() {
-        chat.getChatAdministrators().add(chatMember);
-
-        when(chatMemberService.find(chatMemberId)).thenReturn(Optional.of(chatMember));
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMemberController.giveAdminAccess(chatMemberId);
-        });
-
-        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
-        verify(chatMemberService).find(chatMemberId);
-        verify(chatService, never()).addAdmin(any(), any());
     }
 
     @Test

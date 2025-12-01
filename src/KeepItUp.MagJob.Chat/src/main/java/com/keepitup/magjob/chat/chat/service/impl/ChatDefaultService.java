@@ -51,31 +51,6 @@ public class ChatDefaultService implements ChatService {
     }
 
     @Override
-    public void addAdmin(Chat chat, ChatMember chatMember) {
-        List<ChatMember> chatAdministrators = chat.getChatAdministrators();
-        if (chatAdministrators == null || chatAdministrators.isEmpty()) {
-            chatAdministrators = new ArrayList<>();
-            chatAdministrators.add(chatMember);
-        } else {
-            chatAdministrators.add(chatMember);
-        }
-        chat.setChatAdministrators(chatAdministrators);
-        chatRepository.save(chat);
-    }
-
-    @Override
-    public void removeAdmin(Chat chat, ChatMember chatMember) {
-        List<ChatMember> chatAdministrators = chat.getChatAdministrators();
-        chatAdministrators.remove(chatMember);
-        if (chatAdministrators.isEmpty()) {
-            chat.setChatAdministrators(null);
-            return;
-        }
-        chat.setChatAdministrators(chatAdministrators);
-    }
-
-
-    @Override
     public void create(Chat chat) {
         chat.setDateOfCreation(LocalDate.now());
         chatRepository.save(chat);

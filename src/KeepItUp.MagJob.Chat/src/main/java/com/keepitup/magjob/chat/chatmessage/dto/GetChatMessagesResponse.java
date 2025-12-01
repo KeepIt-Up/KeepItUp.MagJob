@@ -3,7 +3,6 @@ package com.keepitup.magjob.chat.chatmessage.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -31,14 +30,8 @@ public class GetChatMessagesResponse {
         @Schema(description = "ChatMessage content")
         private String content;
 
-        @Schema(description = "ChatMessage viewedBy")
-        private List<String> viewedBy;
-
         @Schema(description = "ChatMessage firstAndLastName")
         private String firstAndLastName;
-
-        @Schema(description = "ChatMessage attachment")
-        private byte[] attachment;
 
         @Schema(description = "ChatMessage date of creation")
         private LocalDateTime dateOfCreation;

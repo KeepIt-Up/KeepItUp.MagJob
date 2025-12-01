@@ -143,11 +143,6 @@ public class ChatDefaultController implements ChatController {
                     .nickname(postChatRequest.getNickname())
                     .memberId(postChatRequest.getMemberId())
                     .build());
-
-            ChatMember adminChatMember = chatMemberService.findByMemberIdAndChat(postChatRequest.getMemberId(), createdChat.get())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-            chatService.addAdmin(createdChat.get(), adminChatMember);
         }
 
         return chatService.findByTitle(postChatRequest.getTitle())

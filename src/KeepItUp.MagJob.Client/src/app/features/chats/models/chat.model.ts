@@ -24,8 +24,6 @@ export interface ChatMessage {
   id: string;
   content: string;
   dateOfCreation: Date;
-  viewedBy: string[];
-  attachment?: string;
   firstAndLastName: string;
   chatMember: ChatMember;
   chat: {
@@ -46,7 +44,6 @@ export interface SendMessageRequest {
   content: string;
   chatId: string;
   chatMemberId: string;
-  attachment?: File;
 }
 
 export interface ChatListResponse {

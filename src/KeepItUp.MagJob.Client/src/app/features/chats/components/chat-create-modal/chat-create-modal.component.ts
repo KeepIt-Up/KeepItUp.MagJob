@@ -192,9 +192,9 @@ export class ChatCreateModalComponent implements OnInit {
   get titleError(): string {
     const control = this.chatForm.get('title');
     if (control?.errors && control.touched) {
-      if (control.errors['required']) return 'Chat title is required';
-      if (control.errors['minlength']) return 'Title must be at least 3 characters';
-      if (control.errors['maxlength']) return 'Title must be less than 100 characters';
+      if (control.errors['required']) return 'Nazwa czatu jest obowiązkowa';
+      if (control.errors['minlength']) return 'Nazwa czatu musi zawierać przynajmniej 3 znaki';
+      if (control.errors['maxlength']) return 'Nazwa czatu nie może zawierać więcej niż 100 znaków';
     }
     return '';
   }
@@ -202,8 +202,8 @@ export class ChatCreateModalComponent implements OnInit {
   get memberIdsError(): string {
     const control = this.chatForm.get('memberIds');
     if (control?.errors && control.touched) {
-      if (control.errors['required']) return 'Please select at least one member';
-      if (control.errors['minlength']) return 'Please select at least one member';
+      if (control.errors['required']) return 'Wybierz przynajmniej jednego członka';
+      if (control.errors['minlength']) return 'Wybierz przynajmniej jednego członka';
     }
     return '';
   }

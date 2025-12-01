@@ -46,7 +46,4 @@ public class Chat {
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE)
     private List<ChatMember> chatMembers;
-
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE)
-    private List<ChatMember> chatAdministrators;
 }

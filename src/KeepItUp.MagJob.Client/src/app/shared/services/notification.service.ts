@@ -12,12 +12,14 @@ export class NotificationService {
     return this.notifications.asObservable();
   }
 
-  show(message: string, type: NotificationType = 'info', duration = 3000): void {
+  show(message: string, type: NotificationType = 'info', duration = 3000, chatId?: string, organizationId?: string): void {
     const notification: Notification = {
       id: this.generateId(),
       message,
       type,
       duration,
+      chatId,
+      organizationId,
     };
 
     const currentNotifications = this.notifications.getValue();

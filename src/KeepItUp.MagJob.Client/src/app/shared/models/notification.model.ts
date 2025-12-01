@@ -5,4 +5,6 @@ export interface Notification {
   message: string;
   type: NotificationType;
   duration?: number;
+  chatId?: string;
+  organizationId?: string;
 }

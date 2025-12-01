@@ -18,9 +18,6 @@ public class PostChatMessageRequest {
     @Schema(description = "ChatMessage content")
     private String content;
 
-    @Schema(description = "ChatMessage attachment")
-    private byte[] attachment;
-
     @Schema(description = "ChatMessage first and last name of author")
     private String firstAndLastName;
 

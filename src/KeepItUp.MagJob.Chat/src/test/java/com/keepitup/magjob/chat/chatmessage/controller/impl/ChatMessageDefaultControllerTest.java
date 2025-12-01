@@ -6,14 +6,11 @@ import com.keepitup.magjob.chat.chatmember.entity.ChatMember;
 import com.keepitup.magjob.chat.chatmember.service.impl.ChatMemberDefaultService;
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessageResponse;
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessagesResponse;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageRequest;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageWebSocketRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.PostChatMessageRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.TypingEventRequest;
 import com.keepitup.magjob.chat.chatmessage.entity.ChatMessage;
 import com.keepitup.magjob.chat.chatmessage.function.ChatMessagesToResponseFunction;
 import com.keepitup.magjob.chat.chatmessage.function.RequestToChatMessageFunction;
-import com.keepitup.magjob.chat.chatmessage.function.UpdateChatMessageWithRequestFunction;
 import com.keepitup.magjob.chat.chatmessage.service.impl.ChatMessageDefaultService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,9 +51,6 @@ class ChatMessageDefaultControllerTest {
 
     @Mock
     private RequestToChatMessageFunction requestToChatMessageFunction;
-
-    @Mock
-    private UpdateChatMessageWithRequestFunction updateChatMessageWithRequestFunction;
 
     @Mock
     private ChatMessagesToResponseFunction chatMessagesToResponseFunction;
@@ -103,7 +97,6 @@ class ChatMessageDefaultControllerTest {
                 .chat(chat)
                 .chatMember(chatMember)
                 .dateOfCreation(LocalDateTime.now())
-                .viewedBy(new ArrayList<>())
                 .firstAndLastName("Test User")
                 .build();
     }
@@ -166,12 +159,14 @@ class ChatMessageDefaultControllerTest {
                 .chat(chat)
                 .chatMember(chatMember)
                 .dateOfCreation(LocalDateTime.now())
-                .viewedBy(new ArrayList<>())
                 .firstAndLastName("Test User")
                 .build();
 
+        Page<ChatMember> emptyPage = new PageImpl<>(List.of(chatMember));
+        
         when(chatService.find(chatId)).thenReturn(Optional.of(chat));
         when(chatMemberService.find(chatMemberId)).thenReturn(Optional.of(chatMember));
+        when(chatMemberService.findAllByChat(chat, Pageable.unpaged())).thenReturn(emptyPage);
         when(requestToChatMessageFunction.apply(request)).thenReturn(newMessage);
         when(chatMessageService.create(newMessage)).thenReturn(newMessage);
 
@@ -223,131 +218,6 @@ class ChatMessageDefaultControllerTest {
         verify(chatService).find(chatId);
         verify(chatMemberService).find(chatMemberId);
         verify(chatMessageService, never()).create(any());
-    }
-
-    @Test
-    void testMarkMessageAsViewed() {
-        PatchChatMessageRequest request = PatchChatMessageRequest.builder()
-                .viewedBy("user1")
-                .build();
-
-        ChatMessage updatedMessage = ChatMessage.builder()
-                .id(messageId)
-                .content("Test message")
-                .chat(chat)
-                .chatMember(chatMember)
-                .viewedBy(List.of("user1"))
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.of(chatMessage));
-        when(chatService.find(messageId)).thenReturn(Optional.of(chat));
-        when(updateChatMessageWithRequestFunction.apply(chatMessage, request)).thenReturn(updatedMessage);
-
-        chatMessageController.markMessageAsViewed(messageId, request);
-
-        verify(chatMessageService).find(messageId);
-        verify(chatService).find(messageId);
-        verify(chatMessageService).update(updatedMessage);
-    }
-
-    @Test
-    void testMarkMessageAsViewed_MessageNotFound() {
-        PatchChatMessageRequest request = PatchChatMessageRequest.builder()
-                .viewedBy("user1")
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMessageController.markMessageAsViewed(messageId, request);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMessageService).find(messageId);
-        verify(chatMessageService, never()).update(any());
-    }
-
-    @Test
-    void testMarkMessageAsViewed_ChatNotFound() {
-        PatchChatMessageRequest request = PatchChatMessageRequest.builder()
-                .viewedBy("user1")
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.of(chatMessage));
-        when(chatService.find(messageId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMessageController.markMessageAsViewed(messageId, request);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMessageService).find(messageId);
-        verify(chatService).find(messageId);
-        verify(chatMessageService, never()).update(any());
-    }
-
-    @Test
-    void testHandleViewedMessage() {
-        PatchChatMessageWebSocketRequest request = PatchChatMessageWebSocketRequest.builder()
-                .chatMessageId(messageId)
-                .viewedBy("user1")
-                .build();
-
-        ChatMessage updatedMessage = ChatMessage.builder()
-                .id(messageId)
-                .content("Test message")
-                .chat(chat)
-                .chatMember(chatMember)
-                .viewedBy(List.of("user1"))
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.of(chatMessage));
-        when(chatService.find(chatId)).thenReturn(Optional.of(chat));
-        when(updateChatMessageWithRequestFunction.apply(any(), any())).thenReturn(updatedMessage);
-
-        chatMessageController.handleViewedMessage(chatId, request);
-
-        verify(chatMessageService).find(messageId);
-        verify(chatService).find(chatId);
-        verify(chatMessageService).update(updatedMessage);
-    }
-
-    @Test
-    void testHandleViewedMessage_MessageNotFound() {
-        PatchChatMessageWebSocketRequest request = PatchChatMessageWebSocketRequest.builder()
-                .chatMessageId(messageId)
-                .viewedBy("user1")
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMessageController.handleViewedMessage(chatId, request);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMessageService).find(messageId);
-        verify(chatMessageService, never()).update(any());
-    }
-
-    @Test
-    void testHandleViewedMessage_ChatNotFound() {
-        PatchChatMessageWebSocketRequest request = PatchChatMessageWebSocketRequest.builder()
-                .chatMessageId(messageId)
-                .viewedBy("user1")
-                .build();
-
-        when(chatMessageService.find(messageId)).thenReturn(Optional.of(chatMessage));
-        when(chatService.find(chatId)).thenReturn(Optional.empty());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            chatMessageController.handleViewedMessage(chatId, request);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        verify(chatMessageService).find(messageId);
-        verify(chatService).find(chatId);
-        verify(chatMessageService, never()).update(any());
     }
 
     @Test

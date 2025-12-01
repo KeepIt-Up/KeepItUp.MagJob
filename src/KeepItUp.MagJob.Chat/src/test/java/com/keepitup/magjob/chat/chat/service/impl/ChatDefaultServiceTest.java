@@ -50,7 +50,6 @@ class ChatDefaultServiceTest {
                 .organizationId(organizationId)
                 .dateOfCreation(LocalDate.now())
                 .chatMembers(new ArrayList<>())
-                .chatAdministrators(new ArrayList<>())
                 .build();
 
         chatMember = ChatMember.builder()
@@ -142,54 +141,6 @@ class ChatDefaultServiceTest {
         assertEquals(1, result.getTotalElements());
         assertEquals(organizationId, result.getContent().get(0).getOrganizationId());
         verify(chatRepository).findAllByOrganizationId(organizationId, pageRequest);
-    }
-
-    @Test
-    void testAddAdmin() {
-        chat.setChatAdministrators(null);
-
-        chatService.addAdmin(chat, chatMember);
-
-        assertNotNull(chat.getChatAdministrators());
-        assertTrue(chat.getChatAdministrators().contains(chatMember));
-        verify(chatRepository).save(chat);
-    }
-
-    @Test
-    void testAddAdmin_ExistingList() {
-        List<ChatMember> existingAdmins = new ArrayList<>();
-        chat.setChatAdministrators(existingAdmins);
-
-        chatService.addAdmin(chat, chatMember);
-
-        assertEquals(1, chat.getChatAdministrators().size());
-        assertTrue(chat.getChatAdministrators().contains(chatMember));
-        verify(chatRepository).save(chat);
-    }
-
-    @Test
-    void testRemoveAdmin() {
-        List<ChatMember> admins = new ArrayList<>();
-        admins.add(chatMember);
-        chat.setChatAdministrators(admins);
-
-        chatService.removeAdmin(chat, chatMember);
-
-        List<ChatMember> result = chat.getChatAdministrators();
-        assertTrue(result == null || !result.contains(chatMember));
-        verify(chatRepository, never()).save(chat);
-    }
-
-    @Test
-    void testRemoveAdmin_LastAdmin() {
-        List<ChatMember> admins = new ArrayList<>();
-        admins.add(chatMember);
-        chat.setChatAdministrators(admins);
-
-        chatService.removeAdmin(chat, chatMember);
-
-        assertNull(chat.getChatAdministrators());
-        verify(chatRepository, never()).save(chat);
     }
 
     @Test

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,10 +35,6 @@ public class ChatMessageDefaultService implements ChatMessageService {
     @Override
     public ChatMessage create(ChatMessage chatMessage) {
         chatMessage.setDateOfCreation(LocalDateTime.now());
-
-        if (chatMessage.getViewedBy() == null) {
-            chatMessage.setViewedBy(new java.util.ArrayList<>());
-        }
 
         if (chatMessage.getFirstAndLastName() == null
                 && chatMessage.getChatMember() != null

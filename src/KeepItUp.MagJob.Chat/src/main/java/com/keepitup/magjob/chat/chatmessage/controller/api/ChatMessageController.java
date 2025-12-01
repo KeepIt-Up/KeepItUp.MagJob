@@ -2,8 +2,6 @@ package com.keepitup.magjob.chat.chatmessage.controller.api;
 
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessageResponse;
 import com.keepitup.magjob.chat.chatmessage.dto.GetChatMessagesResponse;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageRequest;
-import com.keepitup.magjob.chat.chatmessage.dto.PatchChatMessageWebSocketRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.PostChatMessageRequest;
 import com.keepitup.magjob.chat.chatmessage.dto.TypingEventRequest;
 import com.keepitup.magjob.chat.chatmessage.entity.ChatMessage;
@@ -45,24 +43,6 @@ public interface ChatMessageController {
             @Parameter(name = "PostChatMessageRequest", description = "PostChatMessageRequest DTO", 
                       schema = @Schema(implementation = PostChatMessageRequest.class), required = true)
             PostChatMessageRequest postChatMessageRequest
-    );
-
-    @MessageMapping("/chat/{chatId}/messageViewed")
-    @SendTo("/topic/chat/{chatId}/viewed")
-    void handleViewedMessage(
-            @Parameter(name = "chatId", description = "Chat id value", required = true)
-            @DestinationVariable("chatId") UUID chatId,
-            @Parameter(name = "PatchChatMessageWebSocketRequest", description = "PatchChatMessageWebSocketRequest DTO", 
-                      schema = @Schema(implementation = PatchChatMessageWebSocketRequest.class), required = true)
-            PatchChatMessageWebSocketRequest patchChatMessageWebSocketRequest
-    );
-
-    @PatchMapping("/api/messages/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    void markMessageAsViewed(
-            @Parameter(name = "id", description = "Message id value", required = true)
-            @PathVariable("id") UUID id,
-            @RequestBody PatchChatMessageRequest patchChatMessageRequest
     );
 
     @MessageMapping("/chat/{chatId}/typing")

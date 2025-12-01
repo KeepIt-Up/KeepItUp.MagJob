@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, filter, take } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import {
@@ -15,6 +15,7 @@ import {
 } from '../models/chat.model';
 import { WebSocketService } from './websocket.service';
 import { UserContextService } from '../../users/services/user-context.service';
+import { NotificationService } from '@shared/services/notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class ChatService {
   private http = inject(HttpClient);
   private webSocketService = inject(WebSocketService);
   private userContextService = inject(UserContextService);
+  private notificationService = inject(NotificationService);
 
   private readonly apiUrl = `${environment.apiUrl}/api/chat/api`;
   private readonly wsUrl = `${environment.apiUrl}/ws`;
@@ -31,6 +33,7 @@ export class ChatService {
   private selectedChatSubject = new BehaviorSubject<Chat | null>(null);
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   private typingUsersSubject = new BehaviorSubject<TypingUser[]>([]);
+  private notificationSubscriptions = new Set<string>();
 
   public chats$ = this._chatsSubject.asObservable();
   public selectedChat$ = this.selectedChatSubject.asObservable();
@@ -43,6 +46,7 @@ export class ChatService {
 
   constructor() {
     void this.initializeWebSocket();
+    this.setupNotificationSubscription();
   }
 
   private async initializeWebSocket(): Promise<void> {
@@ -52,6 +56,84 @@ export class ChatService {
     } catch (error) {
       console.error('Failed to connect to WebSocket:', error);
     }
+  }
+
+  private setupNotificationSubscription(): void {
+    this.userContextService.user$
+      .pipe(
+        filter(user => user !== null),
+        take(1),
+      )
+      .subscribe(() => {
+        this.subscribeToUserNotifications();
+      });
+  }
+
+  private subscribeToUserNotifications(): void {
+    const currentUser = this.userContextService.getCurrentUser();
+    const isConnected = this.webSocketService.isConnected();
+
+    if (!isConnected) {
+      this.webSocketService.onConnectionChange().subscribe(connected => {
+        if (connected) {
+          this.subscribeToUserNotifications();
+        }
+      });
+      return;
+    }
+
+    if (!currentUser) {
+      this.userContextService.user$
+        .pipe(
+          filter(user => user !== null),
+          take(1),
+        )
+        .subscribe(() => {
+          this.subscribeToUserNotifications();
+        });
+      return;
+    }
+
+    currentUser.memberships.forEach(membership => {
+      const topic = `/topic/user/${membership.memberId}`;
+      if (!this.notificationSubscriptions.has(topic)) {
+        this.webSocketService.subscribe(topic).subscribe({
+          next: message => {
+            try {
+              const notification = JSON.parse(message.body);
+              this.handleChatNotification(notification);
+            } catch (error) {
+              console.error('Error parsing notification:', error);
+            }
+          },
+          error: error => {
+            console.error('Notification subscription error:', error);
+          },
+        });
+        this.notificationSubscriptions.add(topic);
+      }
+    });
+  }
+
+  private handleChatNotification(notification: {
+    chatId: string;
+    chatTitle: string;
+    organizationId: string;
+    message: string;
+    senderName: string;
+  }): void {
+    const currentChat = this.selectedChatSubject.value;
+    if (currentChat && currentChat.id === notification.chatId) {
+      return;
+    }
+
+    this.notificationService.show(
+      notification.message,
+      'info',
+      5000,
+      notification.chatId,
+      notification.organizationId,
+    );
   }
 
   getChatsByMemberId(memberId: string): Observable<Chat[]> {
@@ -90,7 +172,6 @@ export class ChatService {
       content: request.content,
       chat: request.chatId,
       chatMember: request.chatMemberId,
-      attachment: request.attachment,
       firstAndLastName: firstAndLastName,
     };
 
@@ -150,8 +231,6 @@ export class ChatService {
               id: rawMessage.id,
               content: rawMessage.content,
               dateOfCreation: parsedDate,
-              viewedBy: rawMessage.viewedBy || [],
-              attachment: rawMessage.attachment,
               firstAndLastName: rawMessage.firstAndLastName,
               chatMember: {
                 id: rawMessage.chatMember.id,
@@ -231,8 +310,6 @@ export class ChatService {
           id: msg.id,
           content: msg.content,
           dateOfCreation: new Date(msg.dateOfCreation),
-          viewedBy: msg.viewedBy || [],
-          attachment: msg.attachment,
           firstAndLastName: msg.firstAndLastName,
           chatMember: {
             id: msg.chatMember?.id || '',

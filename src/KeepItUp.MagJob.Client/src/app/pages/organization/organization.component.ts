@@ -7,6 +7,7 @@ import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { ScrollControlService } from '@shared/services/scroll-control.service';
 import { OrganizationContextService } from '@organizations/services/organization-context.service';
 import { AsyncPipe } from '@angular/common';
+import { ChatService } from '../../features/chats/services/chat.service';
 
 @Component({
   selector: 'app-organization',
@@ -24,6 +25,7 @@ export class OrganizationComponent implements OnInit {
   @Input() organizationId!: string;
   private organizationContextService = inject(OrganizationContextService);
   private scrollControlService = inject(ScrollControlService);
+  private chatService = inject(ChatService);
 
   organizationContext$ = this.organizationContextService.organizationContext$;
   sidebarExpanded = false;
