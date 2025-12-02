@@ -36,7 +36,7 @@
   bottom: 0;
   background: white;
   border-top: 1px solid #e5e7eb;
-  z-index: 3;
+  z-index: 20;
 }
 
 .message-own {
@@ -54,12 +54,12 @@
 }
 
 .typing-indicator {
-  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
   animation: slideIn 0.3s ease-out;
   position: relative;
-  z-index: 15;
+  z-index: 10;
   background: #f9fafb;
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 @keyframes slideIn {

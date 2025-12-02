@@ -105,25 +105,26 @@
     </div>
   </div>
 
-  <div *ngIf="typingUsers.length > 0" class="typing-indicator px-4 py-2 bg-gray-100 border-t">
-    <div class="flex items-center space-x-2 text-sm text-gray-600">
-      <div class="flex space-x-1">
-        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-      </div>
-      <span>
-        <span *ngFor="let user of typingUsers; let last = last">
-          <strong>{{ user.memberName }}</strong><span *ngIf="!last">, </span>
+  <div class="message-input-container bg-gray-50">
+    <div *ngIf="typingUsers.length > 0" class="typing-indicator px-4 py-2 bg-gray-100 border-t">
+      <div class="flex items-center space-x-2 text-sm text-gray-600">
+        <div class="flex space-x-1">
+          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+          <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+        </div>
+        <span>
+          <span *ngFor="let user of typingUsers; let last = last">
+            <strong>{{ user.memberName }}</strong><span *ngIf="!last">, </span>
+          </span>
+          <span *ngIf="typingUsers.length === 1"> pisze...</span>
+          <span *ngIf="typingUsers.length > 1"> piszą...</span>
         </span>
-        <span *ngIf="typingUsers.length === 1"> pisze...</span>
-        <span *ngIf="typingUsers.length > 1"> piszą...</span>
-      </span>
+      </div>
     </div>
-  </div>
 
-  <div class="message-input-container p-4 bg-gray-50">
-    <div class="flex items-end space-x-3">
+    <div class="p-4">
+    <div class="flex items-stretch space-x-3">
       <div class="flex-1">
         <textarea
           [(ngModel)]="newMessage"
@@ -138,7 +139,7 @@
       <button
         (click)="sendMessage()"
         [disabled]="!newMessage.trim()"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 flex items-center justify-center"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -149,6 +150,7 @@
           ></path>
         </svg>
       </button>
+    </div>
     </div>
   </div>
 
